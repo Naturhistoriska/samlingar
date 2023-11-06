@@ -1,7 +1,9 @@
 
 solr/solr8/mycores/nrm_index/data
+solr/solr8/mycores/security.json
 
 solr/solr8/logs/*
+
 
 
 .DS_Store
