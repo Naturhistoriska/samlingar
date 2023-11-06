@@ -19,8 +19,8 @@ services:
       - docker-entrypoint.sh
       - solr-precreate
       - nrm_index
-    networks:
-      - default
+    # networks:
+    #   - default
 
 
 
