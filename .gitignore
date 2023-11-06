@@ -1,0 +1,17 @@
+
+solr/solr8/mycores/nrm_index/data
+
+solr/solr8/logs/*
+
+
+.DS_Store
+*/target/
+*/nb-configuration.xml
+
+
+
+*.properties
+
+project-initdata_local.yml
+
+notes

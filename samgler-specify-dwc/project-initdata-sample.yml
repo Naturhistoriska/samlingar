@@ -1,0 +1,37 @@
+## YAML Template.
+---
+swarm:
+  port:
+    offset: 100
+  deployment:
+    timeout: 3600
+  solr:
+    # path: http://local-solr.nrm.se:18983/solr/
+    path: http://localhost:18983/solr/
+    username: username
+    password: password
+  mapping-files:
+    path: mapping_files/mapping.json
+  collections: collectioncode
+
+  datasources:
+    jdbc-drivers:
+      com.mysql:
+        driver-class-name: com.mysql.jdbc.Driver
+        xa-datasource-class-name: com.mysql.jdbc.jdbc2.optional.MysqlXADataSource
+        driver-module-name: com.mysql
+    data-sources:
+      DinaDS:
+        driver-name: com.mysql
+        jndi-name: java:jboss/datasources/DinaDS
+        connection-url: jdbc:mysql://localhost:13306/dina_nrm?autoReconnect=true&useSSL=false
+        user-name: username
+        password: password
+        min-pool-size: 8
+        max-pool-size: 35
+        pool-prefill: true
+        autoReconnect: true
+        failOverReadOnly: false&maxReconnects=10&autoReconnect=true
+        validation-query: 'select 1'
+        max-idle-time: 5
+
