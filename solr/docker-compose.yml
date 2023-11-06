@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+
+  solr:
+    image: solr:8.1
+    container_name: solr
+    environment:
+      - SOLR_HEAP=4g
+      # - SOLR_HEAP=1g
+      - VIRTUAL_HOST=local-solr.nrm.se
+      - VIRTUAL_PORT=8983
+    ports:
+      - 18983:8983
+    volumes:
+      - ./solr8/lib/jts-core-1.15.0.jar:/opt/solr-8.1.1/server/solr-webapp/webapp/WEB-INF/lib/jts-core-1.15.0.jar
+      - ./solr8/mycores:/var/solr/data
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - nrm_index
+    networks:
+      - default
+
+
+
+
+volumes:
+  data:
+
