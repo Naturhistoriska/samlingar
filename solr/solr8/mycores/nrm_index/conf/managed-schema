@@ -249,7 +249,7 @@
   <field name="dataGeneralizations" type="string" indexed="false" stored="true"/>
   <field name="dynamicProperties" type="string" indexed="false" stored="true"/>
   <field name="occurrenceID" type="string" indexed="false" stored="true"/>
-  <field name="catalogNumber" type="string" indexed="false" stored="true"/>
+  <field name="catalogNumber" type="string" indexed="true" stored="true"/>
   <field name="recordNumber" type="string" indexed="false" stored="true"/>
   <field name="recordedBy" type="string"  indexed="false" stored="true"/>
   <field name="individualCount" type="string" indexed="false" stored="true"/>
@@ -261,9 +261,9 @@
   <field name="behavior" type="string" indexed="false" stored="true"/>
   <field name="establishmentMeans" type="string" indexed="false" stored="true"/>
   <field name="occurrenceStatus" type="string" indexed="false" stored="true"/>
-  <field name="preparations" type="string" indexed="false" stored="true"/>
+  <field name="preparations" type="string" indexed="true" stored="true"/>
   <field name="disposition" type="string" indexed="false" stored="true"/>
-  <field name="associatedMedia" type="string" indexed="false" stored="true"/>
+  <field name="associatedMedia" type="string" indexed="true" stored="true"/>
   <field name="associatedReferences" type="string" indexed="false" stored="true"/>
   <field name="associatedSequences" type="string" indexed="false" stored="true"/>
   <field name="associatedTaxa" type="string" indexed="false" stored="true"/>
@@ -302,12 +302,12 @@
   <field name="waterBody" type="string" indexed="false" stored="true"/>
   <field name="islandGroup" type="string" indexed="false" stored="true"/>
   <field name="island" type="string" indexed="false" stored="true"/>
-  <field name="country" type="string" indexed="false" stored="true"/>
+  <field name="country" type="string" indexed="true" stored="true"/>
   <field name="countryCode" type="string" indexed="false" stored="true"/>
-  <field name="stateProvince" type="string" indexed="false" stored="true"/>
+  <field name="stateProvince" type="string" indexed="true" stored="true"/>
   <field name="county" type="string" indexed="false" stored="true"/>
   <field name="municipality" type="string" indexed="false" stored="true"/>
-  <field name="locality" type="string" indexed="false" stored="true"/>
+  <field name="locality" type="string" indexed="true" stored="true"/>
   <field name="verbatimLocality" type="string" indexed="false" stored="true"/>
   <field name="minimumElevationInMeters" type="double" indexed="false" stored="true"/>
   <field name="maximumElevationInMeters" type="double" indexed="false" stored="true"/>
@@ -373,22 +373,22 @@
   <field name="nameAccordingToID" type="string" indexed="false" stored="true"/>
   <field name="namePublishedInID" type="string" indexed="false" stored="true"/>
   <field name="taxonConceptID" type="string" indexed="false" stored="true"/>
-  <field name="scientificName" type="string" indexed="false" stored="true"/>
+  <field name="scientificName" type="string" indexed="true" stored="true"/>
   <field name="acceptedNameUsage" type="string" indexed="false" stored="true"/>
   <field name="parentNameUsage" type="string" indexed="false" stored="true"/>
   <field name="originalNameUsage" type="string" indexed="false" stored="true"/>
   <field name="nameAccordingTo" type="string" indexed="false" stored="true"/>
   <field name="namePublishedIn" type="string" indexed="false" stored="true"/>
   <field name="namePublishedInYear" type="string" indexed="false" stored="true"/>
-  <field name="higherClassification" type="string" indexed="false" stored="true"/>
+  <field name="higherClassification" type="string" indexed="true" stored="true"/>
   <field name="kingdom" type="string" indexed="false" stored="true"/>
   <field name="phylum" type="string" indexed="false" stored="true"/>
   <field name="clazz" type="string" indexed="false" stored="true"/>
   <field name="order" type="string" indexed="false" stored="true"/>
-  <field name="family" type="string" indexed="false" stored="true"/>
-  <field name="genus" type="string" indexed="false" stored="true"/>
+  <field name="family" type="string" indexed="true" stored="true"/>
+  <field name="genus" type="string" indexed="true" stored="true"/>
   <field name="subgenus" type="string" indexed="false" stored="true"/>
-  <field name="specificEpithet" type="string" indexed="false" stored="true"/>
+  <field name="specificEpithet" type="string" indexed="true" stored="true"/>
   <field name="infraspecificEpithet" type="string" indexed="false" stored="true"/>
   <field name="taxonRank" type="string" indexed="false" stored="true"/>
   <field name="verbatimTaxonRank" type="string" indexed="false" stored="true"/>
