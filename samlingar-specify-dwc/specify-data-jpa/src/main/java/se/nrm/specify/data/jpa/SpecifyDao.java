@@ -14,15 +14,15 @@ import se.nrm.specify.data.model.EntityBean;
  */
 public interface SpecifyDao <T extends EntityBean> {
     
-    public List<Integer> findAllIdsByCollectionCode(int collectionCode);
+    public List<Integer> findAllIdsByCollectionCode(String collectionCode);
     
-    public List<Integer> findUpdateIdsByCollectionCode(int collectionCode, 
+    public List<Integer> findUpdateIdsByCollectionCode(String collectionCode, 
             String jpql, Date fromDate, Date toDate);
     
 //    public Stream<T> findCollectionObjectByCollectionCode(int collectionCode, 
 //            List<Integer> ids, String jpql); 
     
-    public Stream<T> findByCollectonId(int collectionCode, List<Integer> ids, 
+    public Stream<T> findByCollectonId(String collectionCode, List<Integer> ids, 
             Map<String, String> filterMap, String jpql);
     
 //    public Geography findGeoraphyParent(int geographyId);

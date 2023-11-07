@@ -24,16 +24,16 @@ public class DataCrud implements Serializable {
         
     }
     
-    public List<Integer> findIdsByCollectionCode(int collectionCode) {
+    public List<Integer> findIdsByCollectionCode(String collectionCode) {
         return dao.findAllIdsByCollectionCode(collectionCode);
     }
      
-    public List<Integer> findUpdateIdsByCollectionCode(int collectionCode, 
+    public List<Integer> findUpdateIdsByCollectionCode(String collectionCode, 
             String jpql, Date fromDate, Date toDate) {
         return dao.findUpdateIdsByCollectionCode(collectionCode, jpql, fromDate, toDate);
     }
     
-    public List<EntityBean> fetchData(int collectionCode, List<Integer> ids, 
+    public List<EntityBean> fetchData(String collectionCode, List<Integer> ids, 
             Map<String, String> filterMap, String jpql) { 
         return ((Stream<EntityBean>) dao
             .findByCollectonId(collectionCode, ids, filterMap, jpql))

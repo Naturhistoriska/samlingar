@@ -1,8 +1,6 @@
 package se.nrm.specify.data.process.logic;
 
-import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.Serializable; 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
@@ -16,14 +14,11 @@ import javax.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.wildfly.swarm.Swarm;
-import se.nrm.specify.data.model.EntityBean;
-import se.nrm.specify.data.model.impl.Collectionobject;
+import se.nrm.specify.data.model.EntityBean; 
 import se.nrm.specify.data.process.config.InitialProperties;
 import se.nrm.specify.data.process.logic.jpa.DataCrud;
 import se.nrm.specify.data.process.logic.json.JsonConverter;
-import se.nrm.specify.data.process.logic.solr.SolrService;
-//import se.nrm.specify.data.process.logic.json.JsonConverter;
-//import se.nrm.specify.data.process.logic.solr.SolrClient;
+import se.nrm.specify.data.process.logic.solr.SolrService; 
 
 /**
  *
@@ -99,7 +94,7 @@ public class DataProcessor implements Serializable {
  
         try {
             collections.stream()
-                    .map(Integer::parseInt)
+//                    .map(Integer::parseInt)
                     .forEach(collectionCode -> {
                         try {
                             if (isUpdate) {
@@ -114,7 +109,7 @@ public class DataProcessor implements Serializable {
                             log.info("code : {} -- {}", collectionCode, ids.size());
 
                             Map<String, String> filterMap = new HashMap();
-                            JsonObject mappingJson = mappingFile.read(collectionCode.toString());
+                            JsonObject mappingJson = mappingFile.read(collectionCode);
 
                             if (mappingJson.containsKey(filterKey)) {
                                 JsonObject filterJson = mappingJson.getJsonObject(filterKey);
@@ -139,7 +134,7 @@ public class DataProcessor implements Serializable {
 //                                log.info("entities size : {}", entities.size());
                                 entityJsonArray = converter.convert(entities, mappingJson);
                                  
-                                log.info("entity jaonArray : {}", entityJsonArray.size());
+//                                log.info("entity jaonArray : {}", entityJsonArray.size());
                                 
                                 statusCode = solr.postToSolr(entityJsonArray.toString().trim());
 //                  
@@ -199,7 +194,8 @@ public class DataProcessor implements Serializable {
                 .append("LEFT JOIN FETCH d.determiner ")
                 .append("LEFT JOIN FETCH p.prepType ")
                 .append("LEFT JOIN FETCH p.storage s ")
-                .append("WHERE c.collectionMemberID = :collectionMemberID ")
+                .append("WHERE ct.code = :code ")
+//                .append("WHERE c.collectionMemberID = :collectionMemberID ")
                 .append("AND c.collectionObjectID in :ids "); 
     }
 
@@ -214,7 +210,8 @@ public class DataProcessor implements Serializable {
         log.info("buildGetUpdateIdsQuery");
         sb = new StringBuilder();
         sb.append("SELECT c.collectionObjectID FROM Collectionobject c ");
-        sb.append("WHERE c.collectionMemberID = :collectionMemberID ");
+        sb.append("LEFT JOIN FETCH c.collection ct ");
+        sb.append("WHERE ct.code = :code ");
         sb.append("AND c.timestampModified BETWEEN :fromDate AND :toDate ");
         sb.append("ORDER BY c.collectionObjectID");
         return sb.toString().trim();

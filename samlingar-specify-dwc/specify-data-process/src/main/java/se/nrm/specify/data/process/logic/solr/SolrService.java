@@ -32,8 +32,7 @@ public class SolrService {
     private final String deleteStringStart = "{'delete': {'query': 'filter(collectionCode:(";
     private final String deleteStringEnd = "))'}}";
     
-    private int status;
-    private final String code = "NHRS";
+    private int status; 
     
     private CredentialsProvider provider; 
 
@@ -43,11 +42,11 @@ public class SolrService {
     public SolrService() {
     }
 
-    public int deleteCollection(int collectionCode) throws Exception {
+    public int deleteCollection(String collectionCode) throws Exception {
         log.info("deleteCollection : {}", collectionCode); 
         sb = new StringBuilder();
         sb.append(deleteStringStart);
-        sb.append(code);
+        sb.append(collectionCode);
         sb.append(deleteStringEnd); 
         
         post = new HttpPost(propeties.getSolrPath());

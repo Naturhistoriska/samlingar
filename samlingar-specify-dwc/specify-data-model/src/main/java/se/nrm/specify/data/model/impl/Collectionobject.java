@@ -33,7 +33,7 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Collectionobject.findAll", query = "SELECT c FROM Collectionobject c"),
     @NamedQuery(name = "Collectionobject.findByCollectionObjectID", query = "SELECT c FROM Collectionobject c WHERE c.collectionObjectID in :ids"), 
     @NamedQuery(name = "Collectionobject.findAllIds",
-          query = "SELECT c.collectionObjectID FROM Collectionobject c where c.collectionMemberID = :collectionMemberID ORDER BY c.collectionObjectID"),
+          query = "SELECT c.collectionObjectID FROM Collectionobject c where c.collection.code = :code ORDER BY c.collectionObjectID"),
     @NamedQuery(name = "Collectionobject.findByCollectionMemberID", query = "SELECT c FROM Collectionobject c WHERE c.collectionMemberID = :collectionMemberID"),
     @NamedQuery(name = "Collectionobject.findByCollectionMemberIDAndIds", 
             query = "SELECT c FROM Collectionobject c WHERE c.collectionMemberID = :collectionMemberID AND c.collectionObjectID in :ids ORDER BY c.collectionObjectID")})

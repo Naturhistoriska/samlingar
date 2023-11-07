@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import se.nrm.specify.data.jpa.SpecifyDao;
 import se.nrm.specify.data.model.EntityBean; 
-import se.nrm.specify.data.model.impl.Geography;
+//import se.nrm.specify.data.model.impl.Geography;
 
 /**
  *
@@ -30,7 +30,7 @@ import se.nrm.specify.data.model.impl.Geography;
 @TransactionAttribute(NOT_SUPPORTED)
 public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Serializable {
     
-    private final String paramCollectionMemberId = "collectionMemberID"; 
+    private final String paramCollectionCode= "code"; 
     private final String paramIds = "ids";
 //    private final String paramGeographyId = "geographyID";
     
@@ -47,16 +47,16 @@ public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Seri
     private EntityManager entityManager;
       
     @Override
-    public List<Integer> findAllIdsByCollectionCode(int collectionCode) {
+    public List<Integer> findAllIdsByCollectionCode(String collectionCode) {
         return entityManager.createNamedQuery(collectionObjectFindAllIdNamedQuery)
-            .setParameter(paramCollectionMemberId, collectionCode).getResultList();
+            .setParameter(paramCollectionCode, collectionCode).getResultList();
     }
 
     @Override
-    public List<Integer> findUpdateIdsByCollectionCode(int collectionCode, 
+    public List<Integer> findUpdateIdsByCollectionCode(String collectionCode, 
             String jpql, Date fromDate, Date toDate) {
         query = entityManager.createQuery(jpql)
-            .setParameter(paramCollectionMemberId, collectionCode)
+            .setParameter(paramCollectionCode, collectionCode)
             .setParameter(fromDateKey, fromDate)
             .setParameter(toDateKey, toDate); 
         return query.getResultList(); 
@@ -75,11 +75,11 @@ public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Seri
 //    } 
      
     @Override
-    public Stream<T> findByCollectonId(int collectionId,  
+    public Stream<T> findByCollectonId(String collectionCode,  
             List<Integer> ids, Map<String, String> filterMap, String jpql) {
         query = entityManager
                 .createQuery(jpql)
-                .setParameter(paramCollectionMemberId, collectionId)
+                .setParameter(paramCollectionCode, collectionCode)
                 .setParameter(paramIds, ids);
   
         if (filterMap != null && !filterMap.isEmpty()) {
