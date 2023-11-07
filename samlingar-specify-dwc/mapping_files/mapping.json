@@ -197,6 +197,13 @@
           }
         }
       },
+      "collectionobjectattachments": {
+          "attachment": {
+            "attachmentImageAttribute": {
+              "associatedMedia": "mBImageID"
+            }
+          }
+      },
       "determinations": {
         "identificationQualifier": "qualifier",
         "typeStatus": "typeStatusName",

@@ -173,6 +173,7 @@ public class DataProcessor implements Serializable {
         sb = new StringBuilder();
         sb.append("SELECT DISTINCT c FROM Collectionobject c ")
                 .append("LEFT JOIN FETCH c.collectionObjectAttribute ")
+                .append("LEFT JOIN FETCH c.collectionobjectattachments ca ")
                 .append("LEFT JOIN FETCH c.determinations d ")
                 .append("LEFT JOIN FETCH c.collection ct ")
                 .append("LEFT JOIN FETCH ct.discipline dsc ")
@@ -182,6 +183,8 @@ public class DataProcessor implements Serializable {
                 .append("LEFT JOIN FETCH c.preparations p ")
                 .append("LEFT JOIN FETCH ce.locality lc ")
                 .append("LEFT JOIN FETCH ce.collectors clts ")
+                .append("LEFT JOIN FETCH ca.attachment a ")
+                .append("LEFT JOIN FETCH a.attachmentImageAttribute ")
                 .append("LEFT JOIN FETCH clts.agent ")
                 .append("LEFT JOIN FETCH ce.collectingEventAttribute cea ")
                 .append("LEFT JOIN FETCH lc.geography g ")
