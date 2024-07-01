@@ -38,28 +38,5 @@ public class DataCrud implements Serializable {
         return ((Stream<EntityBean>) dao
             .findByCollectonId(collectionCode, ids, filterMap, jpql))
             .collect(Collectors.toList());
-    }
-    
-    
-//    public List<Collectionobject> getCollectionobjectsByCollectionCode(int code, 
-//            List<Integer> ids, String jpql) { 
-//        
-// 
-//        Stream<Collectionobject> collectionObjectStream = 
-//                dao.findCollectionObjectByCollectionCode(code, ids, jpql);  
-//        
-//        return collectionObjectStream.collect(Collectors.toList()); 
-//    }
-    
-    
-    
-    
-    
-    
-    
-
-    
-//    public Geography getGeographyParent(int geographyId) {
-//        return dao.findGeoraphyParent(geographyId);
-//    }
+    } 
 }

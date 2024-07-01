@@ -1,6 +1,6 @@
 package se.nrm.specify.data.process.logic;
 
-import java.io.Serializable; 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,11 +14,11 @@ import javax.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.wildfly.swarm.Swarm;
-import se.nrm.specify.data.model.EntityBean; 
+import se.nrm.specify.data.model.EntityBean;
 import se.nrm.specify.data.process.config.InitialProperties;
 import se.nrm.specify.data.process.logic.jpa.DataCrud;
 import se.nrm.specify.data.process.logic.json.JsonConverter;
-import se.nrm.specify.data.process.logic.solr.SolrService; 
+import se.nrm.specify.data.process.logic.solr.SolrService;
 
 /**
  *
@@ -33,7 +33,7 @@ public class DataProcessor implements Serializable {
     private final String filterKey = "filters";
 
     private int end;
- 
+
     private List<Integer> ids;
     private List<Integer> fetchIds;
 
@@ -48,7 +48,7 @@ public class DataProcessor implements Serializable {
 
     @Inject
     private JsonConverter converter;
-    
+
     @Inject
     private InitialProperties propeties;
 
@@ -73,6 +73,49 @@ public class DataProcessor implements Serializable {
     public DataProcessor() {
     }
 
+    public void run1() {
+        log.info("run1");
+
+        collections = Arrays.asList(propeties.getCollections().split(slash));
+        isUpdate = propeties.isUpdate();
+
+        if (isUpdate) {
+            updateJpql = buildGetUpdateIdsQuery();
+
+            today = LocalDate.now();
+            yesterday = today.minusDays(3);
+            tomorrow = today.plusDays(1);
+
+            fromDate = java.sql.Date.valueOf(yesterday);
+            toDate = java.sql.Date.valueOf(tomorrow);
+
+            log.info("dates : {} -- {}", fromDate, toDate);
+        }
+
+        collections.stream()
+                .forEach(collectionCode -> {
+                    if (isUpdate) {
+                        ids = crud.findUpdateIdsByCollectionCode(collectionCode,
+                                updateJpql, fromDate, toDate);
+                    } else {
+                        ids = crud.findIdsByCollectionCode(collectionCode);
+                    }
+
+                    jpql = buildJpql();
+                    int count = ids.size();
+                    for (int i = 0; i < count; i += max) {
+                        end = i + max <= count ? i + max : count;
+
+                        fetchIds = ids.size() >= max ? ids.subList(i, end) : ids;
+                        log.info("start: {} --- end: {}", i, end);
+                        List<EntityBean> entities = crud.fetchData(collectionCode, fetchIds,
+                                null, jpql); 
+                    }
+
+                });
+
+    }
+
     public void run() {
         log.info("run");
 
@@ -91,10 +134,10 @@ public class DataProcessor implements Serializable {
 
             log.info("dates : {} -- {}", fromDate, toDate);
         }
- 
+
         try {
             collections.stream()
-//                    .map(Integer::parseInt)
+                    //                    .map(Integer::parseInt)
                     .forEach(collectionCode -> {
                         try {
                             if (isUpdate) {
@@ -103,7 +146,7 @@ public class DataProcessor implements Serializable {
                             } else {
                                 statusCode = solr.deleteCollection(collectionCode);
                                 ids = crud.findIdsByCollectionCode(collectionCode);
-                                log.info("delete status : {}", statusCode); 
+                                log.info("delete status : {}", statusCode);
                             }
 
                             log.info("code : {} -- {}", collectionCode, ids.size());
@@ -125,7 +168,7 @@ public class DataProcessor implements Serializable {
 
                             int count = ids.size();
                             for (int i = 0; i < count; i += max) {
-                                end = i + max <= count ? i + max : count; 
+                                end = i + max <= count ? i + max : count;
 
                                 fetchIds = ids.size() >= max ? ids.subList(i, end) : ids;
                                 log.info("start: {} --- end: {}", i, end);
@@ -133,9 +176,8 @@ public class DataProcessor implements Serializable {
                                         filterMap, jpql);
 //                                log.info("entities size : {}", entities.size());
                                 entityJsonArray = converter.convert(entities, mappingJson);
-                                 
+
 //                                log.info("entity jaonArray : {}", entityJsonArray.size());
-                                
                                 statusCode = solr.postToSolr(entityJsonArray.toString().trim());
 //                  
                                 log.info("status : {}", statusCode);
@@ -168,7 +210,7 @@ public class DataProcessor implements Serializable {
 
         return sb.toString();
     }
-    
+
     private void buildBaseJpql() {
         sb = new StringBuilder();
         sb.append("SELECT DISTINCT c FROM Collectionobject c ")
@@ -198,13 +240,13 @@ public class DataProcessor implements Serializable {
                 .append("LEFT JOIN FETCH p.prepType ")
                 .append("LEFT JOIN FETCH p.storage s ")
                 .append("WHERE ct.code = :code ")
-//                .append("WHERE c.collectionMemberID = :collectionMemberID ")
-                .append("AND c.collectionObjectID in :ids "); 
+                //                .append("WHERE c.collectionMemberID = :collectionMemberID ")
+                .append("AND c.collectionObjectID in :ids ");
     }
 
     private String buildJpql() {
-        buildBaseJpql(); 
-        sb.append("ORDER BY c.collectionObjectID"); 
+        buildBaseJpql();
+        sb.append("ORDER BY c.collectionObjectID");
         return sb.toString().trim();
 
     }
