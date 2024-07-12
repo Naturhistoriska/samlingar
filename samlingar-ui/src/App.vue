@@ -10,10 +10,9 @@
         <v-spacer></v-spacer>
 
         <Search class="pt-15 pr-10" />
-
-        <template v-slot:extension>
-          <Navigater />
-        </template>
+      </v-app-bar>
+      <v-app-bar density="compact" class="pt-4">
+        <template v-slot:extension> <Navigater /></template>
       </v-app-bar>
 
       <v-main style="width: 1000px">
