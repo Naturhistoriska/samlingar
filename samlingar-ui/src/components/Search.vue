@@ -26,13 +26,15 @@ export default {
   }),
   mounted() {},
   methods: {
-    ...mapMutations(['setResults']),
+    ...mapMutations(['setResults', 'setTotalRecords']),
     onSearch() {
       service
         .fetchSeachResult(this.search)
         .then((response) => {
+          this.totalResults = response.totalRecords
           this.results = response.occurrences
           this.setResults(this.results)
+          this.setTotalRecords(this.totalResults)
         })
         .catch()
         .finally(() => {})
