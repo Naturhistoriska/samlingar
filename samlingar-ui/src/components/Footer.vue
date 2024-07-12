@@ -4,14 +4,15 @@
       <span class="grey--text text--darken-3">
         {{ $t('footer.nrm') }} - {{ new Date().getFullYear() }}
       </span>
-      <v-btn color="darken-3" text @click="onContackLinkclick()">
-        <v-icon left dark> mdi-email-outline </v-icon>{{ $t('common.contactus') }}
-      </v-btn>
+      <!-- <v-btn color="darken-3" text @click="onContackLinkclick()">
+
+      </v-btn> -->
     </v-col>
 
     <v-col class="pl-3 text-right" cols="2">
-      <v-btn color="darken-3" text @click="onLanguageClick()">
-        <v-icon left dark> mdi-web </v-icon>{{ $t('footer.currentLanguage') }}
+      <v-btn color="darken-3" text @click="onContackLinkclick()">
+        <v-icon left dark> mdi-email-outline </v-icon>{{ $t('common.contactus') }}
+        <!-- <v-icon left dark> mdi-web </v-icon>{{ $t('footer.currentLanguage') }} -->
       </v-btn>
     </v-col>
   </v-row>
@@ -27,11 +28,11 @@ export default {
       // this.pushUrl(pushUrl)
       // router.push(pushUrl)
       this.$router.push(pushUrl)
-    },
-    onLanguageClick() {
-      console.log('clicked..')
-      this.$emit('language-click')
     }
+    // onLanguageClick() {
+    //   console.log('clicked..')
+    //   this.$emit('language-click')
+    // }
   }
 }
 </script>

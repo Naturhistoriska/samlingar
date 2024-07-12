@@ -1,42 +1,37 @@
 <template>
-  <v-layout class="overflow-visible">
-    <v-bottom-navigation bg-color="secondary" dense class="pl-3">
-      <v-btn dense>
+  <v-bottom-navigation bg-color="secondary" dense class="pl-3">
+    <v-tabs v-model="tabs" align-tabs="title">
+      <v-tab>
         <router-link to="/">{{ $t('nav.home') }}</router-link>
-      </v-btn>
-
-      <v-btn dense>
+      </v-tab>
+      <v-tab>
         <router-link to="/about">{{ $t('nav.about') }}</router-link>
-      </v-btn>
-
-      <v-btn dense>
+      </v-tab>
+      <v-tab>
         <router-link to="/contact">{{ $t('nav.contactUs') }}</router-link>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <select @change="switchLanguage" class="pr-5">
-        <option
-          v-for="sLocale in supportedLocales"
-          :key="`locale-${sLocale}`"
-          :value="sLocale"
-          :selected="locale === sLocale"
-        >
-          {{ t(`locale.${sLocale}`) }}
-        </option>
-      </select>
+      </v-tab>
+    </v-tabs>
 
-      <v-select
-        class="locale-select"
-        v-model="selectedLocale"
-        :items="supportedLocales"
-        :label="$t('common.selectLanguage')"
-        :selected="locale === selectedLocale"
-        :value="selectedLocale"
-        @change="switchLanguage"
-        hide-details
-        prepend-inner-icon="mdi-web"
-      ></v-select>
-    </v-bottom-navigation>
-  </v-layout>
+    <v-spacer></v-spacer>
+
+    <v-menu>
+      <template v-slot:activator="{ props }">
+        <v-btn prepend-icon="mdi-web" v-bind="props" density="compact">
+          {{ t(`locale.${selectedLocale}`) }}
+        </v-btn>
+      </template>
+
+      <v-list dense>
+        <v-list-item
+          v-for="(sLocale, i) in supportedLocales"
+          :key="i"
+          :value="sLocale"
+          :title="sLocale"
+          @click="toggle(sLocale)"
+        ></v-list-item>
+      </v-list>
+    </v-menu>
+  </v-bottom-navigation>
 </template>
 <script>
 import { useI18n } from 'vue-i18n'
@@ -44,7 +39,8 @@ import Tr from '@/i18n/translation'
 export default {
   data() {
     return {
-      selectedLocale: 'en'
+      selectedLocale: 'en',
+      tabs: null
     }
   },
   setup() {
@@ -59,87 +55,39 @@ export default {
   },
 
   watch: {
+    $route(to) {
+      // document.title = to.meta.title || 'Georg'
+      const { name } = to
+      this.routeName = name
+
+      console.log('route name : ' + name + ' ... ' + this.tabs)
+
+      switch (name) {
+        case 'Home':
+          this.tabs = 0
+          break
+        case 'About':
+          this.tabs = 1
+          break
+        case 'Contact':
+          this.tabs = 2
+          break
+        default:
+          this.tabs = 0
+      }
+    },
     selectedLocale: function () {
       console.log('locale ... ' + this.selectedLocale)
       Tr.switchLanguage(this.selectedLocale)
     }
+  },
+  computed: {},
+  methods: {
+    toggle(sLocale) {
+      this.selectedLocale = sLocale
+    }
   }
-  // mounted() {
-  //   // Reformat vuetify Headers
-  //   $('.v-expansion-panel__header').toggleClass('pl-2 pa-0 ma-0', true)
-  //   $('.v-expansion-panel__header').css('min-height', '30px')
-  // }
 }
 </script>
 
-<!-- <template>
-  <v-row no-gutters>
-    <v-col class="pl-3" cols="10" dense>
-      <v-tabs>
-        <v-tab
-          ><router-link to="/">{{ $t('nav.home') }}</router-link></v-tab
-        >
-        <v-tab
-          ><router-link to="/about">{{ $t('nav.about') }}</router-link></v-tab
-        >
-        <v-tab
-          ><router-link to="/contact">{{ $t('nav.contactUs') }}</router-link></v-tab
-        >
-      </v-tabs>
-    </v-col>
-
-    <v-col class="pl-3 text-right" cols="2">
-      <select @change="switchLanguage">
-        <option
-          v-for="sLocale in supportedLocales"
-          :key="`locale-${sLocale}`"
-          :value="sLocale"
-          :selected="locale === sLocale"
-        >
-          {{ t(`locale.${sLocale}`) }}
-        </option>
-      </select>
-    </v-col>
-  </v-row>
-</template> -->
-
-<!-- <script>
-// import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
-import { useI18n } from 'vue-i18n'
-import Tr from '@/i18n/translation'
-export default {
-  // components: { LanguageSwitcher }
-  setup() {
-    const { t, locale } = useI18n()
-    const supportedLocales = Tr.supportedLocales
-    const switchLanguage = async (event) => {
-      const newLocale = event.target.value
-      await Tr.switchLanguage(newLocale)
-    }
-    return { t, locale, supportedLocales, switchLanguage }
-  }
-}
-</script> -->
-<style scoped>
-/* .v-toolbar__content,
-.v-toolbar__extension {
-  align-items: self-end !important;
-} */
-
-.v-expansion-panels.condensed .v-expansion-panel-header {
-  padding-top: 2px;
-  padding-bottom: 2px;
-  min-height: auto;
-}
-.v-expansion-panels.condensed .v-expansion-panel--active .v-expansion-panel-header {
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-.v-expansion-panels.condensed .v-expansion-panel--active:not(:first-child),
-.v-expansion-panels.condensed .v-expansion-panel--active + .v-expansion-panel {
-  margin-top: 4px;
-}
-.v-tab.v-tab.v-btn {
-  height: 30px;
-}
-</style>
+<style scoped></style>

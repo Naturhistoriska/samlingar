@@ -1,94 +1,86 @@
 <template>
-  <v-app>
-    <LocaleSwitcher @close-dialog="closeDialog" v-bind:dialogStatus="dialogStatus" />
-    <v-app-bar app clipped-left color="primary" dark density="prominent">
-      <div class="d-flex align-center pl-3 pt-4">
-        <img src="/nrm-logo.png" />
-      </div>
-      <div class="title-text pt-16">{{ $t('title') }}</div>
+  <v-card>
+    <v-layout>
+      <v-app-bar app color="primary" dark density="prominent">
+        <div class="d-flex align-center pl-3 pt-4">
+          <img src="/nrm-logo.png" />
+        </div>
+        <div class="title-text pt-16">{{ $t('title') }}</div>
 
-      <v-spacer></v-spacer>
-      <Search class="pt-15 pr-10" />
-      <template v-slot:extension>
-        <Navigater />
-      </template>
-    </v-app-bar>
+        <v-spacer></v-spacer>
 
-    <v-main style="width: 1000px">
-      <router-view />
-    </v-main>
-    <v-footer color="lighten-4" fixed app padless>
-      <Foot @language-click="languageClick" />
-      <!-- <v-row no-gutters>
-        <v-col class="pl-3" cols="10">
-          <span class="grey--text text--darken-3">
-            {{ $t('footer.nrm') }} - {{ new Date().getFullYear() }}
-          </span>
-          <v-btn color="darken-3" text @click="onContackLinkclick()">
-            <v-icon left dark> mdi-email-outline </v-icon>{{ $t('common.contactus') }}
-          </v-btn>
-        </v-col>
+        <Search class="pt-15 pr-10" />
 
-        <v-col class="pl-3 text-right" cols="2">
-          <v-btn color="darken-3" text @click="onLanguageClick()">
-            <v-icon left dark> mdi-web </v-icon>{{ $t('footer.currentLanguage') }}
-          </v-btn>
-        </v-col>
-      </v-row> -->
-    </v-footer>
-  </v-app>
+        <template v-slot:extension>
+          <Navigater />
+        </template>
+      </v-app-bar>
+
+      <v-main style="width: 1000px">
+        <router-view />
+      </v-main>
+
+      <v-footer color="lighten-4" fixed app padless>
+        <Foot />
+      </v-footer>
+    </v-layout>
+  </v-card>
 </template>
 
 <script>
 import Search from '@/components/Search.vue'
 import Foot from '@/components/Footer.vue'
-import LocaleSwitcher from '@/components/LocaleSwitcher.vue'
+// import LocaleSwitcher from '@/components/LocaleSwitcher.vue'
 import Navigater from '@/components/Nav.vue'
 
+import { useI18n } from 'vue-i18n'
+import Tr from '@/i18n/translation'
 export default {
   name: 'App',
   components: {
     Foot,
-    LocaleSwitcher,
     Navigater,
     Search
   },
   data: () => ({
-    dialogStatus: false
+    dialogStatus: false,
+    selectedLocale: 'en'
   }),
+  setup() {
+    const { t, locale } = useI18n()
+    const supportedLocales = Tr.supportedLocales
+    const switchLanguage = async (event) => {
+      const newLocale = event.target.value
+      await Tr.switchLanguage(newLocale)
+    }
 
+    return { t, locale, supportedLocales, switchLanguage }
+  },
+
+  watch: {
+    selectedLocale: function () {
+      console.log('locale ... ' + this.selectedLocale)
+      Tr.switchLanguage(this.selectedLocale)
+    }
+  },
+
+  computed: {},
   // mounted() {},
   methods: {
     onContackLinkclick() {
       const locale = this.$i18n.locale
       const pushUrl = locale === 'sv' ? `/kontakt` : `/contact`
       this.$router.push(pushUrl)
-    },
-    languageClick() {
-      this.currentLocale = this.$i18n.locale
-      this.dialogStatus = true
-    },
-    closeDialog(selectedLocale) {
-      console.log(selectedLocale)
-      // const locale = selectedLocale
-
-      // const query = this.$route.query
-
-      this.dialogStatus = false
-      // if (this.$i18n.locale !== locale) {
-      //   const to = this.$router.resolve({
-      //     params: { locale }
-      //   })
-      //   return Trans.changeLocale(locale).then(() => {
-      //     this.$router.push(to.location)
-      //   })
-      // }
     }
   }
 }
 </script>
 
 <style scoped>
+.v-toolbar__content,
+.v-toolbar__extension {
+  max-height: 30px !important;
+}
 /* #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
