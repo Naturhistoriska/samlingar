@@ -7,6 +7,8 @@ import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
 import Components from 'unplugin-vue-components/vite'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+
+
 // import ViteFonts from 'unplugin-fonts/vite'
 
 // https://vitejs.dev/config/
