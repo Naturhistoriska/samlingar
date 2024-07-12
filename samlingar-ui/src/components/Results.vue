@@ -5,7 +5,7 @@
 
     <div id="scroll-target" class="overflow-y-auto">
       <div id="resultList">
-        <p>{{ $t('results.num_results', results.length) }}</p>
+        <p>{{ $t('results.num_results', totalRecords) }}</p>
         <template v-for="(result, index) in results" :key="`devider-${index}`">
           {{ result.institutionName }}
           {{ result.collectionName }} {{ result.raw_catalogNumber }}
@@ -17,10 +17,6 @@
   </v-container>
 </template>
 <script>
-import Service from '../Service'
-const service = new Service()
-
-// import {computed} from 'vue';
 import Search from '@/components/Search.vue'
 
 import { mapGetters } from 'vuex'
@@ -36,33 +32,9 @@ export default {
   }),
 
   computed: {
-    ...mapGetters([
-      'results'
-      // ...
-    ])
+    ...mapGetters(['results', 'totalRecords'])
   },
 
-  methods: {
-    onSearch() {
-      service
-        .fetchSeachResult(this.search)
-        .then((response) => {
-          this.results = response.occurrences
-        })
-        .catch()
-        .finally(() => {})
-      // axios
-      //   .get(
-      //     'https://records.biodiversitydata.se/ws/occurrences/search?q=taxa:%22+`${this.search}`+%22%20AND%20institution_uid:in0'
-      //   )
-      //   .then((response) => {
-      //     this.results = response.data.occurrences
-      //     console.log('whgat,....' + this.results)
-      //   })
-    },
-    onClear() {
-      alert('User cleared the input')
-    }
-  }
+  methods: {}
 }
 </script>
