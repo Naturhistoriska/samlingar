@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-layout>
+  <v-card class="w-100">
+    <v-layout class="w-100">
       <v-app-bar app color="primary" dark density="prominent">
         <div class="d-flex align-center pl-3 pt-4">
           <img src="/nrm-logo.png" />
@@ -15,7 +15,7 @@
         <template v-slot:extension> <Navigater /></template>
       </v-app-bar>
 
-      <v-main style="width: 1000px">
+      <v-main class="d-flex align-center justify-center" style="min-width: 1200px">
         <router-view />
       </v-main>
 

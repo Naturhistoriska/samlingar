@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    class="search-input"
     clearable
     single-line
     hint="Free text search"
@@ -45,7 +46,6 @@ export default {
 
 <style scoped>
 .search-input {
-  padding-top: 40px;
-  padding-right: 40px;
+  max-width: 500px;
 }
 </style>
