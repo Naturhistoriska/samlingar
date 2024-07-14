@@ -34,7 +34,11 @@
     "contactUs": "Contact us"
   },
   "title": "The Swedish Museum of Natural History Collections",
-  "search": "Search",
+  "search": {
+    "advanceSearch": "Advance search",
+    "closeAdvanceSearch": "Close advance search",
+    "search": "Search"
+  },
 
   "results": {
     "searchResults": "Search Results",

@@ -1,7 +1,5 @@
 <template>
   <v-list-item :key="result.uuid" :id="result.uuid" @keypress.prevent="onclick()" tabindex="0">
-    <!-- <template> -->
-
     <v-list-item-title>{{ scientificName }} </v-list-item-title>
     <v-list-item-subtitle class="text--primary">
       {{ kingdom }}/ {{ phylum }}/ {{ classs }}/ {{ order }}/ {{ family }}/ {{ genus }}/
@@ -10,7 +8,6 @@
     <v-list-item-subtitle>
       <span class="text-capitalize">{{ catalogNumber }}</span>
     </v-list-item-subtitle>
-    <!-- </template> -->
   </v-list-item>
 </template>
 <script>

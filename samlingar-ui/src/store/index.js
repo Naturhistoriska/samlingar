@@ -2,11 +2,15 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    showResults: false,
     results: [],
     totalRecords: 0
   },
 
   getters: {
+    showResults(state) {
+      return state.showResults
+    },
     results(state) {
       return state.results
     },
@@ -16,6 +20,7 @@ export default createStore({
   },
 
   mutations: {
+    setShowResults: (state, payload) => (state.showResults = payload),
     setResults: (state, payload) => (state.results = payload),
     setTotalRecords: (state, payload) => (state.totalRecords = payload)
   }

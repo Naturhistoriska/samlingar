@@ -3,11 +3,10 @@
     class="search-input"
     clearable
     single-line
-    hint="Free text search"
     append-inner-icon="mdi-magnify"
     density="compact"
     v-model="search"
-    :label="$t('search')"
+    :label="$t('search.search')"
     type="input"
     @click:append-inner="onSearch"
   ></v-text-field>
@@ -27,13 +26,15 @@ export default {
   }),
   mounted() {},
   methods: {
-    ...mapMutations(['setResults', 'setTotalRecords']),
+    ...mapMutations(['setShowResults', 'setResults', 'setTotalRecords']),
     onSearch() {
       service
         .fetchSeachResult(this.search)
         .then((response) => {
           this.totalResults = response.totalRecords
           this.results = response.occurrences
+
+          this.setShowResults(true)
           this.setResults(this.results)
           this.setTotalRecords(this.totalResults)
         })
