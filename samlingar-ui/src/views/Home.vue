@@ -7,7 +7,7 @@
       </v-col>
     </v-row>
     <v-row align="start" no-gutters>
-      <v-col class="pl-3" cols="4" align-self="start">
+      <v-col class="pl-3" cols="3" align-self="start">
         <v-spacer></v-spacer>
       </v-col>
       <v-col class="pl-3" cols="2" align-self="start">
