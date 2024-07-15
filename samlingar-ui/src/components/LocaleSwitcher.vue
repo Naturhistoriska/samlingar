@@ -1,50 +1,21 @@
 <template>
-  <v-dialog v-model="theDialogStatus" max-width="320" persistent>
-    <v-card>
-      <v-card-title>
-        {{ $t('common.languageSetting') }}
-      </v-card-title>
+  <v-menu>
+    <template v-slot:activator="{ props }">
+      <v-btn prepend-icon="mdi-web" v-bind="props" density="compact">
+        {{ t(`locale.${selectedLocale}`) }}
+      </v-btn>
+    </template>
 
-      <v-col cols="auto" class="pl-4 ml-4">
-        <v-col cols="auto" class="pl-4 ml-4">
-          <select @change="switchLanguage" :label="$t('common.selectLanguage')">
-            <option
-              v-for="sLocale in supportedLocales"
-              :key="`locale-${sLocale}`"
-              :value="sLocale"
-              :selected="locale === sLocale"
-            >
-              {{ t(`locale.${sLocale}`) }}
-            </option>
-          </select>
-        </v-col>
-
-        <v-select
-          class="locale-select"
-          v-model="selectedLocale"
-          :items="supportedLocales"
-          :label="$t('common.selectLanguage')"
-          :selected="locale === selectedLocale"
-          :value="selectedLocale"
-          @change="switchLanguage"
-          hide-details
-          prepend-inner-icon="mdi-web"
-        ></v-select>
-      </v-col>
-      <v-card-actions>
-        <v-btn
-          :aria-label="$t('common.close')"
-          right
-          color="blue darken-1"
-          text
-          @click="closeDialog"
-        >
-          {{ $t('common.ok') }}
-        </v-btn>
-        <v-spacer></v-spacer>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <v-list dense>
+      <v-list-item
+        v-for="(sLocale, i) in supportedLocales"
+        :key="i"
+        :value="sLocale"
+        :title="sLocale"
+        @click="toggle(sLocale)"
+      ></v-list-item>
+    </v-list>
+  </v-menu>
 </template>
 <script>
 import { useI18n } from 'vue-i18n'
@@ -58,8 +29,7 @@ export default {
       selectedLocale: 'en'
     }
   },
-  setup(props) {
-    let theDialogStatus = props.dialogStatus
+  setup() {
     const { t, locale } = useI18n()
     const supportedLocales = Tr.supportedLocales
     const switchLanguage = async (event) => {
@@ -67,30 +37,18 @@ export default {
       await Tr.switchLanguage(newLocale)
     }
 
-    return { theDialogStatus, t, locale, supportedLocales, switchLanguage }
+    return { t, locale, supportedLocales, switchLanguage }
   },
   watch: {
-    dialogStatus: function () {
-      this.theDialogStatus = this.dialogStatus
+    selectedLocale: function () {
+      console.log('locale ... ' + this.selectedLocale)
+      Tr.switchLanguage(this.selectedLocale)
     }
   },
   computed: {},
   methods: {
-    switchLocale() {
-      const { t, locale } = useI18n()
-      const supportedLocales = Tr.supportedLocales
-      const switchLanguage = async (event) => {
-        const newLocale = event.target.value
-        await Tr.switchLanguage(newLocale)
-      }
-      return { t, locale, supportedLocales, switchLanguage }
-    },
-    closeDialog() {
-      this.theDialogStatus = false
-      this.$emit('close-dialog', this.selectedLocale)
-    },
-    openDialog() {
-      this.theDialogStatus = true
+    toggle(sLocale) {
+      this.selectedLocale = sLocale
     }
   }
 }
