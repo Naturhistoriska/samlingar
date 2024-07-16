@@ -6,6 +6,12 @@ import { createVuetify } from 'vuetify'
 const vuetify = createVuetify({
   ssr: true,
 
+  VBtn: {
+    color: 'primary',
+    variant: 'outlined',
+    rounded: true
+  },
+
   theme: {
     defaultTheme: 'dark',
     themes: {
