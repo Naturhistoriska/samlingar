@@ -36,12 +36,19 @@
   "title": "The Swedish Museum of Natural History Collections",
   "search": {
     "advanceSearch": "Advance search",
+    "backToResultsList": "Back to results list",
     "closeAdvanceSearch": "Close advance search",
-    "search": "Search"
+    "search": "Search",
+    "searchCollections": "Species group",
+    "selectSpeciesGroup": "Select a species group",
+    "providScientificName": "Provided scientific name",
+    "searchScientificName": "Search scientific name",
+    "searchCatalogNumber": "Catalogue number"
   },
 
   "results": {
     "searchResults": "Search Results",
-    "num_results": "0 record | {n} record | {n} records"
+    "num_results": "0 record | {n} record | {n} records",
+    "resultDetail": "Result detail"
   }
 }
