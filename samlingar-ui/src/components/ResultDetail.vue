@@ -3,26 +3,39 @@
     <v-card-title>Dataset</v-card-title>
     <v-card-item>
       <v-row no-gutters>
-        <v-col class="pl-3" cols="2"> {{ $t('search.searchCatalogNumber') }}: </v-col>
-        <v-col class="pl-3" cols="10">
+        <v-col class="pl-" cols="3"> {{ $t('search.searchCatalogNumber') }}: </v-col>
+        <v-col class="pl-3" cols="9">
           {{ catalogNumber }}
         </v-col>
       </v-row>
+
       <v-row no-gutters>
-        <v-col class="pl-3" cols="2"> High Classification: </v-col>
-        <v-col class="pl-3" cols="10">
-          {{ higherClassification }}
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
-        <v-col class="pl-3" cols="2"> Scientific Name: </v-col>
-        <v-col class="pl-3" cols="10">
+        <v-col class="pl-3" cols="3"> Scientific Name: </v-col>
+        <v-col class="pl-3" cols="9">
           {{ scientificName }}
         </v-col>
       </v-row>
       <v-row no-gutters>
-        <v-col class="pl-3" cols="2"> Locality: </v-col>
-        <v-col class="pl-3" cols="10">
+        <v-col class="pl-3" cols="3"> Identified to rank: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ taxonRank }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> High Classification: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ higherClassification }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> Scientific name authorship: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ scientificNameAuthorship }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> Locality: </v-col>
+        <v-col class="pl-3" cols="9">
           {{ locality }}
         </v-col>
       </v-row>
@@ -47,6 +60,8 @@ export default {
     higherClassification: null,
     kingdom: null,
     scientificName: null,
+    scientificNameAuthorship: null,
+    taxonRank: null,
     locality: null,
     year: null
 
@@ -59,6 +74,8 @@ export default {
     this.higherClassification = classification.higherClassification
     this.kingdom = classification.kingdom
     this.scientificName = classification.scientificName
+    this.scientificNameAuthorship = classification.scientificNameAuthorship
+    this.taxonRank = classification.taxonRank
     this.locality = location.locality
     this.year = event.year
   },
