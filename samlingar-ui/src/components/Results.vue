@@ -1,33 +1,26 @@
 <template>
   <v-container>
-    <legend>{{ $t('results.searchResults') }}</legend>
-    <div id="resultList">
-      <p>{{ $t('results.num_results', totalRecords) }}</p>
-      <template v-for="(result, index) in results" :key="result.uuid">
-        <Result v-bind:result="result" />
-        <v-divider
-          v-if="index + 1 < results.length"
-          :key="`devider-${index}`"
-          class="border-opacity-50"
-          color="white"
-        ></v-divider>
-      </template>
-    </div>
+    <ResultDetail v-if="showDetail" />
+    <ResultList v-else />
   </v-container>
 </template>
 <script>
-import Result from '@/components/Result.vue'
+import ResultDetail from '@/components/ResultDetail.vue'
+import ResultList from '@/components/ResultList.vue'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'Results',
   components: {
-    Result
+    ResultList,
+    ResultDetail
   },
-  data: () => ({}),
+  data: () => ({
+    // showDetail: false
+  }),
 
   computed: {
-    ...mapGetters(['results', 'totalRecords'])
+    ...mapGetters(['results', 'showDetail', 'totalRecords'])
   },
 
   methods: {}
