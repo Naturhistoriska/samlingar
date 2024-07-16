@@ -26,7 +26,7 @@ export default {
   }),
   mounted() {},
   methods: {
-    ...mapMutations(['setShowResults', 'setResults', 'setTotalRecords']),
+    ...mapMutations(['setShowResults', 'setResults', 'setTotalRecords', 'setShowDetail']),
     onSearch() {
       service
         .fetchSeachResult(this.search)
@@ -37,6 +37,7 @@ export default {
           this.setShowResults(true)
           this.setResults(this.results)
           this.setTotalRecords(this.totalResults)
+          this.setShowDetail(false)
         })
         .catch()
         .finally(() => {})
