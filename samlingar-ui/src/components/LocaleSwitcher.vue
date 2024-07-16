@@ -23,7 +23,6 @@ import Tr from '@/i18n/translation'
 
 export default {
   name: 'LocaleSwitcher',
-  props: ['dialogStatus'],
   data() {
     return {
       selectedLocale: 'en'
