@@ -23,7 +23,6 @@ export default {
   },
   methods: {
     setSelected(value) {
-      console.log('selected...' + value)
       this.$emit('species-group', value)
     }
   }

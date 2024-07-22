@@ -92,7 +92,7 @@ export default {
         .uuidSearch(this.result.uuid)
         .then((response) => {
           console.log('response .... ' + response.raw.location.locality)
-          this.setSelectedResult(response.raw)
+          this.setSelectedResult(response)
           this.setShowDetail(true)
         })
         .catch()

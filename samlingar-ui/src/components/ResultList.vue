@@ -1,18 +1,14 @@
 <template>
-  <div>
-    <legend>{{ $t('results.searchResults') }}</legend>
-    <div id="resultList">
-      <p>{{ $t('results.num_results', totalRecords) }}</p>
-      <template v-for="(result, index) in results" :key="result.uuid">
-        <Result v-bind:result="result" />
-        <v-divider
-          v-if="index + 1 < results.length"
-          :key="`devider-${index}`"
-          class="border-opacity-50"
-          color="white"
-        ></v-divider>
-      </template>
-    </div>
+  <div id="resultList">
+    <template v-for="(result, index) in results" :key="result.uuid">
+      <Result v-bind:result="result" />
+      <v-divider
+        v-if="index + 1 < results.length"
+        :key="`devider-${index}`"
+        class="border-opacity-50"
+        color="white"
+      ></v-divider>
+    </template>
   </div>
 </template>
 <script>
