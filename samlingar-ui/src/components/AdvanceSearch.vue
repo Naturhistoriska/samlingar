@@ -86,18 +86,29 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setShowResults', 'setResults', 'setTotalRecords', 'setShowDetail']),
+    ...mapMutations([
+      'setCatalogNumber',
+      'setShowDetail',
+      'setResults',
+      'setScientificName',
+      'setShowResults',
+      'setSpeciesGroup',
+      'setTotalRecords'
+    ]),
 
     onSearch() {
       const taxa = this.search === null ? '*' : this.search
       const group = this.speciesGroup === null ? '*' : this.speciesGroup
       const catalogNr = this.catalogNumber === null ? '*' : this.catalogNumber
       service
-        .advanceSearch(taxa, group, catalogNr)
+        .advanceSearch(taxa, group, catalogNr, 1)
         .then((response) => {
           this.totalResults = response.totalRecords
           this.results = response.occurrences
 
+          this.setCatalogNumber(catalogNr)
+          this.setSpeciesGroup(group)
+          this.setScientificName(taxa)
           this.setShowResults(true)
           this.setResults(this.results)
           this.setTotalRecords(this.totalResults)

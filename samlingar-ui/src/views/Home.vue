@@ -34,7 +34,7 @@ import AdvanceSearch from '@/components/AdvanceSearch.vue'
 import Results from '@/components/Results.vue'
 import Search from '@/components/Search.vue'
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'Home',
   components: {
@@ -58,15 +58,12 @@ export default {
         : this.$t('search.advanceSearch')
     }
   },
-  // watch: {
-  // showResults: function () {
-  // console.log('what...' + this.showResults)
-  // this.isShowResults = this.showResults
-  // }
-  // },
+  watch: {},
   methods: {
+    ...mapMutations(['setIsAdvanceSearch']),
     advanceSeach() {
       this.isAdvanceSearch = !this.isAdvanceSearch
+      this.setIsAdvanceSearch(this.isAdvanceSearch)
     }
   }
 }
