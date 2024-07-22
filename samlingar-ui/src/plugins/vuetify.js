@@ -6,6 +6,10 @@ import { createVuetify } from 'vuetify'
 const vuetify = createVuetify({
   ssr: true,
 
+  icons: {
+    iconfont: 'mdiSvg' // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
+  },
+
   VBtn: {
     color: 'primary',
     variant: 'outlined',

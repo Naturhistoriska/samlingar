@@ -17,6 +17,7 @@ import i18n from './i18n'
 
 
 
+
 // import axios2 from 'axios'
 // Vue.use(VueAxios, { $myHttp: axios, axios2: axios2 })
 
@@ -39,6 +40,7 @@ app.provide('axios', app.config.globalProperties.axios) // provide 'axios'
 app.use(router)
 app.use(store)
 app.use(i18n)
+
 // app.use(vuetify)
 
 // app.use(vuetify)
