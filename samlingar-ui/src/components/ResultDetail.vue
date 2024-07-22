@@ -34,9 +34,57 @@
         </v-col>
       </v-row>
       <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> Recorded by: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ recordedBy }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> Preparations: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ preparations }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> Type status: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ typeStatus }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
         <v-col class="pl-3" cols="3"> Locality: </v-col>
         <v-col class="pl-3" cols="9">
           {{ locality }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> Latitude: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ decimalLatitude }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> Longitude: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ decimalLongitude }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> State or Territory: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ stateProvince }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> Country: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ country }}
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="pl-3" cols="3"> Continent: </v-col>
+        <v-col class="pl-3" cols="9">
+          {{ continent }}
         </v-col>
       </v-row>
     </v-card-item>
@@ -57,27 +105,45 @@ export default {
   components: {},
   data: () => ({
     catalogNumber: null,
+    preparations: null,
+    decimalLatitude: null,
+    decimalLongitude: null,
     higherClassification: null,
     kingdom: null,
+    typeStatus: null,
     scientificName: null,
     scientificNameAuthorship: null,
     taxonRank: null,
     locality: null,
+    continent: null,
+    country: null,
+    stateProvince: null,
+    recordedBy: null,
     year: null
 
     // showDetail: false
   }),
 
   mounted() {
-    const { occurrence, classification, location, event } = this.selectedResult
+    const { classification, location, event, identification, occurrence } = this.selectedResult.raw
+    const { processed } = this.selectedResult
+    this.selectedResult.raw
     this.catalogNumber = occurrence.catalogNumber
+    this.preparations = occurrence.preparations
     this.higherClassification = classification.higherClassification
     this.kingdom = classification.kingdom
     this.scientificName = classification.scientificName
     this.scientificNameAuthorship = classification.scientificNameAuthorship
     this.taxonRank = classification.taxonRank
     this.locality = location.locality
+    this.decimalLongitude = location.decimalLongitude
+    this.decimalLatitude = location.decimalLatitude
+    this.continent = location.continent
+    this.country = location.country
+    this.stateProvince = location.stateProvince
+    this.recordedBy = processed.occurrence.recordedBy
     this.year = event.year
+    this.typeStatus = identification.typeStatus
   },
   computed: {
     ...mapGetters(['selectedResult'])
