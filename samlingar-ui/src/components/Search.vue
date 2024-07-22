@@ -26,10 +26,16 @@ export default {
   }),
   mounted() {},
   methods: {
-    ...mapMutations(['setShowResults', 'setResults', 'setTotalRecords', 'setShowDetail']),
+    ...mapMutations([
+      'setResults',
+      'setSearchText',
+      'setShowResults',
+      'setShowDetail',
+      'setTotalRecords'
+    ]),
     onSearch() {
       service
-        .fetchSeachResult(this.search)
+        .fetchSeachResult(this.search, 1)
         .then((response) => {
           this.totalResults = response.totalRecords
           this.results = response.occurrences
@@ -38,6 +44,7 @@ export default {
           this.setResults(this.results)
           this.setTotalRecords(this.totalResults)
           this.setShowDetail(false)
+          this.setSearchText(this.search)
         })
         .catch()
         .finally(() => {})

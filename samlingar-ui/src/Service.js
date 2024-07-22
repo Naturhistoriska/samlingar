@@ -2,19 +2,19 @@ import axios from 'axios'
 
 const baseUrl = import.meta.env.VITE_SBDI_API
 const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
-
+const resultsPerPage = 10
 
 export default class Service {
-  async fetchSeachResult(searchText) {
-    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND institution_uid:${institutionId}`
+  async fetchSeachResult(searchText, start) {
+    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND institution_uid:${institutionId}&start=${start}&pageSize=${resultsPerPage}&sort=eventDate&dir=desc`
 
     const response = await axios.get(url)
 
     return response.data
   }
 
-  async advanceSearch(searchText, species_group, catalogNumber) {
-    const url = `${baseUrl}/search?q=species_group:${species_group} AND taxa:"${searchText}" AND catalogue_number:${catalogNumber} AND institution_uid:${institutionId}`
+  async advanceSearch(searchText, species_group, catalogNumber, start) {
+    const url = `${baseUrl}/search?q=species_group:${species_group} AND taxa:"${searchText}" AND catalogue_number:${catalogNumber} AND institution_uid:${institutionId}&start=${start}&pageSize=${resultsPerPage}&sort=eventDate&dir=desc`
 
     const response = await axios.get(url)
 
