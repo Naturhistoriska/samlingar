@@ -15,7 +15,10 @@
         <template v-slot:extension> <Navigater /></template>
       </v-app-bar>
 
-      <v-main class="d-flex align-center justify-center" style="min-width: 1200px">
+      <v-main
+        class="d-flex align-center justify-center"
+        style="min-width: 1200px; min-height: 1000px"
+      >
         <router-view />
       </v-main>
 
