@@ -17,7 +17,7 @@
                 name="dynamic"
                 :key="collection.label"
                 :value="collection.label"
-                @click="selectCollection(collection.label)"
+                @click="selectCollection(collection.label, collection.count)"
               />
               <label :for="collection.name" style="padding-left: 6px">
                 {{ $t(collection.i18nCode) }} [{{ collection.count }}]
@@ -90,9 +90,11 @@ function selectYear(value) {
   emits('searchByYear')
 }
 
-function selectCollection(value) {
+function selectCollection(value, count) {
+  console.log('count : ', count)
   this.selectedCollection = value
   store.commit('setSelectedCollection', value)
+  store.commit('setTotalRecords', count)
   emits('searchByCollection')
 }
 </script>
