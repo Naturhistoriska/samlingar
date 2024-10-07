@@ -1,0 +1,92 @@
+{
+  "about": {
+    "header": "About us"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "clearAll": "Clear all",
+    "close": "Close",
+    "contactus": "Contact us",
+    "delete": "Delete",
+    "edit": "Edit",
+    "en": "English",
+    "languageSetting": "Language setting",
+    "no": "NO",
+    "ok": "Ok",
+    "save": "Save",
+    "selectLanguage": "Select language",
+    "sv": "Svenska",
+    "yes": "YES"
+  },
+  "collectionName": {
+    "Algae Collection": "Algae",
+    "Entomological Collections (NRM)": "Entomological Collections",
+    "Fish Collection NRM": "Fish",
+    "Fishbase Database": "Fishbase Database",
+    "Fungi Collection": "Fungi/Lichens",
+    "Herpetology Collection NRM": "Herpetology Collection NRM",
+    "Invertebrates Collection NRM": "Invertebrate Main Collections",
+    "Invertebrates Type Specimen Collection NRM": "Invertebrate Type Collections",
+    "Lepidoptera Collection NRM": "Lepidoptera Collections",
+    "Lepidoptera Observations": "Lepidoptera Observations",
+    "Moss Collection": "Mosses",
+    "Phanerogamic Botanical Collections": "Vascular Plants",
+    "Palaeozoological Collection": "Paleozoology",
+    "paleobotany": "Paleobotany",
+    "Porpoise Observation Database": "Porpoise Observation Database",
+    "Swedish Bird Ringing Centre": "Swedish Bird Ringing Centre",
+    "Swedish Malaise Trap Project - Collection Inventory": "Swedish Malaise Trap (Inventory)",
+    "bird": "Bird",
+    "mammals": "Mammals",
+    "amphibians": "Amphibians and reptiles",
+    "isotope": "Isotope Geology",
+    "nodules": "Nodules",
+    "mineralogy": "Mineralogy"
+  },
+  "footer": {
+    "nrm": "Swedish Museum of Natural History",
+    "currentLanguage": "ENGLISH"
+  },
+  "home": {
+    "header": "Welcome to the search portal for natural history collections inThe Swedish Museum of Natural History"
+  },
+  "locale": {
+    "en": "English",
+    "sv": "Swedish"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "contactUs": "Contact us"
+  },
+  "title": "The Swedish Museum of Natural History Collections",
+  "search": {
+    "advanceSearch": "Advance search",
+    "backToResultsList": "Back to results list",
+    "beginDate": "Begin date [YYYY-MM-DD]",
+    "beginDateLabel": "Begin date",
+    "catalogNumber": "Catalogue number",
+    "closeAdvanceSearch": "Close advance search",
+    "datasetName": "Dataset name",
+    "endDate": "End date [YYYY-MM-DD]",
+    "endDateLabel": "End date",
+    "providScientificName": "Provided scientific name",
+    "scientificName": "Scientific name",
+    "search": "Search",
+    "searchByCollection": "Search by collection",
+    "searchCollections": "Species group",
+    "selectDatasetName": "Select dataset name",
+    "selectSpeciesGroup": "Select a species group",
+    "searchScientificName": "Search scientific name",
+    "searchCatalogNumber": "Search atalogue number",
+    "speciesGroup": "Species group",
+    "simpleSearch": "Simple search",
+    "year": "Year"
+  },
+
+  "results": {
+    "searchResults": "Search Results",
+    "num_results": "Total 0 record | Total {n} record | Total {n} records",
+    "resultDetail": "Result detail"
+  }
+}

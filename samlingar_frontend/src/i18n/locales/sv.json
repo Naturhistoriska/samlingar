@@ -1,0 +1,91 @@
+{
+  "about": {
+    "header": "About us"
+  },
+  "collectionName": {
+    "Algae Collection": "Alger",
+    "Entomological Collections (NRM)": "Entomologisk",
+    "Fish Collection NRM": "Fisk",
+    "Fishbase Database": "Fishbase Database",
+    "Fungi Collection": "Svampar/Lavar",
+    "Herpetology Collection NRM": "Herpetology Collection NRM",
+    "Invertebrates Collection NRM": "Evertebrater",
+    "Invertebrates Type Specimen Collection NRM": "Evertebrater typsamling",
+    "Lepidoptera Collection NRM": "Lepidoptera Collections",
+    "Lepidoptera Observations": "Lepidoptera Observations",
+    "Moss Collection": "Mossor",
+    "Phanerogamic Botanical Collections": "Kärlväxter",
+    "Palaeozoological Collection": "Paleozoologisk",
+    "Porpoise Observation Database": "Porpoise Observation Database",
+    "Swedish Bird Ringing Centre": "Swedish Bird Ringing Centre",
+    "Swedish Malaise Trap Project - Collection Inventory": "Swedish Malaise Trap (Inventory)",
+    "amphibians": "Grod- och kräldjur",
+    "bird": "Fågel",
+    "mammals": "Däggdjur",
+    "paleobotany": "Paleobotanisk",
+    "isotope": "Isotopgeologi",
+    "nodules": "Noduler",
+    "mineralogy": "Mineralogisk"
+  },
+  "common": {
+    "cancel": "Avbryt",
+    "clearAll": "Clear all",
+    "close": "Stäng",
+    "contactus": "Kontakta oss",
+    "delete": "Radera",
+    "edit": "Redigera",
+    "en": "English",
+    "languageSetting": "Språkinställning",
+    "no": "NEJ",
+    "ok": "Ok",
+    "save": "Spara",
+    "selectLanguage": "Välj språk",
+    "sv": "Svenska",
+    "yes": "JA"
+  },
+  "footer": {
+    "nrm": "Naturhistoriska riksmuseet",
+    "currentLanguage": "SVENSKA"
+  },
+  "home": {
+    "header": "Välkommen till Naturhistoriska riksmuseets sökportalför naturhistoriska samlingar"
+  },
+  "locale": {
+    "en": "Engelsk",
+    "sv": "Svenska"
+  },
+  "nav": {
+    "home": "Hem",
+    "about": "Om",
+    "contactUs": "Kontakta oss"
+  },
+  "search": {
+    "advanceSearch": "Avancerad sökning",
+    "backToResultsList": "Back to results list",
+    "beginDate": "Begin date [YYYY-MM-DD]",
+    "beginDateLabel": "Begin date",
+    "catalogNumber": "Catalogue number",
+    "closeAdvanceSearch": "Stäng avancerad sökning",
+    "datasetName": "Dataset name",
+    "endDate": "End date [YYYY-MM-DD]",
+    "endDateLabel": "End date",
+    "providScientificName": "Provided scientific name",
+    "scientificName": "Scientific name",
+    "search": "Sök",
+    "searchByCollection": "Search by collection",
+    "searchCollections": "Species group",
+    "selectDatasetName": "Select dataset name",
+    "selectSpeciesGroup": "Select a species group",
+    "searchScientificName": "Search scientific name",
+    "searchCatalogNumber": "Katalognummer",
+    "simpleSearch": "Simple search",
+    "speciesGroup": "Species group",
+    "year": "År"
+  },
+  "results": {
+    "searchResults": "Sökresultat",
+    "num_results": "Totalt 0 rekord | Totalt {n} rekord | Totalt {n} rekord",
+    "resultDetail": "Resultatdetaljer"
+  },
+  "title": "Naturhistoriska riksmuseets samlingar"
+}
