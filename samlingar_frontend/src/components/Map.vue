@@ -51,6 +51,13 @@ watch(
   () => store.getters['mapRecords'],
   () => {
     console.log('map changed...')
+    // initialMap.value._panes.markerPane.remove()
+
+    initialMap.value.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        layer.remove()
+      }
+    })
     loading = false
     addClusterMarkers()
   }
