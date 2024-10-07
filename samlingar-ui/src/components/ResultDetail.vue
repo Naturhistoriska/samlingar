@@ -3,7 +3,7 @@
     <v-card-title>Dataset</v-card-title>
     <v-card-item>
       <v-row no-gutters>
-        <v-col class="pl-" cols="3"> {{ $t('search.searchCatalogNumber') }}: </v-col>
+        <v-col class="pl-3" cols="3"> {{ $t('search.searchCatalogNumber') }}: </v-col>
         <v-col class="pl-3" cols="9">
           {{ catalogNumber }}
         </v-col>

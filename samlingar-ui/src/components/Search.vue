@@ -8,6 +8,7 @@
     v-model="search"
     :label="$t('search.search')"
     type="input"
+    @keyup.enter="onSearch"
     @click:append-inner="onSearch"
   ></v-text-field>
 </template>

@@ -15,6 +15,14 @@
         <template v-slot:extension> <Navigater /></template>
       </v-app-bar>
 
+      <v-navigation-drawer
+        v-model="drawer"
+        :location="$vuetify.display.mobile ? 'bottom' : undefined"
+        temporary
+      >
+        <v-list :items="items"></v-list>
+      </v-navigation-drawer>
+
       <v-main
         class="d-flex align-center justify-center"
         style="min-width: 1200px; min-height: 1000px"
@@ -46,7 +54,26 @@ export default {
   },
   data: () => ({
     dialogStatus: false,
-    selectedLocale: 'en'
+    selectedLocale: 'en',
+    drawer: true,
+    items: [
+      {
+        title: 'Foo',
+        value: 'foo'
+      },
+      {
+        title: 'Bar',
+        value: 'bar'
+      },
+      {
+        title: 'Fizz',
+        value: 'fizz'
+      },
+      {
+        title: 'Buzz',
+        value: 'buzz'
+      }
+    ]
   }),
   setup() {
     const { t, locale } = useI18n()
@@ -66,6 +93,24 @@ export default {
     }
   },
 
+  mounted() {
+    // this.window.addEventListener('resize', this.handleResize)
+    // window.onpopstate = (event) => {
+    //   console.log('event : ' + event)
+    //   this.hasHistory
+    //   // this.$router.push({
+    //   //   path: '/contact'
+    //   // })
+    // }
+    // function() {
+    //   this.window.onpopstate = (event) => {
+    //     console.log('event : ' + event)
+    //     this.$router.push({
+    //       path: '/contact'
+    //     })
+    //   }
+    // }
+  },
   computed: {},
   // mounted() {},
   methods: {

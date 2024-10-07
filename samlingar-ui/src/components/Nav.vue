@@ -2,7 +2,7 @@
   <v-bottom-navigation bg-color="secondary" dense class="pl-3">
     <v-tabs v-model="tabs" align-tabs="title">
       <v-tab>
-        <router-link to="/">{{ $t('nav.home') }}</router-link>
+        <router-link to="/"> {{ $t('nav.home') }}</router-link>
       </v-tab>
       <v-tab>
         <router-link to="/about">{{ $t('nav.about') }}</router-link>
