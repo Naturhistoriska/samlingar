@@ -26,6 +26,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import moment from 'moment'
 
 
 
@@ -63,7 +64,7 @@ app.use(store)
 app.use(i18n)
 app.use(VueAxios, axios)
 app.provide('axios', app.config.globalProperties.axios) // provide 'axios'
-
+app.use(moment)
 
 app.use(PrimeVue, {
   theme: {
