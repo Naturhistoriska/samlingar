@@ -11,7 +11,7 @@
       <Button
         icon="pi pi-search"
         style="max-width: 30px; max-height: 30px"
-        :loading="loading"
+        :loading="loading.value"
         @click="onClickSearch"
       />
     </InputGroup>
@@ -51,7 +51,10 @@ function onClick() {
 function search() {
   const searchText = value.value + '*'
 
-  loading = true
+  console.log('loading : ', loading, loading.value)
+
+  loading.value = true
+
   service
     .quickSearch(searchText, 1, 10)
     .then((response) => {
@@ -79,7 +82,7 @@ function search() {
       store.commit('setShowResults', true)
 
       setTimeout(() => {
-        loading = false
+        loading.value = false
       }, 2000)
     })
     .catch()
