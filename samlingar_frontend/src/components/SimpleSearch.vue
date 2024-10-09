@@ -11,7 +11,7 @@
       <Button
         icon="pi pi-search"
         style="max-width: 30px; max-height: 30px"
-        :loading="loading.value"
+        :loading="loading"
         @click="onClickSearch"
       />
     </InputGroup>
@@ -50,8 +50,6 @@ function onClick() {
 
 function search() {
   const searchText = value.value + '*'
-
-  console.log('loading : ', loading, loading.value)
 
   loading.value = true
 
