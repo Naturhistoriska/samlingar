@@ -74,6 +74,8 @@ async function onClick() {
   console.log('isMap ...', isMap)
   if (!isMap) {
     await handleMapSearch()
+  } else {
+    search('collectionSearch')
   }
 
   showMap.value = !isMap
