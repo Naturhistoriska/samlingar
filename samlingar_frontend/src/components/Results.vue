@@ -72,11 +72,11 @@ const totalRecords = computed(() => {
 async function onClick() {
   const isMap = showMap.value
   console.log('isMap ...', isMap)
-
-  showMap.value = !isMap
-  if (showMap) {
+  if (!isMap) {
     await handleMapSearch()
   }
+
+  showMap.value = !isMap
 }
 
 function handleSearchByYear() {
