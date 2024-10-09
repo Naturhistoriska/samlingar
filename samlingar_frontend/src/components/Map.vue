@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="map" style="height: 50vh"></div>
+    <div id="map" style="height: 80vh"></div>
     <!-- <ProgressSpinner v-if="true" /> -->
   </div>
 </template>
