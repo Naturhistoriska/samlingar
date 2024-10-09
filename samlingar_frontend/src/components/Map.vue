@@ -10,6 +10,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
+import moment from 'moment'
 
 // import 'leaflet/dist/leaflet.css'
 // import 'leaflet.markercluster'
@@ -55,7 +56,6 @@ function initMap() {
 watch(
   () => store.getters['mapRecords'],
   () => {
-    console.log('map changed...')
     initialMap.value.eachLayer((layer) => {
       if (layer instanceof L.Marker) {
         layer.remove()
@@ -83,7 +83,6 @@ function addClusterMarkers() {
   } else {
     // emits('search')
   }
-  console.log('after search', isLoading.value)
 
   const records = store.getters['mapRecords']
   const markers = L.markerClusterGroup()
@@ -91,11 +90,26 @@ function addClusterMarkers() {
   // const layerGroup = new L.LayerGroup()
 
   records.forEach((record) => {
-    const { decimalLatitude, decimalLongitude } = record
+    const {
+      collectionName,
+      collectors,
+      decimalLatitude,
+      decimalLongitude,
+      eventDate,
+      raw_catalogNumber,
+      scientificName
+    } = record
+
+    const date = moment(eventDate).format('yyyy-MM-DD h:mm:ss')
+
     if (decimalLatitude !== undefined && decimalLongitude !== undefined) {
       // const each_marker = new L.marker([decimalLatitude, decimalLongitude]).addTo(layerGroup)
       const each_marker = new L.marker([decimalLatitude, decimalLongitude]).bindPopup(
-        `<strong> Hello Bangladesh!  </strong> <br> `
+        `<strong> Catalogue number: ${raw_catalogNumber}  </strong>
+        <br> Collection: ${collectionName}
+        <br>ScientificName: ${scientificName}
+        <br>Collectors: ${collectors}
+        <br>Event date: ${date}`
       )
       markers.addLayer(each_marker)
       // markers.addLayer(layerGroup)
