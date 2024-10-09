@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div id="map" style="height: 80vh"></div>
+    <div id="map" style="height: 50vh"></div>
+    <!-- <ProgressSpinner v-if="true" /> -->
   </div>
 </template>
 
@@ -11,6 +12,8 @@ import { useStore } from 'vuex'
 // import 'leaflet/dist/leaflet.css'
 // import 'leaflet.markercluster'
 
+import ProgressSpinner from 'primevue/progressspinner'
+
 import * as L from 'leaflet'
 import 'leaflet.markercluster'
 
@@ -19,7 +22,7 @@ const emits = defineEmits(['search'])
 const store = useStore()
 const initialMap = ref(null)
 
-let loading = false
+let loading = ref(false)
 
 onMounted(() => {
   initMap()
@@ -58,15 +61,15 @@ watch(
         layer.remove()
       }
     })
-    loading = false
     addClusterMarkers()
   }
 )
 
 async function addClusterMarkers() {
+  console.log('addClusterMarkers')
   const isAdvanceSearch = store.getters['isAdvanceSearch']
 
-  loading = true
+  loading.value = true
   if (isAdvanceSearch) {
     // do advance search
   } else {
@@ -75,19 +78,24 @@ async function addClusterMarkers() {
   console.log('after search', loading)
 
   const records = store.getters['mapRecords']
+  console.log('records: ', records)
   const markers = L.markerClusterGroup()
 
-  const layerGroup = new L.LayerGroup()
+  // const layerGroup = new L.LayerGroup()
 
   records.forEach((record) => {
     const { decimalLatitude, decimalLongitude } = record
     if (decimalLatitude !== undefined && decimalLongitude !== undefined) {
-      const each_marker = new L.marker([decimalLatitude, decimalLongitude]).addTo(layerGroup)
-      // markers.addLayer(each_marker)
-      markers.addLayer(layerGroup)
+      // const each_marker = new L.marker([decimalLatitude, decimalLongitude]).addTo(layerGroup)
+      const each_marker = new L.marker([decimalLatitude, decimalLongitude]).bindPopup(
+        `<strong> Hello Bangladesh!  </strong> <br> `
+      )
+      markers.addLayer(each_marker)
+      // markers.addLayer(layerGroup)
     }
   })
   initialMap.value.addLayer(markers)
+  loading.value = false
 }
 
 function addSingleMarker() {
@@ -97,3 +105,11 @@ function addSingleMarker() {
   L.marker([latitude, longitude]).addTo(initialMap.value)
 }
 </script>
+<style scoped>
+@import 'leaflet/dist/leaflet.css';
+#leaflet-map {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+</style>
