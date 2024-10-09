@@ -1,7 +1,9 @@
 <template>
   <div>
-    <div id="map" style="height: 80vh"></div>
-    <!-- <ProgressSpinner v-if="true" /> -->
+    <div id="map" style="height: 60vh"></div>
+    <div v-if="isLoading">
+      <ProgressSpinner style="width: 50px; height: 50px" animationDuration=".5s" />
+    </div>
   </div>
 </template>
 
@@ -22,7 +24,7 @@ const emits = defineEmits(['search'])
 const store = useStore()
 const initialMap = ref(null)
 
-let loading = ref(false)
+const isLoading = ref(true)
 
 onMounted(() => {
   initMap()
@@ -54,8 +56,6 @@ watch(
   () => store.getters['mapRecords'],
   () => {
     console.log('map changed...')
-    // initialMap.value._panes.markerPane.remove()
-
     initialMap.value.eachLayer((layer) => {
       if (layer instanceof L.Marker) {
         layer.remove()
@@ -65,20 +65,27 @@ watch(
   }
 )
 
-async function addClusterMarkers() {
+watch(
+  () => isLoading,
+  (newValue, oldValue) => {
+    console.log('showloading changed...', isLoading)
+    isLoading.value = newValue
+  }
+)
+
+function addClusterMarkers() {
   console.log('addClusterMarkers')
   const isAdvanceSearch = store.getters['isAdvanceSearch']
 
-  loading.value = true
+  isLoading.value = true
   if (isAdvanceSearch) {
     // do advance search
   } else {
     // emits('search')
   }
-  console.log('after search', loading)
+  console.log('after search', isLoading.value)
 
   const records = store.getters['mapRecords']
-  console.log('records: ', records)
   const markers = L.markerClusterGroup()
 
   // const layerGroup = new L.LayerGroup()
@@ -95,8 +102,16 @@ async function addClusterMarkers() {
     }
   })
   initialMap.value.addLayer(markers)
-  loading.value = false
+
+  // sleep(1000).then(() => {
+  //   isLoading.value = false
+  // })
+  isLoading.value = false
 }
+
+// function sleep(ms) {
+//   return new Promise((resolve) => setTimeout(resolve, ms))
+// }
 
 function addSingleMarker() {
   const record = store.getters['selectedResult']
@@ -106,10 +121,23 @@ function addSingleMarker() {
 }
 </script>
 <style scoped>
-@import 'leaflet/dist/leaflet.css';
+/* @import 'leaflet/dist/leaflet.css';
 #leaflet-map {
   height: 100vh;
   width: 100%;
   overflow: hidden;
+} */
+
+.p-progressspinner {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: -200px;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 </style>
