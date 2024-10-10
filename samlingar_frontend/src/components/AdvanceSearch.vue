@@ -98,6 +98,12 @@
           <Button icon="pi pi-times" v-if="showClearEndDate" @click="clearEndDate" />
         </InputGroup>
       </div>
+      <div class="flex flex-col gap-2 selectGroup">
+        <label for="endDate" class="searchLabel">
+          {{ $t('search.typeStatus') }}
+        </label>
+        <Checkbox v-model="isType" :binary="true" />
+      </div>
       <div
         id="btnDiv"
         class="flex flex-col gap-2"
@@ -120,6 +126,7 @@ const emits = defineEmits(['advanceSearch'])
 let beginDate = ref()
 let catalogNumber = ref()
 let endDate = ref()
+let isType = ref(false)
 let scientificName = ref()
 let selectedGroup = ref()
 let selectedDataset = ref()
@@ -187,6 +194,8 @@ function search() {
   store.commit('setStartDate', beginDate)
   store.commit('setEndDate', endDate)
   store.commit('setScientificName', scientificName)
+  store.commit('setIsType', isType)
+
   emits('advanceSearch')
 }
 
