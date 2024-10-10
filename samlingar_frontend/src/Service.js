@@ -7,7 +7,7 @@ const resultsPerPage = 10
 
 export default class Service {
   async autoComplete(searchText, start, rows) {
-    const url = `${baseUrl}/search?q=${searchText}* AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year`
+    const url = `${baseUrl}/search?q=${searchText}* AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year,lat_long`
 
     const response = await axios.get(url)
 
@@ -15,22 +15,38 @@ export default class Service {
   }
 
   async quickSearch(searchText, start, rows) {
-    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year`
+    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year,lat_long`
 
     const response = await axios.get(url)
 
     return response.data
   }
 
-  async fetchSeachResult(searchText, start) {
-    const url = `${baseUrl}/search?q=taxa:${searchText} AND data_hub_uid:${institutionId}&start=${start}&pageSize=${resultsPerPage}&sort=eventDate&dir=desc&facets=collectionName`
+  // async fetchSeachResult(searchText, start) {
+  //   const url = `${baseUrl}/search?q=taxa:${searchText} AND data_hub_uid:${institutionId}&start=${start}&pageSize=${resultsPerPage}&sort=eventDate&dir=desc&facets=collectionName`
 
-    const response = await axios.get(url)
+  //   const response = await axios.get(url)
 
-    return response.data
-  }
+  //   return response.data
+  // }
 
-  async advanceSearch(searchText, species_group, dataset, catalogNumber, startDate, endDate, start, rows) {
+
+
+
+
+
+
+  async advanceSearch(
+    searchText,
+    species_group,
+    dataset,
+    catalogNumber,
+    startDate,
+    endDate,
+    isType,
+    start,
+    rows
+  ) {
     let url = `${baseUrl}/search?q=data_hub_uid:${institutionId}`
 
     if (searchText) {
@@ -57,8 +73,11 @@ export default class Service {
       url = url + ` AND occurrence_date:%5B* TO ${endDate}T00:00:00Z%5D`
     }
 
+    if (isType) {
+      url = url + '&fq=typeStatus:*'
+    }
 
-    url = url + `&start=${start}&pageSize=${rows}&facets=collectionName,year`
+    url = url + `&start=${start}&pageSize=${rows}&facets=collectionName,year,lat_long`
     const response = await axios.get(url)
 
     return response.data
