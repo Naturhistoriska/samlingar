@@ -42,6 +42,7 @@ import Service from '../Service'
 const service = new Service()
 
 const store = useStore()
+const emits = defineEmits(['advanceSearch'])
 
 let loading = ref(false)
 let showMap = ref(false)
@@ -72,8 +73,15 @@ const totalRecords = computed(() => {
 async function onClick() {
   const isMap = showMap.value
   console.log('isMap ...', isMap)
+
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  console.log('isAdvanceSearch: ', isAdvanceSearch)
   if (!isMap) {
-    await handleMapSearch()
+    if (isAdvanceSearch) {
+      emits('advanceSearch')
+    } else {
+      await handleMapSearch()
+    }
   } else {
     search('collectionSearch')
   }
@@ -100,9 +108,7 @@ function handlePaginateSearch() {
 }
 
 async function handleMapSearch() {
-  console.log('handleMapSearch')
-
-  loading = true
+  loading.value = true
   const collection = store.getters['selectedCollection']
   const totalRecords = store.getters['totalRecords']
   const searchText = store.getters['searchText']
@@ -115,7 +121,7 @@ async function handleMapSearch() {
 
       store.commit('setMapRecords', results)
       setTimeout(() => {
-        loading = false
+        loading.value = false
       }, 2000)
     })
     .catch()
