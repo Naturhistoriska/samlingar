@@ -7,6 +7,8 @@ export default createStore({
     dataset: null,
     endDate: null,
     isAdvanceSearch: false,
+    isType: false,
+    latLong: null,
     mapRecords: [],
     numPerPage: 10,
     occurrenceYears: null,
@@ -39,6 +41,12 @@ export default createStore({
     },
     isAdvanceSearch(state) {
       return state.isAdvanceSearch
+    },
+    isType(state) {
+      return state.isType
+    },
+    latLong(state) {
+      return state.latLong
     },
     mapRecords(state) {
       return state.mapRecords
@@ -93,6 +101,8 @@ export default createStore({
     setDataset: (state, payload) => (state.dataset = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
     setIsAdvanceSearch: (state, payload) => (state.isAdvanceSearch = payload),
+    setIsType: (state, payload) => (state.isType = payload),
+    setLatLong: (state, payload) => (state.latLong = payload),
     setMapRecords: (state, payload) => (state.mapRecords = payload),
     setNumPerPage: (state, payload) => (state.numPerPage = payload),
     setOccurrenceYears: (state, payload) => (state.occurrenceYears = payload),
