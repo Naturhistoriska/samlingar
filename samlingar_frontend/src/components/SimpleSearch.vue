@@ -12,12 +12,12 @@
         icon="pi pi-search"
         style="max-width: 30px; max-height: 30px"
         :loading="loading"
-        @click="onClickSearch"
+        @click="onSearchClick"
       />
     </InputGroup>
 
     <div class="advanceLink">
-      <Button link @click="onClick">
+      <Button link @click="onAdvanceSearchLinkClick">
         <small id="simpleSearchInput-help">{{ $t('search.advanceSearch') }} </small>
       </Button>
     </div>
@@ -32,6 +32,8 @@ const service = new Service()
 
 const store = useStore()
 
+const emits = defineEmits(['simpleSearch'])
+
 const value = ref()
 let loading = ref(false)
 
@@ -39,52 +41,56 @@ function onPressEnter() {
   search()
 }
 
-function onClickSearch() {
+function onSearchClick() {
   search()
 }
 
-function onClick() {
-  console.log('clicked...')
+function onAdvanceSearchLinkClick() {
   store.commit('setIsAdvanceSearch', true)
 }
 
 function search() {
-  const searchText = value.value + '*'
-
   loading.value = true
+  const searchText = value.value + '*'
+  store.commit('setSearchText', searchText)
+  emits('simpleSearch')
+  loading.value = false
+  // const searchText = value.value + '*'
 
-  service
-    .quickSearch(searchText, 1, 10)
-    .then((response) => {
-      const total = response.totalRecords
-      const results = response.occurrences
+  // loading.value = true
 
-      let facetResults = response.facetResults
-      let collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
-      const collections = collectionFacet.fieldResult
+  // service
+  //   .quickSearch(searchText, 1, 10)
+  //   .then((response) => {
+  //     const total = response.totalRecords
+  //     const results = response.occurrences
 
-      const yearFacet = facetResults.find((facet) => facet.fieldName === 'year')
-      const occurrenceYears = yearFacet.fieldResult
+  //     let facetResults = response.facetResults
+  //     let collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
+  //     const collections = collectionFacet.fieldResult
 
-      store.commit('setResults', results)
-      store.commit('setTotalRecords', total)
+  //     const yearFacet = facetResults.find((facet) => facet.fieldName === 'year')
+  //     const occurrenceYears = yearFacet.fieldResult
 
-      store.commit('setCollections', collections)
-      store.commit('setOccurrenceYears', occurrenceYears)
+  //     store.commit('setResults', results)
+  //     store.commit('setTotalRecords', total)
 
-      store.commit('setSearchText', searchText)
-      store.commit('setSelectedCollection', null)
+  //     store.commit('setCollections', collections)
+  //     store.commit('setOccurrenceYears', occurrenceYears)
 
-      store.commit('setYear', null)
-      store.commit('setShowDetail', false)
-      store.commit('setShowResults', true)
+  //     store.commit('setSearchText', searchText)
+  //     store.commit('setSelectedCollection', null)
 
-      setTimeout(() => {
-        loading.value = false
-      }, 2000)
-    })
-    .catch()
-    .finally(() => {})
+  //     store.commit('setYear', null)
+  //     store.commit('setShowDetail', false)
+  //     store.commit('setShowResults', true)
+
+  //     setTimeout(() => {
+  //       loading.value = false
+  //     }, 2000)
+  //   })
+  //   .catch()
+  //   .finally(() => {})
 }
 </script>
 <style scoped>
