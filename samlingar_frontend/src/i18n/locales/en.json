@@ -74,13 +74,15 @@
     "scientificName": "Scientific name",
     "search": "Search",
     "searchByCollection": "Search by collection",
+    "searchCatalogNumber": "Search atalogue number",
     "searchCollections": "Species group",
     "selectDatasetName": "Select dataset name",
     "selectSpeciesGroup": "Select a species group",
     "searchScientificName": "Search scientific name",
-    "searchCatalogNumber": "Search atalogue number",
+    "searchTypeStatus": "Search typestatus",
     "speciesGroup": "Species group",
     "simpleSearch": "Simple search",
+    "typeStatus": "Typestatus",
     "year": "Year"
   },
 
