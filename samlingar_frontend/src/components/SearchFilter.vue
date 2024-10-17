@@ -2,6 +2,11 @@
   <Card>
     <template #title>Search filter</template>
     <template #content>
+      <div>
+        <Button link @click="clearFilter">
+          {{ $t('search.clearFilter') }}
+        </Button>
+      </div>
       <Accordion value="0">
         <AccordionPanel value="0">
           <AccordionHeader> {{ $t('search.searchByCollection') }} </AccordionHeader>
@@ -17,7 +22,7 @@
                 name="dynamic"
                 :key="collection.label"
                 :value="collection.label"
-                @click="selectCollection(collection.label, collection.count)"
+                @click="selectCollection(collection.label)"
               />
               <label :for="collection.name" style="padding-left: 6px">
                 {{ $t(collection.i18nCode) }} [{{ collection.count }}]
@@ -60,7 +65,7 @@ let selectedYear = ref()
 
 const store = useStore()
 
-const emits = defineEmits(['searchByCollection', 'searchByYear'])
+const emits = defineEmits(['search', 'searchByCollection', 'searchByYear'])
 
 watch(
   () => store.getters['selectedCollection'],
@@ -84,17 +89,27 @@ const years = computed(() => {
   return store.getters['occurrenceYears']
 })
 
+function clearFilter() {
+  store.commit('setYear', null)
+  store.commit('setSelectedCollection', null)
+  store.commit('setStartRecord', 1)
+  store.commit('setNumPerPage', 10)
+  emits('search')
+}
+
 function selectYear(value) {
   this.selectedYear = value
   store.commit('setYear', value)
+  store.commit('setStartRecord', 1)
+  store.commit('setNumPerPage', 10)
   emits('searchByYear')
 }
 
-function selectCollection(value, count) {
-  console.log('count : ', count)
+function selectCollection(value) {
   this.selectedCollection = value
   store.commit('setSelectedCollection', value)
-  store.commit('setTotalRecords', count)
+  store.commit('setStartRecord', 1)
+  store.commit('setNumPerPage', 10)
   emits('searchByCollection')
 }
 </script>

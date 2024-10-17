@@ -27,9 +27,6 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 
-import Service from '../Service'
-const service = new Service()
-
 const store = useStore()
 
 const emits = defineEmits(['simpleSearch'])
@@ -51,10 +48,15 @@ function onAdvanceSearchLinkClick() {
 
 function search() {
   loading.value = true
+
   const searchText = value.value + '*'
   store.commit('setSearchText', searchText)
   emits('simpleSearch')
-  loading.value = false
+
+  setTimeout(() => {
+    loading.value = false
+  }, 2000)
+
   // const searchText = value.value + '*'
 
   // loading.value = true

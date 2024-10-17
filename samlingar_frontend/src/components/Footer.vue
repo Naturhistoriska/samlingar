@@ -6,7 +6,7 @@
       </span>
       <Button
         icon="pi pi-envelope"
-        label="Contact"
+        :label="$t('contact.contactUs')"
         @click="onContackLinkclick()"
         class="contactlink"
         link

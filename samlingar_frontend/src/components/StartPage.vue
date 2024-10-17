@@ -23,7 +23,6 @@ watch(
 )
 
 function handleSimpleSearch() {
-  console.log('handleSimpleSearch')
   emits('simpleSearch')
 }
 

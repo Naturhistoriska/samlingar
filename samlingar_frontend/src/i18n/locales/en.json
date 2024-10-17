@@ -43,6 +43,16 @@
     "nodules": "Nodules",
     "mineralogy": "Mineralogy"
   },
+  "contact": {
+    "contactInfo": "Post address and contact information",
+    "contactUs": "Contact us",
+    "departmentBio": "Department of Biodiversity Informatics och Genetic of Swedish Museum of Natural History",
+    "emailLabel": "E-mail:",
+    "phonelabel": "Telephone:",
+    "poAddress": "104 05 Stockholm",
+    "pobox": "Box 50007",
+    "text": "Feel free to contact us with questions, tips and comments. We always try to help as best we can."
+  },
   "footer": {
     "nrm": "Swedish Museum of Natural History",
     "currentLanguage": "ENGLISH"
@@ -59,13 +69,21 @@
     "about": "About",
     "contactUs": "Contact us"
   },
-  "title": "The Swedish Museum of Natural History Collections",
+  "results": {
+    "backToResultListView": "Back to result list view",
+    "backToReslutView": "Back to result view",
+    "num_results": "Total 0 record | Total {n} record | Total {n} records",
+    "resultDetail": "Result detail",
+    "searchResults": "Search Results",
+    "showMapView": "Show map view"
+  },
   "search": {
     "advanceSearch": "Advance search",
     "backToResultsList": "Back to results list",
     "beginDate": "Begin date [YYYY-MM-DD]",
     "beginDateLabel": "Begin date",
     "catalogNumber": "Catalogue number",
+    "clearFilter": "Clear filter",
     "closeAdvanceSearch": "Close advance search",
     "datasetName": "Dataset name",
     "endDate": "End date [YYYY-MM-DD]",
@@ -85,10 +103,5 @@
     "typeStatus": "Typestatus",
     "year": "Year"
   },
-
-  "results": {
-    "searchResults": "Search Results",
-    "num_results": "Total 0 record | Total {n} record | Total {n} records",
-    "resultDetail": "Result detail"
-  }
+  "title": "The Swedish Museum of Natural History Collections"
 }

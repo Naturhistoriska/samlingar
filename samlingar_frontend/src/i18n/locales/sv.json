@@ -43,6 +43,16 @@
     "sv": "Svenska",
     "yes": "JA"
   },
+  "contact": {
+    "contactInfo": "Postadress och kontaktuppgifter",
+    "contactUs": "Kontakta oss",
+    "departmentBio": "Enheten för Biodiversitetsinformatik och Genetik Naturhistoriska riksmuseet",
+    "emailLabel": "E-post:",
+    "phonelabel": "Telefon:",
+    "poAddress": "104 05 Stockholm",
+    "pobox": "Box 50007",
+    "text": "Hör gärna av dig till oss med frågor, tips och kommentarer. Vi försöker alltid hjälpa till så gott vi kan."
+  },
   "footer": {
     "nrm": "Naturhistoriska riksmuseet",
     "currentLanguage": "SVENSKA"
@@ -59,12 +69,21 @@
     "about": "Om",
     "contactUs": "Kontakta oss"
   },
+  "results": {
+    "backToResultListView": "Back to result list view",
+    "backToReslutView": "Back to result view",
+    "num_results": "Totalt 0 rekord | Totalt {n} rekord | Totalt {n} rekord",
+    "resultDetail": "Resultatdetaljer",
+    "searchResults": "Sökresultat",
+    "showMapView": "Show map view"
+  },
   "search": {
     "advanceSearch": "Avancerad sökning",
     "backToResultsList": "Back to results list",
     "beginDate": "Begin date [YYYY-MM-DD]",
     "beginDateLabel": "Begin date",
     "catalogNumber": "Katalognummer",
+    "clearFilter": "Clear filter",
     "closeAdvanceSearch": "Stäng avancerad sökning",
     "datasetName": "Dataset name",
     "endDate": "End date [YYYY-MM-DD]",
@@ -83,11 +102,6 @@
     "speciesGroup": "Species group",
     "typeStatus": "Typestatus",
     "year": "År"
-  },
-  "results": {
-    "searchResults": "Sökresultat",
-    "num_results": "Totalt 0 rekord | Totalt {n} rekord | Totalt {n} rekord",
-    "resultDetail": "Resultatdetaljer"
   },
   "title": "Naturhistoriska riksmuseets samlingar"
 }

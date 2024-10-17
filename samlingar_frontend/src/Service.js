@@ -15,25 +15,26 @@ export default class Service {
   }
 
   async quickSearch(searchText, start, rows) {
-    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year,lat_long`
+    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year,lat_long&flimit=2000`
 
     const response = await axios.get(url)
 
     return response.data
   }
 
-  // async fetchSeachResult(searchText, start) {
-  //   const url = `${baseUrl}/search?q=taxa:${searchText} AND data_hub_uid:${institutionId}&start=${start}&pageSize=${resultsPerPage}&sort=eventDate&dir=desc&facets=collectionName`
-
-  //   const response = await axios.get(url)
-
-  //   return response.data
-  // }
+  async conditionalSearch(searchText, start, collectionName, year, rows) {
+    const url = this.buildUrl(searchText, start, collectionName, year, rows, false)
+    const response = await axios.get(url)
+    return response.data
+  }
 
 
 
-
-
+  async searchMapData(searchText, selectedCollection, selectedYear, total) {
+    const url = this.buildUrl(searchText, 1, selectedCollection, selectedYear, total, true)
+    const response = await axios.get(url)
+    return response.data
+  }
 
 
   async advanceSearch(
@@ -91,38 +92,39 @@ export default class Service {
 
   async searchFiltByCollection(searchText, start, collectionName, year, rows) {
     // const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&fq=collection_name:"${collectionName}"&facets=collectionName,year`
-    const url = this.buildUrl(searchText, start, collectionName, year, rows)
+    const url = this.buildUrl(searchText, start, collectionName, year, rows, false)
     const response = await axios.get(url)
     return response.data
   }
 
   async searchFiltByYear(searchText, start, collectionName, year, rows) {
-    const url = this.buildUrl(searchText, start, collectionName, year, rows)
+    const url = this.buildUrl(searchText, start, collectionName, year, rows, false)
     const response = await axios.get(url)
     return response.data
   }
 
-  async conditionalSearch(searchText, start, collectionName, year, rows) {
-    const url = this.buildUrl(searchText, start, collectionName, year, rows)
-    const response = await axios.get(url)
-    return response.data
-  }
+  buildUrl(searchText, start, collectionName, year, rows, isMap) {
+    let url = `${baseUrl}/search?q=data_hub_uid:${institutionId}`
 
-  buildUrl(searchText, start, collectionName, year, rows) {
-    let url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}`
+    if (searchText) {
+      url += ` AND taxa:"${searchText}"&start=${start}&pageSize=${rows}`
+    }
 
     if (year) {
       if (year === 'Not supplied') {
-        url = url + '&fq=-year:*'
+        url += '&fq=-year:*'
       } else {
-        url = url + `&fq=year:${year}`
+        url += `&fq=year:${year}`
       }
     }
 
     if (collectionName) {
-      url = url + `&fq=collection_name:"${collectionName}"`
+      url += `&fq=collection_name:"${collectionName}"`
     }
 
-    return url + '&facets=collectionName,year'
+    if (isMap) {
+      url += `&fq=lat_long:*`
+    }
+    return url + '&facets=collectionName,year,lat_long&flimit=2000'
   }
 }

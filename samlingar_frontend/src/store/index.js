@@ -12,6 +12,7 @@ export default createStore({
     mapRecords: [],
     numPerPage: 10,
     occurrenceYears: null,
+    resetPaging: false,
     results: [],
     scientificName: null,
     searchText: null,
@@ -21,7 +22,7 @@ export default createStore({
     showResults: false,
     speciesGrouup: null,
     startDate: null,
-    startRecord: 0,
+    startRecord: 1,
     totalRecords: 0,
     year: null
   },
@@ -56,6 +57,9 @@ export default createStore({
     },
     occurrenceYears(state) {
       return state.occurrenceYears
+    },
+    resetPaging(state) {
+      return state.resetPaging
     },
     results(state) {
       return state.results
@@ -106,6 +110,7 @@ export default createStore({
     setMapRecords: (state, payload) => (state.mapRecords = payload),
     setNumPerPage: (state, payload) => (state.numPerPage = payload),
     setOccurrenceYears: (state, payload) => (state.occurrenceYears = payload),
+    setResetPaging: (state, payload) => (state.resetPaging = payload),
     setResults: (state, payload) => (state.results = payload),
     setScientificName: (state, payload) => (state.scientificName = payload),
     setSearchText: (state, payload) => (state.searchText = payload),

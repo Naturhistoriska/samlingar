@@ -1,16 +1,16 @@
 <template>
-  <div class="card navbg">
-    <div class="grid">
+  <div class="card">
+    <div class="grid navbg">
       <div class="col-8">
         <Tabs v-model:value="value">
           <TabList>
-            <Tab value="0" to="/" as="router-link" @click="onClick">
-              <i class="pi pi-home"></i> {{ $t('nav.home') }}
+            <Tab value="0" to="/" as="router-link" @click="onClick" class="navbg">
+              <i class="pi pi-home navbg"></i> {{ $t('nav.home') }}
             </Tab>
-            <Tab value="1" to="/about" as="router-link">
+            <Tab value="1" to="/about" as="router-link" class="navbg">
               {{ $t('nav.about') }}
             </Tab>
-            <Tab value="2" to="/contact" as="router-link">
+            <Tab value="2" to="/contact" as="router-link" class="navbg">
               {{ $t('nav.contactUs') }}
             </Tab>
           </TabList>
@@ -38,8 +38,6 @@ export default {
   watch: {
     $route(to) {
       const { name } = to
-      // this.routeName = name
-
       switch (name) {
         case 'Home':
           this.value = '0'
@@ -91,37 +89,15 @@ a:hover {
 }
 
 .p-tabmenu .p-tabmenu-tablist {
-  /* flex-direction: row !important;
-  border-color: transparent !important; */
   border-style: none !important;
   border: 0px;
 }
 
 .p-tabmenu-tablist {
-  /* flex-direction: row !important;
-  border-color: transparent !important; */
   border-style: none !important;
 }
 
 .p-tabmenu > .p-tabmenu-tablist {
   border-style: none !important;
 }
-
-/* .p-tabs {
-  flex-direction: row !important;
-  border-color: transparent !important;
-}
-
-.tabcss {
-  text-decoration: none;
-  border: none;
-} */
-/* --p-tabs-tab-border-color:  */
-/* .p-tabs .p-tab .p-content {
-  border-color: #3f3f4630;
-} */
-/* .p-tabs-tab-border-color {
-  border-color: #3f3f4630;
-  outline: 0;
-} */
 </style>

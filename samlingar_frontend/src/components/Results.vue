@@ -3,6 +3,7 @@
     <div class="grid">
       <div class="flex flex-column col-4">
         <SearchFilter
+          @search="handleSearch"
           @searchByYear="handleSearchByYear"
           @searchByCollection="handleSearchByCollection"
         />
@@ -13,7 +14,7 @@
             <legend>
               {{ $t('results.searchResults') }} [{{ $t('results.num_results', totalRecords) }}]
               <br />
-              <Button link @click="onClick">
+              <Button link @click="onMapLinkClick">
                 <small>{{ mapLinkText }}</small>
               </Button>
             </legend>
@@ -32,6 +33,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
 
 import ResultDetail from './ResultDetail.vue'
 import ResultList from './ResultList.vue'
@@ -41,10 +43,12 @@ import Map from './Map.vue'
 import Service from '../Service'
 const service = new Service()
 
-const store = useStore()
-const emits = defineEmits(['advanceSearch'])
+const { t } = useI18n()
 
-let loading = ref(false)
+const store = useStore()
+const emits = defineEmits(['advanceSearch', 'filterSearch', 'mapSearch', 'simpleSearch'])
+
+// let loading = ref(false)
 let showMap = ref(false)
 
 // watch(
@@ -57,9 +61,9 @@ let showMap = ref(false)
 
 const mapLinkText = computed(() => {
   if (showMap.value) {
-    return showDetail.value ? 'Back to result view' : 'Back to result list view'
+    return showDetail.value ? t('results.backToReslutView') : t('results.backToResultListView')
   }
-  return 'Show map view'
+  return t('results.showMapView')
 })
 
 const showDetail = computed(() => {
@@ -70,45 +74,41 @@ const totalRecords = computed(() => {
   return store.getters['totalRecords']
 })
 
-async function onClick() {
-  const isMap = showMap.value
-  console.log('isMap ...', isMap)
+function handleSearch() {
+  console.log('handleSearch')
 
   const isAdvanceSearch = store.getters['isAdvanceSearch']
-  console.log('isAdvanceSearch: ', isAdvanceSearch)
-  if (!isMap) {
-    if (isAdvanceSearch) {
-      emits('advanceSearch')
-    } else {
-      await handleMapSearch()
-    }
+  if (isAdvanceSearch) {
+    emits('advanceSearch')
   } else {
-    search('collectionSearch')
+    emits('simpleSearch')
   }
-
-  showMap.value = !isMap
-}
-
-function handleSearchByYear() {
-  search('yearSearch')
 }
 
 function handleSearchByCollection() {
   console.log('handleSearchByCollection')
 
-  if (showMap.value) {
-    handleMapSearch()
-  } else {
-    search('collectionSearch')
-  }
+  emits('filterSearch', 'collectionSearch')
+}
+
+function handleSearchByYear() {
+  // search('yearSearch')
+  emits('filterSearch', 'yearSearch')
+}
+
+async function onMapLinkClick() {
+  const isMap = showMap.value
+
+  showMap.value = !isMap
 }
 
 function handlePaginateSearch() {
-  search('paginateSearch')
+  // search('paginateSearch')
+  emits('filterSearch', 'paginateSearch')
 }
 
 async function handleMapSearch() {
-  loading.value = true
+  // loading.value = true
   const collection = store.getters['selectedCollection']
   const totalRecords = store.getters['totalRecords']
   const searchText = store.getters['searchText']
@@ -121,7 +121,7 @@ async function handleMapSearch() {
 
       store.commit('setMapRecords', results)
       setTimeout(() => {
-        loading.value = false
+        // loading.value = false
       }, 2000)
     })
     .catch()
@@ -129,6 +129,7 @@ async function handleMapSearch() {
 }
 
 function search(value) {
+  console.log('search....')
   const collection = store.getters['selectedCollection']
   const numPerPage = store.getters['numPerPage']
   const searchText = store.getters['searchText']
@@ -141,6 +142,10 @@ function search(value) {
       const total = response.totalRecords
       const results = response.occurrences
       const facetResults = response.facetResults
+
+      const latLongFacet = facetResults.find((facet) => facet.fieldName === 'lat_long')
+      const latLong = latLongFacet.fieldResult
+      store.commit('setLatLong', latLong)
 
       if (value === 'paginateSearch') {
         store.commit('setNumPerPage', numPerPage)
@@ -161,7 +166,7 @@ function search(value) {
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
       setTimeout(() => {
-        loading = false
+        // loading = false
       }, 2000)
     })
     .catch()

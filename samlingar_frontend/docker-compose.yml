@@ -1,0 +1,23 @@
+# version: '3.7'
+
+# services:
+#   ui:
+#     image: dina/smalingar-ui:v0.1
+#     expose:
+#       - 8000
+services:
+  app:
+    build: .
+    # image: samlingar_frontend_app
+    container_name: samlingar_ui_container
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./:/app
+    command: yarn dev
+# networks:
+#   - proxy_default
+# networks:
+# proxy_default:
+# external: true
+

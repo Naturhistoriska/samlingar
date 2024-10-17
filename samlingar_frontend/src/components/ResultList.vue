@@ -12,6 +12,7 @@
     </div>
 
     <Paginator
+      v-model:first="first"
       :rows="10"
       :totalRecords="totalRecords"
       :rowsPerPageOptions="[10, 20, 30]"
@@ -20,12 +21,24 @@
   </div>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import Result from './Result.vue'
 
+const first = ref(0)
 const store = useStore()
 const emits = defineEmits(['search'])
+
+watch(
+  () => store.getters['startRecord'],
+  () => {
+    const startRecord = store.getters['startRecord']
+    console.log('resetPaging change...', startRecord)
+    if (startRecord === 1) {
+      first.value = 0
+    }
+  }
+)
 
 const results = computed(() => {
   return store.getters['results']

@@ -109,7 +109,7 @@
         class="flex flex-col gap-2"
         style="min-width: 50%; text-align: right; float: right"
       >
-        <Button :label="$t('search.search')" @click="search" />
+        <Button :label="$t('search.search')" @click="search" :loading="loading" />
         <Button :label="$t('common.clearAll')" @click="clearAll" />
       </div>
     </Fieldset>
@@ -135,6 +135,8 @@ let showClearScentificName = ref(false)
 let showClearCatalogNumber = ref(false)
 let showClearBeginDate = ref(false)
 let showClearEndDate = ref(false)
+
+let loading = ref(false)
 
 const speciesGroup = computed(() => {
   return import.meta.env.VITE_SUPPORTED_COLLECTIONS.split(',')
@@ -188,6 +190,8 @@ function clearEndDate() {
 }
 
 function search() {
+  loading.value = true
+
   store.commit('setCatalogNumber', catalogNumber)
   store.commit('setSpeciesGroup', selectedGroup)
   store.commit('setDataset', selectedDataset)
@@ -197,6 +201,10 @@ function search() {
   store.commit('setIsType', isType)
 
   emits('advanceSearch')
+
+  setTimeout(() => {
+    loading.value = false
+  }, 2000)
 }
 
 function clearAll() {
@@ -206,6 +214,7 @@ function clearAll() {
   scientificName.value = ''
   beginDate.value = ''
   endDate.value = ''
+  isType.value = false
 
   showClearBeginDate = false
   showClearCatalogNumber = false

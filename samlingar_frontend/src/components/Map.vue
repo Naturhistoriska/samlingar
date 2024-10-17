@@ -1,9 +1,9 @@
 <template>
   <div>
     <div id="map" style="height: 60vh"></div>
-    <div v-if="isLoading">
-      <ProgressSpinner style="width: 50px; height: 50px" animationDuration=".5s" />
-    </div>
+    <!-- <div v-if="isLoading"> -->
+    <!-- <ProgressSpinner style="width: 50px; height: 50px" animationDuration=".5s" /> -->
+    <!-- </div> -->
   </div>
 </template>
 
@@ -54,10 +54,12 @@ function initMap() {
 }
 
 watch(
-  () => store.getters['mapRecords'],
+  () => store.getters['results'],
   () => {
     initialMap.value.eachLayer((layer) => {
       if (layer instanceof L.Marker) {
+        layer.remove()
+      } else if (layer instanceof L.Circle) {
         layer.remove()
       }
     })
@@ -75,57 +77,130 @@ watch(
 
 function addClusterMarkers() {
   console.log('addClusterMarkers')
-  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  // const isAdvanceSearch = store.getters['isAdvanceSearch']
+  const latLongArray = store.getters['latLong']
 
-  isLoading.value = true
-  if (isAdvanceSearch) {
-    // do advance search
-  } else {
-    // emits('search')
-  }
+  // L.marker([51.5, -0.09]).addTo(initialMap.value)
 
-  const records = store.getters['mapRecords']
-  const markers = L.markerClusterGroup()
+  // const circle = L.circle([51.508, -0.11], {
+  //   color: 'red',
+  //   fillColor: '#f03',
+  //   fillOpacity: 0.5,
+  //   radius: 1000
+  // }).addTo(initialMap.value)
+
+  latLongArray.forEach((lat_long) => {
+    const latLong = lat_long.label
+
+    if (latLong !== 'Not supplied') {
+      const array = latLong.split(',')
+
+      const count = lat_long.count
+      const latitude = array[0]
+      const longitude = array[1]
+
+      const div = document.createElement('div')
+      div.innerHTML = `<br>Total occurrences: ${count}<br>
+          Coordinates: ${latitude}, ${longitude}<br><br>`
+
+      const button = document.createElement('button')
+      button.innerHTML = 'More details'
+
+      button.onclick = function () {
+        onClick()
+      }
+
+      div.appendChild(button)
+
+      L.circle([array[0], array[1]], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 1.0,
+        radius: 40000
+      })
+        .bindPopup(div)
+        // .bindPopup(
+        //   `Total occurrences: ${count} <br>
+        // Coordinates: ${latitude}, ${longitude}
+        // <br><br><center><button id="getres"  ">More details</button>
+        // `
+        // )
+        // .on('click', onClick)
+        .addTo(initialMap.value)
+    }
+  })
+
+  // const latLong = lat_Long.label
+  // console.log('latLong: ', latLong)
+
+  // const circle = L.circle([51.508, -0.11], {
+  //   color: 'red',
+  //   fillColor: '#f03',
+  //   fillOpacity: 0.5,
+  //   radius: 500
+  // }).addTo(map);
+
+  // isLoading.value = true
+  // if (isAdvanceSearch) {
+  //   // do advance search
+  // } else {
+  //   // emits('search')
+  // }
+
+  // const records = store.getters['mapRecords']
+  // const markers = L.markerClusterGroup()
 
   // const layerGroup = new L.LayerGroup()
 
-  records.forEach((record) => {
-    const {
-      collectionName,
-      collectors,
-      decimalLatitude,
-      decimalLongitude,
-      eventDate,
-      raw_catalogNumber,
-      scientificName
-    } = record
+  // records.forEach((record) => {
+  //   const {
+  //     collectionName,
+  //     collectors,
+  //     decimalLatitude,
+  //     decimalLongitude,
+  //     eventDate,
+  //     raw_catalogNumber,
+  //     scientificName
+  //   } = record
 
-    const date = moment(eventDate).format('yyyy-MM-DD h:mm:ss')
+  // const date = moment(eventDate).format('yyyy-MM-DD h:mm:ss')
+  // const each_marker = new L.marker([decimalLatitude, decimalLongitude]).bindPopup(
+  //   `<strong> Catalogue number: ${raw_catalogNumber}  </strong>
+  //     <br> Collection: ${collectionName}
+  //     <br>ScientificName: ${scientificName}
+  //     <br>Collectors: ${collectors}
+  //     <br>Event date: ${date}`
+  // )
+  // markers.addLayer(each_marker)
 
-    if (decimalLatitude !== undefined && decimalLongitude !== undefined) {
-      // const each_marker = new L.marker([decimalLatitude, decimalLongitude]).addTo(layerGroup)
-      const each_marker = new L.marker([decimalLatitude, decimalLongitude]).bindPopup(
-        `<strong> Catalogue number: ${raw_catalogNumber}  </strong>
-        <br> Collection: ${collectionName}
-        <br>ScientificName: ${scientificName}
-        <br>Collectors: ${collectors}
-        <br>Event date: ${date}`
-      )
-      markers.addLayer(each_marker)
-      // markers.addLayer(layerGroup)
-    }
-  })
-  initialMap.value.addLayer(markers)
+  // if (decimalLatitude !== undefined && decimalLongitude !== undefined) {
+  // const each_marker = new L.marker([decimalLatitude, decimalLongitude]).addTo(layerGroup)
+  // const each_marker = new L.marker([decimalLatitude, decimalLongitude]).bindPopup(
+  // `<strong> Catalogue number: ${raw_catalogNumber}  </strong>
+  // <br> Collection: ${collectionName}
+  // <br>ScientificName: ${scientificName}
+  // <br>Collectors: ${collectors}
+  // <br>Event date: ${date}`
+  // )
+
+  // markers.addLayer(layerGroup)
+  // }
+  // })
+  // initialMap.value.addLayer(markers)
 
   // sleep(1000).then(() => {
   //   isLoading.value = false
   // })
-  isLoading.value = false
+  // isLoading.value = false
 }
 
 // function sleep(ms) {
 //   return new Promise((resolve) => setTimeout(resolve, ms))
 // }
+
+function onClick() {
+  console.log('onClick.......')
+}
 
 function addSingleMarker() {
   const record = store.getters['selectedResult']
