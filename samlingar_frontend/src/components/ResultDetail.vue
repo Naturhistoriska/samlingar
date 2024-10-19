@@ -71,6 +71,10 @@
         <div class="col-9">
           {{ eventDate }}
         </div>
+        <div class="col-3" no-gutters>Occurrence Remark:</div>
+        <div class="col-9">
+          {{ occurrenceRemark }}
+        </div>
       </div>
     </template>
   </Card>
@@ -103,6 +107,7 @@ export default {
     stateProvince: null,
     recordedBy: null,
     vernacularName: null,
+    occurrenceRemark: null,
     year: null
   }),
 
@@ -115,6 +120,7 @@ export default {
     this.preparations = raw.occurrence.preparations
     this.higherClassification = raw.classification.higherClassification
     this.typeStatus = raw.identification.typeStatus
+    this.occurrenceRemark = raw.occurrence.occurrenceRemarks
 
     this.collection = attribution.collectionName
     this.scientificName = classification.scientificName
