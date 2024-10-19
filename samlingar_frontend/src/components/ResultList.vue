@@ -12,6 +12,7 @@
     </div>
 
     <Paginator
+      v-if="results.length > 0"
       v-model:first="first"
       :rows="10"
       :totalRecords="totalRecords"
