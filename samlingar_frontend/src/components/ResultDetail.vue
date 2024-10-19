@@ -1,80 +1,82 @@
 <template>
-  <Card>
+  <Card style="background-color: transparent">
     <template #title>Dataset</template>
     <template #content>
       <div class="grid">
-        <div class="col-2" no-gutters>Catalognumber</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.catalogNumber') }}:</div>
+        <div class="col-9">
           {{ catalogNumber }}
         </div>
-        <div class="col-2" no-gutters>Scientific Name:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.collectionName') }}:</div>
+        <div class="col-9">
+          {{ collection }}
+        </div>
+        <div class="col-3" no-gutters>{{ $t('results.scientificName') }}:</div>
+        <div class="col-9">
           {{ scientificName }}
         </div>
-        <div class="col-2" no-gutters>Vernacular Name:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.vernacularName') }}:</div>
+        <div class="col-9">
           {{ vernacularName }}
         </div>
-        <div class="col-2" no-gutters>Identified to rank:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.rank') }}:</div>
+        <div class="col-9">
           {{ taxonRank }}
         </div>
 
-        <div class="col-2" no-gutters>High Classification:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.highClassification') }}:</div>
+        <div class="col-9">
           {{ higherClassification }}
         </div>
-        <!-- <div class="col-2" no-gutters>Scientific name authorship:</div>
-        <div class="col-10">
-          {{ scientificNameAuthorship }}
-        </div> -->
-        <div class="col-2" no-gutters>Recorded by:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.recordedBy') }}:</div>
+        <div class="col-9">
           {{ recordedBy }}
         </div>
 
-        <div class="col-2" no-gutters>Preparations:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.preparation') }}:</div>
+        <div class="col-9">
           {{ preparations }}
         </div>
-        <div class="col-2" no-gutters>Type status:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.typeStatus') }}:</div>
+        <div class="col-9">
           {{ typeStatus }}
         </div>
-        <div class="col-2" no-gutters>Locality:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.locality') }}:</div>
+        <div class="col-9">
           {{ locality }}
         </div>
 
-        <div class="col-2" no-gutters>Latitude:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.latitude') }}:</div>
+        <div class="col-9">
           {{ decimalLatitude }}
         </div>
-        <div class="col-2" no-gutters>Longitude:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.longitude') }}:</div>
+        <div class="col-9">
           {{ decimalLongitude }}
         </div>
 
-        <div class="col-2" no-gutters>Continent:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.continet') }}:</div>
+        <div class="col-9">
           {{ continent }}
         </div>
-        <div class="col-2" no-gutters>State or Territory:</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.state') }}:</div>
+        <div class="col-9">
           {{ stateProvince }}
         </div>
-        <div class="col-2" no-gutters>Contury</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.contury') }}:</div>
+        <div class="col-9">
           {{ country }}
         </div>
-        <div class="col-2" no-gutters>Event date</div>
-        <div class="col-10">
+        <div class="col-3" no-gutters>{{ $t('results.eventDate') }}:</div>
+        <div class="col-9">
           {{ eventDate }}
         </div>
       </div>
     </template>
   </Card>
-  <Button link @click.prevent="onclick()"> Back to result list </Button>
+  <Button link @click.prevent="onclick()">
+    {{ $t('results.backToResultListView') }}
+  </Button>
 </template>
 <script>
 import { mapGetters, mapMutations } from 'vuex'
@@ -84,6 +86,7 @@ export default {
   components: {},
   data: () => ({
     catalogNumber: null,
+    collection: null,
     preparations: null,
     decimalLatitude: null,
     decimalLongitude: null,
@@ -104,7 +107,8 @@ export default {
   }),
 
   mounted() {
-    const { classification, location, event, occurrence } = this.selectedResult.processed
+    const { attribution, classification, location, event, occurrence } =
+      this.selectedResult.processed
     const { raw } = this.selectedResult
 
     this.catalogNumber = raw.occurrence.catalogNumber
@@ -112,6 +116,7 @@ export default {
     this.higherClassification = raw.classification.higherClassification
     this.typeStatus = raw.identification.typeStatus
 
+    this.collection = attribution.collectionName
     this.scientificName = classification.scientificName
     this.vernacularName = classification.vernacularName
     this.taxonRank = classification.taxonRank

@@ -14,6 +14,10 @@
         {{ kingdom }}/ {{ phylum }}/ {{ classs }}/ {{ order }}/ {{ family }}/ {{ genus }}/
         {{ species }}
       </div>
+      <div class="col-3" no-gutters>Collection name</div>
+      <div class="col-9">
+        {{ collectionName }}
+      </div>
     </div>
   </div>
 </template>
@@ -36,12 +40,14 @@ export default {
       genus: null,
       species: null,
       scientificName: null,
-      catalogNumber: null
+      catalogNumber: null,
+      collectionName: null
     }
   },
   mounted() {
     const {
       raw_catalogNumber,
+      collectionName,
       kingdom,
       phylum,
       classs,
@@ -52,6 +58,7 @@ export default {
       scientificName
     } = this.result
     this.catalogNumber = raw_catalogNumber
+    this.collectionName = collectionName
     this.kingdom = kingdom
     this.phylum = phylum
     this.classs = classs
