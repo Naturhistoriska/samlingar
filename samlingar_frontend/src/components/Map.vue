@@ -19,6 +19,7 @@ import ProgressSpinner from 'primevue/progressspinner'
 
 import * as L from 'leaflet'
 import 'leaflet.markercluster'
+import { inferRuntimeType } from 'vue/compiler-sfc'
 
 const emits = defineEmits(['search'])
 
@@ -34,13 +35,14 @@ onMounted(() => {
     addSingleMarker()
   } else {
     addClusterMarkers()
+    // addGroupMark()
   }
 })
 
 function initMap() {
   initialMap.value = L.map('map').setView([59.0, 15.0], 6)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 4,
+    maxZoom: 3,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(initialMap.value)
 
@@ -64,6 +66,7 @@ watch(
       }
     })
     addClusterMarkers()
+    // addGroupMark()
   }
 )
 
@@ -74,6 +77,59 @@ watch(
     isLoading.value = newValue
   }
 )
+
+function addGroupMark() {
+  console.log('addGroupMark')
+
+  let cluster = L.markerClusterGroup()
+
+  const each_marker = new L.marker([39.2, 141.38])
+  cluster.addLayer(each_marker)
+  const each_marker1 = new L.marker([39.2, 141.38])
+  cluster.addLayer(each_marker1)
+
+  var markers = L.markerClusterGroup({
+    iconCreateFunction: function (cluster) {
+      return L.divIcon({ html: '<b>' + cluster.getChildCount() + '</b>' })
+    }
+  })
+  // const layerGroup = new L.LayerGroup()
+  // markers.addLayer(layerGroup)
+  initialMap.value.addLayer(markers)
+}
+
+//// Adding some color
+function getColor(d) {
+  return d > 1400
+    ? '#8c2d04'
+    : d > 700
+      ? '#cc4c02'
+      : d > 400
+        ? '#ec7014'
+        : d > 100
+          ? '#fe9929'
+          : d > 50
+            ? '#fec44f'
+            : d > 25
+              ? '#fee391'
+              : '#ffffd4'
+}
+
+function getRadious(d) {
+  return d > 1400
+    ? 40000
+    : d > 700
+      ? 35000
+      : d > 400
+        ? 30000
+        : d > 100
+          ? 25000
+          : d > 50
+            ? 20000
+            : d > 25
+              ? 15000
+              : 10000
+}
 
 function addClusterMarkers() {
   console.log('addClusterMarkers')
@@ -88,6 +144,7 @@ function addClusterMarkers() {
   //   fillOpacity: 0.5,
   //   radius: 1000
   // }).addTo(initialMap.value)
+  const markers = L.markerClusterGroup()
 
   latLongArray.forEach((lat_long) => {
     const latLong = lat_long.label
@@ -99,36 +156,61 @@ function addClusterMarkers() {
       const latitude = array[0]
       const longitude = array[1]
 
-      const div = document.createElement('div')
-      div.innerHTML = `<br>Total occurrences: ${count}<br>
+      // for (let i = 0; i < count; i++) {
+      //   const each_marker = new L.marker([latitude, longitude])
+      //   markers.addLayer(each_marker)
+      // }
+
+      if (count <= 50) {
+        // const div = document.createElement('div')
+        // div.innerHTML = `<br>Total occurrences: ${count}<br>
+        //   Coordinates: ${latitude}, ${longitude}<br><br>`
+
+        // const each_marker = new L.marker([latitude, longitude])
+        // markers.addLayer(each_marker)
+        for (let i = 0; i < count; i++) {
+          const each_marker = new L.marker([latitude, longitude])
+          markers.addLayer(each_marker)
+        }
+
+        // L.marker([latitude, longitude]).addTo(initialMap.value)
+      } else {
+        // const color = getColor
+        const r = getRadious(count)
+        const div = document.createElement('div')
+        div.innerHTML = `<br>Total occurrences: ${count}<br>
           Coordinates: ${latitude}, ${longitude}<br><br>`
 
-      const button = document.createElement('button')
-      button.innerHTML = 'More details'
+        const button = document.createElement('button')
+        button.innerHTML = 'More details'
 
-      button.onclick = function () {
-        onClick()
+        button.onclick = function () {
+          onClick()
+        }
+
+        const radious = count * 20
+
+        div.appendChild(button)
+
+        L.circle([array[0], array[1]], {
+          color: 'red',
+          fillColor: '#f03',
+          fillOpacity: 0.5,
+          radius: 60000
+        })
+          .bindPopup(div)
+          // .bindPopup(
+          //   `Total occurrences: ${count} <br>
+          // Coordinates: ${latitude}, ${longitude}
+          // <br><br><center><button id="getres"  ">More details</button>
+          // `
+          // )
+          // .on('click', onClick)
+          .addTo(initialMap.value)
       }
-
-      div.appendChild(button)
-
-      L.circle([array[0], array[1]], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 1.0,
-        radius: 40000
-      })
-        .bindPopup(div)
-        // .bindPopup(
-        //   `Total occurrences: ${count} <br>
-        // Coordinates: ${latitude}, ${longitude}
-        // <br><br><center><button id="getres"  ">More details</button>
-        // `
-        // )
-        // .on('click', onClick)
-        .addTo(initialMap.value)
     }
   })
+  initialMap.value.addLayer(markers)
 
   // const latLong = lat_Long.label
   // console.log('latLong: ', latLong)
@@ -192,6 +274,36 @@ function addClusterMarkers() {
   //   isLoading.value = false
   // })
   // isLoading.value = false
+}
+
+function addClusterMarkers1() {
+  const latLongArray = store.getters['latLong']
+
+  console.log('length..', latLongArray.length)
+
+  const markers = L.markerClusterGroup()
+
+  const layerGroup = new L.LayerGroup()
+
+  latLongArray.forEach((lat_long) => {
+    const latLong = lat_long.label
+
+    if (latLong !== 'Not supplied') {
+      const array = latLong.split(',')
+
+      const count = lat_long.count
+      const latitude = array[0]
+      const longitude = array[1]
+
+      const div = document.createElement('div')
+      div.innerHTML = `<br>Total occurrences: ${count}<br>
+          Coordinates: ${latitude}, ${longitude}<br><br>`
+
+      const each_marker = new L.marker([latitude, longitude])
+      markers.addLayer(each_marker)
+    }
+  })
+  initialMap.value.addLayer(markers)
 }
 
 // function sleep(ms) {

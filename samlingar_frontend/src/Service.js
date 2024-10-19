@@ -17,7 +17,7 @@ export default class Service {
 
   async quickSearch(searchText, start, rows) {
     // const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year,typeStatus&flimit=2000`
-    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,lat_long,typeStatus&flimit=2000`
+    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,point-1,typeStatus&flimit=2000`
     const response = await axios.get(url)
 
     return response.data

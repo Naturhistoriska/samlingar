@@ -84,7 +84,6 @@ function processResult(facetResults, results, total) {
   if (total > 0) {
     const typeStatusFacet = facetResults.find((facet) => facet.fieldName === 'typeStatus')
     const typeStatus = typeStatusFacet.fieldResult
-    store.commit('setTypeStatus', typeStatus)
 
     const collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
     const collections = collectionFacet.fieldResult
@@ -97,6 +96,12 @@ function processResult(facetResults, results, total) {
     // const latLongFacet = facetResults.find((facet) => facet.fieldName === 'lat_long')
     // const latLong = latLongFacet.fieldResult
     // store.commit('setLatLong', latLong)
+
+    const pointFacet = facetResults.find((facet) => facet.fieldName === 'point-1')
+    const point = pointFacet.fieldResult
+    store.commit('setLatLong', point)
+
+    console.log('length : ', point.length)
 
     // if (start === 1) {
     //   store.commit('setResetPaging', true)
