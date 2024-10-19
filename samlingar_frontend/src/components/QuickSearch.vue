@@ -13,10 +13,9 @@
           @itemSelect="onItemSelect"
           inputId="ac"
           :inputStyle="acwidth"
-          :placeholder="$t('search.simpleSearch')"
         />
         <Button icon="pi pi-search" :loading="loading" @click="completeSearch" text />
-        <label for="ac">{{ $t('search.simpleSearch') }} </label>
+        <label for="ac">{{ $t('search.freeTextSearch') }} </label>
       </InputGroup>
     </FloatLabel>
   </div>
