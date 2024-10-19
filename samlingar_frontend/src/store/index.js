@@ -8,21 +8,23 @@ export default createStore({
     endDate: null,
     isAdvanceSearch: false,
     isType: false,
-    latLong: null,
+    latLong: [],
     mapRecords: [],
     numPerPage: 10,
-    occurrenceYears: null,
+    occurrenceYears: [],
     resetPaging: false,
     results: [],
     scientificName: null,
     searchText: null,
     selectedCollection: '',
     selectedResult: null,
+    selectedType: '',
     showDetail: false,
     showResults: false,
     speciesGrouup: null,
     startDate: null,
     startRecord: 1,
+    typeStatus: [],
     totalRecords: 0,
     year: null
   },
@@ -76,6 +78,9 @@ export default createStore({
     selectedResult(state) {
       return state.selectedResult
     },
+    selectedType(state) {
+      return state.selectedType
+    },
     showDetail(state) {
       return state.showDetail
     },
@@ -93,6 +98,9 @@ export default createStore({
     },
     totalRecords(state) {
       return state.totalRecords
+    },
+    typeStatus(state) {
+      return state.typeStatus
     },
     year(state) {
       return state.year
@@ -116,12 +124,14 @@ export default createStore({
     setSearchText: (state, payload) => (state.searchText = payload),
     setSelectedCollection: (state, payload) => (state.selectedCollection = payload),
     setSelectedResult: (state, payload) => (state.selectedResult = payload),
+    setSelectedType: (state, payload) => (state.selectedType = payload),
     setShowDetail: (state, payload) => (state.showDetail = payload),
     setShowResults: (state, payload) => (state.showResults = payload),
     setSpeciesGroup: (state, payload) => (state.speciesGrouup = payload),
     setStartDate: (state, payload) => (state.startDate = payload),
     setStartRecord: (state, payload) => (state.startRecord = payload),
     setTotalRecords: (state, payload) => (state.totalRecords = payload),
+    setTypeStatus: (state, payload) => (state.typeStatus = payload),
     setYear: (state, payload) => (state.year = payload)
   }
 })

@@ -3,8 +3,9 @@
     <div class="grid">
       <div class="flex flex-column col-4">
         <SearchFilter
+          class="divBg"
           @search="handleSearch"
-          @searchByYear="handleSearchByYear"
+          @searchByType="handleSearchByType"
           @searchByCollection="handleSearchByCollection"
         />
       </div>
@@ -40,8 +41,8 @@ import ResultList from './ResultList.vue'
 import SearchFilter from './SearchFilter.vue'
 import Map from './Map.vue'
 
-import Service from '../Service'
-const service = new Service()
+// import Service from '../Service'
+// const service = new Service()
 
 const { t } = useI18n()
 
@@ -75,7 +76,8 @@ const totalRecords = computed(() => {
 })
 
 function handleSearch() {
-  console.log('handleSearch')
+  // this search after clear all filter
+  console.log('handleSearch [clear filter search]')
 
   const isAdvanceSearch = store.getters['isAdvanceSearch']
   if (isAdvanceSearch) {
@@ -91,10 +93,16 @@ function handleSearchByCollection() {
   emits('filterSearch', 'collectionSearch')
 }
 
-function handleSearchByYear() {
-  // search('yearSearch')
-  emits('filterSearch', 'yearSearch')
+function handleSearchByType() {
+  console.log('handleSearchByType')
+
+  emits('filterSearch', 'typeStatusSearch')
 }
+
+// function handleSearchByYear() {
+// search('handleSearchByYear')
+// emits('filterSearch', 'yearSearch')
+// }
 
 async function onMapLinkClick() {
   const isMap = showMap.value
@@ -103,74 +111,76 @@ async function onMapLinkClick() {
 }
 
 function handlePaginateSearch() {
-  // search('paginateSearch')
   emits('filterSearch', 'paginateSearch')
 }
 
-async function handleMapSearch() {
-  // loading.value = true
-  const collection = store.getters['selectedCollection']
-  const totalRecords = store.getters['totalRecords']
-  const searchText = store.getters['searchText']
-  const year = store.getters['year']
+// async function handleMapSearch() {
 
-  service
-    .conditionalSearch(searchText, 1, collection, year, totalRecords)
-    .then((response) => {
-      const results = response.occurrences
+// const collection = store.getters['selectedCollection']
+// const totalRecords = store.getters['totalRecords']
+// const searchText = store.getters['searchText']
+// const year = store.getters['year']
+//
+// service
+// .conditionalSearch(searchText, 1, collection, year, totalRecords)
+// .then((response) => {
+// const results = response.occurrences
+//
+// store.commit('setMapRecords', results)
+// setTimeout(() => {
+// }, 2000)
+// })
+// .catch()
+// .finally(() => {})
+// }
 
-      store.commit('setMapRecords', results)
-      setTimeout(() => {
-        // loading.value = false
-      }, 2000)
-    })
-    .catch()
-    .finally(() => {})
-}
+// function search(value) {
+//   console.log('search....')
+//   const collection = store.getters['selectedCollection']
+//   const numPerPage = store.getters['numPerPage']
+//   const searchText = store.getters['searchText']
+//   const start = store.getters['startRecord']
+//   const year = store.getters['year']
 
-function search(value) {
-  console.log('search....')
-  const collection = store.getters['selectedCollection']
-  const numPerPage = store.getters['numPerPage']
-  const searchText = store.getters['searchText']
-  const start = store.getters['startRecord']
-  const year = store.getters['year']
+//   service
+//     .searchFiltByCollection(searchText, start, collection, year, numPerPage)
+//     .then((response) => {
+//       const total = response.totalRecords
+//       const results = response.occurrences
+//       const facetResults = response.facetResults
 
-  service
-    .searchFiltByCollection(searchText, start, collection, year, numPerPage)
-    .then((response) => {
-      const total = response.totalRecords
-      const results = response.occurrences
-      const facetResults = response.facetResults
+//       const latLongFacet = facetResults.find((facet) => facet.fieldName === 'lat_long')
+//       const latLong = latLongFacet.fieldResult
+//       store.commit('setLatLong', latLong)
 
-      const latLongFacet = facetResults.find((facet) => facet.fieldName === 'lat_long')
-      const latLong = latLongFacet.fieldResult
-      store.commit('setLatLong', latLong)
+//       if (value === 'paginateSearch') {
+//         store.commit('setNumPerPage', numPerPage)
+//         store.commit('setStartRecord', start)
+//       } else if (value === 'collectionSearch') {
+//         const yearFacet = facetResults.find((facet) => facet.fieldName === 'year')
+//         const occurrenceYears = yearFacet.fieldResult
 
-      if (value === 'paginateSearch') {
-        store.commit('setNumPerPage', numPerPage)
-        store.commit('setStartRecord', start)
-      } else if (value === 'collectionSearch') {
-        const yearFacet = facetResults.find((facet) => facet.fieldName === 'year')
-        const occurrenceYears = yearFacet.fieldResult
+//         store.commit('setOccurrenceYears', occurrenceYears)
+//         store.commit('setSelectedCollection', collection)
+//       } else if (value === 'yearSearch') {
+//         const collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
+//         const collections = collectionFacet.fieldResult
 
-        store.commit('setOccurrenceYears', occurrenceYears)
-        store.commit('setSelectedCollection', collection)
-      } else if (value === 'yearSearch') {
-        const collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
-        const collections = collectionFacet.fieldResult
-
-        store.commit('setCollections', collections)
-        store.commit('setYear', year)
-      }
-      store.commit('setResults', results)
-      store.commit('setTotalRecords', total)
-      setTimeout(() => {
-        // loading = false
-      }, 2000)
-    })
-    .catch()
-    .finally(() => {})
-}
+//         store.commit('setCollections', collections)
+//         store.commit('setYear', year)
+//       }
+//       store.commit('setResults', results)
+//       store.commit('setTotalRecords', total)
+//       setTimeout(() => {
+//         // loading = false
+//       }, 2000)
+//     })
+//     .catch()
+//     .finally(() => {})
+// }
 </script>
-<style scoped></style>
+<style scoped>
+.divBg {
+  background: transparent;
+}
+</style>
