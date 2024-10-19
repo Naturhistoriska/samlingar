@@ -28,6 +28,8 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import moment from 'moment'
 
+import JsonExcel from 'vue-json-excel3'
+
 
 
 
@@ -98,6 +100,8 @@ app.component('Tab', Tab)
 app.component('Tabs', Tabs)
 app.component('TabList', TabList)
 app.component('TieredMenu', TieredMenu)
+
+app.component('downloadExcel', JsonExcel)
 
 app.directive('ripple', Ripple)
 app.mount('#app')

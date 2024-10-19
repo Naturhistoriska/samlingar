@@ -20,7 +20,20 @@
               </Button>
             </legend>
           </div>
+          <div class="col-6">
+            <download-excel
+              class="btn btn-default"
+              :data="json_data"
+              :fields="json_fields"
+              type="csv"
+              name="data.csv"
+              style="color: #34d399; font-size: 14px; cursor: pointer; padding-top: 10px"
+            >
+              <small>Download Data</small>
+            </download-excel>
+          </div>
         </div>
+
         <Map v-if="showMap" />
         <!-- <Map v-if="showMap" @search="handleMapSearch" /> -->
         <div v-else>
@@ -32,7 +45,7 @@
   </div>
 </template>
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, toRaw, isProxy, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
 
@@ -52,6 +65,27 @@ const emits = defineEmits(['advanceSearch', 'filterSearch', 'mapSearch', 'simple
 // let loading = ref(false)
 let showMap = ref(false)
 
+let json_fields = {
+  'Scientific Name': 'scientificName',
+  'Catalogue Number': 'raw_catalogNumber',
+  'Vernacular Name': 'vernacularName',
+  Kingdom: 'kingdom',
+  Phylum: 'phylum',
+  Classs: 'classs',
+  Order: 'order',
+  Family: 'family',
+  Genus: 'genus',
+  Species: 'species',
+  'Taxon Rank': 'taxonRank',
+  'Collection Name': 'collectionName',
+  Country: 'country',
+  'State Province': 'stateProvince',
+  'Decimal Latitude': 'decimalLatitude',
+  'Decimal Longitude': 'decimalLongitude',
+  'Recorded By': 'recordedBy',
+  Collectors: 'collectors'
+}
+
 // watch(
 //   () => showMap.value,
 //   (newValue, oldValue) => {
@@ -59,6 +93,23 @@ let showMap = ref(false)
 //     showMap.value = newValue
 //   }
 // )
+
+const json_data = computed(() => {
+  const data = store.getters['results']
+  console.log('data: ', data)
+
+  // const isProxyData = isProxy(data)
+  // console.log('isProxyData', isProxyData)
+  // let rawData = data.toRaw
+  // console.log('raw data: ', rawData)
+  // let rawData
+  // if (isProxy(data)) {
+  //   rawData = toRaw(data)
+  // }
+  // console.log('rawdata', rawData)
+
+  return toRaw(data)
+})
 
 const mapLinkText = computed(() => {
   if (showMap.value) {
