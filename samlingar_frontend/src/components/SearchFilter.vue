@@ -7,7 +7,7 @@
           {{ $t('search.clearFilter') }}
         </Button>
       </div>
-      <Accordion value="0" style="background-color: transparent">
+      <Accordion :value="['0']" multiple style="background-color: transparent">
         <AccordionPanel value="0" style="background-color: transparent">
           <AccordionHeader style="background-color: transparent">
             {{ $t('search.searchByCollection') }}
