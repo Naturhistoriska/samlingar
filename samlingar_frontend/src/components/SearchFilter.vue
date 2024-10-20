@@ -174,9 +174,4 @@ function selectCollection(value) {
   emits('searchByCollection')
 }
 </script>
-<style scoped>
-.accordionBg {
-  background: red;
-  background-color: transparent;
-}
-</style>
+<style scoped></style>
