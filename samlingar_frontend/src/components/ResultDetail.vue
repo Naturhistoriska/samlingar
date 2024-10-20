@@ -1,6 +1,11 @@
 <template>
   <Card style="background-color: transparent">
-    <template #title>Dataset</template>
+    <template #header>
+      <Button link @click.prevent="onclick()">
+        <small>{{ $t('results.backToResultListView') }}</small>
+      </Button>
+    </template>
+    <template #title>Dataset </template>
     <template #content>
       <div class="grid">
         <div class="col-3" no-gutters>{{ $t('results.catalogNumber') }}:</div>
@@ -78,9 +83,6 @@
       </div>
     </template>
   </Card>
-  <Button link @click.prevent="onclick()">
-    {{ $t('results.backToResultListView') }}
-  </Button>
 </template>
 <script>
 import { mapGetters, mapMutations } from 'vuex'
