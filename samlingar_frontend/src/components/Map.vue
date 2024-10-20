@@ -10,18 +10,18 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
-import moment from 'moment'
+// import moment from 'moment'
 
 // import 'leaflet/dist/leaflet.css'
 // import 'leaflet.markercluster'
 
-import ProgressSpinner from 'primevue/progressspinner'
+// import ProgressSpinner from 'primevue/progressspinner'
 
 import * as L from 'leaflet'
 import 'leaflet.markercluster'
 import { inferRuntimeType } from 'vue/compiler-sfc'
 
-const emits = defineEmits(['search'])
+const emits = defineEmits(['resetView', 'search'])
 
 const store = useStore()
 const initialMap = ref(null)
@@ -78,59 +78,6 @@ watch(
   }
 )
 
-function addGroupMark() {
-  console.log('addGroupMark')
-
-  let cluster = L.markerClusterGroup()
-
-  const each_marker = new L.marker([39.2, 141.38])
-  cluster.addLayer(each_marker)
-  const each_marker1 = new L.marker([39.2, 141.38])
-  cluster.addLayer(each_marker1)
-
-  var markers = L.markerClusterGroup({
-    iconCreateFunction: function (cluster) {
-      return L.divIcon({ html: '<b>' + cluster.getChildCount() + '</b>' })
-    }
-  })
-  // const layerGroup = new L.LayerGroup()
-  // markers.addLayer(layerGroup)
-  initialMap.value.addLayer(markers)
-}
-
-//// Adding some color
-function getColor(d) {
-  return d > 1400
-    ? '#8c2d04'
-    : d > 700
-      ? '#cc4c02'
-      : d > 400
-        ? '#ec7014'
-        : d > 100
-          ? '#fe9929'
-          : d > 50
-            ? '#fec44f'
-            : d > 25
-              ? '#fee391'
-              : '#ffffd4'
-}
-
-function getRadious(d) {
-  return d > 1400
-    ? 40000
-    : d > 700
-      ? 35000
-      : d > 400
-        ? 30000
-        : d > 100
-          ? 25000
-          : d > 50
-            ? 20000
-            : d > 25
-              ? 15000
-              : 10000
-}
-
 function addClusterMarkers() {
   console.log('addClusterMarkers')
   // const isAdvanceSearch = store.getters['isAdvanceSearch']
@@ -161,22 +108,24 @@ function addClusterMarkers() {
       //   markers.addLayer(each_marker)
       // }
 
-      if (count <= 50) {
+      if (count === 1) {
+        const each_marker = new L.marker([latitude, longitude])
+        markers.addLayer(each_marker)
         // const div = document.createElement('div')
         // div.innerHTML = `<br>Total occurrences: ${count}<br>
         //   Coordinates: ${latitude}, ${longitude}<br><br>`
 
         // const each_marker = new L.marker([latitude, longitude])
         // markers.addLayer(each_marker)
-        for (let i = 0; i < count; i++) {
-          const each_marker = new L.marker([latitude, longitude])
-          markers.addLayer(each_marker)
-        }
+        // for (let i = 0; i < count; i++) {
+        //   const each_marker = new L.marker([latitude, longitude])
+        //   markers.addLayer(each_marker)
+        // }
 
         // L.marker([latitude, longitude]).addTo(initialMap.value)
       } else {
         // const color = getColor
-        const r = getRadious(count)
+        // const r = getRadious(count)
         const div = document.createElement('div')
         div.innerHTML = `<br>Total occurrences: ${count}<br>
           Coordinates: ${latitude}, ${longitude}<br><br>`
@@ -310,15 +259,84 @@ function addClusterMarkers1() {
 //   return new Promise((resolve) => setTimeout(resolve, ms))
 // }
 
+//// Adding some color
+// function getColor(d) {
+// return d > 1400
+// ? '#8c2d04'
+// : d > 700
+// ? '#cc4c02'
+// : d > 400
+// ? '#ec7014'
+// : d > 100
+// ? '#fe9929'
+// : d > 50
+// ? '#fec44f'
+// : d > 25
+// ? '#fee391'
+// : '#ffffd4'
+// }
+
+// function getRadious(d) {
+//   return d > 1400
+//     ? 40000
+//     : d > 700
+//       ? 35000
+//       : d > 400
+//         ? 30000
+//         : d > 100
+//           ? 25000
+//           : d > 50
+//             ? 20000
+//             : d > 25
+//               ? 15000
+//               : 10000
+// }
+
 function onClick() {
   console.log('onClick.......')
+  emits('resetView')
 }
 
 function addSingleMarker() {
   const record = store.getters['selectedResult']
-  const latitude = record.processed.location.decimalLatitude
-  const longitude = record.processed.location.decimalLongitude
-  L.marker([latitude, longitude]).addTo(initialMap.value)
+
+  const { attribution, classification, event, location } = record.processed
+
+  const catalogNumber = record.raw.occurrence.catalogNumber
+
+  const collectionName = attribution.collectionName
+
+  const latitude = location.decimalLatitude
+  const longitude = location.decimalLongitude
+  const locality = location.locality
+  const country = location.country
+  const stateProvince = location.stateProvince
+  const eventDate = event.eventDate
+
+  const scientificName = classification.scientificName
+
+  const div = document.createElement('div')
+  div.innerHTML = `<strong> Catalogue number: ${catalogNumber}  </strong>
+      <br> <strong>Collection</strong>: ${collectionName}
+      <br><strong>Scientific Name</strong>: ${scientificName}
+      <br><strong>Locality</strong>: ${locality},
+      <br><strong>State/Province</strong>: ${stateProvince},
+      <br><strong>Country</strong>: ${country}
+      <br><strong>GPS-coordinate</strong>: ${latitude} -- ${longitude}
+      <br><strong>Event date</strong>: ${eventDate}
+      <br>
+      <br>`
+
+  const button = document.createElement('button')
+  button.innerHTML = 'More details'
+
+  button.onclick = function () {
+    onClick()
+  }
+  div.style.cssText = 'width: auto;  '
+  div.appendChild(button)
+  const marker = new L.marker([latitude, longitude]).bindPopup(div)
+  marker.addTo(initialMap.value)
 }
 </script>
 <style scoped>

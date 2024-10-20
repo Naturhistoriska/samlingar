@@ -34,7 +34,7 @@
           </div>
         </div>
 
-        <Map v-if="showMap" />
+        <Map v-if="showMap" @resetView="onMapLinkClick" />
         <!-- <Map v-if="showMap" @search="handleMapSearch" /> -->
         <div v-else>
           <ResultDetail v-if="showDetail" />
@@ -97,16 +97,6 @@ let json_fields = {
 const json_data = computed(() => {
   const data = store.getters['results']
   console.log('data: ', data)
-
-  // const isProxyData = isProxy(data)
-  // console.log('isProxyData', isProxyData)
-  // let rawData = data.toRaw
-  // console.log('raw data: ', rawData)
-  // let rawData
-  // if (isProxy(data)) {
-  //   rawData = toRaw(data)
-  // }
-  // console.log('rawdata', rawData)
 
   return toRaw(data)
 })
