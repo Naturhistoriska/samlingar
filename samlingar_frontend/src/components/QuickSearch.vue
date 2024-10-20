@@ -30,7 +30,6 @@ export default {
   components: {},
   data: () => ({
     acwidth: {},
-    collections: [],
     loading: false,
     items: [],
     itemSelected: false,
@@ -45,6 +44,7 @@ export default {
   methods: {
     ...mapMutations([
       'setCollections',
+      'setLatLong',
       'setOccurrenceYears',
       'setResults',
       'setSearchText',
@@ -52,7 +52,7 @@ export default {
       'setShowDetail',
       'setSelectedCollection',
       'setTotalRecords',
-      'setYear'
+      'setTypeStatus'
     ]),
 
     onChange() {
@@ -92,19 +92,30 @@ export default {
           const total = response.totalRecords
           this.results = response.occurrences
 
-          let facetResults = response.facetResults
-          let collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
-          this.collections = collectionFacet.fieldResult
+          if (total > 0) {
+            const facetResults = response.facetResults
 
-          const yearFacet = facetResults.find((facet) => facet.fieldName === 'year')
-          const occurrenceYears = yearFacet.fieldResult
+            const typeStatusFacet = facetResults.find((facet) => facet.fieldName === 'typeStatus')
+            const typeStatus = typeStatusFacet.fieldResult
+            this.setTypeStatus(typeStatus)
 
-          this.setCollections(this.collections)
-          this.setOccurrenceYears(occurrenceYears)
+            const collectionFacet = facetResults.find(
+              (facet) => facet.fieldName === 'collectionName'
+            )
+            const collections = collectionFacet.fieldResult
+            this.setCollections(collections)
+
+            const pointFacet = facetResults.find((facet) => facet.fieldName === 'point-0.1')
+            const point = pointFacet.fieldResult
+            this.setLatLong(point)
+          } else {
+            store.commit('setCollections', [])
+            store.commit('setLatLong', [])
+            store.commit('setTypeStatus', [])
+          }
           this.setResults(this.results)
           this.setSearchText(searchText)
           this.setSelectedCollection(null)
-          this.setYear(null)
           this.setShowDetail(false)
           this.setShowResults(true)
           this.setTotalRecords(total)

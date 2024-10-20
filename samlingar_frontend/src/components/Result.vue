@@ -11,8 +11,7 @@
       </div>
       <div class="col-3" no-gutters>High classification</div>
       <div class="col-9">
-        {{ kingdom }}/ {{ phylum }}/ {{ classs }}/ {{ order }}/ {{ family }}/ {{ genus }}/
-        {{ species }}
+        {{ kingdom }}/ {{ phylum }}/ {{ classs }}/ {{ order }}/ {{ family }}/ {{ genus }}
       </div>
       <div class="col-3" no-gutters>Collection name</div>
       <div class="col-9">
@@ -73,33 +72,13 @@ export default {
       return 'unselected'
       // return this.isActive ? 'selected' : 'unselected'
     }
-    // isActive: function () {
-    //   return this.result.properties.gid === this.selectedResultId
-    // }
-    // isActive: function () {
-    //   return this.result.uuid === this.selectedResultId
-    // },
-    // isHovered: function () {
-    //   return this.result.properties.gid === this.hoveredResultId
-    // },
-    // resultcolor: function () {
-    //   return this.isActive ? 'selected' : 'unselected'
-    // },
-    // iconcolor: function () {
-    //   return this.isActive || this.isHovered ? 'primary' : 'grey lighten-1'
-    // },
-    // namecolor: function () {
-    //   return this.isActive || this.isHovered ? 'blue--text text--darken-2' : ''
-    // }
   },
   methods: {
     ...mapMutations(['setShowResults', 'setShowDetail', 'setSelectedResult']),
     onclick() {
-      console.log('selected ... ' + this.result.uuid)
       service
         .uuidSearch(this.result.uuid)
         .then((response) => {
-          console.log('response .... ' + response.raw.location.locality)
           this.setSelectedResult(response)
           this.setShowDetail(true)
         })

@@ -84,32 +84,18 @@ function processResult(facetResults, results, total) {
   if (total > 0) {
     const typeStatusFacet = facetResults.find((facet) => facet.fieldName === 'typeStatus')
     const typeStatus = typeStatusFacet.fieldResult
+    store.commit('setTypeStatus', typeStatus)
 
     const collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
     const collections = collectionFacet.fieldResult
     store.commit('setCollections', collections)
 
-    // const yearFacet = facetResults.find((facet) => facet.fieldName === 'year')
-    // const occurrenceYears = yearFacet.fieldResult
-    // store.commit('setOccurrenceYears', occurrenceYears)
-
-    // const latLongFacet = facetResults.find((facet) => facet.fieldName === 'lat_long')
-    // const latLong = latLongFacet.fieldResult
-    // store.commit('setLatLong', latLong)
-
-    const pointFacet = facetResults.find((facet) => facet.fieldName === 'point-1')
+    const pointFacet = facetResults.find((facet) => facet.fieldName === 'point-0.1')
     const point = pointFacet.fieldResult
     store.commit('setLatLong', point)
 
     console.log('length : ', point.length)
-
-    // if (start === 1) {
-    //   store.commit('setResetPaging', true)
-    // } else {
-    //   store.commit('setResetPaging', false)
-    // }
   } else {
-    // store.commit('setOccurrenceYears', [])
     store.commit('setCollections', [])
     store.commit('setLatLong', [])
     store.commit('setTypeStatus', [])
@@ -195,31 +181,6 @@ function advanceConditionalSearch(value) {
       const facetResults = response.facetResults
 
       processConditionalSearchResults(facetResults, results, total, value)
-      //   if (total > 0) {
-      //     const results = response.occurrences
-      //     const facetResults = response.facetResults
-
-      //     if ('paginateSearch') {
-      //     } else {
-      //       if (value === 'collectionSearch') {
-      //         const yearFacet = facetResults.find((facet) => facet.fieldName === 'year')
-      //         const occurrenceYears = yearFacet.fieldResult
-      //         store.commit('setOccurrenceYears', occurrenceYears)
-      //       } else if (value === 'yearSearch') {
-      //         const collectionFacet = facetResults.find(
-      //           (facet) => facet.fieldName === 'collectionName'
-      //         )
-      //         const collections = collectionFacet.fieldResult
-      //         store.commit('setCollections', collections)
-      //       }
-      //       const latLongFacet = facetResults.find((facet) => facet.fieldName === 'lat_long')
-      //       const latLong = latLongFacet.fieldResult
-      //       store.commit('setLatLong', latLong)
-      //     }
-
-      //     store.commit('setResults', results)
-      //     store.commit('setTotalRecords', total)
-      //   }
     })
     .catch()
     .finally(() => {})
@@ -239,7 +200,7 @@ function processConditionalSearchResults(facetResults, results, total, searchTyp
         const collections = collectionFacet.fieldResult
         store.commit('setCollections', collections)
       }
-      const latLongFacet = facetResults.find((facet) => facet.fieldName === 'lat_long')
+      const latLongFacet = facetResults.find((facet) => facet.fieldName === 'point-0.1')
       const latLong = latLongFacet.fieldResult
       store.commit('setLatLong', latLong)
     }
@@ -263,51 +224,6 @@ function processConditionalSearchResults(facetResults, results, total, searchTyp
   store.commit('setShowResults', true)
   store.commit('setResetPaging', true)
 }
-
-// function paginatorSearch() {
-//   console.log('paginatorSearch....')
-//   const collection = store.getters['selectedCollection']
-//   const numPerPage = store.getters['numPerPage']
-//   const searchText = store.getters['searchText']
-//   const start = store.getters['startRecord']
-//   const year = store.getters['year']
-
-//   service
-//     .searchFiltByCollection(searchText, start, collection, year, numPerPage)
-//     .then((response) => {
-//       const total = response.totalRecords
-//       const results = response.occurrences
-//       const facetResults = response.facetResults
-
-//       const latLongFacet = facetResults.find((facet) => facet.fieldName === 'lat_long')
-//       const latLong = latLongFacet.fieldResult
-//       store.commit('setLatLong', latLong)
-
-//       if (value === 'paginateSearch') {
-//         store.commit('setNumPerPage', numPerPage)
-//         store.commit('setStartRecord', start)
-//       } else if (value === 'collectionSearch') {
-//         const yearFacet = facetResults.find((facet) => facet.fieldName === 'year')
-//         const occurrenceYears = yearFacet.fieldResult
-
-//         store.commit('setOccurrenceYears', occurrenceYears)
-//         store.commit('setSelectedCollection', collection)
-//       } else if (value === 'yearSearch') {
-//         const collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
-//         const collections = collectionFacet.fieldResult
-
-//         store.commit('setCollections', collections)
-//         store.commit('setYear', year)
-//       }
-//       store.commit('setResults', results)
-//       store.commit('setTotalRecords', total)
-//       setTimeout(() => {
-//         // loading = false
-//       }, 2000)
-//     })
-//     .catch()
-//     .finally(() => {})
-// }
 
 function handleMapSearch() {
   console.log('handleMapSearch')
