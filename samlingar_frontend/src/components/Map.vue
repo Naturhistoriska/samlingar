@@ -10,7 +10,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
-// import moment from 'moment'
+import moment from 'moment'
 
 // import 'leaflet/dist/leaflet.css'
 // import 'leaflet.markercluster'
@@ -19,9 +19,9 @@ import { useStore } from 'vuex'
 
 import * as L from 'leaflet'
 import 'leaflet.markercluster'
-import { inferRuntimeType } from 'vue/compiler-sfc'
+// import { inferRuntimeType } from 'vue/compiler-sfc'
 
-const emits = defineEmits(['resetView', 'search'])
+const emits = defineEmits(['searchDetial', 'resetView', 'search'])
 
 const store = useStore()
 const initialMap = ref(null)
@@ -40,13 +40,27 @@ onMounted(() => {
 })
 
 function initMap() {
-  initialMap.value = L.map('map').setView([59.0, 15.0], 6)
+  initialMap.value = L.map('map', {
+    zoomControl: true,
+    zoomAnimation: false
+  })
+    .setView([59.0, 15.0], 6)
+    .setZoom(3)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 3,
+    minZoom: 1,
+    maxZoom: 7,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(initialMap.value)
 
   L.Marker.prototype._animateZoom = function (opt) {
+    if (!this._map) {
+      return
+    }
+    const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round()
+    this._setPos(pos)
+  }
+
+  L.circle.prototype._animateZoom = function (opt) {
     if (!this._map) {
       return
     }
@@ -63,12 +77,55 @@ watch(
         layer.remove()
       } else if (layer instanceof L.Circle) {
         layer.remove()
+      } else {
+        layer.remove()
       }
     })
+    resetMap()
     addClusterMarkers()
-    // addGroupMark()
   }
 )
+
+watch(
+  () => store.getters['mapRecords'],
+  () => {
+    initialMap.value.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        layer.remove()
+      } else if (layer instanceof L.Circle) {
+        layer.remove()
+      } else {
+        layer.remove()
+      }
+    })
+    resetMap()
+    addGroupMark()
+  }
+)
+
+function resetMap() {
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    minZoom: 1,
+    maxZoom: 7,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(initialMap.value)
+
+  L.Marker.prototype._animateZoom = function (opt) {
+    if (!this._map) {
+      return
+    }
+    const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round()
+    this._setPos(pos)
+  }
+
+  L.circle.prototype._animateZoom = function (opt) {
+    if (!this._map) {
+      return
+    }
+    const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round()
+    this._setPos(pos)
+  }
+}
 
 watch(
   () => isLoading,
@@ -103,29 +160,26 @@ function addClusterMarkers() {
       const latitude = array[0]
       const longitude = array[1]
 
-      // for (let i = 0; i < count; i++) {
-      //   const each_marker = new L.marker([latitude, longitude])
-      //   markers.addLayer(each_marker)
-      // }
-
+      const coordinates = array.toString()
       if (count === 1) {
-        const each_marker = new L.marker([latitude, longitude])
-        markers.addLayer(each_marker)
-        // const div = document.createElement('div')
-        // div.innerHTML = `<br>Total occurrences: ${count}<br>
-        //   Coordinates: ${latitude}, ${longitude}<br><br>`
+        const div = document.createElement('div')
+        div.innerHTML = `Coordinates: ${latitude}, ${longitude}<br><br>`
 
-        // const each_marker = new L.marker([latitude, longitude])
-        // markers.addLayer(each_marker)
-        // for (let i = 0; i < count; i++) {
-        //   const each_marker = new L.marker([latitude, longitude])
-        //   markers.addLayer(each_marker)
-        // }
+        const button = document.createElement('button')
+        button.innerHTML = 'More details'
 
-        // L.marker([latitude, longitude]).addTo(initialMap.value)
+        button.onclick = function () {
+          onClickDetail(coordinates)
+        }
+        div.style.cssText = 'width: auto;  '
+        div.appendChild(button)
+
+        const marker = new L.marker([latitude, longitude]).bindPopup(div)
+
+        // const marker = L.marker(L.latLng(parseFloat(item[latitude]), parseFloat(item[longitude])))
+
+        markers.addLayer(marker)
       } else {
-        // const color = getColor
-        // const r = getRadious(count)
         const div = document.createElement('div')
         div.innerHTML = `<br>Total occurrences: ${count}<br>
           Coordinates: ${latitude}, ${longitude}<br><br>`
@@ -134,11 +188,8 @@ function addClusterMarkers() {
         button.innerHTML = 'More details'
 
         button.onclick = function () {
-          onClick()
+          onClick(coordinates, count)
         }
-
-        const radious = count * 20
-
         div.appendChild(button)
 
         L.circle([array[0], array[1]], {
@@ -148,13 +199,6 @@ function addClusterMarkers() {
           radius: 60000
         })
           .bindPopup(div)
-          // .bindPopup(
-          //   `Total occurrences: ${count} <br>
-          // Coordinates: ${latitude}, ${longitude}
-          // <br><br><center><button id="getres"  ">More details</button>
-          // `
-          // )
-          // .on('click', onClick)
           .addTo(initialMap.value)
       }
     }
@@ -225,76 +269,45 @@ function addClusterMarkers() {
   // isLoading.value = false
 }
 
-function addClusterMarkers1() {
-  const latLongArray = store.getters['latLong']
-
-  console.log('length..', latLongArray.length)
-
+function addGroupMark() {
+  const records = store.getters['mapRecords']
+  console.log('recoudslength', records.length)
   const markers = L.markerClusterGroup()
 
-  const layerGroup = new L.LayerGroup()
-
-  latLongArray.forEach((lat_long) => {
-    const latLong = lat_long.label
-
-    if (latLong !== 'Not supplied') {
-      const array = latLong.split(',')
-
-      const count = lat_long.count
-      const latitude = array[0]
-      const longitude = array[1]
-
-      const div = document.createElement('div')
-      div.innerHTML = `<br>Total occurrences: ${count}<br>
-          Coordinates: ${latitude}, ${longitude}<br><br>`
-
-      const each_marker = new L.marker([latitude, longitude])
-      markers.addLayer(each_marker)
-    }
+  records.forEach((record) => {
+    const {
+      collectionName,
+      collectors,
+      decimalLatitude,
+      decimalLongitude,
+      eventDate,
+      raw_catalogNumber,
+      scientificName
+    } = record
+    const date = moment(eventDate).format('yyyy-MM-DD h:mm:ss')
+    // const each_marker = new L.marker([decimalLatitude, decimalLongitude])
+    // const each_marker = L.marker(L.latLng(parseFloat(item[latitude]), parseFloat(item[longitude])))
+    const each_marker = new L.marker([decimalLatitude, decimalLongitude]).bindPopup(
+      `<strong> Catalogue number: ${raw_catalogNumber}  </strong>
+      <br><strong>Collection</strong>: ${collectionName}
+      <br><strong>ScientificName</strong>: ${scientificName}
+      <br><strong>Collectors</strong>: ${collectors}
+      <br><strong>Event date</strong>: ${date}
+      <br><strong>Coordinates</strong>: ${decimalLatitude} -- ${decimalLongitude}`
+    )
+    markers.addLayer(each_marker)
   })
   initialMap.value.addLayer(markers)
 }
 
-// function sleep(ms) {
-//   return new Promise((resolve) => setTimeout(resolve, ms))
-// }
+function onClickDetail(latitude, longitude) {
+  console.log('onClickDetail', latitude, longitude)
+  emits('searchDetial', latitude, longitude)
+}
 
-//// Adding some color
-// function getColor(d) {
-// return d > 1400
-// ? '#8c2d04'
-// : d > 700
-// ? '#cc4c02'
-// : d > 400
-// ? '#ec7014'
-// : d > 100
-// ? '#fe9929'
-// : d > 50
-// ? '#fec44f'
-// : d > 25
-// ? '#fee391'
-// : '#ffffd4'
-// }
-
-// function getRadious(d) {
-//   return d > 1400
-//     ? 40000
-//     : d > 700
-//       ? 35000
-//       : d > 400
-//         ? 30000
-//         : d > 100
-//           ? 25000
-//           : d > 50
-//             ? 20000
-//             : d > 25
-//               ? 15000
-//               : 10000
-// }
-
-function onClick() {
-  console.log('onClick.......')
-  emits('resetView')
+function onClick(value, total) {
+  console.log('onClick', value, total)
+  emits('resetView', value, total)
 }
 
 function addSingleMarker() {

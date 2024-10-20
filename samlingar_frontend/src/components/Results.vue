@@ -34,7 +34,7 @@
           </div>
         </div>
 
-        <Map v-if="showMap" @resetView="onMapLinkClick" />
+        <Map v-if="showMap" @searchDetial="handleSearchDetail" @resetView="handleResetView" />
         <!-- <Map v-if="showMap" @search="handleMapSearch" /> -->
         <div v-else>
           <ResultDetail v-if="showDetail" />
@@ -60,7 +60,14 @@ import Map from './Map.vue'
 const { t } = useI18n()
 
 const store = useStore()
-const emits = defineEmits(['advanceSearch', 'filterSearch', 'mapSearch', 'simpleSearch'])
+const emits = defineEmits([
+  'advanceSearch',
+  'detailSearch',
+  'coordinatesSearch',
+  'filterSearch',
+  'mapSearch',
+  'simpleSearch'
+])
 
 // let loading = ref(false)
 let showMap = ref(false)
@@ -138,6 +145,18 @@ function handleSearchByType() {
   console.log('handleSearchByType')
 
   emits('filterSearch', 'typeStatusSearch')
+}
+
+function handleSearchDetail(coordinates) {
+  console.log('handleSearchDetail', coordinates)
+  onMapLinkClick()
+  emits('detailSearch', coordinates)
+}
+
+function handleResetView(coordinates, total) {
+  console.log('handleResetView', coordinates, total)
+
+  emits('coordinatesSearch', coordinates, total)
 }
 
 // function handleSearchByYear() {

@@ -3,8 +3,9 @@
     <Results
       v-if="isShowResults"
       @advanceSearch="handleAdvanceSearch"
+      @coordinatesSearch="handleCoordinatesSearch"
       @filterSearch="handleFilterSearch"
-      @mapSearch="handleMapSearch"
+      @detailSearch="handleMapSearch"
       @simpleSearch="handleSimpleSearch"
     />
     <start-page v-else @advanceSearch="handleAdvanceSearch" @simpleSearch="handleSimpleSearch" />
@@ -90,7 +91,7 @@ function processResult(facetResults, results, total) {
     const collections = collectionFacet.fieldResult
     store.commit('setCollections', collections)
 
-    const pointFacet = facetResults.find((facet) => facet.fieldName === 'point-0.1')
+    const pointFacet = facetResults.find((facet) => facet.fieldName === 'point-0.01')
     const point = pointFacet.fieldResult
     store.commit('setLatLong', point)
 
@@ -200,7 +201,7 @@ function processConditionalSearchResults(facetResults, results, total, searchTyp
         const collections = collectionFacet.fieldResult
         store.commit('setCollections', collections)
       }
-      const latLongFacet = facetResults.find((facet) => facet.fieldName === 'point-0.1')
+      const latLongFacet = facetResults.find((facet) => facet.fieldName === 'point-0.01')
       const latLong = latLongFacet.fieldResult
       store.commit('setLatLong', latLong)
     }
@@ -225,30 +226,145 @@ function processConditionalSearchResults(facetResults, results, total, searchTyp
   store.commit('setResetPaging', true)
 }
 
-function handleMapSearch() {
-  console.log('handleMapSearch')
+function handleCoordinatesSearch(coordinates, total) {
+  console.log('handleCoordinatesSearch', coordinates, total)
   const isAdvanceSearch = store.getters['isAdvanceSearch']
   if (isAdvanceSearch) {
+    advanceCoordinatesSearch(coordinates, total)
   } else {
-    simpleMapDataSearch()
+    simpleCoordinsSearch(coordinates, total)
   }
 }
 
-function simpleMapDataSearch() {
+function advanceCoordinatesSearch(coordinates, total) {
+  console.log('advanceCoordinatesSearch', coordinates, total)
+}
+
+function simpleCoordinsSearch(coordinates, total) {
+  console.log('simpleCoordinsSearch', coordinates, total)
+
   const collection = store.getters['selectedCollection']
-  const totalRecords = store.getters['totalRecords']
   const searchText = store.getters['searchText']
-  const year = store.getters['year']
+  const typeStatus = store.getters['selectedType']
 
   service
-    .searchMapData(searchText, collection, year, totalRecords)
+    .simpleCoordinatesSearch(searchText, collection, typeStatus, coordinates, total)
     .then((response) => {
-      const results = response.occurrences
+      const total = response.totalRecords
 
-      store.commit('setMapRecords', results)
+      console.log('total :', total)
+      if (total > 0) {
+        const results = response.occurrences
+        store.commit('setMapRecords', results)
+      }
+
+      // store.commit('setShowDetail', true)
+      // store.commit('setShowResults', true)
+      // store.commit('setResetPaging', true)
       setTimeout(() => {
         // loading.value = false
       }, 2000)
+    })
+    .catch()
+    .finally(() => {})
+}
+
+function handleMapSearch(coordinates) {
+  console.log('handleMapSearch')
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (isAdvanceSearch) {
+    advanceMapDataSearch(coordinates)
+  } else {
+    simpleMapDataSearch(coordinates)
+  }
+}
+
+function advanceMapDataSearch(coordinates) {
+  console.log('simpleMapDataSearch', coordinates)
+
+  const selectedCollection = store.getters['selectedCollection']
+  const selectedTypeStatus = store.getters['selectedType']
+
+  const speciesGroup = store.getters['speciesGrouup']
+  const dataset = store.getters['dataset']
+  const catalogNumber = store.getters['catalogNumber']
+  const scientificName = store.getters['scientificName']
+  const startDate = store.getters['startDate']
+  const endDate = store.getters['endDate']
+  const isType = store.getters['isType']
+
+  catalogNumber, startDate, endDate, isType, selectedCollection, selectedTypeStatus, coordinates
+
+  service
+    .advancesearchMapData(
+      scientificName,
+      speciesGroup,
+      dataset,
+      catalogNumber,
+      startDate,
+      endDate,
+      isType,
+      selectedCollection,
+      selectedTypeStatus,
+      coordinates
+    )
+    .then((response) => {
+      const total = response.totalRecords
+      console.log('total: ', total)
+      if (total >= 1) {
+        const results = response.occurrences
+
+        const id = results[0].uuid
+        console.log('id:', id)
+        getDetailById(id)
+      }
+
+      // store.commit('setShowDetail', true)
+      // store.commit('setShowResults', true)
+      // store.commit('setResetPaging', true)
+      setTimeout(() => {
+        // loading.value = false
+      }, 2000)
+    })
+    .catch()
+    .finally(() => {})
+}
+
+function simpleMapDataSearch(coordinates) {
+  console.log('simpleMapDataSearch', coordinates)
+  const collection = store.getters['selectedCollection']
+  const searchText = store.getters['searchText']
+  const typeStatus = store.getters['selectedType']
+
+  service
+    .simplesearchMapData(searchText, collection, typeStatus, coordinates)
+    .then((response) => {
+      const total = response.totalRecords
+      if (total >= 1) {
+        const results = response.occurrences
+
+        const id = results[0].uuid
+        console.log('id:', id)
+        getDetailById(id)
+      }
+
+      // store.commit('setShowDetail', true)
+      // store.commit('setShowResults', true)
+      // store.commit('setResetPaging', true)
+      setTimeout(() => {
+        // loading.value = false
+      }, 2000)
+    })
+    .catch()
+    .finally(() => {})
+}
+
+function getDetailById(id) {
+  service
+    .uuidSearch(id)
+    .then((response) => {
+      store.commit('setShowDetail', true)
+      store.commit('setSelectedResult', response)
     })
     .catch()
     .finally(() => {})

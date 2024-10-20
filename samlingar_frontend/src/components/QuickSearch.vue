@@ -105,9 +105,11 @@ export default {
             const collections = collectionFacet.fieldResult
             this.setCollections(collections)
 
-            const pointFacet = facetResults.find((facet) => facet.fieldName === 'point-0.1')
+            const pointFacet = facetResults.find((facet) => facet.fieldName === 'point-0.01')
             const point = pointFacet.fieldResult
             this.setLatLong(point)
+
+            console.log('point length:', point.length)
           } else {
             store.commit('setCollections', [])
             store.commit('setLatLong', [])

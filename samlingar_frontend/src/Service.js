@@ -17,7 +17,7 @@ export default class Service {
 
   async quickSearch(searchText, start, rows) {
     // const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year,typeStatus&flimit=2000`
-    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
+    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.01,typeStatus&flimit=3500`
     const response = await axios.get(url)
 
     return response.data
@@ -88,17 +88,119 @@ export default class Service {
     // }
     // }
 
-    url +=
-      `&start=${start}&pageSize=${rows}&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
+    url += `&start=${start}&pageSize=${rows}&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.01,typeStatus&flimit=3500`
     const response = await axios.get(url)
 
     return response.data
   }
 
-  async searchMapData(searchText, selectedCollection, selectedYear, total) {
-    const url = this.buildUrl(searchText, 1, selectedCollection, selectedYear, total, true)
+  async simpleCoordinatesSearch(searchText, selectedCollection, selectedType, coordinates, total) {
+    let url = `${baseUrl}/search?q=data_hub_uid:${institutionId}`
+
+    if (searchText) {
+      url += ` AND taxa:"${searchText}"&start=${0}&pageSize=${total}`
+    }
+
+    if (selectedCollection) {
+      url += `&fq=collection_name:"${selectedCollection}"`
+    }
+
+    if (selectedType) {
+      url += `&fq=typeStatus:"${typeStatus}"`
+    }
+
+    if (coordinates) {
+      url += `&fq=point-0.01:${coordinates}`
+    }
+
     const response = await axios.get(url)
     return response.data
+  }
+
+  async advancesearchMapData(
+    scientificName,
+    species_group,
+    dataset,
+    catalogNumber,
+    startDate,
+    endDate,
+    isType,
+    selectedCollection,
+    selectedTypeStatus,
+    coordinates
+  ) {
+    let url = `${baseUrl}/search?q=data_hub_uid:${institutionId}`
+
+    if (scientificName) {
+      url += ` AND taxa:${scientificName}`
+    }
+
+    if (species_group) {
+      url += ` AND species_group:${species_group}`
+    }
+
+    if (dataset) {
+      url += ` AND collectionName:"${dataset}"`
+    }
+
+    if (catalogNumber) {
+      url += ` AND catalogue_number:"${catalogNumber}"`
+    }
+
+    if (startDate && endDate) {
+      url += ` AND occurrence_date:%5B${startDate}T00:00:00Z TO ${endDate}T00:00:00Z%5D`
+    } else if (startDate && !endDate) {
+      url += ` AND occurrence_date:%5B${startDate}T00:00:00Z TO *%5D`
+    } else if (!startDate && endDate) {
+      url += ` AND occurrence_date:%5B* TO ${endDate}T00:00:00Z%5D`
+    }
+
+    if (isType) {
+      url += '&fq=typeStatus:*'
+    }
+
+    if (selectedCollection) {
+      url += `&fq=collection_name:"${selectedCollection}"`
+    }
+
+    if (selectedTypeStatus) {
+      url += `&fq=typeStatus:"${selectedTypeStatus}"`
+    }
+
+    if (coordinates) {
+      url += `&fq=point-0.01:${coordinates}`
+    }
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  async simplesearchMapData(searchText, selectedCollection, selectedType, coordinates) {
+    const url = this.buildLatLongUrl(searchText, selectedCollection, selectedType, coordinates)
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  buildLatLongUrl(searchText, selectedCollection, selectedType, coordinates) {
+    let url = `${baseUrl}/search?q=data_hub_uid:${institutionId}`
+
+    if (searchText) {
+      url += ` AND taxa:"${searchText}"`
+    }
+
+    if (selectedCollection) {
+      url += `&fq=collection_name:"${selectedCollection}"`
+    }
+
+    if (selectedType) {
+      url += `&fq=typeStatus:"${selectedType}"`
+    }
+
+    if (coordinates) {
+      url += `&fq=point-0.01:${coordinates}`
+    }
+    return url
   }
 
   async advanceSearch(
@@ -131,19 +233,19 @@ export default class Service {
     }
 
     if (startDate && endDate) {
-      url = url + ` AND occurrence_date:%5B${startDate}T00:00:00Z TO ${endDate}T00:00:00Z%5D`
+      url += ` AND occurrence_date:%5B${startDate}T00:00:00Z TO ${endDate}T00:00:00Z%5D`
     } else if (startDate && !endDate) {
-      url = url + ` AND occurrence_date:%5B${startDate}T00:00:00Z TO *%5D`
+      url += ` AND occurrence_date:%5B${startDate}T00:00:00Z TO *%5D`
     } else if (!startDate && endDate) {
-      url = url + ` AND occurrence_date:%5B* TO ${endDate}T00:00:00Z%5D`
+      url += ` AND occurrence_date:%5B* TO ${endDate}T00:00:00Z%5D`
     }
 
     if (isType) {
-      url = url + '&fq=typeStatus:*'
+      url += '&fq=typeStatus:*'
     }
     url =
       url +
-      `&start=${start}&pageSize=${rows}&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
+      `&start=${start}&pageSize=${rows}&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.01,typeStatus&flimit=3500`
     // url = url + `&start=${start}&pageSize=${rows}&facets=collectionName,year,lat_long,typeStatus`
     const response = await axios.get(url)
 
@@ -185,7 +287,7 @@ export default class Service {
     }
 
     url +=
-      '&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&&facets=collectionName,point-0.1,typeStatus&flimit=3000'
+      '&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&&facets=collectionName,point-0.01,typeStatus&flimit=3500'
     // if (year) {
     //   if (year === 'Not supplied') {
     //     url += '&fq=-year:*'
@@ -194,13 +296,9 @@ export default class Service {
     //   }
     // }
 
-
-
     // if (isMap) {
     //   url += `&fq=lat_long:*`
     // }
-    return (
-      url
-    )
+    return url
   }
 }
