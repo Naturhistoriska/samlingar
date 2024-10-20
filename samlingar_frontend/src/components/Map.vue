@@ -19,6 +19,10 @@ import moment from 'moment'
 
 import * as L from 'leaflet'
 import 'leaflet.markercluster'
+
+import markerIconUrl from '/node_modules/leaflet/dist/images/marker-icon.png'
+import markerIconRetinaUrl from '/node_modules/leaflet/dist/images/marker-icon-2x.png'
+import markerShadowUrl from '/node_modules/leaflet/dist/images/marker-shadow.png'
 // import { inferRuntimeType } from 'vue/compiler-sfc'
 
 const emits = defineEmits(['searchDetial', 'resetView', 'search'])
@@ -52,21 +56,26 @@ function initMap() {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(initialMap.value)
 
-  L.Marker.prototype._animateZoom = function (opt) {
-    if (!this._map) {
-      return
-    }
-    const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round()
-    this._setPos(pos)
-  }
+  L.Icon.Default.prototype.options.iconUrl = markerIconUrl
+  L.Icon.Default.prototype.options.iconRetinaUrl = markerIconRetinaUrl
+  L.Icon.Default.prototype.options.shadowUrl = markerShadowUrl
+  L.Icon.Default.imagePath = '' // necessary to avoid Leaflet adds some prefix to image path.
 
-  L.circle.prototype._animateZoom = function (opt) {
-    if (!this._map) {
-      return
-    }
-    const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round()
-    this._setPos(pos)
-  }
+  // L.Marker.prototype._animateZoom = function (opt) {
+  //   if (!this._map) {
+  //     return
+  //   }
+  //   const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round()
+  //   this._setPos(pos)
+  // }
+
+  // L.circle.prototype._animateZoom = function (opt) {
+  //   if (!this._map) {
+  //     return
+  //   }
+  //   const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round()
+  //   this._setPos(pos)
+  // }
 }
 
 watch(
