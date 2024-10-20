@@ -7,7 +7,7 @@ const resultsPerPage = 10
 
 export default class Service {
   async autoComplete(searchText, start, rows) {
-    const url = `${baseUrl}/search?q=data_hub_uid:${institutionId} AND text:${searchText}*&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc`
+    const url = `${baseUrl}/search?q=data_hub_uid:${institutionId} AND text:${searchText}*&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=scientificName`
     // const url = `${baseUrl}/search?q=${searchText}*  AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc`
 
     const response = await axios.get(url)
@@ -17,7 +17,7 @@ export default class Service {
 
   async quickSearch(searchText, start, rows) {
     // const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year,typeStatus&flimit=2000`
-    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,point-1,typeStatus&flimit=2000`
+    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=collectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
     const response = await axios.get(url)
 
     return response.data
@@ -89,7 +89,8 @@ export default class Service {
     // }
 
     url =
-      url + `&start=${start}&pageSize=${rows}&facets=collectionName,lat_long,typeStatus&flimit=2000`
+      url +
+      `&start=${start}&pageSize=${rows}&fl=collectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
     const response = await axios.get(url)
 
     return response.data
@@ -141,7 +142,9 @@ export default class Service {
     if (isType) {
       url = url + '&fq=typeStatus:*'
     }
-    url = url + `&start=${start}&pageSize=${rows}&facets=collectionName,lat_long,typeStatus`
+    url =
+      url +
+      `&start=${start}&pageSize=${rows}&fl=collectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
     // url = url + `&start=${start}&pageSize=${rows}&facets=collectionName,year,lat_long,typeStatus`
     const response = await axios.get(url)
 
@@ -182,6 +185,8 @@ export default class Service {
       url += `&fq=typeStatus:"${typeStatus}"`
     }
 
+    url +=
+      '&fl=collectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&&facets=collectionName,point-0.1,typeStatus&flimit=3000'
     // if (year) {
     //   if (year === 'Not supplied') {
     //     url += '&fq=-year:*'
@@ -195,6 +200,8 @@ export default class Service {
     // if (isMap) {
     //   url += `&fq=lat_long:*`
     // }
-    return url + '&facets=collectionName,lat_long,typeStatus&flimit=2000'
+    return (
+      url
+    )
   }
 }
