@@ -17,7 +17,7 @@ export default class Service {
 
   async quickSearch(searchText, start, rows) {
     // const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year,typeStatus&flimit=2000`
-    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=collectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
+    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
     const response = await axios.get(url)
 
     return response.data
@@ -88,9 +88,8 @@ export default class Service {
     // }
     // }
 
-    url =
-      url +
-      `&start=${start}&pageSize=${rows}&fl=collectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
+    url +=
+      `&start=${start}&pageSize=${rows}&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
     const response = await axios.get(url)
 
     return response.data
@@ -144,7 +143,7 @@ export default class Service {
     }
     url =
       url +
-      `&start=${start}&pageSize=${rows}&fl=collectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
+      `&start=${start}&pageSize=${rows}&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.1,typeStatus&flimit=3000`
     // url = url + `&start=${start}&pageSize=${rows}&facets=collectionName,year,lat_long,typeStatus`
     const response = await axios.get(url)
 
@@ -186,7 +185,7 @@ export default class Service {
     }
 
     url +=
-      '&fl=collectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&&facets=collectionName,point-0.1,typeStatus&flimit=3000'
+      '&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&&facets=collectionName,point-0.1,typeStatus&flimit=3000'
     // if (year) {
     //   if (year === 'Not supplied') {
     //     url += '&fq=-year:*'
