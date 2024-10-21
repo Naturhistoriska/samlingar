@@ -70,7 +70,7 @@ export default {
       console.log(this.search)
       const searchText = event.query
       service
-        .autoComplete(searchText, 1, 10)
+        .autoComplete(searchText, 0, 10)
         .then((response) => {
           this.items = response.occurrences
             .filter((item) =>
