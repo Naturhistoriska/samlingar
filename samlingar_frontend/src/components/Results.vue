@@ -21,6 +21,9 @@
             </legend>
           </div>
           <div class="col-6">
+            <!-- <Button link @click="exportData" v-if="!dataPrepared">
+              <small>Export data</small>
+            </Button> -->
             <download-excel
               class="btn btn-default"
               :data="json_data"
@@ -31,6 +34,18 @@
             >
               <small>Download Data</small>
             </download-excel>
+
+            <!-- <downloadexcel
+              class="btn"
+              :fetch="fetchData"
+              :before-generate="startDownload"
+              :before-finish="finishDownload"
+              :fields="json_fields"
+              type="csv"
+              name="data1.csv"
+            >
+              Download Excel
+            </downloadexcel> -->
           </div>
         </div>
 
@@ -54,8 +69,10 @@ import ResultList from './ResultList.vue'
 import SearchFilter from './SearchFilter.vue'
 import Map from './Map.vue'
 
-// import Service from '../Service'
-// const service = new Service()
+import downloadexcel from 'vue-json-excel3'
+
+import Service from '../Service'
+const service = new Service()
 
 const { t } = useI18n()
 
@@ -64,6 +81,7 @@ const emits = defineEmits([
   'advanceSearch',
   'detailSearch',
   'coordinatesSearch',
+  'exportData',
   'filterSearch',
   'mapSearch',
   'simpleSearch'
@@ -71,6 +89,7 @@ const emits = defineEmits([
 
 // let loading = ref(false)
 let showMap = ref(false)
+let dataPrepared = ref(false)
 
 let json_fields = {
   'Scientific Name': 'scientificName',
@@ -108,6 +127,11 @@ const json_data = computed(() => {
   return toRaw(data)
 })
 
+function exportData() {
+  console.log('export data')
+  dataPrepared.value = true
+}
+
 const mapLinkText = computed(() => {
   if (showMap.value) {
     return showDetail.value ? t('results.backToReslutView') : t('results.backToResultListView')
@@ -122,6 +146,68 @@ const showDetail = computed(() => {
 const totalRecords = computed(() => {
   return store.getters['totalRecords']
 })
+
+// function fetchData() {
+//   console.log('fetchData')
+//   exportData()
+// }
+
+async function fetchData() {
+  console.log('exportData')
+  // const data = store.getters['results']
+  // console.log('data: ', data)
+  //
+  // return toRaw(data)
+  const collection = store.getters['selectedCollection']
+  const typeStatus = store.getters['selectedType']
+  const start = store.getters['startRecord']
+  let totalRecords = store.getters['totalRecords']
+
+  totalRecords = totalRecords <= 20 ? totalRecords : 20
+
+  console.log('total Records', totalRecords)
+
+  const speciesGroup = store.getters['speciesGrouup']
+  const dataset = store.getters['dataset']
+  const catalogNumber = store.getters['catalogNumber']
+  const scientificName = store.getters['scientificName']
+  const startDate = store.getters['startDate']
+  const endDate = store.getters['endDate']
+  const isType = store.getters['isType']
+
+  await service
+    .export(
+      scientificName,
+      speciesGroup,
+      dataset,
+      catalogNumber,
+      startDate,
+      endDate,
+      isType,
+      collection,
+      typeStatus,
+      totalRecords
+    )
+    .then((response) => {
+      const results = response.occurrences
+      console.log('results', results.length)
+      console.log('results...', results)
+
+      return response.occurrences
+    })
+    .catch()
+    .finally(() => {})
+}
+
+function startDownload() {
+  setTimeout(() => {
+    // loading.value = false
+  }, 5000)
+}
+
+function finishDownload() {
+  alert('hide loading')
+}
 
 function handleSearch() {
   // this search after clear all filter
@@ -164,7 +250,7 @@ function handleResetView(coordinates, total) {
 // emits('filterSearch', 'yearSearch')
 // }
 
-async function onMapLinkClick() {
+function onMapLinkClick() {
   const isMap = showMap.value
 
   showMap.value = !isMap
