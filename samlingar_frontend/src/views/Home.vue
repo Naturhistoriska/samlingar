@@ -4,6 +4,7 @@
       v-if="isShowResults"
       @advanceSearch="handleAdvanceSearch"
       @coordinatesSearch="handleCoordinatesSearch"
+      @exportData="handleExportData"
       @filterSearch="handleFilterSearch"
       @detailSearch="handleMapSearch"
       @simpleSearch="handleSimpleSearch"
@@ -403,6 +404,46 @@ function getDetailById(id) {
     .then((response) => {
       store.commit('setShowDetail', true)
       store.commit('setSelectedResult', response)
+    })
+    .catch()
+    .finally(() => {})
+}
+
+async function handleExportData() {
+  console.log('exportData')
+
+  const collection = store.getters['selectedCollection']
+  const typeStatus = store.getters['selectedType']
+  let totalRecords = store.getters['totalRecords']
+
+  totalRecords = totalRecords <= 5000 ? totalRecords : 5000
+
+  console.log('total Records', totalRecords)
+
+  const speciesGroup = store.getters['speciesGrouup']
+  const dataset = store.getters['dataset']
+  const catalogNumber = store.getters['catalogNumber']
+  const scientificName = store.getters['scientificName']
+  const startDate = store.getters['startDate']
+  const endDate = store.getters['endDate']
+  const isType = store.getters['isType']
+
+  await service
+    .export(
+      scientificName,
+      speciesGroup,
+      dataset,
+      catalogNumber,
+      startDate,
+      endDate,
+      isType,
+      collection,
+      typeStatus,
+      totalRecords
+    )
+    .then((response) => {
+      const results = response.occurrences
+      store.commit('setExportData', results)
     })
     .catch()
     .finally(() => {})

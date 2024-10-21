@@ -11,42 +11,36 @@
       </div>
       <div class="col-8">
         <div class="grid">
-          <div class="col-6" style="font-size: 20px">
+          <div class="col-7" style="font-size: 20px">
             <legend>
               {{ $t('results.searchResults') }} [{{ $t('results.num_results', totalRecords) }}]
               <br />
+              <Button
+                link
+                @click="exportData"
+                v-if="!dataPrepared"
+                style="color: #34d399; font-size: 14px; cursor: pointer"
+              >
+                <small>Export data [Click to prepare data for download (max: 5000 records)]</small>
+              </Button>
+              <download-excel
+                v-else
+                @click="downloadFile"
+                class="btn btn-default"
+                :data="json_data"
+                :fields="json_fields"
+                type="csv"
+                name="data.csv"
+                style="color: #34d399; font-size: 14px; cursor: pointer; padding-left: 10px"
+              >
+                <small>Download Data</small>
+              </download-excel>
               <Button link @click="onMapLinkClick">
                 <small>{{ mapLinkText }}</small>
               </Button>
             </legend>
           </div>
-          <div class="col-6">
-            <!-- <Button link @click="exportData" v-if="!dataPrepared">
-              <small>Export data</small>
-            </Button> -->
-            <download-excel
-              class="btn btn-default"
-              :data="json_data"
-              :fields="json_fields"
-              type="csv"
-              name="data.csv"
-              style="color: #34d399; font-size: 14px; cursor: pointer; padding-top: 10px"
-            >
-              <small>Download Data</small>
-            </download-excel>
-
-            <!-- <downloadexcel
-              class="btn"
-              :fetch="fetchData"
-              :before-generate="startDownload"
-              :before-finish="finishDownload"
-              :fields="json_fields"
-              type="csv"
-              name="data1.csv"
-            >
-              Download Excel
-            </downloadexcel> -->
-          </div>
+          <div class="col-6"></div>
         </div>
 
         <Map v-if="showMap" @searchDetial="handleSearchDetail" @resetView="handleResetView" />
@@ -69,10 +63,10 @@ import ResultList from './ResultList.vue'
 import SearchFilter from './SearchFilter.vue'
 import Map from './Map.vue'
 
-import downloadexcel from 'vue-json-excel3'
+// import downloadexcel from 'vue-json-excel3'
 
-import Service from '../Service'
-const service = new Service()
+// import Service from '../Service'
+// const service = new Service()
 
 const { t } = useI18n()
 
@@ -121,15 +115,27 @@ let json_fields = {
 // )
 
 const json_data = computed(() => {
-  const data = store.getters['results']
-  console.log('data: ', data)
+  const data = store.getters['exportData']
+  console.log('data: ', data.length)
 
   return toRaw(data)
 })
 
 function exportData() {
   console.log('export data')
-  dataPrepared.value = true
+
+  emits('exportData')
+
+  setTimeout(() => {
+    dataPrepared.value = true
+  }, 5000)
+}
+
+function downloadFile() {
+  console.log('downloadFile')
+  setTimeout(() => {
+    dataPrepared.value = false
+  }, 5000)
 }
 
 const mapLinkText = computed(() => {
@@ -151,53 +157,6 @@ const totalRecords = computed(() => {
 //   console.log('fetchData')
 //   exportData()
 // }
-
-async function fetchData() {
-  console.log('exportData')
-  // const data = store.getters['results']
-  // console.log('data: ', data)
-  //
-  // return toRaw(data)
-  const collection = store.getters['selectedCollection']
-  const typeStatus = store.getters['selectedType']
-  const start = store.getters['startRecord']
-  let totalRecords = store.getters['totalRecords']
-
-  totalRecords = totalRecords <= 20 ? totalRecords : 20
-
-  console.log('total Records', totalRecords)
-
-  const speciesGroup = store.getters['speciesGrouup']
-  const dataset = store.getters['dataset']
-  const catalogNumber = store.getters['catalogNumber']
-  const scientificName = store.getters['scientificName']
-  const startDate = store.getters['startDate']
-  const endDate = store.getters['endDate']
-  const isType = store.getters['isType']
-
-  await service
-    .export(
-      scientificName,
-      speciesGroup,
-      dataset,
-      catalogNumber,
-      startDate,
-      endDate,
-      isType,
-      collection,
-      typeStatus,
-      totalRecords
-    )
-    .then((response) => {
-      const results = response.occurrences
-      console.log('results', results.length)
-      console.log('results...', results)
-
-      return response.occurrences
-    })
-    .catch()
-    .finally(() => {})
-}
 
 function startDownload() {
   setTimeout(() => {

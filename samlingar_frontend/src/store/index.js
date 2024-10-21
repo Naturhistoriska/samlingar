@@ -6,6 +6,7 @@ export default createStore({
     collectons: [],
     dataset: null,
     endDate: null,
+    exportData: [],
     isAdvanceSearch: false,
     isType: false,
     latLong: [],
@@ -41,6 +42,9 @@ export default createStore({
     },
     endDate(state) {
       return state.endDate
+    },
+    exportData(state) {
+      return state.exportData
     },
     isAdvanceSearch(state) {
       return state.isAdvanceSearch
@@ -112,6 +116,7 @@ export default createStore({
     setCollections: (state, payload) => (state.collectons = payload),
     setDataset: (state, payload) => (state.dataset = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
+    setExportData: (state, payload) => (state.exportData = payload),
     setIsAdvanceSearch: (state, payload) => (state.isAdvanceSearch = payload),
     setIsType: (state, payload) => (state.isType = payload),
     setLatLong: (state, payload) => (state.latLong = payload),
