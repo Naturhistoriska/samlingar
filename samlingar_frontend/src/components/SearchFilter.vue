@@ -137,7 +137,7 @@ function clearFilter() {
   // store.commit('setYear', null)
   store.commit('setSelectedType', null)
   store.commit('setSelectedCollection', null)
-  store.commit('setStartRecord', 1)
+  store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   displayClearLink.value = false
   emits('search')
@@ -154,7 +154,6 @@ function clearFilter() {
 // }
 
 function selectType(value) {
-  console.log('selectType...', value)
   selectedType.value = value
   store.commit('setSelectedType', value)
   store.commit('setStartRecord', 1)
@@ -165,10 +164,8 @@ function selectType(value) {
 }
 
 function selectCollection(value) {
-  console.log('what...', value)
   selectedCollection.value = value
-
-  store.commit('setStartRecord', 1)
+  store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setSelectedCollection', value)
 
