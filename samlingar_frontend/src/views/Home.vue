@@ -149,8 +149,6 @@ function conditionalSearch(value) {
 function advanceConditionalSearch(value) {
   const collection = store.getters['selectedCollection']
   const typeStatus = store.getters['selectedType']
-  // const year = store.getters['year']
-  // const searchText = store.getters['searchText']
   const start = store.getters['startRecord']
   const numPerPage = store.getters['numPerPage']
 
@@ -238,6 +236,46 @@ function handleCoordinatesSearch(coordinates, total) {
 
 function advanceCoordinatesSearch(coordinates, total) {
   console.log('advanceCoordinatesSearch', coordinates, total)
+
+  const selectedCollection = store.getters['selectedCollection']
+  const selectedTypeStatus = store.getters['selectedType']
+
+  const speciesGroup = store.getters['speciesGrouup']
+  const dataset = store.getters['dataset']
+  const catalogNumber = store.getters['catalogNumber']
+  const scientificName = store.getters['scientificName']
+  const startDate = store.getters['startDate']
+  const endDate = store.getters['endDate']
+  const isType = store.getters['isType']
+
+  service
+    .advanceCoordinatesSearch(
+      scientificName,
+      speciesGroup,
+      dataset,
+      catalogNumber,
+      startDate,
+      endDate,
+      isType,
+      selectedCollection,
+      selectedTypeStatus,
+      coordinates,
+      total
+    )
+    .then((response) => {
+      const total = response.totalRecords
+
+      console.log('total :', total)
+      if (total > 0) {
+        const results = response.occurrences
+        store.commit('setMapRecords', results)
+      }
+      setTimeout(() => {
+        // loading.value = false
+      }, 2000)
+    })
+    .catch()
+    .finally(() => {})
 }
 
 function simpleCoordinsSearch(coordinates, total) {
