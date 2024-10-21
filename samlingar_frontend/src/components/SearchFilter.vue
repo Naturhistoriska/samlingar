@@ -90,10 +90,10 @@ import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
 
-let selectedCollection = ref('')
+let selectedCollection = ref()
 // let selectedYear = ref()
 
-let selectedType = ref('')
+let selectedType = ref()
 let displayClearLink = ref(false)
 
 const store = useStore()
@@ -155,7 +155,7 @@ function clearFilter() {
 
 function selectType(value) {
   console.log('selectType...', value)
-  this.selectedType = value
+  selectedType.value = value
   store.commit('setSelectedType', value)
   store.commit('setStartRecord', 1)
   store.commit('setNumPerPage', 10)
@@ -165,10 +165,13 @@ function selectType(value) {
 }
 
 function selectCollection(value) {
-  this.selectedCollection = value
-  store.commit('setSelectedCollection', value)
+  console.log('what...', value)
+  selectedCollection.value = value
+
   store.commit('setStartRecord', 1)
   store.commit('setNumPerPage', 10)
+  store.commit('setSelectedCollection', value)
+
   displayClearLink.value = true
 
   emits('searchByCollection')
