@@ -1,0 +1,13 @@
+## YAML Template.
+---
+swarm:
+  port:
+    offset: 100
+  solr:
+    path: http://localhost:18983/solr
+    # path: https://solr.nrm.se/solr
+    # path: https://solr-stage.nrm.se/solr
+    # path: https://solr-samlingar.nrm.se/solr
+    core: nrm
+    username: idali
+    password: idali18
