@@ -5,9 +5,31 @@ const baseUrl = import.meta.env.VITE_SBDI_API
 const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
 const resultsPerPage = 10
 
+const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
+
+const fiedList =
+  'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'
+const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
+
 export default class Service {
+  async apiSimpleSearch(searchText, start, rows) {
+    const url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${rows}`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  async apiStatisticSearch() {
+    const url = `${samlingApi}/statistic`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
   async autoComplete(searchText, start, rows) {
-    const url = `${baseUrl}/search?q=data_hub_uid:${institutionId} AND text:${searchText}*&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=scientificName`
+    const url = `${baseUrl}/search?q=data_hub_uid:${institutionId} AND text:${searchText}*&offset=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=scientificName`
     // const url = `${baseUrl}/search?q=${searchText}*  AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc`
 
     const response = await axios.get(url)
@@ -17,14 +39,60 @@ export default class Service {
 
   async quickSearch(searchText, start, rows) {
     // const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&facets=collectionName,year,typeStatus&flimit=2000`
-    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.01,typeStatus&flimit=3500`
+    const url = `${baseUrl}/search?q=taxa:"${searchText}" AND data_hub_uid:${institutionId}&offset=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=${fiedList}&facets=${facetList}`
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  async advanceSearch(
+    scientificName,
+    species_group,
+    dataset,
+    catalogNumber,
+    startDate,
+    endDate,
+    isType,
+    start,
+    rows
+  ) {
+    let url = `${baseUrl}/search?q=data_hub_uid:${institutionId}`
+
+    if (scientificName) {
+      url = url + ` AND taxa:${scientificName}`
+    }
+
+    if (species_group) {
+      url = url + ` AND species_group:${species_group}`
+    }
+
+    if (dataset) {
+      url = url + ` AND collectionName:"${dataset}"`
+    }
+
+    if (catalogNumber) {
+      url = url + ` AND catalogue_number:"${catalogNumber}"`
+    }
+
+    if (startDate && endDate) {
+      url += ` AND occurrence_date:%5B${startDate}T00:00:00Z TO ${endDate}T00:00:00Z%5D`
+    } else if (startDate && !endDate) {
+      url += ` AND occurrence_date:%5B${startDate}T00:00:00Z TO *%5D`
+    } else if (!startDate && endDate) {
+      url += ` AND occurrence_date:%5B* TO ${endDate}T00:00:00Z%5D`
+    }
+
+    if (isType) {
+      url += '&fq=typeStatus:*'
+    }
+    url += `&offset=${start}&pageSize=${rows}&fl=${fiedList}&facets=${facetList}`
+    // url = url + `&start=${start}&pageSize=${rows}&facets=collectionName,year,lat_long,typeStatus`
     const response = await axios.get(url)
 
     return response.data
   }
 
   async conditionalSearch(searchText, start, collectionName, typeStatus, rows) {
-
     const url = this.buildUrl(searchText, start, collectionName, typeStatus, rows, false)
     const response = await axios.get(url)
     return response.data
@@ -91,7 +159,7 @@ export default class Service {
     // if (selectedTypeStatus) {
     //   url += `&fq=typeStatus:"${selectedTypeStatus}"`
     // }
-    url += `&start=${start}&pageSize=${rows}&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.01,typeStatus&flimit=3500`
+    url += `&offset=${start}&pageSize=${rows}&fl=${fiedList}&facets=${facetList}`
     const response = await axios.get(url)
 
     return response.data
@@ -101,7 +169,7 @@ export default class Service {
     let url = `${baseUrl}/search?q=data_hub_uid:${institutionId}`
 
     if (searchText) {
-      url += ` AND taxa:"${searchText}"&start=${0}&pageSize=${total}`
+      url += ` AND taxa:"${searchText}"&offset=${0}&pageSize=${total}`
     }
 
     if (selectedCollection) {
@@ -124,7 +192,7 @@ export default class Service {
     return response.data
   }
 
-  async export (
+  async export(
     scientificName,
     species_group,
     dataset,
@@ -190,8 +258,7 @@ export default class Service {
     //   url += `&fq=typeStatus:"${selectedTypeStatus}"`
     // }
 
-
-    url += `&start=0&pageSize=${total}&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species`
+    url += `&offset=0&pageSize=${total}&fl=${fiedList}`
     const response = await axios.get(url)
 
     return response.data
@@ -267,7 +334,7 @@ export default class Service {
       url += `&fq=point-0.01:${coordinates}`
     }
 
-    url += `&start=0&pageSize=${total}`
+    url += `&offset=0&pageSize=${total}`
     const response = await axios.get(url)
 
     return response.data
@@ -381,53 +448,6 @@ export default class Service {
     return url
   }
 
-  async advanceSearch(
-    scientificName,
-    species_group,
-    dataset,
-    catalogNumber,
-    startDate,
-    endDate,
-    isType,
-    start,
-    rows
-  ) {
-    let url = `${baseUrl}/search?q=data_hub_uid:${institutionId}`
-
-    if (scientificName) {
-      url = url + ` AND taxa:${scientificName}`
-    }
-
-    if (species_group) {
-      url = url + ` AND species_group:${species_group}`
-    }
-
-    if (dataset) {
-      url = url + ` AND collectionName:"${dataset}"`
-    }
-
-    if (catalogNumber) {
-      url = url + ` AND catalogue_number:"${catalogNumber}"`
-    }
-
-    if (startDate && endDate) {
-      url += ` AND occurrence_date:%5B${startDate}T00:00:00Z TO ${endDate}T00:00:00Z%5D`
-    } else if (startDate && !endDate) {
-      url += ` AND occurrence_date:%5B${startDate}T00:00:00Z TO *%5D`
-    } else if (!startDate && endDate) {
-      url += ` AND occurrence_date:%5B* TO ${endDate}T00:00:00Z%5D`
-    }
-
-    if (isType) {
-      url += '&fq=typeStatus:*'
-    }
-    url += `&start=${start}&pageSize=${rows}&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.01,typeStatus&flimit=3500`
-    // url = url + `&start=${start}&pageSize=${rows}&facets=collectionName,year,lat_long,typeStatus`
-    const response = await axios.get(url)
-
-    return response.data
-  }
-
   async uuidSearch(uuid) {
     const url = `${baseUrl}/${uuid}`
     const response = await axios.get(url)
@@ -451,7 +471,7 @@ export default class Service {
     let url = `${baseUrl}/search?q=data_hub_uid:${institutionId}`
 
     if (searchText) {
-      url += ` AND taxa:"${searchText}"&start=${start}&pageSize=${rows}`
+      url += ` AND taxa:"${searchText}"&offset=${start}&pageSize=${rows}`
     }
 
     if (collectionName) {
@@ -466,8 +486,7 @@ export default class Service {
       }
     }
 
-    url +=
-      '&fl=id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20classs%2C%20order%2C%20family%2C%20genus%2C%20species&facets=collectionName,point-0.01,typeStatus&flimit=3500'
+    url += `&fl=${fiedList}&facets=${facetList}`
     // if (year) {
     //   if (year === 'Not supplied') {
     //     url += '&fq=-year:*'

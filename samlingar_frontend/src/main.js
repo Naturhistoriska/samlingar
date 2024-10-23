@@ -41,6 +41,7 @@ import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 import Divider from 'primevue/divider'
 import IconField from 'primevue/iconfield'
+import Image from 'primevue/image'
 import InputGroup from 'primevue/inputgroup'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
@@ -88,6 +89,7 @@ app.component('Column', Column)
 app.component('DataTable', DataTable)
 app.component('Divider', Divider)
 app.component('IconField', IconField)
+app.component('Image', Image)
 app.component('InputGroup', InputGroup)
 app.component('InputIcon', InputIcon)
 app.component('InputText', InputText)

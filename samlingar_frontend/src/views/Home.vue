@@ -9,7 +9,12 @@
       @detailSearch="handleMapSearch"
       @simpleSearch="handleSimpleSearch"
     />
-    <start-page v-else @advanceSearch="handleAdvanceSearch" @simpleSearch="handleSimpleSearch" />
+    <start-page
+      v-else
+      @advanceSearch="handleAdvanceSearch"
+      @statiscSearch="handleStatisticSearch"
+      @simpleSearch="handleSimpleSearch"
+    />
   </div>
 </template>
 <script setup>
@@ -29,6 +34,40 @@ const isShowResults = computed(() => {
   return store.getters['showResults']
 })
 
+function handleStatisticSearch() {
+  console.log('handleStatisticSearch')
+  service
+    .apiStatisticSearch()
+    .then((response) => {
+      console.log('response...', response)
+      const facets = response.facets
+
+      const totalCount = facets.count
+      console.log('total count', totalCount)
+      const imageFacet = facets.image.buckets
+      const imageCount = imageFacet[0].count
+
+      console.log('image count', imageCount)
+
+      const isTyypeFacet = facets.isType.buckets
+      const isTypeCount = isTyypeFacet[0].count
+
+      const inSwedenFacet = facets.inSweden.buckets
+      const inSwedenCount = inSwedenFacet[0].count
+
+      const mapFacet = facets.map.buckets
+      const mapCount = mapFacet[0].count
+
+      store.commit('setImageCount', imageCount)
+      store.commit('setInSwedenCount', inSwedenCount)
+      store.commit('setIsTypeCount', isTypeCount)
+      store.commit('setHasCoordinatesCount', mapCount)
+      store.commit('setTotalCount', totalCount)
+    })
+    .catch()
+    .finally(() => {})
+}
+
 function handleSimpleSearch() {
   // console.log('handleSimpleSearch')
   const searchText = store.getters['searchText']
@@ -36,15 +75,26 @@ function handleSimpleSearch() {
   const numRows = store.getters['numPerPage']
 
   service
-    .quickSearch(searchText, start, numRows)
+    .apiSimpleSearch(searchText, start, numRows)
     .then((response) => {
-      const total = response.totalRecords
-      const results = response.occurrences
-      const facetResults = response.facetResults
-      processResult(facetResults, results, total)
+      console.log('response...', response)
+      // const total = response.totalRecords
+      // const results = response.occurrences
+      // const facetResults = response.facetResults
+      // processResult(facetResults, results, total)
     })
     .catch()
     .finally(() => {})
+  // service
+  //   .quickSearch(searchText, start, numRows)
+  //   .then((response) => {
+  //     const total = response.totalRecords
+  //     const results = response.occurrences
+  //     const facetResults = response.facetResults
+  //     processResult(facetResults, results, total)
+  //   })
+  //   .catch()
+  //   .finally(() => {})
 }
 
 function handleAdvanceSearch() {
@@ -97,6 +147,13 @@ function processResult(facetResults, results, total) {
     store.commit('setLatLong', point)
 
     console.log('length : ', point.length)
+
+    const classFacet = facetResults.find((facet) => facet.fieldName === 'class')
+    const classs = classFacet.fieldResult
+    store.commit('setClasss', classs)
+
+    console.log('classs length : ', classs.length)
+    // store.commit('setLatLong', point)
   } else {
     store.commit('setCollections', [])
     store.commit('setLatLong', [])
@@ -411,6 +468,8 @@ function getDetailById(id) {
 
 async function handleExportData() {
   console.log('exportData')
+
+  store.commit('setExportData', null)
 
   const collection = store.getters['selectedCollection']
   const typeStatus = store.getters['selectedType']

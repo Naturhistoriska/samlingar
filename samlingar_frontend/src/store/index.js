@@ -4,9 +4,15 @@ export default createStore({
   state: {
     catalogNumber: null,
     collectons: [],
+    classs: [],
     dataset: null,
     endDate: null,
     exportData: [],
+    imageCount: 0,
+    inSwedenCount: 0,
+    isTypeCount: 0,
+    hasCoordinatesCount: 0,
+    totalCount: 0,
     isAdvanceSearch: false,
     isType: false,
     latLong: [],
@@ -34,6 +40,9 @@ export default createStore({
     catalogNumber(state) {
       return state.catalogNumber
     },
+    classs(state) {
+      return state.classs
+    },
     collectons(state) {
       return state.collectons
     },
@@ -45,6 +54,21 @@ export default createStore({
     },
     exportData(state) {
       return state.exportData
+    },
+    imageCount(state) {
+      return state.imageCount
+    },
+    inSwedenCount(state) {
+      return state.inSwedenCount
+    },
+    isTypeCount(state) {
+      return state.isTypeCount
+    },
+    hasCoordinatesCount(state) {
+      return state.hasCoordinatesCount
+    },
+    totalCount(state) {
+      return state.totalCount
     },
     isAdvanceSearch(state) {
       return state.isAdvanceSearch
@@ -113,10 +137,16 @@ export default createStore({
 
   mutations: {
     setCatalogNumber: (state, payload) => (state.catalogNumber = payload),
+    setClasss: (state, payload) => (state.classs = payload),
     setCollections: (state, payload) => (state.collectons = payload),
     setDataset: (state, payload) => (state.dataset = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
     setExportData: (state, payload) => (state.exportData = payload),
+    setImageCount: (state, payload) => (state.imageCount = payload),
+    setInSwedenCount: (state, payload) => (state.inSwedenCount = payload),
+    setIsTypeCount: (state, payload) => (state.isTypeCount = payload),
+    setHasCoordinatesCount: (state, payload) => (state.hasCoordinatesCount = payload),
+    setTotalCount: (state, payload) => (state.totalCount = payload),
     setIsAdvanceSearch: (state, payload) => (state.isAdvanceSearch = payload),
     setIsType: (state, payload) => (state.isType = payload),
     setLatLong: (state, payload) => (state.latLong = payload),
