@@ -35,7 +35,7 @@ watch(
   () => {
     const startRecord = store.getters['startRecord']
     console.log('resetPaging change...', startRecord)
-    if (startRecord === 1) {
+    if (startRecord === 0) {
       first.value = 0
     }
   }

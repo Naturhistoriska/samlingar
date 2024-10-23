@@ -7,7 +7,7 @@
           {{ $t('search.clearFilter') }}
         </Button>
       </div>
-      <Accordion :value="['0']" multiple style="background-color: transparent">
+      <Accordion multiple style="background-color: transparent">
         <AccordionPanel value="0" style="background-color: transparent">
           <AccordionHeader style="background-color: transparent">
             {{ $t('search.searchByCollection') }}
@@ -55,28 +55,28 @@
             </div>
           </AccordionContent>
         </AccordionPanel>
-        <!-- <AccordionPanel value="1" style="background: transparent">
-          <AccordionHeader style="background: transparent">Occurrences (year)</AccordionHeader>
+        <AccordionPanel value="2" style="background: transparent">
+          <AccordionHeader style="background: transparent">Taxon</AccordionHeader>
           <AccordionContent style="background: transparent">
             <div
-              v-for="year of years"
-              :key="year.label"
+              v-for="c of classs"
+              :key="c.label"
               class="flex items-center"
               style="background: transparent"
             >
               <RadioButton
-                v-model="selectedYear"
-                :inputId="year.label"
+                v-model="selectedClass"
+                :inputId="c.label"
                 name="dynamic"
-                :value="year.label"
-                @click="selectYear(year.label)"
+                :value="c.label"
+                @click="selectYear(c.label)"
               />
-              <label :for="year.label" style="padding-left: 6px">
-                {{ year.label }} [{{ year.count }}]
+              <label :for="c.label" style="padding-left: 6px">
+                {{ c.label }} [{{ c.count }}]
               </label>
             </div>
           </AccordionContent>
-        </AccordionPanel> -->
+        </AccordionPanel>
       </Accordion>
     </template>
   </Card>
@@ -91,7 +91,7 @@ import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
 
 let selectedCollection = ref()
-// let selectedYear = ref()
+let selectedClass = ref()
 
 let selectedType = ref()
 let displayClearLink = ref(false)
@@ -129,9 +129,13 @@ const typeStatus = computed(() => {
   return store.getters['typeStatus']
 })
 
-// const years = computed(() => {
-//   return store.getters['occurrenceYears']
-// })
+const classs = computed(() => {
+  return store.getters['classs']
+})
+
+function onclick(value) {
+  console.log('onclick', value)
+}
 
 function clearFilter() {
   // store.commit('setYear', null)

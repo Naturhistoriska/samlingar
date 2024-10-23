@@ -40,7 +40,18 @@
               </Button>
             </legend>
           </div>
-          <div class="col-6"></div>
+          <div class="col-6">
+            <!-- <div>
+              <Loading1
+                id="myLoad"
+                :active="isLoading"
+                :can-cancel="true"
+                color="#34d399"
+                background-color="#333333"
+              >
+              </Loading1>
+            </div> -->
+          </div>
         </div>
 
         <Map v-if="showMap" @searchDetial="handleSearchDetail" @resetView="handleResetView" />
@@ -57,6 +68,12 @@
 import { computed, ref, toRaw, isProxy, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
+
+// import Loading1 from 'vue3-loading-overlay'
+// // import { useLoading } from 'vue3-loading-overlay'
+// import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
+// Import stylesheet
+// import 'vue3-loading-overlay/dist/vue3-loading.css'
 
 import ResultDetail from './ResultDetail.vue'
 import ResultList from './ResultList.vue'
@@ -81,9 +98,9 @@ const emits = defineEmits([
   'simpleSearch'
 ])
 
-// let loading = ref(false)
 let showMap = ref(false)
 let dataPrepared = ref(false)
+const isLoading = ref(false)
 
 let json_fields = {
   'Scientific Name': 'scientificName',
@@ -211,6 +228,23 @@ function handleResetView(coordinates, total) {
 
 function onMapLinkClick() {
   const isMap = showMap.value
+
+  // let loader = useLoading()
+  // loader.show({
+  //   // Optional parameters
+  //   // container: this.fullPage ? null : formContainer.value,
+  //   canCancel: true
+  //   // onCancel: onCancel
+  // })
+  // // simulate AJAX
+  // setTimeout(() => {
+  //   loader.hide()
+  // }, 5000)
+
+  isLoading.value = true
+  setTimeout(() => {
+    isLoading.value = false
+  }, 2000)
 
   showMap.value = !isMap
 }

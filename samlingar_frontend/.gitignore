@@ -20,6 +20,8 @@ yarn.lock
 /cypress/videos/
 /cypress/screenshots/
 
+Samlingsdatabas.pptx
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

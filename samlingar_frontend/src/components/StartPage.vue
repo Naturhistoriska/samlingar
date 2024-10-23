@@ -1,18 +1,27 @@
 <template>
   <div>
-    <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleAdvanceSearch" />
-    <SimpleSearch v-else @simpleSearch="handleSimpleSearch" />
+    <div class="grid">
+      <div class="col-12" no-gutters>
+        <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleAdvanceSearch" />
+        <SimpleSearch v-else @simpleSearch="handleSimpleSearch" />
+      </div>
+    </div>
   </div>
 </template>
 <script setup>
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 import AdvanceSearch from './AdvanceSearch.vue'
 import SimpleSearch from './SimpleSearch.vue'
 
 import { useStore } from 'vuex'
 const store = useStore()
-const emits = defineEmits(['advanceSearch', 'simpleSearch'])
+const emits = defineEmits(['advanceSearch', 'statiscSearch', 'simpleSearch'])
+
+onMounted(() => {
+  console.log('mounted...')
+  emits('statiscSearch')
+})
 
 const isAdvanceSearch = ref(false)
 watch(

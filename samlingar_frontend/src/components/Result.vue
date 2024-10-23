@@ -1,5 +1,5 @@
 <template>
-  <div class="card" @click="onclick()">
+  <div class="card" @click="onclick()" style="cursor: pointer">
     <div class="grid">
       <div class="col-3" no-gutters>Scientific Name</div>
       <div class="col-9">
