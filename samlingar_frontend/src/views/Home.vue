@@ -34,6 +34,40 @@ const isShowResults = computed(() => {
   return store.getters['showResults']
 })
 
+function setFacet(facets) {
+  const imageFacet = facets.image.buckets
+  if (imageFacet !== null && imageFacet.length > 0) {
+    const imageCount = imageFacet[0].count
+    store.commit('setImageCount', imageCount)
+  } else {
+    store.commit('setImageCount', 0)
+  }
+
+  const isTyypeFacet = facets.isType.buckets
+  if (isTyypeFacet !== null && isTyypeFacet.length > 0) {
+    const isTypeCount = isTyypeFacet[0].count
+    store.commit('setIsTypeCount', isTypeCount)
+  } else {
+    store.commit('setIsTypeCount', 0)
+  }
+
+  const inSwedenFacet = facets.inSweden.buckets
+  if (inSwedenFacet !== null && inSwedenFacet.length > 0) {
+    const inSwedenCount = inSwedenFacet[0].count
+    store.commit('setInSwedenCount', inSwedenCount)
+  } else {
+    store.commit('setInSwedenCount', 0)
+  }
+
+  const mapFacet = facets.map.buckets
+  if (mapFacet !== null && mapFacet.length > 0) {
+    const mapCount = mapFacet[0].count
+    store.commit('setHasCoordinatesCount', mapCount)
+  } else {
+    store.commit('setHasCoordinatesCount', 0)
+  }
+}
+
 function handleStatisticSearch() {
   console.log('handleStatisticSearch')
   service
@@ -43,33 +77,19 @@ function handleStatisticSearch() {
       const facets = response.facets
 
       const totalCount = facets.count
-      console.log('total count', totalCount)
-      const imageFacet = facets.image.buckets
-      const imageCount = imageFacet[0].count
-
-      console.log('image count', imageCount)
-
-      const isTyypeFacet = facets.isType.buckets
-      const isTypeCount = isTyypeFacet[0].count
-
-      const inSwedenFacet = facets.inSweden.buckets
-      const inSwedenCount = inSwedenFacet[0].count
-
-      const mapFacet = facets.map.buckets
-      const mapCount = mapFacet[0].count
-
-      store.commit('setImageCount', imageCount)
-      store.commit('setInSwedenCount', inSwedenCount)
-      store.commit('setIsTypeCount', isTypeCount)
-      store.commit('setHasCoordinatesCount', mapCount)
       store.commit('setTotalCount', totalCount)
+
+      setFacet(facets)
+
+      store.commit('setSelectedCollection', null)
+      store.commit('setSelectedType', null)
+      store.commit('setSelectedFamily', null)
     })
     .catch()
     .finally(() => {})
 }
 
 function handleSimpleSearch() {
-  // console.log('handleSimpleSearch')
   const searchText = store.getters['searchText']
   const start = store.getters['startRecord']
   const numRows = store.getters['numPerPage']
@@ -78,23 +98,73 @@ function handleSimpleSearch() {
     .apiSimpleSearch(searchText, start, numRows)
     .then((response) => {
       console.log('response...', response)
-      // const total = response.totalRecords
-      // const results = response.occurrences
-      // const facetResults = response.facetResults
-      // processResult(facetResults, results, total)
+
+      processAPIdata(response)
     })
     .catch()
     .finally(() => {})
-  // service
-  //   .quickSearch(searchText, start, numRows)
-  //   .then((response) => {
-  //     const total = response.totalRecords
-  //     const results = response.occurrences
-  //     const facetResults = response.facetResults
-  //     processResult(facetResults, results, total)
-  //   })
-  //   .catch()
-  //   .finally(() => {})
+}
+
+function handleFilterSearch(value) {
+  console.log('handleFilterSearch', value)
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (isAdvanceSearch) {
+    advanceConditionalSearch(value)
+  } else {
+    conditionalSearch(value)
+  }
+}
+
+function conditionalSearch(value) {
+  console.log('conditionalSearch', value)
+  const collection = store.getters['selectedCollection']
+  const numPerPage = store.getters['numPerPage']
+  const searchText = store.getters['searchText']
+  const start = store.getters['startRecord']
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+
+  service
+    .apiConditionalSearch(searchText, collection, typeStatus, family, start, numPerPage)
+    .then((response) => {
+      processAPIdata(response, value)
+    })
+    .catch()
+    .finally(() => {})
+}
+
+function processAPIdata(response, value) {
+  const total = response.response.numFound
+  const results = response.response.docs
+  console.log('why....', resultssimpleSearch)
+  const facets = response.facets
+
+  setFacet(facets)
+
+  if (value === 'filterByFamily') {
+    const genus = facets.genus.buckets
+    store.commit('setGenus', genus)
+  } else {
+    const family = facets.family.buckets
+    store.commit('setFamily', family)
+  }
+
+  if (value !== 'filterByCollection') {
+    const collections = facets.collectionName.buckets
+    store.commit('setCollections', collections)
+  }
+
+  if (value != 'filterByType') {
+    const typeStatus = facets.typeStatus.buckets
+    store.commit('setTypeStatus', typeStatus)
+  }
+
+  store.commit('setTotalRecords', total)
+  store.commit('setResults', results)
+
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
+  store.commit('setResetPaging', true)
 }
 
 function handleAdvanceSearch() {
@@ -165,44 +235,24 @@ function processResult(facetResults, results, total) {
 
   store.commit('setSelectedCollection', null)
   store.commit('setSelectedType', null)
+  store.commit('setSelectedFamily', null)
 
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
   store.commit('setResetPaging', true)
 }
 
-function handleFilterSearch(value) {
-  console.log('handleFilterSearch', value)
+// function handleFilterSearch(value) {
+//   console.log('handleFilterSearch', value)
 
-  const isAdvanceSearch = store.getters['isAdvanceSearch']
-  console.log('isAdvanceSearch', isAdvanceSearch)
-  if (isAdvanceSearch) {
-    advanceConditionalSearch(value)
-  } else {
-    conditionalSearch(value)
-  }
-}
-
-function conditionalSearch(value) {
-  console.log('conditionalSearch', value)
-  const collection = store.getters['selectedCollection']
-  const numPerPage = store.getters['numPerPage']
-  const searchText = store.getters['searchText']
-  const start = store.getters['startRecord']
-  const typeStatus = store.getters['selectedType']
-
-  service
-    .conditionalSearch(searchText, start, collection, typeStatus, numPerPage)
-    .then((response) => {
-      const total = response.totalRecords
-      const results = response.occurrences
-      const facetResults = response.facetResults
-
-      processConditionalSearchResults(facetResults, results, total, value)
-    })
-    .catch()
-    .finally(() => {})
-}
+//   const isAdvanceSearch = store.getters['isAdvanceSearch']
+//   console.log('isAdvanceSearch', isAdvanceSearch)
+//   if (isAdvanceSearch) {
+//     advanceConditionalSearch(value)
+//   } else {
+//     conditionalSearch(value)
+//   }
+// }
 
 function advanceConditionalSearch(value) {
   const collection = store.getters['selectedCollection']

@@ -11,12 +11,15 @@
       </div>
       <div class="col-3" no-gutters>High classification</div>
       <div class="col-9">
-        {{ kingdom }}/ {{ phylum }}/ {{ classs }}/ {{ order }}/ {{ family }}/ {{ genus }}
+        {{ higherClassification }}
+        <!-- {{ kingdom }}/ {{ phylum }}/ {{ classs }}/ {{ order }}/ {{ family }}/ {{ genus }} -->
       </div>
       <div class="col-3" no-gutters>Collection name</div>
       <div class="col-9">
         {{ collectionName }}
       </div>
+      <div class="col-3" no-gutters>Locality</div>
+      <div class="col-9">{{ locality }} {{ country }}</div>
     </div>
   </div>
 </template>
@@ -31,41 +34,51 @@ export default {
   props: ['result'],
   data() {
     return {
-      kingdom: null,
-      phylum: null,
-      classs: null,
-      order: null,
-      family: false,
-      genus: null,
-      species: null,
+      // kingdom: null,
+      // phylum: null,
+      // classs: null,
+      country: null,
+      higherClassification: null,
+      locality: null,
+      // order: null,
+      // family: false,
+      // genus: null,
+      // species: null,
       scientificName: null,
       catalogNumber: null,
       collectionName: null
     }
   },
   mounted() {
-    const {
-      raw_catalogNumber,
-      collectionName,
-      kingdom,
-      phylum,
-      classs,
-      order,
-      family,
-      genus,
-      species,
-      scientificName
-    } = this.result
-    this.catalogNumber = raw_catalogNumber
+    const { catalogNumber, collectionName, locality, country, higherTx, txFullName } = this.result
+    this.catalogNumber = catalogNumber
+    this.higherClassification = higherTx
+    this.locality = locality
+    this.scientificName = txFullName
+    this.country = country
     this.collectionName = collectionName
-    this.kingdom = kingdom
-    this.phylum = phylum
-    this.classs = classs
-    this.order = order
-    this.family = family
-    this.genus = genus
-    this.species = species
-    this.scientificName = scientificName
+    // const {
+    //   raw_catalogNumber,
+    //   collectionName,
+    //   kingdom,
+    //   phylum,
+    //   classs,
+    //   order,
+    //   family,
+    //   genus,
+    //   species,
+    //   scientificName
+    // } = this.result
+    // this.catalogNumber = raw_catalogNumber
+    // this.collectionName = collectionName
+    // this.kingdom = kingdom
+    // this.phylum = phylum
+    // this.classs = classs
+    // this.order = order
+    // this.family = family
+    // this.genus = genus
+    // this.species = species
+    // this.scientificName = scientificName
   },
   computed: {
     resultcolor: function () {

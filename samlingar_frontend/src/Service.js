@@ -20,6 +20,33 @@ export default class Service {
     return response.data
   }
 
+  async apiConditionalSearch(
+    searchText,
+    selectedColletion,
+    selectedTypeStatus,
+    selectedFamily,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/filter?text=${searchText}`
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+    url += `&start=${start}&numPerPage=${numPerPage}`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
   async apiStatisticSearch() {
     const url = `${samlingApi}/statistic`
 

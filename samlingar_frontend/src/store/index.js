@@ -8,6 +8,8 @@ export default createStore({
     dataset: null,
     endDate: null,
     exportData: [],
+    family: [],
+    genus: [],
     imageCount: 0,
     inSwedenCount: 0,
     isTypeCount: 0,
@@ -24,6 +26,7 @@ export default createStore({
     scientificName: null,
     searchText: null,
     selectedCollection: null,
+    selectedFamily: null,
     selectedResult: null,
     selectedType: null,
     showDetail: false,
@@ -54,6 +57,12 @@ export default createStore({
     },
     exportData(state) {
       return state.exportData
+    },
+    family(state) {
+      return state.family
+    },
+    genus(state) {
+      return state.genus
     },
     imageCount(state) {
       return state.imageCount
@@ -103,6 +112,9 @@ export default createStore({
     selectedCollection(state) {
       return state.selectedCollection
     },
+    selectedFamily(state) {
+      return state.selectedFamily
+    },
     selectedResult(state) {
       return state.selectedResult
     },
@@ -143,6 +155,8 @@ export default createStore({
     setEndDate: (state, payload) => (state.endDate = payload),
     setExportData: (state, payload) => (state.exportData = payload),
     setImageCount: (state, payload) => (state.imageCount = payload),
+    setFamily: (state, payload) => (state.family = payload),
+    setGenus: (state, payload) => (state.genus = payload),
     setInSwedenCount: (state, payload) => (state.inSwedenCount = payload),
     setIsTypeCount: (state, payload) => (state.isTypeCount = payload),
     setHasCoordinatesCount: (state, payload) => (state.hasCoordinatesCount = payload),
@@ -158,6 +172,7 @@ export default createStore({
     setScientificName: (state, payload) => (state.scientificName = payload),
     setSearchText: (state, payload) => (state.searchText = payload),
     setSelectedCollection: (state, payload) => (state.selectedCollection = payload),
+    setSelectedFamily: (state, payload) => (state.selectedFamily = payload),
     setSelectedResult: (state, payload) => (state.selectedResult = payload),
     setSelectedType: (state, payload) => (state.selectedType = payload),
     setShowDetail: (state, payload) => (state.showDetail = payload),

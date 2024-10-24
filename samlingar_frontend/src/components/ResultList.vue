@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="resultList">
-      <template v-for="(result, index) in results" :key="result.uuid">
+      <template v-for="(result, index) in results" :key="result.id">
         <Result v-bind:result="result" />
         <Divider
           v-if="index + 1 < results.length"
@@ -42,6 +42,8 @@ watch(
 )
 
 const results = computed(() => {
+  const r = store.getters['results']
+  console.log('result....', r)
   return store.getters['results']
 })
 

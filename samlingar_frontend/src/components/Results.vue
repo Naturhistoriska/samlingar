@@ -2,12 +2,7 @@
   <div class="card">
     <div class="grid">
       <div class="flex flex-column col-4">
-        <SearchFilter
-          class="divBg"
-          @search="handleSearch"
-          @searchByType="handleSearchByType"
-          @searchByCollection="handleSearchByCollection"
-        />
+        <SearchFilter class="divBg" @search="handleSearch" @filterSearch="handleFilterSearch" />
       </div>
       <div class="col-8">
         <div class="grid">
@@ -197,16 +192,10 @@ function handleSearch() {
   }
 }
 
-function handleSearchByCollection() {
-  console.log('handleSearchByCollection')
+function handleFilterSearch(value) {
+  console.log('handleFilterSearch')
 
-  emits('filterSearch', 'collectionSearch')
-}
-
-function handleSearchByType() {
-  console.log('handleSearchByType')
-
-  emits('filterSearch', 'typeStatusSearch')
+  emits('filterSearch', value)
 }
 
 function handleSearchDetail(coordinates) {
