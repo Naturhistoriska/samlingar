@@ -13,9 +13,8 @@ import org.apache.solr.client.solrj.impl.NoOpResponseParser;
 import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.util.NamedList;
-import se.nrm.samlingar.api.logic.InitialProperties; 
+import org.apache.solr.client.solrj.response.QueryResponse; 
+import se.nrm.samlingar.api.logic.InitialProperties;
 
 /**
  *
@@ -28,16 +27,29 @@ public class SolrService implements Serializable {
 
     private String username;
     private String password;
+    
+    private final String jsonKey = "json";
+    private final String responseKey = "response";
+    private final String wildSearch = "*:*";
 
     private final String map = "map";
     private final String image = "image";
     private final String inSweden = "inSweden";
     private final String isType = "isType";
+    private final String typeStatusFacetKey = "typeStatus";
+    private final String collectionNameFacetKey = "collectionName";
+    private final String familyFacetKey = "family";
+    private final String genusFacetKey = "genus";
     
+
     private final String textKey = "text:";
+    private final String collectionNameKey = "collectionName:";
+    private final String typeStatusKey = "typeStatus:";
+    private final String familyKey = "family:";
 
     private SolrQuery query;
     private QueryResponse response;
+    private NoOpResponseParser rawJsonResponseParser;
     private QueryRequest request;
 
     @Inject
@@ -54,7 +66,7 @@ public class SolrService implements Serializable {
         username = properties.getUsername();
         password = properties.getPassword();
     }
-    
+
     /**
      * Search all the records without any filters, sorted by cataloged date
      *
@@ -66,33 +78,124 @@ public class SolrService implements Serializable {
     public String simpleSearch(int start, int numPerPage, String text) {
         log.info("searchAll: {} -- {} ", start + " -- " + numPerPage, text);
 
-        String jsonResponse;
-        query = new SolrQuery();
-        query.setQuery(textKey + text)
-                .setStart(start)
-                .setRows(numPerPage);
-        try { 
-            request = new QueryRequest(query);
-            request.setBasicAuthCredentials(username, password);
-//            response = request.process(client);
-            
-            NoOpResponseParser rawJsonResponseParser = new NoOpResponseParser();
-            rawJsonResponseParser.setWriterType("json");
-            request.setResponseParser(rawJsonResponseParser);
+        final TermsFacetMap mapFacet = new TermsFacetMap(map);
+        final TermsFacetMap imageFacet = new TermsFacetMap(image);
+        final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSweden);
+        final TermsFacetMap isTypeFacet = new TermsFacetMap(isType);
+        final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey);
+        final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey);
+        final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey);
 
-            NamedList<Object> resp = client.request(request);
-            jsonResponse = (String) resp.get("response");
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(textKey + text) 
+                .setOffset(start)
+                .setLimit(numPerPage)
+                .withFacet(image, imageFacet)
+                .withFacet(map, mapFacet)
+                .withFacet(inSweden, inSwedenFacet)
+                .withFacet(isType, isTypeFacet)
+                .withFacet(typeStatusFacetKey, typeStatusFacet)
+                .withFacet(familyFacetKey, familyFacet)
+                .withFacet(collectionNameFacetKey, collectionFacet);
+        
+        jsonRequest.setBasicAuthCredentials(username, password);
+        
+        String jsonResponse; 
+        try {
+            response = jsonRequest.process(client);
             
-            log.info("what... {}", jsonResponse);
- 
+            rawJsonResponseParser = new NoOpResponseParser();
+            rawJsonResponseParser.setWriterType(jsonKey);
+            jsonRequest.setResponseParser(rawJsonResponseParser);
+             
+            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
+
+            log.info("simplesearch what... {}", jsonResponse); 
+
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
         }
+
+        return jsonResponse; 
+    }
+    
+     /**
+     * Search all the records without any filters, sorted by cataloged date
+     *
+     * @param start
+     * @param numPerPage
+     * @param text
+     * @param collection
+     * @param typeStatus
+     * @param family
+     * @return String
+     */
+    public String filterSearch(int start, int numPerPage, String text,
+            String collection, String typeStatus, String family) {
+        log.info("filterSearch: {} -- {} ", collection + " -- " + typeStatus, text);
+
+        final TermsFacetMap mapFacet = new TermsFacetMap(map);
+        final TermsFacetMap imageFacet = new TermsFacetMap(image);
+        final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSweden);
+        final TermsFacetMap isTypeFacet = new TermsFacetMap(isType);
+        final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey);
+        final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey);
+  
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(textKey + text) 
+                .setOffset(start)
+                .setLimit(numPerPage)
+                .withFacet(image, imageFacet)
+                .withFacet(map, mapFacet)
+                .withFacet(inSweden, inSwedenFacet)
+                .withFacet(isType, isTypeFacet)
+                .withFacet(typeStatusFacetKey, typeStatusFacet)
+                .withFacet(collectionNameFacetKey, collectionFacet);
+
+        if (family != null && family.length() > 0) {
+            final TermsFacetMap genusFacet = new TermsFacetMap(genusFacetKey);
+            jsonRequest.withFacet(genusFacetKey, genusFacet);
+        } else {
+            final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey);
+            jsonRequest.withFacet(familyFacetKey, familyFacet); 
+        }
+        
+        if(collection != null) {
+            jsonRequest.withFilter(collectionNameKey + collection);  
+        }
+        
+        if(typeStatus != null) {
+            jsonRequest.withFilter(typeStatusKey + typeStatus);
+        }
+        
+        if(family != null) {
+            jsonRequest.withFilter(familyKey + family);
+        }
+
+        jsonRequest.setBasicAuthCredentials(username, password);
+
+        String jsonResponse;
+        try {
+            response = jsonRequest.process(client);
+
+            rawJsonResponseParser = new NoOpResponseParser();
+            rawJsonResponseParser.setWriterType(jsonKey);
+            jsonRequest.setResponseParser(rawJsonResponseParser);
+
+            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
+
+            log.info("what... {}", jsonResponse);
+
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
         return jsonResponse;
     }
 
-    public String searchTotalRecordsWithMap() {
+    public String searchStatisticData() {
 
         final TermsFacetMap mapFacet = new TermsFacetMap(map);
         final TermsFacetMap imageFacet = new TermsFacetMap(image);
@@ -100,8 +203,8 @@ public class SolrService implements Serializable {
         final TermsFacetMap typeFacet = new TermsFacetMap(isType);
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery("*:*")
-                .returnFields("country", "catalogNumber")
+                .setQuery(wildSearch)
+                //                .returnFields("country", "catalogNumber")
                 .withFacet(image, imageFacet)
                 .withFacet(map, mapFacet)
                 .withFacet(inSweden, inSwedenFacet)
@@ -109,10 +212,10 @@ public class SolrService implements Serializable {
 
         jsonRequest.setBasicAuthCredentials(username, password);
         try {
-            response = jsonRequest.process(client); 
-            
-            log.info("json: {}", response.jsonStr()); 
-            
+            response = jsonRequest.process(client);
+
+            log.info("json: {}", response.jsonStr());
+
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;

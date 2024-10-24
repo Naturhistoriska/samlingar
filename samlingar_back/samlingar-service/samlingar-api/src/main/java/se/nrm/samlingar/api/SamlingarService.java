@@ -42,11 +42,31 @@ public class SamlingarService {
             response = String.class
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response search(@QueryParam("text") String text, 
+    public Response search(@QueryParam("text") String text,
             @QueryParam("start") int start, @QueryParam("numPerPage") int numPerPage) {
         log.info("search {} -- {}", text, start + " -- " + numPerPage);
- 
+
         return Response.ok(logic.simpleSearch(text, start, numPerPage)).build();
+    }
+
+    @GET
+    @Path("/filter")
+    @ApiOperation(value = "filter",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response filterSearch(@QueryParam("text") String text,
+            @QueryParam("collection") String collection,
+            @QueryParam("typeStatus") String typeStatus,
+            @QueryParam("family") String family,
+            @QueryParam("start") int start,
+            @QueryParam("numPerPage") int numPerPage) {
+
+        log.info("filter: {}, {}", collection, typeStatus);
+ 
+        return Response.ok(logic
+                .filterSerch(start, numPerPage, text, collection, typeStatus, family)).build();
     }
 
     @GET
@@ -56,10 +76,10 @@ public class SamlingarService {
             response = String.class
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response statisticSearch( ) {
-        log.info("statisticSearch: {}, {}" );
+    public Response statisticSearch() {
+        log.info("statisticSearch: {}, {}");
 
-         logic.getStaticData();
+        logic.getStaticData();
         return Response.ok(logic.getStaticData()).build();
     }
 }
