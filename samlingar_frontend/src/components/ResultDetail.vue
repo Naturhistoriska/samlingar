@@ -144,6 +144,7 @@ export default {
       latitudeText,
       longitudeText,
       locality,
+      prepration,
       remarks,
       serie,
       startDate,

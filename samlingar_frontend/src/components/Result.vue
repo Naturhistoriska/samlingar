@@ -89,14 +89,16 @@ export default {
   methods: {
     ...mapMutations(['setShowResults', 'setShowDetail', 'setSelectedResult']),
     onclick() {
-      service
-        .uuidSearch(this.result.uuid)
-        .then((response) => {
-          this.setSelectedResult(response)
-          this.setShowDetail(true)
-        })
-        .catch()
-        .finally(() => {})
+      this.setSelectedResult(this.result)
+      this.setShowDetail(true)
+      // service
+      //   .uuidSearch(this.result.uuid)
+      //   .then((response) => {
+      //     this.setSelectedResult(response)
+      //     this.setShowDetail(true)
+      //   })
+      //   .catch()
+      //   .finally(() => {})
     }
   }
 }

@@ -134,14 +134,15 @@ function conditionalSearch(value) {
     .finally(() => {})
 }
 
-function handleSearchWithFilter(filter) {
+function handleSearchWithFilter() {
   console.log('handleCoordinatesSearch')
 
   const start = store.getters['startRecord']
   const numRows = store.getters['numPerPage']
+  const searchText = store.getters['searchText']
 
   service
-    .apiSimpleSearch(filter, start, numRows)
+    .apiSimpleSearch(searchText, start, numRows)
     .then((response) => {
       console.log('response...', response)
 
@@ -160,9 +161,13 @@ function processAPIdata(response, value) {
 
   if (value === 'filterByFamily') {
     const genus = facets.genus.buckets
+    console.log('genus length', genus.length)
     store.commit('setGenus', genus)
   } else {
     const family = facets.family.buckets
+    console.log('family length', family.length)
+    // const sortedObjs = _.sortBy(family, 'val')
+    family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
     store.commit('setFamily', family)
   }
 
@@ -173,6 +178,7 @@ function processAPIdata(response, value) {
 
   if (value != 'filterByType') {
     const typeStatus = facets.typeStatus.buckets
+    console.log('typeStatus length', typeStatus.length)
     store.commit('setTypeStatus', typeStatus)
   }
 

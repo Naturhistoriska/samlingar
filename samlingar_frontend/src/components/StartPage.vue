@@ -44,8 +44,8 @@ function handleAdvanceSearch() {
   emits('advanceSearch')
 }
 
-function handleSearchWithFilter(filter) {
-  emits('searchWithFilter', filter)
+function handleSearchWithFilter() {
+  emits('searchWithFilter')
 }
 </script>
 <style scoped>

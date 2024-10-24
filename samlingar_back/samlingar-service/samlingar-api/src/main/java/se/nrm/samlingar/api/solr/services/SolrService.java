@@ -76,18 +76,18 @@ public class SolrService implements Serializable {
      * @return String
      */
     public String simpleSearch(int start, int numPerPage, String text) {
-        log.info("simpleSearch: {} -- {} ", start + " -- " + numPerPage, text);
+        log.info("simpleSearch ..... : {} -- {} ", start + " -- " + numPerPage, text);
 
         final TermsFacetMap mapFacet = new TermsFacetMap(map);
         final TermsFacetMap imageFacet = new TermsFacetMap(image);
         final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSweden);
         final TermsFacetMap isTypeFacet = new TermsFacetMap(isType);
         final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey)
-                .setLimit(100);
+                .setLimit(120);
         final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey)
-                .setLimit(100);
-        final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey)
-                .setLimit(100);
+                .setLimit(50);
+        final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey) 
+                .setLimit(200);
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text) 
@@ -160,11 +160,11 @@ public class SolrService implements Serializable {
 
         if (family != null && family.length() > 0) {
             final TermsFacetMap genusFacet = new TermsFacetMap(genusFacetKey)
-                    .setLimit(100);
+                    .setLimit(200);
             jsonRequest.withFacet(genusFacetKey, genusFacet);
         } else {
-            final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey)
-                    .setLimit(100);
+            final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey) 
+                    .setLimit(300);
             jsonRequest.withFacet(familyFacetKey, familyFacet); 
         }
         

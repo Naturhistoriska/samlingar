@@ -110,7 +110,7 @@
           <Image src="/Zoologiska.jpg" alt="Image" width="180" />
         </div>
         <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
-          <Button link @click="searchBotCollection">
+          <Button link @click="searchZooCollection">
             <small id="simpleSearchInput-help">{{ $t('startPage.zooCollection') }} </small>
           </Button>
         </div>
@@ -120,7 +120,7 @@
           <Image src="/Angelinoceras.jpg" alt="Image" width="180" />
         </div>
         <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
-          <Button link @click="searchBotCollection">
+          <Button link @click="searchPalaeCollection">
             <small id="simpleSearchInput-help">{{ $t('startPage.palaeCollection') }} </small>
           </Button>
         </div>
@@ -130,7 +130,7 @@
           <Image src="/Bergkristall.jpg" alt="Image" width="180" />
         </div>
         <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
-          <Button link @click="searchBotCollection">
+          <Button link @click="searchGeoCollection">
             <small id="simpleSearchInput-help">{{ $t('startPage.geoCollection') }} </small>
           </Button>
         </div>
@@ -198,13 +198,39 @@ function searchWithImage() {
 }
 
 function searchWithFilter(filter) {
-  const searchText = '*:*'
+  const searchText = filter
   store.commit('setSearchText', searchText)
-  emits('searchWithFilter', filter)
+  emits('searchWithFilter')
+}
+
+function searchPalaeCollection() {
+  const searchText = 'collectionId:p*'
+
+  store.commit('setSearchText', searchText)
+  emits('searchWithFilter')
+}
+
+function searchGeoCollection() {
+  const searchText = 'collectionId:(557057 753664 786432)'
+
+  store.commit('setSearchText', searchText)
+  emits('searchWithFilter')
+}
+
+function searchZooCollection() {
+  const searchText = 'collectionId:(e* 262144 655361 163840 ma fish herps va)'
+
+  store.commit('setSearchText', searchText)
+  emits('searchWithFilter')
 }
 
 function searchBotCollection() {
   console.log('searchBotCollection')
+
+  const searchText = 'collectionId:(vp fungi mosses algae)'
+
+  store.commit('setSearchText', searchText)
+  emits('searchWithFilter')
 }
 
 function onAdvanceSearchLinkClick() {
