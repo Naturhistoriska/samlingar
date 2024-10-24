@@ -68,6 +68,25 @@ public class SamlingarService {
         return Response.ok(logic
                 .filterSerch(start, numPerPage, text, collection, typeStatus, family)).build();
     }
+    
+    
+    @GET
+    @Path("/map")
+    @ApiOperation(value = "filter",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response mapData(@QueryParam("text") String text,
+            @QueryParam("collection") String collection,
+            @QueryParam("typeStatus") String typeStatus,
+            @QueryParam("family") String family ) {
+
+        log.info("mapData: {}, {}", collection, typeStatus);
+ 
+        return Response.ok(logic
+                .mapDataSearch(text, collection, typeStatus, family)).build();
+    }
 
     @GET
     @Path("/statistic")
