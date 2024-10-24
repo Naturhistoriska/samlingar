@@ -3,15 +3,16 @@
     <Results
       v-if="isShowResults"
       @advanceSearch="handleAdvanceSearch"
+      @conditionalSearch="handConditionalSearch"
       @coordinatesSearch="handleCoordinatesSearch"
       @exportData="handleExportData"
-      @filterSearch="handleFilterSearch"
       @detailSearch="handleMapSearch"
       @simpleSearch="handleSimpleSearch"
     />
     <start-page
       v-else
       @advanceSearch="handleAdvanceSearch"
+      @searchWithFilter="handleSearchWithFilter"
       @statiscSearch="handleStatisticSearch"
       @simpleSearch="handleSimpleSearch"
     />
@@ -105,7 +106,7 @@ function handleSimpleSearch() {
     .finally(() => {})
 }
 
-function handleFilterSearch(value) {
+function handConditionalSearch(value) {
   console.log('handleFilterSearch', value)
   const isAdvanceSearch = store.getters['isAdvanceSearch']
   if (isAdvanceSearch) {
@@ -133,10 +134,26 @@ function conditionalSearch(value) {
     .finally(() => {})
 }
 
+function handleSearchWithFilter(filter) {
+  console.log('handleCoordinatesSearch')
+
+  const start = store.getters['startRecord']
+  const numRows = store.getters['numPerPage']
+
+  service
+    .apiSimpleSearch(filter, start, numRows)
+    .then((response) => {
+      console.log('response...', response)
+
+      processAPIdata(response)
+    })
+    .catch()
+    .finally(() => {})
+}
+
 function processAPIdata(response, value) {
   const total = response.response.numFound
   const results = response.response.docs
-  console.log('why....', resultssimpleSearch)
   const facets = response.facets
 
   setFacet(facets)

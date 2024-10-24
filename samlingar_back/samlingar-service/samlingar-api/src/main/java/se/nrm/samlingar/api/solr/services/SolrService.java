@@ -76,18 +76,21 @@ public class SolrService implements Serializable {
      * @return String
      */
     public String simpleSearch(int start, int numPerPage, String text) {
-        log.info("searchAll: {} -- {} ", start + " -- " + numPerPage, text);
+        log.info("simpleSearch: {} -- {} ", start + " -- " + numPerPage, text);
 
         final TermsFacetMap mapFacet = new TermsFacetMap(map);
         final TermsFacetMap imageFacet = new TermsFacetMap(image);
         final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSweden);
         final TermsFacetMap isTypeFacet = new TermsFacetMap(isType);
-        final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey);
-        final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey);
-        final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey);
+        final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey)
+                .setLimit(100);
+        final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey)
+                .setLimit(100);
+        final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey)
+                .setLimit(100);
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(textKey + text) 
+                .setQuery(text) 
                 .setOffset(start)
                 .setLimit(numPerPage)
                 .withFacet(image, imageFacet)
@@ -139,11 +142,13 @@ public class SolrService implements Serializable {
         final TermsFacetMap imageFacet = new TermsFacetMap(image);
         final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSweden);
         final TermsFacetMap isTypeFacet = new TermsFacetMap(isType);
-        final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey);
-        final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey);
+        final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey)
+                .setLimit(100);
+        final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey)
+                .setLimit(100);
   
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(textKey + text) 
+                .setQuery(  text) 
                 .setOffset(start)
                 .setLimit(numPerPage)
                 .withFacet(image, imageFacet)
@@ -154,10 +159,12 @@ public class SolrService implements Serializable {
                 .withFacet(collectionNameFacetKey, collectionFacet);
 
         if (family != null && family.length() > 0) {
-            final TermsFacetMap genusFacet = new TermsFacetMap(genusFacetKey);
+            final TermsFacetMap genusFacet = new TermsFacetMap(genusFacetKey)
+                    .setLimit(100);
             jsonRequest.withFacet(genusFacetKey, genusFacet);
         } else {
-            final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey);
+            final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey)
+                    .setLimit(100);
             jsonRequest.withFacet(familyFacetKey, familyFacet); 
         }
         
@@ -203,8 +210,7 @@ public class SolrService implements Serializable {
         final TermsFacetMap typeFacet = new TermsFacetMap(isType);
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(wildSearch)
-                //                .returnFields("country", "catalogNumber")
+                .setQuery(wildSearch) 
                 .withFacet(image, imageFacet)
                 .withFacet(map, mapFacet)
                 .withFacet(inSweden, inSwedenFacet)

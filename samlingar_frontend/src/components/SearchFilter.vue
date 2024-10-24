@@ -136,7 +136,7 @@ let displayClearLink = ref(false)
 
 const store = useStore()
 
-const emits = defineEmits(['search', 'filterSearch'])
+const emits = defineEmits(['conditionalSearch', 'search'])
 
 watch(
   () => store.getters['selectedCollection'],
@@ -183,10 +183,6 @@ const familys = computed(() => {
   return store.getters['family']
 })
 
-function onclick(value) {
-  console.log('onclick', value)
-}
-
 function clearFilter() {
   // store.commit('setYear', null)
   store.commit('setSelectedType', null)
@@ -206,7 +202,7 @@ function selectType(value) {
   store.commit('setNumPerPage', 10)
   displayClearLink.value = true
 
-  emits('filterSearch', 'filterByType')
+  emits('conditionalSearch', 'filterByType')
 }
 
 function selectCollection(value) {
@@ -217,7 +213,7 @@ function selectCollection(value) {
 
   displayClearLink.value = true
 
-  emits('filterSearch', 'filterByCollection')
+  emits('conditionalSearch', 'filterByCollection')
 }
 
 function selectFamily(value) {
@@ -230,7 +226,7 @@ function selectFamily(value) {
 
   displayClearLink.value = true
 
-  emits('filterSearch', 'filterByFamily')
+  emits('conditionalSearch', 'filterByFamily')
 }
 </script>
 <style scoped></style>

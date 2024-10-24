@@ -3,7 +3,11 @@
     <div class="grid">
       <div class="col-12" no-gutters>
         <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleAdvanceSearch" />
-        <SimpleSearch v-else @simpleSearch="handleSimpleSearch" />
+        <SimpleSearch
+          v-else
+          @simpleSearch="handleSimpleSearch"
+          @searchWithFilter="handleSearchWithFilter"
+        />
       </div>
     </div>
   </div>
@@ -16,7 +20,7 @@ import SimpleSearch from './SimpleSearch.vue'
 
 import { useStore } from 'vuex'
 const store = useStore()
-const emits = defineEmits(['advanceSearch', 'statiscSearch', 'simpleSearch'])
+const emits = defineEmits(['advanceSearch', 'searchWithFilter', 'statiscSearch', 'simpleSearch'])
 
 onMounted(() => {
   console.log('mounted...')
@@ -38,6 +42,10 @@ function handleSimpleSearch() {
 function handleAdvanceSearch() {
   console.log('handleAdvanceSearch')
   emits('advanceSearch')
+}
+
+function handleSearchWithFilter(filter) {
+  emits('searchWithFilter', filter)
 }
 </script>
 <style scoped>

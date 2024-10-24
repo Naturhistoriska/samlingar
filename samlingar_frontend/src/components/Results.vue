@@ -2,7 +2,11 @@
   <div class="card">
     <div class="grid">
       <div class="flex flex-column col-4">
-        <SearchFilter class="divBg" @search="handleSearch" @filterSearch="handleFilterSearch" />
+        <SearchFilter
+          class="divBg"
+          @search="handleSearch"
+          @conditionalSearch="handleConditionSearch"
+        />
       </div>
       <div class="col-8">
         <div class="grid">
@@ -85,10 +89,10 @@ const { t } = useI18n()
 const store = useStore()
 const emits = defineEmits([
   'advanceSearch',
+  'conditionalSearch',
   'detailSearch',
   'coordinatesSearch',
   'exportData',
-  'filterSearch',
   'mapSearch',
   'simpleSearch'
 ])
@@ -192,10 +196,10 @@ function handleSearch() {
   }
 }
 
-function handleFilterSearch(value) {
-  console.log('handleFilterSearch')
+function handleConditionSearch(value) {
+  console.log('handleConditionSearch')
 
-  emits('filterSearch', value)
+  emits('conditionalSearch', value)
 }
 
 function handleSearchDetail(coordinates) {
