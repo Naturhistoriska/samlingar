@@ -1,14 +1,9 @@
 package se.nrm.samlingar.api.solr.services;
-
-import ch.hsr.geohash.GeoHash;
+ 
 import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
+import java.io.Serializable; 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonReader;
+import javax.inject.Inject; 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -122,7 +117,7 @@ public class SolrService implements Serializable {
 
             jsonResponse = (String) client.request(jsonRequest).get(responseKey);
 
-            log.info("simplesearch what... {}", jsonResponse);
+//            log.info("simplesearch what... {}", jsonResponse);
 
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
@@ -201,7 +196,7 @@ public class SolrService implements Serializable {
 
             jsonResponse = (String) client.request(jsonRequest).get(responseKey);
 
-            log.info("what... {}", jsonResponse);
+//            log.info("what... {}", jsonResponse);
 
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
@@ -215,8 +210,8 @@ public class SolrService implements Serializable {
         log.info("mapDataSearch ..... : {} -- {} ", text);
 
         final TermsFacetMap geoHashFacet = new TermsFacetMap(geohashFacetKey)
-                .setLimit(8000)
-                .setTermPrefix("2_");
+                .setLimit(20000)
+                .setTermPrefix("4_");
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)
@@ -239,7 +234,7 @@ public class SolrService implements Serializable {
         jsonRequest.setBasicAuthCredentials(properties.getUsername(), properties.getPassword());
         try { 
             response = jsonRequest.process(client);
-            log.info("json: {}", response.jsonStr());
+//            log.info("json: {}", response.jsonStr());
         } catch (SolrServerException | IOException ex) {
             log.warn(ex.getMessage());
             return null;
@@ -318,7 +313,7 @@ public class SolrService implements Serializable {
         try {
             response = jsonRequest.process(client);
 
-            log.info("json: {}", response.jsonStr());
+//            log.info("json: {}", response.jsonStr());
 
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());

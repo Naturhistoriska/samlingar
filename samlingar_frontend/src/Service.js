@@ -47,6 +47,29 @@ export default class Service {
     return response.data
   }
 
+  async apiGeoDataSearch(
+    searchText,
+    selectedColletion,
+    selectedTypeStatus,
+    selectedFamily
+  ) {
+    let url = `${samlingApi}/geo?text=${searchText}`
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
   async apiStatisticSearch() {
     const url = `${samlingApi}/statistic`
 

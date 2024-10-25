@@ -10,6 +10,7 @@ export default createStore({
     exportData: [],
     family: [],
     genus: [],
+    geoData: [],
     imageCount: 0,
     inSwedenCount: 0,
     isTypeCount: 0,
@@ -63,6 +64,9 @@ export default createStore({
     },
     genus(state) {
       return state.genus
+    },
+    geoData(state) {
+      return state.geoData
     },
     imageCount(state) {
       return state.imageCount
@@ -157,6 +161,7 @@ export default createStore({
     setImageCount: (state, payload) => (state.imageCount = payload),
     setFamily: (state, payload) => (state.family = payload),
     setGenus: (state, payload) => (state.genus = payload),
+    setGeoData: (state, payload) => (state.geoData = payload),
     setInSwedenCount: (state, payload) => (state.inSwedenCount = payload),
     setIsTypeCount: (state, payload) => (state.isTypeCount = payload),
     setHasCoordinatesCount: (state, payload) => (state.hasCoordinatesCount = payload),

@@ -71,8 +71,8 @@ public class SamlingarService {
     
     
     @GET
-    @Path("/map")
-    @ApiOperation(value = "filter",
+    @Path("/geo")
+    @ApiOperation(value = "geo",
             notes = "Return search results in json",
             response = String.class
     )
@@ -82,7 +82,7 @@ public class SamlingarService {
             @QueryParam("typeStatus") String typeStatus,
             @QueryParam("family") String family ) {
 
-        log.info("mapData: {}, {}", collection, typeStatus);
+        log.info("geo: {}, {}", collection, typeStatus);
  
         return Response.ok(logic
                 .mapDataSearch(text, collection, typeStatus, family)).build();

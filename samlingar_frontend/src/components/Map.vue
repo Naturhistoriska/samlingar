@@ -34,12 +34,15 @@ const isLoading = ref(true)
 
 onMounted(() => {
   initMap()
+
   const isDetailView = store.getters['showDetail']
   if (isDetailView) {
-    addSingleMarker()
+    // addSingleMarker()
+    addSamlingarSinglemMarker()
   } else {
-    addClusterMarkers()
-    // addGroupMark()
+    // addSamlingarMarks()
+    // drawPolygon()
+    // addClusterMarkers()
   }
 })
 
@@ -96,8 +99,9 @@ watch(
 )
 
 watch(
-  () => store.getters['mapRecords'],
+  () => store.getters['geoData'],
   () => {
+    console.log('geoData changed')
     initialMap.value.eachLayer((layer) => {
       if (layer instanceof L.Marker) {
         layer.remove()
@@ -108,7 +112,16 @@ watch(
       }
     })
     resetMap()
-    addGroupMark()
+    addSamlingarMarks()
+    // drawPolygon()
+  }
+)
+
+watch(
+  () => isLoading,
+  (newValue, oldValue) => {
+    console.log('showloading changed...', isLoading)
+    isLoading.value = newValue
   }
 )
 
@@ -136,13 +149,146 @@ function resetMap() {
   }
 }
 
-watch(
-  () => isLoading,
-  (newValue, oldValue) => {
-    console.log('showloading changed...', isLoading)
-    isLoading.value = newValue
+function drawPolygon() {
+  console.log('drawPolygon')
+
+  const polygon = L.polygon([
+    [61.875, 22.5],
+    [61.875, 33.75],
+    [56.25, 33.75],
+    [50.625, 33.7],
+    [50.625, 22.5],
+    [50.625, 11.25],
+    [56.25, 11.25],
+    [61.875, 11.25]
+  ])
+  polygon.addTo(initialMap.value)
+
+  L.circle([51.508, -0.11], {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 60000
+  }).addTo(initialMap.value)
+}
+
+function onCircleClick(geohash) {
+  console.log('onCircleClick', geohash)
+  emits('resetView', latitude, longitude, total)
+}
+
+function displayDetail(latitude, longitude) {
+  console.log('displayDetail', latitude, longitude)
+}
+
+function addSamlingarSinglemMarker() {
+  console.log('addSamlingarSinglemMarker')
+  const record = store.getters['selectedResult']
+  const {
+    catalogNumber,
+    collectionName,
+    country,
+    txFullName,
+    latitude,
+    longitude,
+    locality,
+    state,
+    startDate
+  } = record
+  const div = document.createElement('div')
+  div.innerHTML = `<strong> Catalogue number: ${catalogNumber}  </strong>
+      <br> <strong>Collection</strong>: ${collectionName}
+      <br><strong>Scientific Name</strong>: ${txFullName}
+      <br><strong>Locality</strong>: ${locality},
+      <br><strong>State/Province</strong>: ${state},
+      <br><strong>Country</strong>: ${country}
+      <br><strong>GPS-coordinate</strong>: ${latitude} -- ${longitude}
+      <br><strong>Event date</strong>: ${startDate}
+      <br>
+      <br>`
+
+  const button = document.createElement('button')
+  button.innerHTML = 'More details'
+
+  button.onclick = function () {
+    displayDetail(latitude, longitude)
   }
-)
+  div.style.cssText = 'width: auto;  '
+  div.appendChild(button)
+  const marker = new L.marker([latitude, longitude]).bindPopup(div)
+  marker.addTo(initialMap.value)
+}
+
+function addSamlingarMarks() {
+  console.log('addSamlingarMarks')
+
+  const geoArray = store.getters['geoData']
+
+  const markers = L.markerClusterGroup()
+
+  geoArray.forEach((geo) => {
+    const { count, latitude, longitude, geohash } = geo
+
+    if (count === 1) {
+      const div = document.createElement('div')
+      div.innerHTML = `Coordinates: ${latitude}, ${longitude}<br><br>`
+
+      const button = document.createElement('button')
+      button.innerHTML = 'More details'
+
+      button.onclick = function () {
+        displayDetail(latitude, longitude)
+      }
+      div.style.cssText = 'width: auto;  '
+      div.appendChild(button)
+
+      const marker = new L.marker([latitude, longitude]).bindPopup(div)
+
+      markers.addLayer(marker)
+    } else {
+      const div = document.createElement('div')
+      div.innerHTML = `<br>Total occurrences: ${count}<br><br><br> `
+
+      const button = document.createElement('button')
+      button.innerHTML = 'Click to open for detail'
+
+      button.onclick = function () {
+        onCircleClick(geohash)
+      }
+      div.appendChild(button)
+
+      L.circle([latitude, longitude], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 90000
+      })
+        .bindPopup(div)
+        .addTo(initialMap.value)
+    }
+  })
+  initialMap.value.addLayer(markers)
+
+  // for (let i = 0; i < count; i++) {
+  //   const div = document.createElement('div')
+  //   div.innerHTML = `Coordinates: ${latitude}, ${longitude}<br><br>`
+
+  //   const button = document.createElement('button')
+  //   button.innerHTML = 'More details'
+
+  //   button.onclick = function () {
+  //     displayDetail(latitude, longitude)
+  //   }
+  //   div.style.cssText = 'width: auto;  '
+  //   div.appendChild(button)
+
+  //   const marker = new L.marker([latitude, longitude]).bindPopup(div)
+
+  //   // const marker = L.marker(L.latLng(parseFloat(item[latitude]), parseFloat(item[longitude])))
+
+  //   markers.addLayer(marker)
+  // }
+}
 
 function addClusterMarkers() {
   console.log('addClusterMarkers')

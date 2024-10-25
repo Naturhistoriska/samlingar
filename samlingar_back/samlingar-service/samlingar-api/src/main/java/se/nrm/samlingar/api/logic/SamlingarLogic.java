@@ -1,7 +1,7 @@
 package se.nrm.samlingar.api.logic;
-
+ 
 import ch.hsr.geohash.GeoHash;
-import java.io.StringReader;
+import java.io.StringReader; 
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -32,8 +32,9 @@ public class SamlingarLogic {
     
     private final String latitudeKey = "latitude";
     private final String longitudeKey = "longitude";
+    private final String geoDataKey = "geoData";
     
-    private final String prefix = "2_";
+    private final String prefix = "4_";
     
     private GeoHash geohash; 
     
@@ -71,23 +72,24 @@ public class SamlingarLogic {
         attBuilder = Json.createObjectBuilder(); 
         array.getValuesAs(JsonObject.class)
                 .stream()
-                .forEach(json -> {
-                    log.info("josn: {}", json);
+                .forEach(json -> { 
                     String geohashString = json.getString(valKey); 
                     int count = json.getInt(countKey);
-                    geohash =GeoHash.fromGeohashString(StringUtils.substringAfter(geohashString, prefix));  
+                    geohash =GeoHash.fromGeohashString(
+                            StringUtils.substringAfter(geohashString, prefix));  
                     
-                    double latitude = geohash.getBoundingBoxCenterPoint().getLatitude();
-                    double longitude = geohash.getBoundingBoxCenterPoint().getLongitude();   
-                    
-                    log.info("coordinates : {} -- {}", latitude, longitude);
-                    
-                    attBuilder.add(latitudeKey, latitude);
-                    attBuilder.add(longitudeKey, longitude);
+                    double originLat = geohash.getOriginatingPoint().getLatitude();
+                    double originLong = geohash.getOriginatingPoint().getLongitude();
+                     
+                     
+                    attBuilder.add(geohashKey, geohashString);
+                    attBuilder.add(latitudeKey, originLat);
+                    attBuilder.add(longitudeKey, originLong);
                     attBuilder.add(countKey, count);
                     arrayBuilder.add(attBuilder);   
-                });
- 
-        return arrayBuilder.build().toString();
+                }); 
+        JsonObjectBuilder jsonBuild = Json.createObjectBuilder(); 
+        JsonObject json = jsonBuild.add(geoDataKey, arrayBuilder.build()).build(); 
+        return json.toString();
     }
 }

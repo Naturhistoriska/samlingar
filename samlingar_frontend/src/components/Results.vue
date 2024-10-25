@@ -53,7 +53,7 @@
           </div>
         </div>
 
-        <Map v-if="showMap" @searchDetial="handleSearchDetail" @resetView="handleResetView" />
+        <Map v-if="showMap" @resetView="handleResetView" @searchDetial="handleSearchDetail" />
         <!-- <Map v-if="showMap" @search="handleMapSearch" /> -->
         <div v-else>
           <ResultDetail v-if="showDetail" />
@@ -93,7 +93,7 @@ const emits = defineEmits([
   'detailSearch',
   'coordinatesSearch',
   'exportData',
-  'mapSearch',
+  'fetchMapData',
   'simpleSearch'
 ])
 
@@ -220,8 +220,7 @@ function handleResetView(coordinates, total) {
 // }
 
 function onMapLinkClick() {
-  const isMap = showMap.value
-
+  showMap.value = !showMap.value
   // let loader = useLoading()
   // loader.show({
   //   // Optional parameters
@@ -234,12 +233,17 @@ function onMapLinkClick() {
   //   loader.hide()
   // }, 5000)
 
+  if (showMap.value) {
+    const isDetailView = store.getters['showDetail']
+    if (!isDetailView) {
+      emits('fetchMapData')
+    }
+  }
+
   isLoading.value = true
   setTimeout(() => {
     isLoading.value = false
   }, 2000)
-
-  showMap.value = !isMap
 }
 
 function handlePaginateSearch() {

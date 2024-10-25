@@ -7,6 +7,7 @@
       @coordinatesSearch="handleCoordinatesSearch"
       @exportData="handleExportData"
       @detailSearch="handleMapSearch"
+      @fetchMapData="handleFetchMapData"
       @simpleSearch="handleSimpleSearch"
     />
     <start-page
@@ -134,6 +135,7 @@ function conditionalSearch(value) {
     .finally(() => {})
 }
 
+// simple search filter with map, type, sweden, coordinates and collections
 function handleSearchWithFilter() {
   console.log('handleCoordinatesSearch')
 
@@ -188,6 +190,31 @@ function processAPIdata(response, value) {
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
   store.commit('setResetPaging', true)
+}
+
+function handleFetchMapData() {
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (isAdvanceSearch) {
+  } else {
+    fetchMapDataWithSimpleSearch()
+  }
+}
+
+function fetchMapDataWithSimpleSearch() {
+  const collection = store.getters['selectedCollection']
+  const searchText = store.getters['searchText']
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+
+  service
+    .apiGeoDataSearch(searchText, collection, typeStatus, family)
+    .then((response) => {
+      const array = response.geoData
+
+      store.commit('setGeoData', array)
+    })
+    .catch()
+    .finally(() => {})
 }
 
 function handleAdvanceSearch() {
