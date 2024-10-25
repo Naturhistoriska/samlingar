@@ -81,6 +81,11 @@ function handleStatisticSearch() {
       store.commit('setPaleaCollectionTotal', paleaCount)
       store.commit('setZooCollectionTotal', zooCount)
 
+      store.commit('setFilterImage', false)
+      store.commit('setFilterCoordinates', false)
+      store.commit('setFilterInSweden', false)
+      store.commit('setFilterType', false)
+
       store.commit('setSelectedCollection', null)
       store.commit('setSelectedType', null)
       store.commit('setSelectedFamily', null)

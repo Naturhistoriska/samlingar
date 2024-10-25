@@ -82,56 +82,56 @@
     <template #footer>
       <div class="grid">
         <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text @click="searchAllCoordinates">
+          <Button text @click="searchAllCoordinates" :disabled="coordinatesFiltered">
             <small>
               {{ $t('startPage.specimensWithCoordinates') }}
             </small>
           </Button>
         </div>
         <div class="col-4" style="float: left; text-align: left">
-          <Button text @click="searchAllCoordinates">
+          <Button text @click="searchAllCoordinates" :disabled="coordinatesFiltered">
             <small>{{ coordinatesCount }}</small>
           </Button>
         </div>
       </div>
       <div class="grid">
         <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text>
+          <Button text :disabled="inSwedenFiltered">
             <small>
               {{ $t('startPage.specimensFromSweden') }}
             </small>
           </Button>
         </div>
         <div class="col-4" style="float: left; text-align: left">
-          <Button text>
+          <Button text :disabled="inSwedenFiltered">
             <small>{{ inSwedenCount }}</small>
           </Button>
         </div>
       </div>
       <div class="grid">
         <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text>
+          <Button text :disabled="imageFiltered">
             <small>
               {{ $t('startPage.specimensWithImages') }}
             </small>
           </Button>
         </div>
         <div class="col-4" style="float: left; text-align: left">
-          <Button text>
+          <Button text :disabled="imageFiltered">
             <small>{{ imageCount }}</small>
           </Button>
         </div>
       </div>
       <div class="grid">
         <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text>
+          <Button text :disabled="tyypeFiltered">
             <small>
               {{ $t('startPage.specimensWithType') }}
             </small>
           </Button>
         </div>
         <div class="col-4" style="float: left; text-align: left">
-          <Button text>
+          <Button text :disabled="tyypeFiltered">
             <small>{{ isTypeCount }}</small>
           </Button>
         </div>
@@ -172,6 +172,22 @@ watch(
     console.log('selectedType', selectedType)
   }
 )
+
+const imageFiltered = computed(() => {
+  return store.getters['filterImage']
+})
+
+const tyypeFiltered = computed(() => {
+  return store.getters['filterType']
+})
+
+const inSwedenFiltered = computed(() => {
+  return store.getters['filterInSweden']
+})
+
+const coordinatesFiltered = computed(() => {
+  return store.getters['filterCoordinates']
+})
 
 const coordinatesCount = computed(() => {
   return store.getters['hasCoordinatesCount']
