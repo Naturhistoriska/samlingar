@@ -60,13 +60,18 @@ public class SamlingarService {
             @QueryParam("collection") String collection,
             @QueryParam("typeStatus") String typeStatus,
             @QueryParam("family") String family,
+            @QueryParam("hasCoordinates") String hasCoordinates,
+            @QueryParam("hasImage") String hasImage, 
+            @QueryParam("inSweden") String inSweden, 
+            @QueryParam("isType") String isType,
             @QueryParam("start") int start,
             @QueryParam("numPerPage") int numPerPage) {
 
         log.info("filter: {}, {}", collection, typeStatus);
  
         return Response.ok(logic
-                .filterSerch(start, numPerPage, text, collection, typeStatus, family)).build();
+                .filterSerch(start, numPerPage, text, collection, typeStatus, 
+                        family, hasCoordinates, hasImage, inSweden, isType)).build();
     }
     
     
@@ -96,9 +101,7 @@ public class SamlingarService {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public Response statisticSearch() {
-        log.info("statisticSearch: {}, {}");
-
-        logic.getStaticData();
+        log.info("statisticSearch: {}, {}"); 
         return Response.ok(logic.getStaticData()).build();
     }
 }

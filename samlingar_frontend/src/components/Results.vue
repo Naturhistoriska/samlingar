@@ -1,14 +1,15 @@
 <template>
   <div class="card">
     <div class="grid">
-      <div class="flex flex-column col-4">
+      <div class="flex flex-column col-5">
         <SearchFilter
           class="divBg"
+          @coordinatesSearch="handleMapSearch"
           @search="handleSearch"
           @conditionalSearch="handleConditionSearch"
         />
       </div>
-      <div class="col-8">
+      <div class="col-7">
         <div class="grid">
           <div class="col-7" style="font-size: 20px">
             <legend>
@@ -94,6 +95,7 @@ const emits = defineEmits([
   'coordinatesSearch',
   'exportData',
   'fetchMapData',
+  'mapSearch',
   'simpleSearch'
 ])
 
@@ -122,14 +124,6 @@ let json_fields = {
   Collectors: 'collectors'
 }
 
-// watch(
-//   () => showMap.value,
-//   (newValue, oldValue) => {
-//     console.log('showmap changed...', showMap)
-//     showMap.value = newValue
-//   }
-// )
-
 const json_data = computed(() => {
   const data = store.getters['exportData']
   console.log('data: ', data.length)
@@ -152,6 +146,12 @@ function downloadFile() {
   setTimeout(() => {
     dataPrepared.value = false
   }, 5000)
+}
+
+// search when all specimens with coordinates clicked
+function handleMapSearch() {
+  console.log('handleMapSearch')
+  emits('mapSearch')
 }
 
 const mapLinkText = computed(() => {
@@ -221,17 +221,6 @@ function handleResetView(coordinates, total) {
 
 function onMapLinkClick() {
   showMap.value = !showMap.value
-  // let loader = useLoading()
-  // loader.show({
-  //   // Optional parameters
-  //   // container: this.fullPage ? null : formContainer.value,
-  //   canCancel: true
-  //   // onCancel: onCancel
-  // })
-  // // simulate AJAX
-  // setTimeout(() => {
-  //   loader.hide()
-  // }, 5000)
 
   if (showMap.value) {
     const isDetailView = store.getters['showDetail']

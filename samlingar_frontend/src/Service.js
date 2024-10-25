@@ -20,6 +20,83 @@ export default class Service {
     return response.data
   }
 
+  async apiSimpleSearchWithFilter(
+    searchText,
+    hasCoordinates,
+    hasImages,
+    inSweden,
+    isType,
+    start,
+    rows
+  ) {
+    let url = `${samlingApi}/filter?text=${searchText}`
+
+    if (hasCoordinates) {
+      url += `&hasCoordinates=${hasCoordinates}`
+    }
+    if (hasImages) {
+      url += `&hasImages=${hasImages}`
+    }
+    if (inSweden) {
+      url += `&inSweden=${inSweden}`
+    }
+    if (isType) {
+      url += `&inSweden=${isType}`
+    }
+
+    `&start=${start}&numPerPage=${rows}`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  async apiConditinalSearchWithFilter(
+    searchText,
+    selectedColletion,
+    selectedTypeStatus,
+    selectedFamily,
+    hasCoordinates,
+    isType,
+    inSweden,
+    hasImages
+  ) {
+    let url = `${samlingApi}/filter?text=${searchText}`
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+
+    if (hasCoordinates) {
+      url += `&map="map:*"`
+    }
+
+    if (isType) {
+      url += `&isType="isType:*"`
+    }
+
+    if (inSweden) {
+      url += `&inSweden="inSweden:*"`
+    }
+
+    if (hasImages) {
+      url += `&hasImages="images:*"`
+    }
+
+    url += `&start=${start}&numPerPage=${numPerPage}`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
   async apiConditionalSearch(
     searchText,
     selectedColletion,
@@ -47,12 +124,7 @@ export default class Service {
     return response.data
   }
 
-  async apiGeoDataSearch(
-    searchText,
-    selectedColletion,
-    selectedTypeStatus,
-    selectedFamily
-  ) {
+  async apiGeoDataSearch(searchText, selectedColletion, selectedTypeStatus, selectedFamily) {
     let url = `${samlingApi}/geo?text=${searchText}`
     if (selectedColletion) {
       url += `&collection="${selectedColletion}"`

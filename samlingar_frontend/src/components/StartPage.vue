@@ -23,7 +23,6 @@ const store = useStore()
 const emits = defineEmits(['advanceSearch', 'searchWithFilter', 'statiscSearch', 'simpleSearch'])
 
 onMounted(() => {
-  console.log('mounted...')
   emits('statiscSearch')
 })
 

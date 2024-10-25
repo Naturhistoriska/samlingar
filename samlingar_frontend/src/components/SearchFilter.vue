@@ -12,7 +12,7 @@
           <AccordionHeader style="background-color: transparent">
             {{ $t('search.searchByCollection') }}
           </AccordionHeader>
-          <AccordionContent style="background: transparent">
+          <AccordionContent style="background: transparent; font-size: 12px">
             <div
               v-for="collection of collections"
               :key="collection.val"
@@ -33,7 +33,7 @@
             </div>
           </AccordionContent>
         </AccordionPanel>
-        <AccordionPanel value="1" style="background: transparent">
+        <AccordionPanel value="1" style="background: transparent; font-size: 12px">
           <AccordionHeader style="background: transparent">Type status</AccordionHeader>
           <AccordionContent style="background: transparent">
             <div
@@ -55,7 +55,7 @@
             </div>
           </AccordionContent>
         </AccordionPanel>
-        <AccordionPanel value="2" style="background: transparent">
+        <AccordionPanel value="2" style="background: transparent; font-size: 12px">
           <AccordionHeader style="background: transparent">Taxon</AccordionHeader>
           <AccordionContent style="background: transparent">
             <div
@@ -80,41 +80,61 @@
       </Accordion>
     </template>
     <template #footer>
-      <div class="flex gap-2 mt-1" style="float: left">
-        <Button text class="w-full">
-          <small>
-            {{ $t('startPage.specimensWithCoordinates') }}
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {{ coordinatesCount }}
-          </small>
-        </Button>
+      <div class="grid">
+        <div class="col-8" no-gutters style="float: left; text-align: left">
+          <Button text @click="searchAllCoordinates">
+            <small>
+              {{ $t('startPage.specimensWithCoordinates') }}
+            </small>
+          </Button>
+        </div>
+        <div class="col-4" style="float: left; text-align: left">
+          <Button text @click="searchAllCoordinates">
+            <small>{{ coordinatesCount }}</small>
+          </Button>
+        </div>
       </div>
-      <div class="flex gap-2 mt-1" style="float: left">
-        <Button text class="w-full">
-          <small>
-            {{ $t('startPage.specimensFromSweden') }}
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {{ inSwedenCount }}
-          </small>
-        </Button>
+      <div class="grid">
+        <div class="col-8" no-gutters style="float: left; text-align: left">
+          <Button text>
+            <small>
+              {{ $t('startPage.specimensFromSweden') }}
+            </small>
+          </Button>
+        </div>
+        <div class="col-4" style="float: left; text-align: left">
+          <Button text>
+            <small>{{ inSwedenCount }}</small>
+          </Button>
+        </div>
       </div>
-      <div class="flex gap-2 mt-1" style="float: left">
-        <Button text class="w-full">
-          <small>
-            {{ $t('startPage.specimensWithImages') }}
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {{ imageCount }}
-          </small>
-        </Button>
+      <div class="grid">
+        <div class="col-8" no-gutters style="float: left; text-align: left">
+          <Button text>
+            <small>
+              {{ $t('startPage.specimensWithImages') }}
+            </small>
+          </Button>
+        </div>
+        <div class="col-4" style="float: left; text-align: left">
+          <Button text>
+            <small>{{ imageCount }}</small>
+          </Button>
+        </div>
       </div>
-      <div class="flex gap-2 mt-1" style="float: left">
-        <Button text class="w-full">
-          <small>
-            {{ $t('startPage.specimensWithType') }}
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {{ isTypeCount }}
-          </small>
-        </Button>
+      <div class="grid">
+        <div class="col-8" no-gutters style="float: left; text-align: left">
+          <Button text>
+            <small>
+              {{ $t('startPage.specimensWithType') }}
+            </small>
+          </Button>
+        </div>
+        <div class="col-4" style="float: left; text-align: left">
+          <Button text>
+            <small>{{ isTypeCount }}</small>
+          </Button>
+        </div>
       </div>
     </template>
   </Card>
@@ -136,7 +156,7 @@ let displayClearLink = ref(false)
 
 const store = useStore()
 
-const emits = defineEmits(['conditionalSearch', 'search'])
+const emits = defineEmits(['conditionalSearch', 'coordinatesSearch', 'search'])
 
 watch(
   () => store.getters['selectedCollection'],
@@ -184,7 +204,6 @@ const familys = computed(() => {
 })
 
 function clearFilter() {
-  // store.commit('setYear', null)
   store.commit('setSelectedType', null)
   store.commit('setSelectedCollection', null)
   store.commit('setSelectedFamily', null)
@@ -227,6 +246,10 @@ function selectFamily(value) {
   displayClearLink.value = true
 
   emits('conditionalSearch', 'filterByFamily')
+}
+
+function searchAllCoordinates() {
+  emits('coordinatesSearch')
 }
 </script>
 <style scoped></style>

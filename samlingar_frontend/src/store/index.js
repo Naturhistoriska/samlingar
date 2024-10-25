@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    botanyCollectionTotal: 0,
     catalogNumber: null,
     collectons: [],
     classs: [],
@@ -9,13 +10,17 @@ export default createStore({
     endDate: null,
     exportData: [],
     family: [],
+    filterImage: false,
+    filterType: false,
+    filterInSweden: false,
+    filterCoordinates: false,
     genus: [],
     geoData: [],
+    geoCollectionTotal: 0,
     imageCount: 0,
     inSwedenCount: 0,
     isTypeCount: 0,
     hasCoordinatesCount: 0,
-    totalCount: 0,
     isAdvanceSearch: false,
     isType: false,
     latLong: [],
@@ -23,6 +28,7 @@ export default createStore({
     numPerPage: 10,
     occurrenceYears: [],
     resetPaging: false,
+    paleaCollectionTotal: 0,
     results: [],
     scientificName: null,
     searchText: null,
@@ -35,12 +41,17 @@ export default createStore({
     speciesGrouup: null,
     startDate: null,
     startRecord: 0,
+    totalCount: 0,
     typeStatus: [],
     totalRecords: 0,
+    zooCollectionTotal: 0,
     year: null
   },
 
   getters: {
+    botanyCollectionTotal(state) {
+      return state.botanyCollectionTotal
+    },
     catalogNumber(state) {
       return state.catalogNumber
     },
@@ -62,11 +73,26 @@ export default createStore({
     family(state) {
       return state.family
     },
+    filterImage(state) {
+      return state.filterImage
+    },
+    filterType(state) {
+      return state.filterType
+    },
+    filterInSweden(state) {
+      return state.filterInSweden
+    },
+    filterCoordinates(state) {
+      return state.filterCoordinates
+    },
     genus(state) {
       return state.genus
     },
     geoData(state) {
       return state.geoData
+    },
+    geoCollectionTotal(state) {
+      return state.geoCollectionTotal
     },
     imageCount(state) {
       return state.imageCount
@@ -100,6 +126,9 @@ export default createStore({
     },
     occurrenceYears(state) {
       return state.occurrenceYears
+    },
+    paleaCollectionTotal(state) {
+      return state.paleaCollectionTotal
     },
     resetPaging(state) {
       return state.resetPaging
@@ -146,12 +175,16 @@ export default createStore({
     typeStatus(state) {
       return state.typeStatus
     },
+    zooCollectionTotal(state) {
+      return state.zooCollectionTotal
+    },
     year(state) {
       return state.year
     }
   },
 
   mutations: {
+    setBotanyCollectionTotal: (state, payload) => (state.botanyCollectionTotal = payload),
     setCatalogNumber: (state, payload) => (state.catalogNumber = payload),
     setClasss: (state, payload) => (state.classs = payload),
     setCollections: (state, payload) => (state.collectons = payload),
@@ -160,8 +193,13 @@ export default createStore({
     setExportData: (state, payload) => (state.exportData = payload),
     setImageCount: (state, payload) => (state.imageCount = payload),
     setFamily: (state, payload) => (state.family = payload),
+    setFilterImage: (state, payload) => (state.filterImage = payload),
+    setFilterType: (state, payload) => (state.filterType = payload),
+    setFilterInSweden: (state, payload) => (state.filterInSweden = payload),
+    setFilterCoordinates: (state, payload) => (state.filterCoordinates = payload),
     setGenus: (state, payload) => (state.genus = payload),
     setGeoData: (state, payload) => (state.geoData = payload),
+    setGeoCollectionTotal: (state, payload) => (state.geoCollectionTotal = payload),
     setInSwedenCount: (state, payload) => (state.inSwedenCount = payload),
     setIsTypeCount: (state, payload) => (state.isTypeCount = payload),
     setHasCoordinatesCount: (state, payload) => (state.hasCoordinatesCount = payload),
@@ -172,6 +210,7 @@ export default createStore({
     setMapRecords: (state, payload) => (state.mapRecords = payload),
     setNumPerPage: (state, payload) => (state.numPerPage = payload),
     setOccurrenceYears: (state, payload) => (state.occurrenceYears = payload),
+    setPaleaCollectionTotal: (state, payload) => (state.paleaCollectionTotal = payload),
     setResetPaging: (state, payload) => (state.resetPaging = payload),
     setResults: (state, payload) => (state.results = payload),
     setScientificName: (state, payload) => (state.scientificName = payload),
@@ -187,6 +226,7 @@ export default createStore({
     setStartRecord: (state, payload) => (state.startRecord = payload),
     setTotalRecords: (state, payload) => (state.totalRecords = payload),
     setTypeStatus: (state, payload) => (state.typeStatus = payload),
+    setZooCollectionTotal: (state, payload) => (state.zooCollectionTotal = payload),
     setYear: (state, payload) => (state.year = payload)
   }
 })

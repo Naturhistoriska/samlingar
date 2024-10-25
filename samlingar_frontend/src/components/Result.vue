@@ -1,25 +1,24 @@
 <template>
-  <div class="card" @click="onclick()" style="cursor: pointer">
+  <div class="card" @click="onclick()" style="cursor: pointer; font-size: 12px">
     <div class="grid">
-      <div class="col-3" no-gutters>Scientific Name</div>
-      <div class="col-9">
+      <div class="col-3" style="padding: 0px">Scientific Name</div>
+      <div class="col-9" style="padding: 0px">
         {{ scientificName }}
       </div>
-      <div class="col-3" no-gutters>Catalognumber</div>
-      <div class="col-9">
+      <div class="col-3" style="padding: 0px">Catalognumber</div>
+      <div class="col-9" style="padding: 0px">
         {{ catalogNumber }}
       </div>
-      <div class="col-3" no-gutters>High classification</div>
-      <div class="col-9">
+      <div class="col-3" style="padding: 0px">High classification</div>
+      <div class="col-9" style="padding: 0px">
         {{ higherClassification }}
-        <!-- {{ kingdom }}/ {{ phylum }}/ {{ classs }}/ {{ order }}/ {{ family }}/ {{ genus }} -->
       </div>
-      <div class="col-3" no-gutters>Collection name</div>
-      <div class="col-9">
+      <div class="col-3" style="padding: 0px">Collection name</div>
+      <div class="col-9" style="padding: 0px">
         {{ collectionName }}
       </div>
-      <div class="col-3" no-gutters>Locality</div>
-      <div class="col-9">{{ locality }} {{ country }}</div>
+      <div class="col-3" style="padding: 0px">Locality</div>
+      <div class="col-9" style="padding: 0px">{{ locality }} {{ country }}</div>
     </div>
   </div>
 </template>

@@ -174,7 +174,7 @@ function drawPolygon() {
 
 function onCircleClick(geohash) {
   console.log('onCircleClick', geohash)
-  emits('resetView', latitude, longitude, total)
+  // emits('resetView', geohash)
 }
 
 function displayDetail(latitude, longitude) {

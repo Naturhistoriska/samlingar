@@ -100,9 +100,16 @@
           <Image src="/paucidentatus.jpg" alt="Image" width="180" />
         </div>
         <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
-          <Button link @click="searchBotCollection">
-            <small id="simpleSearchInput-help">{{ $t('startPage.botanicalCollection') }} </small>
-          </Button>
+          <div class="grid">
+            <Button link @click="searchBotCollection">
+              <small>{{ $t('startPage.botanicalCollection') }}</small>
+            </Button>
+          </div>
+          <div class="grid">
+            <Button link @click="searchBotCollection">
+              <small>[{{ botanyCount }}]</small>
+            </Button>
+          </div>
         </div>
       </div>
       <div class="grid">
@@ -110,9 +117,16 @@
           <Image src="/Zoologiska.jpg" alt="Image" width="180" />
         </div>
         <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
-          <Button link @click="searchZooCollection">
-            <small id="simpleSearchInput-help">{{ $t('startPage.zooCollection') }} </small>
-          </Button>
+          <div class="grid">
+            <Button link @click="searchZooCollection">
+              <small>{{ $t('startPage.zooCollection') }} </small>
+            </Button>
+          </div>
+          <div class="grid">
+            <Button link @click="searchZooCollection">
+              <small>[{{ zooCount }}]</small>
+            </Button>
+          </div>
         </div>
       </div>
       <div class="grid">
@@ -120,9 +134,16 @@
           <Image src="/Angelinoceras.jpg" alt="Image" width="180" />
         </div>
         <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
-          <Button link @click="searchPalaeCollection">
-            <small id="simpleSearchInput-help">{{ $t('startPage.palaeCollection') }} </small>
-          </Button>
+          <div class="grid">
+            <Button link @click="searchPalaeCollection">
+              <small>{{ $t('startPage.palaeCollection') }} </small>
+            </Button>
+          </div>
+          <div class="grid">
+            <Button link @click="searchPalaeCollection">
+              <small>[{{ paleaCount }}]</small>
+            </Button>
+          </div>
         </div>
       </div>
       <div class="grid">
@@ -130,9 +151,16 @@
           <Image src="/Bergkristall.jpg" alt="Image" width="180" />
         </div>
         <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
-          <Button link @click="searchGeoCollection">
-            <small id="simpleSearchInput-help">{{ $t('startPage.geoCollection') }} </small>
-          </Button>
+          <div class="grid">
+            <Button link @click="searchGeoCollection">
+              <small>{{ $t('startPage.geoCollection') }} </small>
+            </Button>
+          </div>
+          <div class="grid">
+            <Button link @click="searchGeoCollection">
+              <small>[{{ geoCount }}]</small>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
@@ -148,6 +176,22 @@ const emits = defineEmits(['searchWithFilter', 'simpleSearch'])
 
 const value = ref()
 let loading = ref(false)
+
+const botanyCount = computed(() => {
+  return store.getters['botanyCollectionTotal']
+})
+
+const geoCount = computed(() => {
+  return store.getters['geoCollectionTotal']
+})
+
+const paleaCount = computed(() => {
+  return store.getters['paleaCollectionTotal']
+})
+
+const zooCount = computed(() => {
+  return store.getters['zooCollectionTotal']
+})
 
 const coordinatesCount = computed(() => {
   return store.getters['hasCoordinatesCount']
@@ -169,90 +213,86 @@ const inSwedenCount = computed(() => {
   return store.getters['inSwedenCount']
 })
 
-function onPressEnter() {
-  search()
-}
-
-function onSearchClick() {
-  search()
-}
-
-function searchAll() {
-  search('all')
-}
-
 function searchAllCoordinates() {
-  searchWithFilter('map:*')
+  store.commit('setSearchText', 'map:*')
+  store.commit('setFilterCoordinates', true)
+  emits('simpleSearch')
 }
 
 function searchInSweden() {
-  searchWithFilter('inSweden:*')
+  store.commit('setSearchText', 'inSweden:*')
+  store.commit('setFilterInSweden', true)
+  emits('simpleSearch')
 }
 
 function searchWithType() {
-  searchWithFilter('isType:*')
+  store.commit('setSearchText', 'isType:*')
+  store.commit('setFilterType', true)
+  emits('simpleSearch')
 }
 
 function searchWithImage() {
-  searchWithFilter('image:*')
-}
-
-function searchWithFilter(filter) {
-  const searchText = filter
-  store.commit('setSearchText', searchText)
-  emits('searchWithFilter')
+  store.commit('setSearchText', 'image:*')
+  store.commit('setFilterImage', true)
+  emits('simpleSearch')
 }
 
 function searchPalaeCollection() {
   const searchText = 'collectionId:p*'
 
   store.commit('setSearchText', searchText)
-  emits('searchWithFilter')
+  emits('simpleSearch')
 }
 
 function searchGeoCollection() {
   const searchText = 'collectionId:(557057 753664 786432)'
 
   store.commit('setSearchText', searchText)
-  emits('searchWithFilter')
+  emits('simpleSearch')
 }
 
 function searchZooCollection() {
   const searchText = 'collectionId:(e* 262144 655361 163840 ma fish herps va)'
 
   store.commit('setSearchText', searchText)
-  emits('searchWithFilter')
+  emits('simpleSearch')
 }
 
 function searchBotCollection() {
   console.log('searchBotCollection')
 
   const searchText = 'collectionId:(vp fungi mosses algae)'
-
   store.commit('setSearchText', searchText)
-  emits('searchWithFilter')
+  emits('simpleSearch')
 }
 
-function onAdvanceSearchLinkClick() {
-  store.commit('setIsAdvanceSearch', true)
+function onPressEnter() {
+  const searchText = 'text:' + value.value + '*'
+  search(searchText)
 }
 
-function search(searchType) {
+function onSearchClick() {
+  const searchText = 'text:' + value.value + '*'
+  search(searchText)
+}
+
+function searchAll() {
+  search('*:*')
+}
+
+function search(value) {
   loading.value = true
 
-  let searchText
-  if (searchType === 'all') {
-    searchText = '*:*'
-  } else {
-    searchText = 'text:' + value.value + '*'
-  }
-
-  store.commit('setSearchText', searchText)
+  store.commit('setSearchText', value)
   emits('simpleSearch')
 
   setTimeout(() => {
     loading.value = false
   }, 2000)
+}
+
+function onAdvanceSearchLinkClick() {
+  store.commit('setIsAdvanceSearch', true)
 }
 </script>
 <style scoped>

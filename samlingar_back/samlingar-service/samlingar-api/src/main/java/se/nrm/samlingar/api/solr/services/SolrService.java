@@ -32,20 +32,22 @@ public class SolrService implements Serializable {
     private final String responseKey = "response";
     private final String wildSearch = "*:*";
 
-    private final String map = "map";
-    private final String image = "image";
-    private final String inSweden = "inSweden";
-    private final String isType = "isType";
+    private final String mapFacetKey = "map";
+    private final String imageFacetKey = "image";
+    private final String inSwedenFacetKey = "inSweden";
+    private final String isTypeFacetKey = "isType";
     private final String typeStatusFacetKey = "typeStatus";
     private final String collectionNameFacetKey = "collectionName";
+    private final String collectionIdFacetKey = "collectionId";
     private final String familyFacetKey = "family";
     private final String genusFacetKey = "genus";
-    private final String geohashFacetKey = "geohash";
+    private final String geohashFacetKey = "geohash"; 
 
     private final String textKey = "text:";
     private final String collectionNameKey = "collectionName:";
     private final String typeStatusKey = "typeStatus:";
     private final String familyKey = "family:";
+    
 
     private SolrQuery query;
     private QueryResponse response;
@@ -78,28 +80,25 @@ public class SolrService implements Serializable {
     public String simpleSearch(int start, int numPerPage, String text) {
         log.info("simpleSearch ..... : {} -- {} ", start + " -- " + numPerPage, text);
 
-        final TermsFacetMap mapFacet = new TermsFacetMap(map);
-        final TermsFacetMap imageFacet = new TermsFacetMap(image);
-        final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSweden);
-        final TermsFacetMap isTypeFacet = new TermsFacetMap(isType);
+        final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
+        final TermsFacetMap imageFacet = new TermsFacetMap(imageFacetKey);
+        final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSwedenFacetKey);
+        final TermsFacetMap isTypeFacet = new TermsFacetMap(isTypeFacetKey);
         final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey)
                 .setLimit(120);
         final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey)
                 .setLimit(50);
         final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey)
                 .setLimit(200);
-
-//       final TermsFacetMap geoHashFacet = new TermsFacetMap(geohashFacetKey)
-//                .setLimit(500)
-//                .setTermPrefix("3_");
+ 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)
                 .setOffset(start)
                 .setLimit(numPerPage)
-                .withFacet(image, imageFacet)
-                .withFacet(map, mapFacet)
-                .withFacet(inSweden, inSwedenFacet)
-                .withFacet(isType, isTypeFacet)
+                .withFacet(imageFacetKey, imageFacet)
+                .withFacet(mapFacetKey, mapFacet)
+                .withFacet(inSwedenFacetKey, inSwedenFacet)
+                .withFacet(isTypeFacetKey, isTypeFacet)
                 .withFacet(typeStatusFacetKey, typeStatusFacet)
                 .withFacet(familyFacetKey, familyFacet)
                 .withFacet(collectionNameFacetKey, collectionFacet);
@@ -115,8 +114,7 @@ public class SolrService implements Serializable {
             rawJsonResponseParser.setWriterType(jsonKey);
             jsonRequest.setResponseParser(rawJsonResponseParser);
 
-            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
-
+            jsonResponse = (String) client.request(jsonRequest).get(responseKey); 
 //            log.info("simplesearch what... {}", jsonResponse);
 
         } catch (SolrServerException | IOException ex) {
@@ -136,16 +134,21 @@ public class SolrService implements Serializable {
      * @param collection
      * @param typeStatus
      * @param family
+     * @param hasCoordinates
+     * @param hasImage
+     * @param inSweden
+     * @param isType
      * @return String
      */
     public String filterSearch(int start, int numPerPage, String text,
-            String collection, String typeStatus, String family) {
+            String collection, String typeStatus, String family, String hasCoordinates,
+            String hasImage, String inSweden, String isType) {
         log.info("filterSearch: {} -- {} ", collection + " -- " + typeStatus, text);
 
-        final TermsFacetMap mapFacet = new TermsFacetMap(map);
-        final TermsFacetMap imageFacet = new TermsFacetMap(image);
-        final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSweden);
-        final TermsFacetMap isTypeFacet = new TermsFacetMap(isType);
+        final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
+        final TermsFacetMap imageFacet = new TermsFacetMap(imageFacetKey);
+        final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSwedenFacetKey);
+        final TermsFacetMap isTypeFacet = new TermsFacetMap(isTypeFacetKey);
         final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey)
                 .setLimit(100);
         final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey)
@@ -155,10 +158,10 @@ public class SolrService implements Serializable {
                 .setQuery(text)
                 .setOffset(start)
                 .setLimit(numPerPage)
-                .withFacet(image, imageFacet)
-                .withFacet(map, mapFacet)
-                .withFacet(inSweden, inSwedenFacet)
-                .withFacet(isType, isTypeFacet)
+                .withFacet(imageFacetKey, imageFacet)
+                .withFacet(mapFacetKey, mapFacet)
+                .withFacet(inSwedenFacetKey, inSwedenFacet)
+                .withFacet(isTypeFacetKey, isTypeFacet)
                 .withFacet(typeStatusFacetKey, typeStatusFacet)
                 .withFacet(collectionNameFacetKey, collectionFacet);
 
@@ -184,6 +187,22 @@ public class SolrService implements Serializable {
             jsonRequest.withFilter(familyKey + family);
         }
 
+        if(hasImage != null) { 
+            jsonRequest.withFilter(hasImage);
+        }
+        
+        if(hasCoordinates != null) {
+            jsonRequest.withFilter(hasCoordinates);
+        }
+        
+        if(inSweden != null) {
+            jsonRequest.withFilter(inSweden);
+        }
+        
+        if(isType != null) {
+            jsonRequest.withFilter(isType);
+        }
+        
         jsonRequest.setBasicAuthCredentials(username, password);
 
         String jsonResponse;
@@ -297,24 +316,27 @@ public class SolrService implements Serializable {
 
     public String searchStatisticData() {
 
-        final TermsFacetMap mapFacet = new TermsFacetMap(map);
-        final TermsFacetMap imageFacet = new TermsFacetMap(image);
-        final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSweden);
-        final TermsFacetMap typeFacet = new TermsFacetMap(isType);
+        final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
+        final TermsFacetMap imageFacet = new TermsFacetMap(imageFacetKey);
+        final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSwedenFacetKey);
+        final TermsFacetMap typeFacet = new TermsFacetMap(isTypeFacetKey); 
+        final TermsFacetMap collectionFacet = new TermsFacetMap(collectionIdFacetKey)
+                .setLimit(50);
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(wildSearch)
-                .withFacet(image, imageFacet)
-                .withFacet(map, mapFacet)
-                .withFacet(inSweden, inSwedenFacet)
-                .withFacet(isType, typeFacet);
+                .returnFields(collectionNameFacetKey)
+                .withFacet(imageFacetKey, imageFacet)
+                .withFacet(mapFacetKey, mapFacet)
+                .withFacet(inSwedenFacetKey, inSwedenFacet)
+                .withFacet(isTypeFacetKey, typeFacet)
+                .withFacet(collectionIdFacetKey, collectionFacet);
 
         jsonRequest.setBasicAuthCredentials(username, password);
         try {
             response = jsonRequest.process(client);
 
-//            log.info("json: {}", response.jsonStr());
-
+//            log.info("json: {}", response.jsonStr()); 
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
