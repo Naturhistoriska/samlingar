@@ -237,7 +237,7 @@ function onMapLinkClick() {
 }
 
 function handlePaginateSearch() {
-  emits('filterSearch', 'paginateSearch')
+  emits('conditionalSearch', 'paginateSearch')
 }
 </script>
 <style scoped>
