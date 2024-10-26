@@ -80,7 +80,7 @@
       </Accordion>
     </template>
     <template #footer>
-      <div class="grid">
+      <div class="grid" v-if="coordinatesCount > 0">
         <div class="col-8" no-gutters style="float: left; text-align: left">
           <Button text @click="searchAllCoordinates" :disabled="coordinatesFiltered">
             <small>
@@ -88,52 +88,88 @@
             </small>
           </Button>
         </div>
-        <div class="col-4" style="float: left; text-align: left">
+        <div class="col-2" style="float: left; text-align: left">
           <Button text @click="searchAllCoordinates" :disabled="coordinatesFiltered">
             <small>{{ coordinatesCount }}</small>
           </Button>
         </div>
+        <div class="col-2" style="float: left; text-align: left" v-if="coordinatesFiltered">
+          <Button
+            text
+            icon="pi pi-times-circle"
+            aria-label="Remove"
+            title="Remove"
+            @click="removeCoordinatesFilter"
+          />
+        </div>
       </div>
-      <div class="grid">
+      <div class="grid" v-if="inSwedenCount > 0">
         <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text :disabled="inSwedenFiltered">
+          <Button text :disabled="inSwedenFiltered" @click="searchAllCollectedInSweden">
             <small>
               {{ $t('startPage.specimensFromSweden') }}
             </small>
           </Button>
         </div>
-        <div class="col-4" style="float: left; text-align: left">
-          <Button text :disabled="inSwedenFiltered">
+        <div class="col-2" style="float: left; text-align: left">
+          <Button text :disabled="inSwedenFiltered" @click="searchAllCollectedInSweden">
             <small>{{ inSwedenCount }}</small>
           </Button>
         </div>
+        <div class="col-2" style="float: left; text-align: left" v-if="inSwedenFiltered">
+          <Button
+            text
+            icon="pi pi-times-circle"
+            aria-label="Remove"
+            title="Remove"
+            @click="removeCollectedInSwedenFilter"
+          />
+        </div>
       </div>
-      <div class="grid">
+      <div class="grid" v-if="imageCount > 0">
         <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text :disabled="imageFiltered">
+          <Button text :disabled="imageFiltered" @click="searchAllHasImages">
             <small>
               {{ $t('startPage.specimensWithImages') }}
             </small>
           </Button>
         </div>
-        <div class="col-4" style="float: left; text-align: left">
-          <Button text :disabled="imageFiltered">
+        <div class="col-2" style="float: left; text-align: left">
+          <Button text :disabled="imageFiltered" @click="searchAllHasImages">
             <small>{{ imageCount }}</small>
           </Button>
         </div>
+        <div class="col-2" style="float: left; text-align: left" v-if="imageFiltered">
+          <Button
+            text
+            icon="pi pi-times-circle"
+            aria-label="Remove"
+            title="Remove"
+            @click="removeImageFilter"
+          />
+        </div>
       </div>
-      <div class="grid">
+      <div class="grid" v-if="isTypeCount > 0">
         <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text :disabled="tyypeFiltered">
+          <Button text :disabled="typeFiltered" @click="searchAllHasType">
             <small>
               {{ $t('startPage.specimensWithType') }}
             </small>
           </Button>
         </div>
-        <div class="col-4" style="float: left; text-align: left">
-          <Button text :disabled="tyypeFiltered">
+        <div class="col-2" style="float: left; text-align: left">
+          <Button text :disabled="typeFiltered" @click="searchAllHasType">
             <small>{{ isTypeCount }}</small>
           </Button>
+        </div>
+        <div class="col-2" style="float: left; text-align: left" v-if="typeFiltered">
+          <Button
+            text
+            icon="pi pi-times-circle"
+            aria-label="Remove"
+            title="Remove"
+            @click="removeTypeSpecimensFilter"
+          />
         </div>
       </div>
     </template>
@@ -156,7 +192,7 @@ let displayClearLink = ref(false)
 
 const store = useStore()
 
-const emits = defineEmits(['conditionalSearch', 'coordinatesSearch', 'search'])
+const emits = defineEmits(['conditionalSearch', 'filterSearch', 'search'])
 
 watch(
   () => store.getters['selectedCollection'],
@@ -177,7 +213,7 @@ const imageFiltered = computed(() => {
   return store.getters['filterImage']
 })
 
-const tyypeFiltered = computed(() => {
+const typeFiltered = computed(() => {
   return store.getters['filterType']
 })
 
@@ -265,7 +301,53 @@ function selectFamily(value) {
 }
 
 function searchAllCoordinates() {
-  emits('coordinatesSearch')
+  store.commit('setFilterCoordinates', true)
+  emits('filterSearch', ' %2Bmap:*')
+}
+
+function searchAllCollectedInSweden() {
+  store.commit('setFilterInSweden', true)
+  emits('filterSearch', ' %2BinSweden:*')
+}
+
+function searchAllHasImages() {
+  store.commit('setFilterImage', true)
+  emits('filterSearch', ' %2Bimage:*')
+}
+
+function searchAllHasType() {
+  store.commit('setFilterType', true)
+  emits('filterSearch', ' %2BisType:*')
+}
+
+function removeFilter(value) {
+  let searchText = store.getters['searchText']
+  searchText = searchText.replace(value, '').trim()
+  if (searchText.length === 0) {
+    searchText = '*:*'
+  }
+  store.commit('setSearchText', searchText)
+  emits('filterSearch', '')
+}
+
+function removeTypeSpecimensFilter() {
+  store.commit('setFilterType', false)
+  removeFilter('%2BisType:*')
+}
+
+function removeCollectedInSwedenFilter() {
+  store.commit('setFilterInSweden', false)
+  removeFilter('%2BinSweden:*')
+}
+
+function removeCoordinatesFilter() {
+  store.commit('setFilterCoordinates', false)
+  removeFilter('%2Bmap:*')
+}
+
+function removeImageFilter() {
+  store.commit('setFilterImage', false)
+  removeFilter('%2Bimage:*')
 }
 </script>
 <style scoped></style>

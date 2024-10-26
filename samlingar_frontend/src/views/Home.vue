@@ -8,6 +8,7 @@
       @exportData="handleExportData"
       @detailSearch="handleSingleMarkerSearch"
       @fetchMapData="handleFetchMapData"
+      @filterSearch="handleFilterSearch"
       @mapSearch="handleMapSearch"
       @simpleSearch="handleSimpleSearch"
     />
@@ -96,6 +97,8 @@ function handleStatisticSearch() {
 
 function handleSimpleSearch() {
   const searchText = store.getters['searchText']
+
+  console.log('search text ...', searchText)
   const start = 0
   const numRows = 10
 
@@ -128,8 +131,8 @@ function processAPIdata(response, value) {
   const genusFacet = facets.genus
   if (genusFacet !== undefined) {
     const genus = genusFacet.buckets
-    onsole.log('genus length', genus.length)
-    onsole.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+    console.log('genus length', genus.length)
+    genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
     store.commit('setGenus', genus)
   } else {
     store.commit('setGenus', [])
@@ -245,9 +248,25 @@ function conditionalSearch(value) {
     .finally(() => {})
 }
 
+// Filter link from results page
+function handleFilterSearch(value) {
+  console.log('handleFilterSearch', value)
+  let searchText = store.getters['searchText']
+
+  searchText = searchText + value
+  console.log('what...', searchText)
+
+  store.commit('setSearchText', searchText)
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (isAdvanceSearch) {
+  } else {
+    conditionalSearch()
+  }
+}
+
 // simple search filter with map, type, sweden, coordinates and collections
 function handleSearchWithFilter() {
-  console.log('handleCoordinatesSearch')
+  console.log('handleSearchWithFilter')
 
   const start = store.getters['startRecord']
   const numRows = store.getters['numPerPage']

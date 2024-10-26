@@ -84,7 +84,7 @@ export default {
     apiSearch() {
       console.log('what..', this.search)
       let searchText = this.itemSelected ? this.search : this.search + '*'
-      searchText = 'txFullName:' + searchText
+      searchText = '%2BtxFullName:' + searchText
       service
         .apiSimpleSearch(searchText, 0, 10)
         .then((response) => {

@@ -4,9 +4,9 @@
       <div class="flex flex-column col-5">
         <SearchFilter
           class="divBg"
-          @coordinatesSearch="handleMapSearch"
-          @search="handleSearch"
           @conditionalSearch="handleConditionSearch"
+          @filterSearch="handleFilterSearch"
+          @search="handleSearch"
         />
       </div>
       <div class="col-7">
@@ -95,6 +95,7 @@ const emits = defineEmits([
   'coordinatesSearch',
   'exportData',
   'fetchMapData',
+  'filterSearch',
   'mapSearch',
   'simpleSearch'
 ])
@@ -148,10 +149,10 @@ function downloadFile() {
   }, 5000)
 }
 
-// search when all specimens with coordinates clicked
-function handleMapSearch() {
-  console.log('handleMapSearch')
-  emits('mapSearch')
+// search when filter link (coordinates, images, type, inSweden clicked)
+function handleFilterSearch(value) {
+  console.log('handleFilterSearch', value)
+  emits('filterSearch', value)
 }
 
 const mapLinkText = computed(() => {
@@ -238,71 +239,6 @@ function onMapLinkClick() {
 function handlePaginateSearch() {
   emits('filterSearch', 'paginateSearch')
 }
-
-// async function handleMapSearch() {
-
-// const collection = store.getters['selectedCollection']
-// const totalRecords = store.getters['totalRecords']
-// const searchText = store.getters['searchText']
-// const year = store.getters['year']
-//
-// service
-// .conditionalSearch(searchText, 1, collection, year, totalRecords)
-// .then((response) => {
-// const results = response.occurrences
-//
-// store.commit('setMapRecords', results)
-// setTimeout(() => {
-// }, 2000)
-// })
-// .catch()
-// .finally(() => {})
-// }
-
-// function search(value) {
-//   console.log('search....')
-//   const collection = store.getters['selectedCollection']
-//   const numPerPage = store.getters['numPerPage']
-//   const searchText = store.getters['searchText']
-//   const start = store.getters['startRecord']
-//   const year = store.getters['year']
-
-//   service
-//     .searchFiltByCollection(searchText, start, collection, year, numPerPage)
-//     .then((response) => {
-//       const total = response.totalRecords
-//       const results = response.occurrences
-//       const facetResults = response.facetResults
-
-//       const latLongFacet = facetResults.find((facet) => facet.fieldName === 'lat_long')
-//       const latLong = latLongFacet.fieldResult
-//       store.commit('setLatLong', latLong)
-
-//       if (value === 'paginateSearch') {
-//         store.commit('setNumPerPage', numPerPage)
-//         store.commit('setStartRecord', start)
-//       } else if (value === 'collectionSearch') {
-//         const yearFacet = facetResults.find((facet) => facet.fieldName === 'year')
-//         const occurrenceYears = yearFacet.fieldResult
-
-//         store.commit('setOccurrenceYears', occurrenceYears)
-//         store.commit('setSelectedCollection', collection)
-//       } else if (value === 'yearSearch') {
-//         const collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
-//         const collections = collectionFacet.fieldResult
-
-//         store.commit('setCollections', collections)
-//         store.commit('setYear', year)
-//       }
-//       store.commit('setResults', results)
-//       store.commit('setTotalRecords', total)
-//       setTimeout(() => {
-//         // loading = false
-//       }, 2000)
-//     })
-//     .catch()
-//     .finally(() => {})
-// }
 </script>
 <style scoped>
 .divBg {

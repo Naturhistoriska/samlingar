@@ -214,45 +214,46 @@ const inSwedenCount = computed(() => {
 })
 
 function searchAllCoordinates() {
-  store.commit('setSearchText', 'map:*')
+  store.commit('setSearchText', '%2Bmap:*')
+
   store.commit('setFilterCoordinates', true)
   emits('simpleSearch')
 }
 
 function searchInSweden() {
-  store.commit('setSearchText', 'inSweden:*')
+  store.commit('setSearchText', '%2BinSweden:*')
   store.commit('setFilterInSweden', true)
   emits('simpleSearch')
 }
 
 function searchWithType() {
-  store.commit('setSearchText', 'isType:*')
+  store.commit('setSearchText', '%2BisType:*')
   store.commit('setFilterType', true)
   emits('simpleSearch')
 }
 
 function searchWithImage() {
-  store.commit('setSearchText', 'image:*')
+  store.commit('setSearchText', '%2Bimage:*')
   store.commit('setFilterImage', true)
   emits('simpleSearch')
 }
 
 function searchPalaeCollection() {
-  const searchText = 'collectionId:p*'
+  const searchText = '%2BcollectionId:p*'
 
   store.commit('setSearchText', searchText)
   emits('simpleSearch')
 }
 
 function searchGeoCollection() {
-  const searchText = 'collectionId:(557057 753664 786432)'
+  const searchText = '%2BcollectionId:(557057 753664 786432)'
 
   store.commit('setSearchText', searchText)
   emits('simpleSearch')
 }
 
 function searchZooCollection() {
-  const searchText = 'collectionId:(e* 262144 655361 163840 ma fish herps va)'
+  const searchText = '%2BcollectionId:(e* 262144 655361 163840 ma fish herps va)'
 
   store.commit('setSearchText', searchText)
   emits('simpleSearch')
@@ -261,18 +262,18 @@ function searchZooCollection() {
 function searchBotCollection() {
   console.log('searchBotCollection')
 
-  const searchText = 'collectionId:(vp fungi mosses algae)'
+  const searchText = '%2BcollectionId:(vp fungi mosses algae)'
   store.commit('setSearchText', searchText)
   emits('simpleSearch')
 }
 
 function onPressEnter() {
-  const searchText = 'text:' + value.value + '*'
+  const searchText = '%2Btext:' + value.value + '*'
   search(searchText)
 }
 
 function onSearchClick() {
-  const searchText = 'text:' + value.value + '*'
+  const searchText = '%2Btext:' + value.value + '*'
   search(searchText)
 }
 
