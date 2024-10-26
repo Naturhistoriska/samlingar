@@ -1,0 +1,13 @@
+/samlingar-api/target/
+
+
+/notes
+/samlingar-api/Dockerfile
+/samlingar-api/Makefile
+
+/.DS_Store
+
+ /samlingar-api/.DS_Store
+
+/project-initdata.yml
+
