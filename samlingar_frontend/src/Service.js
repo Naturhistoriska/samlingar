@@ -12,6 +12,15 @@ const fiedList =
 const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
 export default class Service {
+
+  async apiAutoCompleteSearch(searchText) {
+      const url = `${samlingApi}/autocomplete?text=${searchText}`
+
+      const response = await axios.get(url)
+
+      return response.data
+  }
+
   async apiSimpleSearch(searchText, start, rows) {
     const url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${rows}`
 

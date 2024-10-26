@@ -109,7 +109,7 @@
         class="flex flex-col gap-2"
         style="min-width: 50%; text-align: right; float: right"
       >
-        <Button :label="$t('search.search')" @click="search" :loading="loading" />
+        <Button :label="$t('search.search')" @click="search" :loading="loading" disabled="true" />
         <Button :label="$t('common.clearAll')" @click="clearAll" />
       </div>
     </Fieldset>

@@ -51,6 +51,10 @@ public class SamlingarLogic {
         return service.simpleSearch(start, numPerPage, text);
     }
     
+    public String autoCompleteSearch(String text) {
+        return service.autoCompleteSearch(text);
+    }
+    
     public String filterSerch(int start, int numPerPage, String text,
             String collection, String typeStatus, String family,
             String hasCoordinates, String hasImage, String inSweden, String isType) {

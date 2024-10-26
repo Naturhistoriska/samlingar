@@ -102,8 +102,6 @@ function handleSimpleSearch() {
   service
     .apiSimpleSearch(searchText, start, numRows)
     .then((response) => {
-      console.log('response...', response)
-
       processAPIdata(response)
     })
     .catch()

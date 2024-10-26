@@ -8,7 +8,7 @@
               id="simpleSearchInput1"
               v-model="value"
               @keydown.enter="onPressEnter"
-              placeholder="Search"
+              :placeholder="$t('search.freeTextSearch')"
               aria-describedby="simpleSearchInput-help"
             />
             <Button
@@ -297,7 +297,7 @@ function onAdvanceSearchLinkClick() {
 </script>
 <style scoped>
 .searchInput {
-  min-width: 60%;
+  min-width: 80%;
   text-align: left;
   float: left;
 }

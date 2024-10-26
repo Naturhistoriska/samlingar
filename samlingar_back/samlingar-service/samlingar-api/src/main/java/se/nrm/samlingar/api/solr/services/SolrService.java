@@ -42,17 +42,23 @@ public class SolrService implements Serializable {
     private final String familyFacetKey = "family";
     private final String genusFacetKey = "genus";
     private final String geohashFacetKey = "geohash"; 
+    private final String txFullName = "txFullName";
 
     private final String textKey = "text:";
     private final String collectionNameKey = "collectionName:";
     private final String typeStatusKey = "typeStatus:";
     private final String familyKey = "family:";
+    private final String txFullNameKey = "txFullName:";
+    
+    private final int autoCompleteNumRowsReturn = 100 ;
     
 
     private SolrQuery query;
     private QueryResponse response;
     private NoOpResponseParser rawJsonResponseParser;
     private QueryRequest request;
+    
+    
 
     @Inject
     private InitialProperties properties;
@@ -344,4 +350,23 @@ public class SolrService implements Serializable {
 
         return response.jsonStr();
     }
+    
+    public String autoCompleteSearch(String text) {
+        query = new SolrQuery();
+        query.setQuery(txFullNameKey + text)
+                .setRows(autoCompleteNumRowsReturn) 
+                .addField(txFullName);
+        
+        try { 
+            request = new QueryRequest(query);
+            request.setBasicAuthCredentials(username, password);
+            response = request.process(client);
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+        return response.jsonStr();
+    }
+ 
+          
 }

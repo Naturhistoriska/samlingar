@@ -7,15 +7,15 @@
           v-model="search"
           :suggestions="items"
           :minLength="3"
-          @complete="acSearch"
-          @keydown.enter="onPressEnter"
+          @complete="apiAutoComplete"
+          @keydown.enter="apiSearch"
           @change="onChange"
           @itemSelect="onItemSelect"
           inputId="ac"
           :inputStyle="acwidth"
         />
-        <Button icon="pi pi-search" :loading="loading" @click="completeSearch" text />
-        <label for="ac">{{ $t('search.freeTextSearch') }} </label>
+        <Button icon="pi pi-search" :loading="loading" @click="apiSearch" text />
+        <label for="ac">{{ $t('search.searchSpecies') }} </label>
       </InputGroup>
     </FloatLabel>
   </div>
@@ -44,14 +44,18 @@ export default {
   methods: {
     ...mapMutations([
       'setCollections',
-      'setLatLong',
-      'setOccurrenceYears',
+      'setFamily',
+      'setGenus',
+      'setHasCoordinatesCount',
+      'setImageCount',
+      'setInSwedenCount',
+      'setResetPaging',
       'setResults',
       'setSearchText',
-      'setShowResults',
       'setShowDetail',
-      'setSelectedCollection',
+      'setShowResults',
       'setTotalRecords',
+      'setIsTypeCount',
       'setTypeStatus'
     ]),
 
@@ -63,12 +67,107 @@ export default {
       this.itemSelected = true
     },
     onPressEnter() {
-      this.completeSearch()
+      this.apiSearch()
     },
 
-    acSearch(event) {
-      console.log(this.search)
-      const searchText = event.query
+    apiAutoComplete(event) {
+      const searchText = event.query + '*'
+      service
+        .apiAutoCompleteSearch(searchText, 0, 10)
+        .then((response) => {
+          this.items = response.response.map((a) => a.txFullName)
+        })
+        .catch()
+        .finally(() => {})
+    },
+
+    apiSearch() {
+      console.log('what..', this.search)
+      let searchText = this.itemSelected ? this.search : this.search + '*'
+      searchText = 'txFullName:' + searchText
+      service
+        .apiSimpleSearch(searchText, 0, 10)
+        .then((response) => {
+          const total = response.response.numFound
+          const results = response.response.docs
+          const facets = response.facets
+
+          this.setCommentFacet(facets)
+
+          const familyFacet = facets.family
+          if (familyFacet !== undefined) {
+            const family = familyFacet.buckets
+            console.log('family length', family.length)
+            family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+            this.setFamily(family)
+          } else {
+            this.setFamily([])
+          }
+          const genusFacet = facets.genus
+          if (genusFacet !== undefined) {
+            const genus = genusFacet.buckets
+            onsole.log('genus length', genus.length)
+            onsole.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+            this.setGenus(genus)
+          } else {
+            this.setGenus([])
+          }
+
+          const collections = facets.collectionName.buckets
+          this.setCollections(collections)
+
+          const typeStatus = facets.typeStatus.buckets
+          console.log('typeStatus length', typeStatus.length)
+          this.setTypeStatus(typeStatus)
+
+          this.setResults(results)
+          this.setTotalRecords(total)
+          this.setSearchText(searchText)
+
+          this.setShowDetail(false)
+          this.setShowResults(true)
+          this.setResetPaging(true)
+        })
+        .catch()
+        .finally(() => {})
+    },
+
+    setCommentFacet(facets) {
+      const imageFacet = facets.image.buckets
+      if (imageFacet.length > 0) {
+        const imageCount = imageFacet[0].count
+        this.setImageCount(imageCount)
+      } else {
+        this.setImageCount(0)
+      }
+
+      const isTyypeFacet = facets.isType.buckets
+      if (isTyypeFacet.length > 0) {
+        const isTypeCount = isTyypeFacet[0].count
+        this.setIsTypeCount(isTypeCount)
+      } else {
+        this.setIsTypeCount(0)
+      }
+
+      const inSwedenFacet = facets.inSweden.buckets
+      if (inSwedenFacet.length > 0) {
+        const inSwedenCount = inSwedenFacet[0].count
+        this.setInSwedenCount(inSwedenCount)
+      } else {
+        this.setInSwedenCount(0)
+      }
+
+      const mapFacet = facets.map.buckets
+      if (mapFacet.length > 0) {
+        const mapCount = mapFacet[0].count
+        this.setHasCoordinatesCount(mapCount)
+      } else {
+        this.setHasCoordinatesCount(0)
+      }
+    },
+
+    // sbdi
+    sbdiAutoComplete(event) {
       service
         .autoComplete(searchText, 0, 10)
         .then((response) => {
@@ -111,9 +210,8 @@ export default {
 
             console.log('point length:', point.length)
           } else {
-            store.commit('setCollections', [])
-            store.commit('setLatLong', [])
-            store.commit('setTypeStatus', [])
+            this.setCollections([])
+            this.setTypeStatus([])
           }
           this.setResults(this.results)
           this.setSearchText(searchText)

@@ -48,6 +48,19 @@ public class SamlingarService {
 
         return Response.ok(logic.simpleSearch(text, start, numPerPage)).build();
     }
+    
+    
+    @GET
+    @Path("/autocomplete")
+    @ApiOperation(value = "autocomplete",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response autoCompleteSearch(@QueryParam("text") String text) {
+        log.info("autoCompleteSearch: {} ", text); 
+        return Response.ok(logic.autoCompleteSearch(text)).build();
+    }
 
     @GET
     @Path("/filter")
