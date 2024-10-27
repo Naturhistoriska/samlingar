@@ -53,6 +53,10 @@
     "pobox": "Box 50007",
     "text": "Hör gärna av dig till oss med frågor, tips och kommentarer. Vi försöker alltid hjälpa till så gott vi kan."
   },
+  "exportData": {
+    "download": "Download",
+    "export": "Export data [Click to prepare data for download (max: 20000 records)]"
+  },
   "footer": {
     "nrm": "Naturhistoriska riksmuseet",
     "currentLanguage": "SVENSKA"

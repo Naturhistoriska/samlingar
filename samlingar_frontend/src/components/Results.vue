@@ -15,14 +15,9 @@
             <legend>
               {{ $t('results.searchResults') }} [{{ $t('results.num_results', totalRecords) }}]
               <br />
-              <Button
-                disabled
-                link
-                @click="exportData"
-                v-if="!dataPrepared"
-                style="color: #34d399; font-size: 14px; cursor: pointer"
-              >
-                <small>Export data [Click to prepare data for download (max: 5000 records)]</small>
+
+              <Button link @click="exportData" v-if="!dataPrepared" style="width: 420px">
+                <small>{{ $t('exportData.export') }}</small>
               </Button>
               <download-excel
                 v-else
@@ -36,6 +31,7 @@
               >
                 <small>Download Data</small>
               </download-excel>
+              <br />
               <Button link @click="onMapLinkClick">
                 <small>{{ mapLinkText }}</small>
               </Button>
@@ -56,7 +52,6 @@
         </div>
 
         <Map v-if="showMap" @resetView="handleResetView" @searchDetial="handleSearchDetail" />
-        <!-- <Map v-if="showMap" @search="handleMapSearch" /> -->
         <div v-else>
           <ResultDetail v-if="showDetail" />
           <ResultList v-else @search="handlePaginateSearch" />
@@ -100,50 +95,64 @@ const emits = defineEmits([
   'exportData',
   'fetchMapData',
   'filterSearch',
-  'mapSearch',
   'simpleSearch'
 ])
 
 let showMap = ref(false)
 let dataPrepared = ref(false)
+let json_data = ref()
 const isLoading = ref(false)
 
 let json_fields = {
-  'Scientific Name': 'scientificName',
-  'Catalogue Number': 'raw_catalogNumber',
-  'Vernacular Name': 'vernacularName',
-  Kingdom: 'kingdom',
-  Phylum: 'phylum',
-  Classs: 'classs',
-  Order: 'order',
+  'Collection Name': 'collectionName',
+  'Catalogue Number': 'catalogNumber',
+  Locality: 'locality',
+  District: 'district',
+  'State Province': 'state',
+  Country: 'country',
+  Continent: 'continent',
+  Latitude: 'latitudeText',
+  Longitude: 'longitudeText',
+  'Station field number': 'stationFieldNumber',
+  Determiner: 'determiner',
   Family: 'family',
   Genus: 'genus',
   Species: 'species',
-  'Taxon Rank': 'taxonRank',
-  'Collection Name': 'collectionName',
-  Country: 'country',
-  'State Province': 'stateProvince',
-  'Decimal Latitude': 'decimalLatitude',
-  'Decimal Longitude': 'decimalLongitude',
-  'Recorded By': 'recordedBy',
-  Collectors: 'collectors'
+  'High classification': 'higherTx',
+  Prepration: 'prepration',
+  Preservation: 'preservation',
+  'Vernacular Name': 'commonName',
+  'Cataloged date': 'catalogedDate',
+  'Event date': 'startDate',
+  Collectors: 'collector',
+  Author: 'author'
 }
 
-const json_data = computed(() => {
-  const data = store.getters['exportData']
-  console.log('data: ', data.length)
+watch(
+  () => store.getters['exportData'],
+  () => {
+    console.log('data changed')
+    json_data.value = store.getters['exportData']
+    setTimeout(() => {
+      dataPrepared.value = true
+      isLoading.value = false
+    }, 2000)
+  }
+)
 
-  return toRaw(data)
-})
+// const json_data = computed(() => {
+//   const data = store.getters['exportData']
+//   console.log('data: ', data.length)
+
+//   return toRaw(data)
+// })
 
 function exportData() {
   console.log('export data')
 
-  emits('exportData')
+  isLoading.value = true
 
-  setTimeout(() => {
-    dataPrepared.value = true
-  }, 5000)
+  emits('exportData')
 }
 
 function downloadFile() {
@@ -249,12 +258,11 @@ function onMapLinkClick() {
     if (!isDetailView) {
       emits('fetchMapData', false)
     }
+    isLoading.value = true
+    setTimeout(() => {
+      isLoading.value = false
+    }, 5000)
   }
-
-  isLoading.value = true
-  setTimeout(() => {
-    isLoading.value = false
-  }, 5000)
 }
 
 function handlePaginateSearch() {
@@ -264,5 +272,9 @@ function handlePaginateSearch() {
 <style scoped>
 .divBg {
   background: transparent;
+}
+
+.ui-button-text {
+  padding: 0px !important;
 }
 </style>

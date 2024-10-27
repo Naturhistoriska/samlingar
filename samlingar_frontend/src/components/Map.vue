@@ -32,6 +32,8 @@ const initialMap = ref(null)
 
 const isLoading = ref(true)
 
+let markers = ref()
+
 onMounted(() => {
   initMap()
 
@@ -173,8 +175,19 @@ function drawPolygon() {
   }).addTo(initialMap.value)
 }
 
-function onCircleClick(geohash) {
-  console.log('onCircleClick', geohash)
+function onCircleClick(marker, geohash) {
+  console.log('onCircleClick', marker, geohash)
+  // initialMap.value.removeLayer(marker)
+
+  // markers.forEach(function (marker) {
+  //   if (marker._id == geohash) {
+  //     map.removeLayer(marker)
+  //   }
+  // else {
+  //   new_markers.push(marker)
+  // }
+  // })
+  // markers = new_markers
   // emits('resetView', geohash)
 }
 
@@ -225,7 +238,7 @@ function addSamlingarMarks() {
 
   const geoArray = store.getters['geoData']
 
-  const markers = L.markerClusterGroup()
+  markers = L.markerClusterGroup()
 
   geoArray.forEach((geo) => {
     const { count, latitude, longitude, geohash } = geo
@@ -247,6 +260,14 @@ function addSamlingarMarks() {
 
       markers.addLayer(marker)
     } else {
+      const marker = L.circle([latitude, longitude], {
+        id: geohash,
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 90000
+      })
+
       const div = document.createElement('div')
       div.innerHTML = `<br>Total occurrences: ${count}<br><br><br> `
 
@@ -254,18 +275,21 @@ function addSamlingarMarks() {
       button.innerHTML = 'Click to open for detail'
 
       button.onclick = function () {
-        onCircleClick(geohash)
+        onCircleClick(marker, geohash)
       }
       div.appendChild(button)
 
-      L.circle([latitude, longitude], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 90000
-      })
-        .bindPopup(div)
-        .addTo(initialMap.value)
+      marker.bindPopup(div).addTo(initialMap.value)
+
+      // L.circle([latitude, longitude], {
+      //   id: geohash,
+      //   color: 'red',
+      //   fillColor: '#f03',
+      //   fillOpacity: 0.5,
+      //   radius: 90000
+      // })
+      //   .bindPopup(div)
+      //   .addTo(initialMap.value)
     }
   })
   initialMap.value.addLayer(markers)

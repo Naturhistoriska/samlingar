@@ -205,7 +205,6 @@ watch(
   () => store.getters['selectedType'],
   () => {
     selectedType.value = store.getters['selectedType']
-    console.log('selectedType', selectedType)
   }
 )
 

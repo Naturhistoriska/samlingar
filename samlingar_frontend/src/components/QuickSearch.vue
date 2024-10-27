@@ -129,7 +129,9 @@ export default {
           this.setResetPaging(true)
         })
         .catch()
-        .finally(() => {})
+        .finally(() => {
+          this.search = null
+        })
     },
 
     setCommentFacet(facets) {

@@ -117,4 +117,22 @@ public class SamlingarService {
         log.info("statisticSearch: {}, {}"); 
         return Response.ok(logic.getStaticData()).build();
     }
+    
+    @GET
+    @Path("/download")
+    @ApiOperation(value = "Statistic",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response download(@QueryParam("text") String text,
+            @QueryParam("collection") String collection,
+            @QueryParam("typeStatus") String typeStatus,
+            @QueryParam("family") String family,
+            @QueryParam("numRows") int numRows) {
+        log.info("statisticSearch: {}, {}"); 
+        
+        return Response.ok(logic
+                .download(text, collection, typeStatus, family, numRows)).build();
+    }
 }

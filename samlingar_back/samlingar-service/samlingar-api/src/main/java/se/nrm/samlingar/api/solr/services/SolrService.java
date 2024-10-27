@@ -32,6 +32,34 @@ public class SolrService implements Serializable {
     private final String responseKey = "response";
     private final String wildSearch = "*:*";
 
+    private final String authorField = "author";
+    private final String catalogNumberField = "catalogNumber";
+    private final String collectionNameField = "collectionName";
+    private final String continentField = "continent";
+    private final String countryField = "country";
+    private final String currentDeterminationField = "currentDetermination";
+    private final String determinerField = "determiner";
+    private final String districtField = "district";
+    private final String familyField = "family";
+    private final String genusField = "genus";
+    private final String higherTxField = "higherTx";
+    private final String latitudeField = "latitudeText";
+    private final String localityField = "locality";
+    private final String longitudeField = "longitudeText";
+    private final String preservationField = "preservation";
+    private final String speciesField = "species"; 
+    private final String stateField = "state";
+    private final String stationFieldNumberField = "stationFieldNumber";
+    private final String txFullNameField = "txFullName";
+    
+    
+    private final String catalogedDateField = "catalogedDate";
+    private final String startDateField = "startDate";
+    private final String collectorField = "collector";
+    private final String commonNameField = "commonName";
+    private final String prepration = "prepration";
+    
+    
     private final String mapFacetKey = "map";
     private final String imageFacetKey = "image";
     private final String inSwedenFacetKey = "inSweden";
@@ -232,6 +260,65 @@ public class SolrService implements Serializable {
         return jsonResponse;
     }
 
+    public String download(String text, String collection, String typeStatus, 
+            String family, int start, int rows) {
+        log.info("download");
+          
+        
+        query = new SolrQuery();
+        query.setQuery(text)
+                .addField(authorField)
+                .addField(catalogNumberField)
+                .addField(collectionNameField)
+                .addField(continentField) 
+                .addField(countryField)
+                .addField(currentDeterminationField) 
+                .addField(determinerField) 
+                .addField(districtField) 
+                .addField(familyField) 
+                .addField(genusField)
+                .addField(higherTxField)
+                .addField(continentField)
+                .addField(latitudeField) 
+                .addField(localityField)
+                .addField(longitudeField)
+                .addField(preservationField)
+                .addField(speciesField) 
+                .addField(stateField) 
+                .addField(stationFieldNumberField)
+                .addField(txFullNameField)
+                .addField(catalogedDateField)
+                .addField(startDateField)
+                .addField(collectorField)
+                .addField(commonNameField)
+                .addField(prepration)  
+                .setStart(start)
+                .setRows(rows);
+        
+        if (collection != null) {
+            query.addFilterQuery(collectionNameKey + collection) ;
+        }
+
+        if (typeStatus != null) {
+            query.addFilterQuery(typeStatusKey + typeStatus); 
+        }
+
+        if (family != null) {
+            query.addFilterQuery(familyKey + family);  
+        }
+
+        try {
+            request = new QueryRequest(query);
+            request.setBasicAuthCredentials(username, password);
+            response = request.process(client);
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+//        log.info("json: {}", response.jsonStr());
+        return response.jsonStr();
+    }
+
     public String mapDataSearch(String text, String collection, String typeStatus, String family) {
         log.info("mapDataSearch ..... : {} -- {} ", text, collection);
         
@@ -278,65 +365,12 @@ public class SolrService implements Serializable {
         jsonRequest.setBasicAuthCredentials(properties.getUsername(), properties.getPassword());
         try { 
             response = jsonRequest.process(client);
-            log.info("json: {}", response.jsonStr());
+//            log.info("json: {}", response.jsonStr());
         } catch (SolrServerException | IOException ex) {
             log.warn(ex.getMessage());
             return null;
         }
-        return response.jsonStr();
-        
-
-//       final TermsFacetMap geoHashFacet = new TermsFacetMap(geohashFacetKey)
-//                .setLimit(500)
-//                .setTermPrefix("3_");
-//  
-//        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-//                .setQuery(text)   
-//                .withFacet(geohashFacetKey, geoHashFacet);
-//        
-//        if (family != null && family.length() > 0) {
-//            final TermsFacetMap genusFacet = new TermsFacetMap(genusFacetKey)
-//                    .setLimit(200);
-//            jsonRequest.withFacet(genusFacetKey, genusFacet);
-//        } else {
-//            final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey) 
-//                    .setLimit(300);
-//            jsonRequest.withFacet(familyFacetKey, familyFacet); 
-//        }
-//        
-//        if(collection != null) {
-//            jsonRequest.withFilter(collectionNameKey + collection);  
-//        }
-//        
-//        if(typeStatus != null) {
-//            jsonRequest.withFilter(typeStatusKey + typeStatus);
-//        }
-//        
-//        if(family != null) {
-//            jsonRequest.withFilter(familyKey + family);
-//        }
-//
-//        
-//        jsonRequest.setBasicAuthCredentials(username, password);
-//        
-//        String jsonResponse; 
-//        try {
-//            response = jsonRequest.process(client);
-//            
-//            rawJsonResponseParser = new NoOpResponseParser();
-//            rawJsonResponseParser.setWriterType(jsonKey);
-//            jsonRequest.setResponseParser(rawJsonResponseParser);
-//             
-//            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
-//
-//            log.info("simplesearch what... {}", jsonResponse); 
-//
-//        } catch (SolrServerException | IOException ex) {
-//            log.error(ex.getMessage());
-//            return null;
-//        }
-//
-//        return jsonResponse; 
+        return response.jsonStr(); 
     }
 
     public String searchStatisticData() {

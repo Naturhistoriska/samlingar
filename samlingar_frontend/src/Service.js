@@ -5,101 +5,23 @@ const baseUrl = import.meta.env.VITE_SBDI_API
 const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
 const resultsPerPage = 10
 
-const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
+const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
 
 const fiedList =
   'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'
 const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
 export default class Service {
-
   async apiAutoCompleteSearch(searchText) {
-      const url = `${samlingApi}/autocomplete?text=${searchText}`
+    const url = `${samlingApi}/autocomplete?text=${searchText}`
 
-      const response = await axios.get(url)
+    const response = await axios.get(url)
 
-      return response.data
+    return response.data
   }
 
   async apiSimpleSearch(searchText, start, rows) {
     const url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${rows}`
-
-    const response = await axios.get(url)
-
-    return response.data
-  }
-
-  async apiSimpleSearchWithFilter(
-    searchText,
-    hasCoordinates,
-    hasImages,
-    inSweden,
-    isType,
-    start,
-    rows
-  ) {
-    let url = `${samlingApi}/filter?text=${searchText}`
-
-    if (hasCoordinates) {
-      url += `&hasCoordinates=${hasCoordinates}`
-    }
-    if (hasImages) {
-      url += `&hasImages=${hasImages}`
-    }
-    if (inSweden) {
-      url += `&inSweden=${inSweden}`
-    }
-    if (isType) {
-      url += `&inSweden=${isType}`
-    }
-
-    `&start=${start}&numPerPage=${rows}`
-
-    const response = await axios.get(url)
-
-    return response.data
-  }
-
-  async apiConditinalSearchWithFilter(
-    searchText,
-    selectedColletion,
-    selectedTypeStatus,
-    selectedFamily,
-    hasCoordinates,
-    isType,
-    inSweden,
-    hasImages
-  ) {
-    let url = `${samlingApi}/filter?text=${searchText}`
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    }
-
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    }
-
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
-
-    if (hasCoordinates) {
-      url += `&map="map:*"`
-    }
-
-    if (isType) {
-      url += `&isType="isType:*"`
-    }
-
-    if (inSweden) {
-      url += `&inSweden="inSweden:*"`
-    }
-
-    if (hasImages) {
-      url += `&hasImages="images:*"`
-    }
-
-    url += `&start=${start}&numPerPage=${numPerPage}`
 
     const response = await axios.get(url)
 
@@ -159,6 +81,104 @@ export default class Service {
     return response.data
   }
 
+  async apiPreparaExport(searchText, selectedColletion, selectedTypeStatus, selectedFamily, total) {
+    let url = `${samlingApi}/download?text=${searchText}`
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+    url += `&numRows=${total}`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  // async apiSimpleSearchWithFilter(
+  //   searchText,
+  //   hasCoordinates,
+  //   hasImages,
+  //   inSweden,
+  //   isType,
+  //   start,
+  //   rows
+  // ) {
+  //   let url = `${samlingApi}/filter?text=${searchText}`
+
+  //   if (hasCoordinates) {
+  //     url += `&hasCoordinates=${hasCoordinates}`
+  //   }
+  //   if (hasImages) {
+  //     url += `&hasImages=${hasImages}`
+  //   }
+  //   if (inSweden) {
+  //     url += `&inSweden=${inSweden}`
+  //   }
+  //   if (isType) {
+  //     url += `&inSweden=${isType}`
+  //   }
+
+  //   `&start=${start}&numPerPage=${rows}`
+
+  //   const response = await axios.get(url)
+
+  //   return response.data
+  // }
+
+  // async apiConditinalSearchWithFilter(
+  //   searchText,
+  //   selectedColletion,
+  //   selectedTypeStatus,
+  //   selectedFamily,
+  //   hasCoordinates,
+  //   isType,
+  //   inSweden,
+  //   hasImages
+  // ) {
+  //   let url = `${samlingApi}/filter?text=${searchText}`
+  //   if (selectedColletion) {
+  //     url += `&collection="${selectedColletion}"`
+  //   }
+
+  //   if (selectedTypeStatus) {
+  //     url += `&typeStatus="${selectedTypeStatus}"`
+  //   }
+
+  //   if (selectedFamily) {
+  //     url += `&family="${selectedFamily}"`
+  //   }
+
+  //   if (hasCoordinates) {
+  //     url += `&map="map:*"`
+  //   }
+
+  //   if (isType) {
+  //     url += `&isType="isType:*"`
+  //   }
+
+  //   if (inSweden) {
+  //     url += `&inSweden="inSweden:*"`
+  //   }
+
+  //   if (hasImages) {
+  //     url += `&hasImages="images:*"`
+  //   }
+
+  //   url += `&start=${start}&numPerPage=${numPerPage}`
+
+  //   const response = await axios.get(url)
+
+  //   return response.data
+  // }
+
+  // SBDI
   async autoComplete(searchText, start, rows) {
     const url = `${baseUrl}/search?q=data_hub_uid:${institutionId} AND text:${searchText}*&offset=${start}&pageSize=${rows}&sort=eventDate&dir=desc&fl=scientificName`
     // const url = `${baseUrl}/search?q=${searchText}*  AND data_hub_uid:${institutionId}&start=${start}&pageSize=${rows}&sort=eventDate&dir=desc`

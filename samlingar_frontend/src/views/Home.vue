@@ -5,11 +5,10 @@
       @advanceSearch="handleAdvanceSearch"
       @conditionalSearch="handConditionalSearch"
       @coordinatesSearch="handleCoordinatesSearch"
-      @exportData="handleExportData"
+      @exportData="preparaExportData"
       @detailSearch="handleSingleMarkerSearch"
       @fetchMapData="handleFetchMapData"
       @filterSearch="handleFilterSearch"
-      @mapSearch="handleMapSearch"
       @simpleSearch="handleSimpleSearch"
     />
     <start-page
@@ -191,28 +190,28 @@ function setCommentFacet(facets) {
   }
 }
 
-function handleMapSearch() {
-  const isAdvanceSearch = store.getters['isAdvanceSearch']
-  if (isAdvanceSearch) {
-  } else {
-    handConditionalSearchWithFilter('map:*')
-  }
-}
+// function handleMapSearch() {
+//   const isAdvanceSearch = store.getters['isAdvanceSearch']
+//   if (isAdvanceSearch) {
+//   } else {
+//     handConditionalSearchWithFilter('map:*')
+//   }
+// }
 
-function handConditionalSearchWithFilter() {
-  const collection = store.getters['selectedCollection']
-  const searchText = store.getters['searchText']
-  const typeStatus = store.getters['selectedType']
-  const family = store.getters['selectedFamily']
+// function handConditionalSearchWithFilter() {
+//   const collection = store.getters['selectedCollection']
+//   const searchText = store.getters['searchText']
+//   const typeStatus = store.getters['selectedType']
+//   const family = store.getters['selectedFamily']
 
-  service
-    .apiConditinalSearchWithFilter(searchText, collection, typeStatus, family)
-    .then((response) => {
-      processAPIdata(response)
-    })
-    .catch()
-    .finally(() => {})
-}
+//   service
+//     .apiConditinalSearchWithFilter(searchText, collection, typeStatus, family)
+//     .then((response) => {
+//       processAPIdata(response)
+//     })
+//     .catch()
+//     .finally(() => {})
+// }
 
 function handConditionalSearch(value) {
   console.log('handConditionalSearch')
@@ -343,6 +342,28 @@ function fetchMapDataWithSimpleSearch(resetData, value) {
         store.commit('setTotalRecords', total)
         store.commit('setResults', results)
       }
+    })
+    .catch()
+    .finally(() => {})
+}
+
+async function preparaExportData() {
+  console.log('preparaExportData')
+
+  // store.commit('setExportData', null)
+
+  const collection = store.getters['selectedCollection']
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+  const totalRecords = store.getters['totalRecords']
+  const searchText = store.getters['searchText']
+
+  await service
+    .apiPreparaExport(searchText, collection, typeStatus, family, totalRecords)
+    .then((response) => {
+      const results = response
+
+      store.commit('setExportData', results)
     })
     .catch()
     .finally(() => {})

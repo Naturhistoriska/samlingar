@@ -1,13 +1,15 @@
 package se.nrm.samlingar.api.logic;
  
 import ch.hsr.geohash.GeoHash;
-import java.io.StringReader;  
+import java.io.StringReader;   
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder; 
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.api.solr.services.SolrService;
@@ -36,6 +38,8 @@ public class SamlingarLogic {
     private final String geoDataKey = "geoData";
     
     private final String prefix = "4_";
+    private final int downloadSize = 5000;
+    private final int maxDownload = 20000;
     
     private GeoHash geohash; 
     
@@ -70,8 +74,10 @@ public class SamlingarLogic {
         
         String jsonString = service.mapDataSearch( text, collection, typeStatus, family);
          
-        JsonObject jsonObj = Json.createReader(new StringReader(jsonString)).readObject();
-   
+//        JsonObject jsonObj = Json.createReader(new StringReader(jsonString)).readObject(); 
+        JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
+        JsonObject jsonObj = jsonReader.readObject();
+        
         
         JsonArray docs = jsonObj.getJsonArray(responseKey); 
         JsonObject facetJson =jsonObj.getJsonObject(facetsKey);
@@ -107,6 +113,44 @@ public class SamlingarLogic {
         jsonBuild.add(docsKey, docs);
         JsonObject json = jsonBuild.build();  
         
+        jsonReader.close();
         return json.toString();
+    }
+
+    public String download(String text, String collection,
+            String typeStatus, String family, int numRows) {
+ 
+
+        JsonReader jsonReader = null; 
+        JsonObject jsonObj;
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        
+        String results;
+        int totalDownload = numRows <= maxDownload ? numRows : maxDownload;
+        for (int i = 0; i < totalDownload; i += downloadSize) {
+            arrayBuilder = Json.createArrayBuilder();
+
+            results = service.download(text, collection, typeStatus, family, i, downloadSize); 
+            
+            jsonReader = Json.createReader(new StringReader(results));
+            
+            jsonObj = jsonReader.readObject(); 
+            JsonArray docs = jsonObj.getJsonArray(responseKey); 
+             
+//            for (JsonValue value : docs) {
+//                builder.add(value);
+//            } 
+            docs.stream() 
+                    .forEach(value -> {
+                        builder.add(value);
+                    }) ;
+        }
+        if(jsonReader != null) {
+            jsonReader.close();
+        }
+        
+        JsonArray array = builder.build();
+        log.info("size : {}", array.size());
+        return array.toString();   
     }
 }
