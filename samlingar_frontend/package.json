@@ -22,6 +22,7 @@
     "vue-json-excel3": "^1.0.29",
     "vue-moment": "^4.1.0",
     "vue-router": "^4.4.0",
+    "vue3-loading-overlay": "^0.0.0",
     "vuex": "^4.1.0"
   },
   "devDependencies": {

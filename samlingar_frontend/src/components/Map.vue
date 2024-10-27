@@ -81,22 +81,23 @@ function initMap() {
   // }
 }
 
-watch(
-  () => store.getters['results'],
-  () => {
-    initialMap.value.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        layer.remove()
-      } else if (layer instanceof L.Circle) {
-        layer.remove()
-      } else {
-        layer.remove()
-      }
-    })
-    resetMap()
-    addClusterMarkers()
-  }
-)
+// watch(
+//   () => store.getters['results'],
+//   () => {
+//     console.log('results changed')
+//     initialMap.value.eachLayer((layer) => {
+//       if (layer instanceof L.Marker) {
+//         layer.remove()
+//       } else if (layer instanceof L.Circle) {
+//         layer.remove()
+//       } else {
+//         layer.remove()
+//       }
+//     })
+//     resetMap()
+//     addClusterMarkers()
+//   }
+// )
 
 watch(
   () => store.getters['geoData'],

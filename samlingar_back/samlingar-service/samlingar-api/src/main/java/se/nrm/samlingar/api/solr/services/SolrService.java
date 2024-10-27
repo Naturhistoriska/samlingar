@@ -51,7 +51,8 @@ public class SolrService implements Serializable {
     private final String txFullNameKey = "txFullName:";
     
     private final int autoCompleteNumRowsReturn = 100 ;
-    
+    private final int defaultNumPerPage = 10;
+    private final String geohashPreFix = "4_";
 
     private SolrQuery query;
     private QueryResponse response;
@@ -158,7 +159,7 @@ public class SolrService implements Serializable {
         final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey)
                 .setLimit(100);
         final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey)
-                .setLimit(100);
+                .setLimit(100); 
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)
@@ -168,7 +169,7 @@ public class SolrService implements Serializable {
                 .withFacet(mapFacetKey, mapFacet)
                 .withFacet(inSwedenFacetKey, inSwedenFacet)
                 .withFacet(isTypeFacetKey, isTypeFacet)
-                .withFacet(typeStatusFacetKey, typeStatusFacet)
+                .withFacet(typeStatusFacetKey, typeStatusFacet) 
                 .withFacet(collectionNameFacetKey, collectionFacet);
 
         if (family != null && family.length() > 0) {
@@ -232,15 +233,33 @@ public class SolrService implements Serializable {
     }
 
     public String mapDataSearch(String text, String collection, String typeStatus, String family) {
-        log.info("mapDataSearch ..... : {} -- {} ", text);
+        log.info("mapDataSearch ..... : {} -- {} ", text, collection);
+        
+        final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
+        final TermsFacetMap imageFacet = new TermsFacetMap(imageFacetKey);
+        final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSwedenFacetKey);
+        final TermsFacetMap isTypeFacet = new TermsFacetMap(isTypeFacetKey);
+        final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey)
+                .setLimit(120);
+        final TermsFacetMap collectionFacet = new TermsFacetMap(collectionNameFacetKey)
+                .setLimit(50);
+        final TermsFacetMap familyFacet = new TermsFacetMap(familyFacetKey)
+                .setLimit(200);
 
         final TermsFacetMap geoHashFacet = new TermsFacetMap(geohashFacetKey)
                 .setLimit(20000)
-                .setTermPrefix("4_");
+                .setTermPrefix(geohashPreFix);
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)
-                .returnFields("geo")
+                .setQuery(text) 
+                .setLimit(defaultNumPerPage)
+                .withFacet(imageFacetKey, imageFacet)
+                .withFacet(mapFacetKey, mapFacet)
+                .withFacet(inSwedenFacetKey, inSwedenFacet)
+                .withFacet(isTypeFacetKey, isTypeFacet)
+                .withFacet(typeStatusFacetKey, typeStatusFacet)
+                .withFacet(familyFacetKey, familyFacet)
+                .withFacet(collectionNameFacetKey, collectionFacet)
                 .withFacet(geohashFacetKey, geoHashFacet);
  
 
@@ -259,7 +278,7 @@ public class SolrService implements Serializable {
         jsonRequest.setBasicAuthCredentials(properties.getUsername(), properties.getPassword());
         try { 
             response = jsonRequest.process(client);
-//            log.info("json: {}", response.jsonStr());
+            log.info("json: {}", response.jsonStr());
         } catch (SolrServerException | IOException ex) {
             log.warn(ex.getMessage());
             return null;

@@ -9,6 +9,8 @@ lerna-debug.log*
 
 .env
 
+samlingar_front_end/package-lock.json
+
 node_modules
 .DS_Store
 dist

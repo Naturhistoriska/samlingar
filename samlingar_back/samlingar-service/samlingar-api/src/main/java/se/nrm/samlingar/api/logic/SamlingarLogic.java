@@ -1,14 +1,13 @@
 package se.nrm.samlingar.api.logic;
  
 import ch.hsr.geohash.GeoHash;
-import java.io.StringReader; 
+import java.io.StringReader;  
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
+import javax.json.JsonObjectBuilder; 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.api.solr.services.SolrService;
@@ -29,6 +28,8 @@ public class SamlingarLogic {
     private final String geohashKey = "geohash";
     private final String facetsKey = "facets";
     private final String bucketsKey = "buckets";
+    private final String responseKey = "response";
+    private final String docsKey = "docs";
     
     private final String latitudeKey = "latitude";
     private final String longitudeKey = "longitude";
@@ -66,12 +67,18 @@ public class SamlingarLogic {
     
     public String mapDataSearch(String text, String collection, 
             String typeStatus, String family) {
+        
         String jsonString = service.mapDataSearch( text, collection, typeStatus, family);
+         
+        JsonObject jsonObj = Json.createReader(new StringReader(jsonString)).readObject();
+   
         
+        JsonArray docs = jsonObj.getJsonArray(responseKey); 
+        JsonObject facetJson =jsonObj.getJsonObject(facetsKey);
+          
+        JsonArray array = facetJson.getJsonObject(geohashKey)
+                .getJsonArray(bucketsKey); 
         
-        JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
-        JsonArray array = jsonReader.readObject().getJsonObject(facetsKey)
-                .getJsonObject(geohashKey).getJsonArray(bucketsKey); 
         log.info("geo length : {}", array.size());
     
         arrayBuilder = Json.createArrayBuilder();
@@ -95,7 +102,11 @@ public class SamlingarLogic {
                     arrayBuilder.add(attBuilder);   
                 }); 
         JsonObjectBuilder jsonBuild = Json.createObjectBuilder(); 
-        JsonObject json = jsonBuild.add(geoDataKey, arrayBuilder.build()).build(); 
+        jsonBuild.add(geoDataKey, arrayBuilder.build());
+        jsonBuild.add(facetsKey, facetJson);
+        jsonBuild.add(docsKey, docs);
+        JsonObject json = jsonBuild.build();  
+        
         return json.toString();
     }
 }

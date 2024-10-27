@@ -41,16 +41,16 @@
             </legend>
           </div>
           <div class="col-6">
-            <!-- <div>
-              <Loading1
+            <div>
+              <Loading
                 id="myLoad"
                 :active="isLoading"
                 :can-cancel="true"
                 color="#34d399"
                 background-color="#333333"
               >
-              </Loading1>
-            </div> -->
+              </Loading>
+            </div>
           </div>
         </div>
 
@@ -69,11 +69,14 @@ import { computed, ref, toRaw, isProxy, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
 
-// import Loading1 from 'vue3-loading-overlay'
+import Loading from 'vue3-loading-overlay'
 // // import { useLoading } from 'vue3-loading-overlay'
-// import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
+import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
 // Import stylesheet
 // import 'vue3-loading-overlay/dist/vue3-loading.css'
+
+// import Loading from 'vue-loading-overlay'
+// import 'vue-loading-overlay/dist/vue-loading.css'
 
 import ResultDetail from './ResultDetail.vue'
 import ResultList from './ResultList.vue'
@@ -152,7 +155,15 @@ function downloadFile() {
 // search when filter link (coordinates, images, type, inSweden clicked)
 function handleFilterSearch(value) {
   console.log('handleFilterSearch', value)
-  emits('filterSearch', value)
+  if (showMap.value) {
+    let searchText = store.getters['searchText']
+
+    searchText = searchText + value
+    store.commit('setSearchText', searchText)
+    emits('fetchMapData', true)
+  } else {
+    emits('filterSearch', value)
+  }
 }
 
 const mapLinkText = computed(() => {
@@ -185,22 +196,31 @@ function finishDownload() {
   alert('hide loading')
 }
 
+// this search after clear all filter
 function handleSearch() {
-  // this search after clear all filter
   console.log('handleSearch [clear filter search]')
 
   const isAdvanceSearch = store.getters['isAdvanceSearch']
-  if (isAdvanceSearch) {
-    emits('advanceSearch')
+
+  if (showMap.value) {
+    emits('fetchMapData', true)
   } else {
-    emits('simpleSearch')
+    if (isAdvanceSearch) {
+      emits('advanceSearch')
+    } else {
+      emits('simpleSearch')
+    }
   }
 }
 
 function handleConditionSearch(value) {
   console.log('handleConditionSearch')
 
-  emits('conditionalSearch', value)
+  if (showMap.value) {
+    emits('fetchMapData', true, value)
+  } else {
+    emits('conditionalSearch', value)
+  }
 }
 
 function handleSearchDetail(coordinates) {
@@ -226,14 +246,14 @@ function onMapLinkClick() {
   if (showMap.value) {
     const isDetailView = store.getters['showDetail']
     if (!isDetailView) {
-      emits('fetchMapData')
+      emits('fetchMapData', false)
     }
   }
 
   isLoading.value = true
   setTimeout(() => {
     isLoading.value = false
-  }, 2000)
+  }, 5000)
 }
 
 function handlePaginateSearch() {

@@ -205,15 +205,9 @@ function handConditionalSearchWithFilter() {
   const typeStatus = store.getters['selectedType']
   const family = store.getters['selectedFamily']
 
-  // hasCoordinates,
-  // isType,
-  // inSweden,
-  // hasImages
   service
     .apiConditinalSearchWithFilter(searchText, collection, typeStatus, family)
     .then((response) => {
-      console.log('response...', response)
-
       processAPIdata(response)
     })
     .catch()
@@ -221,7 +215,7 @@ function handConditionalSearchWithFilter() {
 }
 
 function handConditionalSearch(value) {
-  console.log('handleFilterSearch')
+  console.log('handConditionalSearch')
   const isAdvanceSearch = store.getters['isAdvanceSearch']
   if (isAdvanceSearch) {
     advanceConditionalSearch(value)
@@ -258,13 +252,14 @@ function handleFilterSearch(value) {
 
   store.commit('setSearchText', searchText)
   const isAdvanceSearch = store.getters['isAdvanceSearch']
+
   if (isAdvanceSearch) {
   } else {
     conditionalSearch()
   }
 }
 
-// simple search filter with map, type, sweden, coordinates and collections
+// simple search filter with map, type, sweden, coordinates and collections from start page
 function handleSearchWithFilter() {
   console.log('handleSearchWithFilter')
 
@@ -283,15 +278,17 @@ function handleSearchWithFilter() {
     .finally(() => {})
 }
 
-function handleFetchMapData() {
+// Fetch data for displaying map (When in map view)
+function handleFetchMapData(resetData) {
   const isAdvanceSearch = store.getters['isAdvanceSearch']
   if (isAdvanceSearch) {
   } else {
-    fetchMapDataWithSimpleSearch()
+    fetchMapDataWithSimpleSearch(resetData)
   }
 }
 
-function fetchMapDataWithSimpleSearch() {
+function fetchMapDataWithSimpleSearch(resetData, value) {
+  console.log('fetchMapDataWithSimpleSearch', resetData, value)
   const collection = store.getters['selectedCollection']
   const searchText = store.getters['searchText']
   const typeStatus = store.getters['selectedType']
@@ -303,11 +300,55 @@ function fetchMapDataWithSimpleSearch() {
       const array = response.geoData
 
       store.commit('setGeoData', array)
+
+      if (resetData) {
+        console.log('resetData...', resetData)
+        const facets = response.facets
+        setCommentFacet(facets)
+
+        const results = response.docs
+        const total = facets.count
+
+        const familyFacet = facets.family
+        if (familyFacet !== undefined) {
+          const family = familyFacet.buckets
+          console.log('family length', family.length)
+          family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+          store.commit('setFamily', family)
+        } else {
+          store.commit('setFamily', [])
+        }
+
+        const genusFacet = facets.genus
+        if (genusFacet !== undefined) {
+          const genus = genusFacet.buckets
+          console.log('genus length', genus.length)
+          genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+          store.commit('setGenus', genus)
+        } else {
+          store.commit('setGenus', [])
+        }
+
+        if (value !== 'filterByCollection') {
+          const collections = facets.collectionName.buckets
+          store.commit('setCollections', collections)
+        }
+
+        if (value != 'filterByType') {
+          const typeStatus = facets.typeStatus.buckets
+          console.log('typeStatus length', typeStatus.length)
+          store.commit('setTypeStatus', typeStatus)
+        }
+
+        store.commit('setTotalRecords', total)
+        store.commit('setResults', results)
+      }
     })
     .catch()
     .finally(() => {})
 }
 
+// SBDI
 function handleAdvanceSearch() {
   console.log('handleAdvanceSearch')
 
