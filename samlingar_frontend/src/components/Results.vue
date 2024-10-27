@@ -16,6 +16,7 @@
               {{ $t('results.searchResults') }} [{{ $t('results.num_results', totalRecords) }}]
               <br />
               <Button
+                disabled
                 link
                 @click="exportData"
                 v-if="!dataPrepared"
