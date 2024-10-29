@@ -7,12 +7,12 @@
           {{ $t('search.clearFilter') }}
         </Button>
       </div>
-      <Accordion multiple style="background-color: transparent">
-        <AccordionPanel value="0" style="background-color: transparent">
-          <AccordionHeader style="background-color: transparent">
+      <Accordion multiple class="p-accordion-header-variant-a">
+        <AccordionPanel value="0" style="font-size: 12px">
+          <AccordionHeader style="background: transparent">
             {{ $t('search.searchByCollection') }}
           </AccordionHeader>
-          <AccordionContent style="background: transparent; font-size: 12px">
+          <AccordionContent style="background: transparent" unstyled="true">
             <div
               v-for="collection of collections"
               :key="collection.val"
@@ -35,13 +35,8 @@
         </AccordionPanel>
         <AccordionPanel value="1" style="background: transparent; font-size: 12px">
           <AccordionHeader style="background: transparent">Type status</AccordionHeader>
-          <AccordionContent style="background: transparent">
-            <div
-              v-for="typeStatus of typeStatus"
-              :key="typeStatus.val"
-              class="flex items-center"
-              style="background: transparent"
-            >
+          <AccordionContent style="background: transparent" unstyled="true">
+            <div v-for="typeStatus of typeStatus" :key="typeStatus.val" class="flex items-center">
               <RadioButton
                 v-model="selectedType"
                 :inputId="typeStatus.val"
@@ -52,12 +47,12 @@
               <label :for="typeStatus.val" style="padding-left: 6px">
                 {{ typeStatus.val }} [{{ typeStatus.count }}]
               </label>
-            </div>
-          </AccordionContent>
+            </div></AccordionContent
+          >
         </AccordionPanel>
         <AccordionPanel value="2" style="background: transparent; font-size: 12px">
           <AccordionHeader style="background: transparent">Taxon</AccordionHeader>
-          <AccordionContent style="background: transparent">
+          <AccordionContent style="background: transparent" unstyled="true">
             <div
               v-for="family of familys"
               :key="family.val"
@@ -349,4 +344,71 @@ function removeImageFilter() {
   removeFilter('%2Bimage:*')
 }
 </script>
-<style scoped></style>
+<style scoped>
+.p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
+  background: var(--p-accordion-header-active-background);
+  /* color: var(--p-accordion-header-active-color); */
+  color: #cbcad1;
+}
+
+.p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader {
+  background: var(--p-accordion-header-active-background);
+  /* color: var(--p-accordion-header-active-color); */
+  color: #fff;
+}
+
+/* .p-accordionpanel:not(.p-disabled).p-accordionpanel-hover > .p-accordionheader {
+  background: var(--p-accordion-header-active-background);
+  color: #e70808;
+} */
+
+/* .p-accordion-header-variant-a .p-accordion-header-link {
+  border: solid 3px red;
+  background-color: red;
+} */
+/* .p-accordioncontent .p-accordioncontent-content { */
+/* background-color: red; */
+/* } */
+
+/* .p-accordion .p-accordion-header .p-accordion-header-link {
+  padding: 1.25rem;
+  border: 0 none;
+  color: rgba(144, 34, 34, 0.87);
+  background: #1e1e1e;
+  font-weight: 400;
+  border-radius: 4px;
+  transition: none;
+} */
+
+/* .p-accordioncontent {
+  background-color: #9c6d0f !important;
+} */
+/* .p-accordionheader {
+  /* background-color: #9c6d0f !important;
+   */
+/* color: #e5e50e;
+  background-color: transparent;
+} */
+/* .p-accordioncontent-content {
+  background-color: #ffaa00 !important;
+} */
+
+/* .p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: red;
+  color: rgba(255, 255, 255, 0.87); */
+/* } */
+/* .p-accordioncontent-content {
+  background-color: red;
+} */
+
+/* .p-accordion {
+  background-color: red important;
+} */
+/* .p-accordion .p-accordioncontent .p-accordioncontent-content {
+  background: red !important;
+} */
+/* #p-accordioncontent {
+  background: blue !important;
+} */
+</style>

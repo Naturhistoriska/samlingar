@@ -55,7 +55,7 @@
   },
   "exportData": {
     "download": "Download",
-    "export": "Export data [Click to prepare data for download (max: 20000 records)]"
+    "export": "Export data [Click to prepare data for download (max: 50000 records)]"
   },
   "footer": {
     "nrm": "Naturhistoriska riksmuseet",
@@ -134,7 +134,7 @@
     "specimensWithCoordinates": "Specimens with coordinates",
     "specimensFromSweden": "Specimens collected in Sweden",
     "specimensWithImages": "Specimens with images",
-    "specimensWithType": "Specimens with type",
+    "specimensWithType": "Specimens with type status",
     "text": "The Swedish Museum of Natural History contains 11 million specimens collected over the span of 300 years. Nearly 4 million objects from our collections are currently available online, 136000 with photos, showcasing biodiversity from around the world.",
     "zooCollection": "Zoological Collection"
   },

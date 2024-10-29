@@ -6,7 +6,7 @@
         <Divider
           v-if="index + 1 < results.length"
           :key="`devider-${index}`"
-          style="background-color: #ffffff"
+          style="padding-bottom: 20px"
         />
       </template>
     </div>
@@ -42,8 +42,6 @@ watch(
 )
 
 const results = computed(() => {
-  const r = store.getters['results']
-  console.log('result....', r)
   return store.getters['results']
 })
 
@@ -52,8 +50,6 @@ const totalRecords = computed(() => {
 })
 
 function onPage(event) {
-  console.log('page change...', event)
-
   const start = event.first
   const numPerPage = event.rows
 

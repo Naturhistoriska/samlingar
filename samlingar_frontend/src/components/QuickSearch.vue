@@ -106,8 +106,8 @@ export default {
           const genusFacet = facets.genus
           if (genusFacet !== undefined) {
             const genus = genusFacet.buckets
-            onsole.log('genus length', genus.length)
-            onsole.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+            console.log('genus length', genus.length)
+            genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
             this.setGenus(genus)
           } else {
             this.setGenus([])
