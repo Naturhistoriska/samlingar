@@ -33,6 +33,7 @@ const initialMap = ref(null)
 const isLoading = ref(true)
 
 let markers = ref()
+// let radius = ref(8000)
 
 onMounted(() => {
   initMap()
@@ -66,6 +67,9 @@ function initMap() {
   L.Icon.Default.prototype.options.shadowUrl = markerShadowUrl
   L.Icon.Default.imagePath = '' // necessary to avoid Leaflet adds some prefix to image path.
 
+  initialMap.value.on('zoomend', function (e) {
+    onZoomChanged()
+  })
   // L.Marker.prototype._animateZoom = function (opt) {
   //   if (!this._map) {
   //     return
@@ -127,6 +131,23 @@ watch(
     isLoading.value = newValue
   }
 )
+
+function onZoomChanged() {
+  const currentZoom = initialMap.value.getZoom()
+  console.log('onZoomChanged: current zoom', currentZoom)
+
+  initialMap.value.eachLayer((layer) => {
+    if (layer instanceof L.Marker) {
+      layer.remove()
+    } else if (layer instanceof L.Circle) {
+      layer.remove()
+    } else {
+      layer.remove()
+    }
+  })
+  resetMap()
+  addSamlingarMarks()
+}
 
 function resetMap() {
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -233,12 +254,42 @@ function addSamlingarSinglemMarker() {
   marker.addTo(initialMap.value)
 }
 
+function getRadius(d) {
+  if (d === 1) {
+    return 90000
+  }
+  if (d === 2) {
+    return 70000
+  }
+  if (d === 3) {
+    return 50000
+  }
+  if (d === 4) {
+    return 40000
+  }
+  if (d === 5) {
+    return 20000
+  }
+  if (d === 6) {
+    return 12000
+  }
+  if (d === 7) {
+    return 10000
+  }
+}
+
 function addSamlingarMarks() {
   console.log('addSamlingarMarks')
 
   const geoArray = store.getters['geoData']
 
   markers = L.markerClusterGroup()
+
+  const currentZoom = initialMap.value.getZoom()
+
+  const radius = getRadius(currentZoom)
+
+  console.log('onZoomChanged: current zoom', radius)
 
   geoArray.forEach((geo) => {
     const { count, latitude, longitude, geohash } = geo
@@ -265,7 +316,7 @@ function addSamlingarMarks() {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
-        radius: 90000
+        radius
       })
 
       const div = document.createElement('div')
