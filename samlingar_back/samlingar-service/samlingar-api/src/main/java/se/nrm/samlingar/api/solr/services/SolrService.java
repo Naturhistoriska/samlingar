@@ -336,6 +336,13 @@ public class SolrService implements Serializable {
         final TermsFacetMap geoHashFacet = new TermsFacetMap(geohashFacetKey)
                 .setLimit(20000)
                 .setTermPrefix(geohashPreFix);
+        
+//        final TermsFacetMap geohash5Facet = new TermsFacetMap(geohashFacetKey)
+//                .setLimit(5000)
+//                .setTermPrefix("5_");
+//        
+//        geoHashFacet.withSubFacet(geohashFacetKey, geohash5Facet);
+
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text) 
@@ -365,7 +372,7 @@ public class SolrService implements Serializable {
         jsonRequest.setBasicAuthCredentials(properties.getUsername(), properties.getPassword());
         try { 
             response = jsonRequest.process(client);
-//            log.info("json: {}", response.jsonStr());
+            log.info("json: {}", response.jsonStr());
         } catch (SolrServerException | IOException ex) {
             log.warn(ex.getMessage());
             return null;
