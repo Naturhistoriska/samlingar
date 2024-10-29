@@ -8,8 +8,7 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder; 
-import javax.json.JsonReader;
-import javax.json.JsonValue;
+import javax.json.JsonReader; 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.api.solr.services.SolrService;
@@ -39,7 +38,7 @@ public class SamlingarLogic {
     
     private final String prefix = "4_";
     private final int downloadSize = 5000;
-    private final int maxDownload = 20000;
+    private final int maxDownload = 50000;
     
     private GeoHash geohash; 
     
