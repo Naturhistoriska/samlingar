@@ -372,7 +372,7 @@ public class SolrService implements Serializable {
         jsonRequest.setBasicAuthCredentials(properties.getUsername(), properties.getPassword());
         try { 
             response = jsonRequest.process(client);
-            log.info("json: {}", response.jsonStr());
+//            log.info("json: {}", response.jsonStr());
         } catch (SolrServerException | IOException ex) {
             log.warn(ex.getMessage());
             return null;
