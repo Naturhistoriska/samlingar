@@ -230,8 +230,10 @@ function addSamlingarSinglemMarker() {
     state,
     startDate
   } = record
-  const div = document.createElement('div')
-  div.innerHTML = `<strong> Catalogue number: ${catalogNumber}  </strong>
+
+  if (latitude && longitude) {
+    const div = document.createElement('div')
+    div.innerHTML = `<strong> Catalogue number: ${catalogNumber}  </strong>
       <br> <strong>Collection</strong>: ${collectionName}
       <br><strong>Scientific Name</strong>: ${txFullName}
       <br><strong>Locality</strong>: ${locality},
@@ -242,16 +244,17 @@ function addSamlingarSinglemMarker() {
       <br>
       <br>`
 
-  const button = document.createElement('button')
-  button.innerHTML = 'More details'
+    const button = document.createElement('button')
+    button.innerHTML = 'More details'
 
-  button.onclick = function () {
-    displayDetail(latitude, longitude)
+    button.onclick = function () {
+      displayDetail(latitude, longitude)
+    }
+    div.style.cssText = 'width: auto;  '
+    div.appendChild(button)
+    const marker = new L.marker([latitude, longitude]).bindPopup(div)
+    marker.addTo(initialMap.value)
   }
-  div.style.cssText = 'width: auto;  '
-  div.appendChild(button)
-  const marker = new L.marker([latitude, longitude]).bindPopup(div)
-  marker.addTo(initialMap.value)
 }
 
 function getRadius(d) {

@@ -12,7 +12,7 @@
           <AccordionHeader style="background: transparent">
             {{ $t('search.searchByCollection') }}
           </AccordionHeader>
-          <AccordionContent style="background: transparent" unstyled="true">
+          <AccordionContent style="background: transparent" :unstyled="true">
             <div
               v-for="collection of collections"
               :key="collection.val"
@@ -35,7 +35,7 @@
         </AccordionPanel>
         <AccordionPanel value="1" style="background: transparent; font-size: 12px">
           <AccordionHeader style="background: transparent">Type status</AccordionHeader>
-          <AccordionContent style="background: transparent" unstyled="true">
+          <AccordionContent style="background: transparent" :unstyled="true">
             <div v-for="typeStatus of typeStatus" :key="typeStatus.val" class="flex items-center">
               <RadioButton
                 v-model="selectedType"
@@ -52,7 +52,7 @@
         </AccordionPanel>
         <AccordionPanel value="2" style="background: transparent; font-size: 12px">
           <AccordionHeader style="background: transparent">Taxon</AccordionHeader>
-          <AccordionContent style="background: transparent" unstyled="true">
+          <AccordionContent style="background: transparent" :unstyled="true">
             <div
               v-for="family of familys"
               :key="family.val"
