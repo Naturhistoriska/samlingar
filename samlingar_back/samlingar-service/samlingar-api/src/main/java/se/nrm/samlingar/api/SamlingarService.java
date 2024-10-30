@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import lombok.extern.slf4j.Slf4j;
 import se.nrm.samlingar.api.logic.SamlingarLogic;
 
@@ -48,8 +49,7 @@ public class SamlingarService {
 
         return Response.ok(logic.simpleSearch(text, start, numPerPage)).build();
     }
-    
-    
+
     @GET
     @Path("/autocomplete")
     @ApiOperation(value = "autocomplete",
@@ -58,7 +58,7 @@ public class SamlingarService {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public Response autoCompleteSearch(@QueryParam("text") String text) {
-        log.info("autoCompleteSearch: {} ", text); 
+        log.info("autoCompleteSearch: {} ", text);
         return Response.ok(logic.autoCompleteSearch(text)).build();
     }
 
@@ -74,20 +74,19 @@ public class SamlingarService {
             @QueryParam("typeStatus") String typeStatus,
             @QueryParam("family") String family,
             @QueryParam("hasCoordinates") String hasCoordinates,
-            @QueryParam("hasImage") String hasImage, 
-            @QueryParam("inSweden") String inSweden, 
+            @QueryParam("hasImage") String hasImage,
+            @QueryParam("inSweden") String inSweden,
             @QueryParam("isType") String isType,
             @QueryParam("start") int start,
             @QueryParam("numPerPage") int numPerPage) {
 
         log.info("filter: {}, {}", collection, typeStatus);
- 
+
         return Response.ok(logic
-                .filterSerch(start, numPerPage, text, collection, typeStatus, 
+                .filterSerch(start, numPerPage, text, collection, typeStatus,
                         family, hasCoordinates, hasImage, inSweden, isType)).build();
     }
-    
-    
+
     @GET
     @Path("/geo")
     @ApiOperation(value = "geo",
@@ -98,10 +97,10 @@ public class SamlingarService {
     public Response mapData(@QueryParam("text") String text,
             @QueryParam("collection") String collection,
             @QueryParam("typeStatus") String typeStatus,
-            @QueryParam("family") String family ) {
+            @QueryParam("family") String family) {
 
         log.info("geo: {}, {}", collection, typeStatus);
- 
+
         return Response.ok(logic
                 .mapDataSearch(text, collection, typeStatus, family)).build();
     }
@@ -114,10 +113,10 @@ public class SamlingarService {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public Response statisticSearch() {
-        log.info("statisticSearch: {}, {}"); 
+        log.info("statisticSearch: {}, {}");
         return Response.ok(logic.getStaticData()).build();
     }
-    
+
     @GET
     @Path("/download")
     @ApiOperation(value = "Statistic",
@@ -130,9 +129,28 @@ public class SamlingarService {
             @QueryParam("typeStatus") String typeStatus,
             @QueryParam("family") String family,
             @QueryParam("numRows") int numRows) {
-        log.info("statisticSearch: {}, {}"); 
-        
+        log.info("statisticSearch: {}, {}");
+
         return Response.ok(logic
                 .download(text, collection, typeStatus, family, numRows)).build();
     }
+
+    @Path("file/")
+    @GET
+    @Produces({"application/pdf"})
+    public StreamingOutput getFileContent() throws Exception {
+     
+//        InputStream myStream = ;
+//        
+//        
+//
+//// Set the content type and attachment header.
+//        response.addHeader("Content-disposition", "attachment;filename=myfilename.txt");
+//        response.setContentType("txt/plain");
+//
+//// Copy the stream to the response's output stream.
+//        IOUtils.copy(myStream, response.getOutputStream());
+//        response.flushBuffer();
+        return null;
+    } 
 }

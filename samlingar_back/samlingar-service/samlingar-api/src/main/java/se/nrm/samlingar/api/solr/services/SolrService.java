@@ -37,6 +37,7 @@ public class SolrService implements Serializable {
     private final String collectionNameField = "collectionName";
     private final String continentField = "continent";
     private final String countryField = "country";
+    private final String countyField = "county";
     private final String currentDeterminationField = "currentDetermination";
     private final String determinerField = "determiner";
     private final String districtField = "district";
@@ -46,18 +47,24 @@ public class SolrService implements Serializable {
     private final String latitudeField = "latitudeText";
     private final String localityField = "locality";
     private final String longitudeField = "longitudeText";
+    private final String oceanOrSeaField = "oceanOrSea";
     private final String preservationField = "preservation";
     private final String speciesField = "species"; 
-    private final String stateField = "state";
+    private final String remarksField = "remarks";
+    private final String stateField = "state"; 
     private final String stationFieldNumberField = "stationFieldNumber";
     private final String txFullNameField = "txFullName";
+    private final String typeStatusField = "typeStatus";
+ 
+    
+ 
     
     
     private final String catalogedDateField = "catalogedDate";
     private final String startDateField = "startDate";
     private final String collectorField = "collector";
     private final String commonNameField = "commonName";
-    private final String prepration = "prepration";
+    private final String preprationField = "prepration";
     
     
     private final String mapFacetKey = "map";
@@ -272,6 +279,7 @@ public class SolrService implements Serializable {
                 .addField(collectionNameField)
                 .addField(continentField) 
                 .addField(countryField)
+                .addField(countyField)
                 .addField(currentDeterminationField) 
                 .addField(determinerField) 
                 .addField(districtField) 
@@ -282,6 +290,7 @@ public class SolrService implements Serializable {
                 .addField(latitudeField) 
                 .addField(localityField)
                 .addField(longitudeField)
+                .addField(oceanOrSeaField)
                 .addField(preservationField)
                 .addField(speciesField) 
                 .addField(stateField) 
@@ -291,7 +300,9 @@ public class SolrService implements Serializable {
                 .addField(startDateField)
                 .addField(collectorField)
                 .addField(commonNameField)
-                .addField(prepration)  
+                .addField(remarksField)
+                .addField(preprationField)  
+                .addField(typeStatusField) 
                 .setStart(start)
                 .setRows(rows);
         
