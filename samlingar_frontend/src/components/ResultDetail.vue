@@ -120,4 +120,7 @@ function onclick() {
 .textColor {
   color: #fff;
 }
+.p-button-link {
+  color: #0dff5c;
+}
 </style>

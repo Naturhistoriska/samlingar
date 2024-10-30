@@ -274,6 +274,10 @@ function handlePaginateSearch() {
   background: transparent;
 }
 
+.p-button-link {
+  color: #0dff5c;
+}
+
 .ui-button-text {
   padding: 0px !important;
 }

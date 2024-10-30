@@ -1,30 +1,37 @@
 <template>
-  <div class="card" style="cursor: pointer; font-size: 12px">
-    <div class="grid" @click="onclick()">
-      <div class="col-3" style="padding: 0px">Scientific Name</div>
-      <div class="col-9" style="padding: 0px">
+  <div style="cursor: pointer; font-size: 12px">
+    <div
+      class="grid"
+      @click="onclick()"
+      :class="{ active: hover }"
+      @mouseover="hover = true"
+      @mouseleave="hover = false"
+    >
+      <div class="col-3 reducePadding">Scientific Name</div>
+      <div class="col-9 reducePadding">
         {{ scientificName }}
       </div>
-      <div class="col-3" style="padding: 0px">Catalognumber</div>
-      <div class="col-9" style="padding: 0px">
+      <div class="col-3 reducePadding">Catalognumber</div>
+      <div class="col-9 reducePadding">
         {{ result.catalogNumber }}
       </div>
-      <div class="col-3" style="padding: 0px">High classification</div>
-      <div class="col-9" style="padding: 0px">
+      <div class="col-3 reducePadding">High classification</div>
+      <div class="col-9 reducePadding">
         {{ result.higherTx }}
       </div>
-      <div class="col-3" style="padding: 0px">Collection name</div>
-      <div class="col-9" style="padding: 0px">
+      <div class="col-3 reducePadding">Collection name</div>
+      <div class="col-9 reducePadding">
         {{ collectionName }}
       </div>
-      <div class="col-3" style="padding: 0px">Locality</div>
-      <div class="col-9" style="padding: 0px">{{ result.locality }} {{ result.country }}</div>
+      <div class="col-3 reducePadding">Locality</div>
+      <div class="col-9 reducePadding">{{ result.locality }} {{ result.country }}</div>
     </div>
-    <div class="grid">
+    <div class="grid" v-if="associatedMedias">
       <Thumbnail
         v-bind:associatedMedias="associatedMedias"
         v-bind:collectionId="collectionId"
         v-bind:dataset="dataset"
+        v-bind:result="result"
       />
     </div>
   </div>
@@ -39,6 +46,7 @@ const store = useStore()
 const props = defineProps(['result'])
 
 let dataset = ref()
+const hover = ref(false)
 
 const result = computed(() => {
   return props.result
@@ -63,9 +71,8 @@ const associatedMedias = computed(() => {
   const botnayColection = 'vp, fungi, mosses, algae'
   const kbo = 'algae, fungi, mosses'
   const paleo = 'pz, pa'
-  const nvertebrate = 'ev, et, fish, herps'
-  // &dataset=herps
-  let list
+  const zoo = 'ev, et, fish, herps'
+
   let smallImage = 'mini'
   if (associatedMedia) {
     if (botnayColection.includes(collectionId)) {
@@ -86,7 +93,7 @@ const associatedMedias = computed(() => {
       return associatedMedia.filter((media) => media.includes(smallImage))
     }
 
-    if (nvertebrate.includes(collectionId)) {
+    if (zoo.includes(collectionId)) {
       smallImage = 'thumb'
       dataset.value = '&dataset=' + collectionId
       return associatedMedia.filter((media) => media.includes(smallImage))
@@ -108,15 +115,12 @@ function onclick() {
 </script>
 
 <style scoped>
-.selected {
-  background: #e6f2ff;
+.active {
+  background: #082405;
 }
 
-.unselected {
-  background: transparent;
-}
-
-.unselected:hover {
-  color: #1976d2 !important;
+.reducePadding {
+  padding-top: 0px;
+  padding-bottom: 1px;
 }
 </style>

@@ -102,6 +102,27 @@ export default class Service {
     return response.data
   }
 
+  async downloadItem(searchText, selectedColletion, selectedTypeStatus, selectedFamily, total) {
+
+     let url = `${samlingApi}/download?text=${searchText}`
+     if (selectedColletion) {
+       url += `&collection="${selectedColletion}"`
+     }
+
+     if (selectedTypeStatus) {
+       url += `&typeStatus="${selectedTypeStatus}"`
+     }
+
+     if (selectedFamily) {
+       url += `&family="${selectedFamily}"`
+     }
+     url += `&numRows=${total}`
+    axios.get(url, { responseType: 'blob' }).then((response) => {
+
+      saveAs(response.data, 'downloaded-file.pdf')
+    })
+  }
+
   // async apiSimpleSearchWithFilter(
   //   searchText,
   //   hasCoordinates,

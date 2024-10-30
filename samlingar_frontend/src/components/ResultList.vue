@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div v-if="showGalleria">
+      <ImageGalleria />
+    </div>
     <div id="resultList">
       <template v-for="(result, index) in results" :key="result.id">
         <Result v-bind:result="result" />
@@ -24,6 +27,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import ImageGalleria from './ImageGalleria.vue'
 import Result from './Result.vue'
 
 const first = ref(0)
@@ -47,6 +51,10 @@ const results = computed(() => {
 
 const totalRecords = computed(() => {
   return store.getters['totalRecords']
+})
+
+const showGalleria = computed(() => {
+  return store.getters['openGalleria']
 })
 
 function onPage(event) {

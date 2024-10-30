@@ -27,6 +27,7 @@ export default createStore({
     mapRecords: [],
     numPerPage: 10,
     occurrenceYears: [],
+    openGalleria: false,
     resetPaging: false,
     paleaCollectionTotal: 0,
     results: [],
@@ -127,6 +128,9 @@ export default createStore({
     occurrenceYears(state) {
       return state.occurrenceYears
     },
+    openGalleria(state) {
+      return state.openGalleria
+    },
     paleaCollectionTotal(state) {
       return state.paleaCollectionTotal
     },
@@ -210,6 +214,7 @@ export default createStore({
     setMapRecords: (state, payload) => (state.mapRecords = payload),
     setNumPerPage: (state, payload) => (state.numPerPage = payload),
     setOccurrenceYears: (state, payload) => (state.occurrenceYears = payload),
+    setOpenGalleria: (state, payload) => (state.openGalleria = payload),
     setPaleaCollectionTotal: (state, payload) => (state.paleaCollectionTotal = payload),
     setResetPaging: (state, payload) => (state.resetPaging = payload),
     setResults: (state, payload) => (state.results = payload),

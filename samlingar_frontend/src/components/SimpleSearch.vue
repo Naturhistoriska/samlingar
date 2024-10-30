@@ -29,13 +29,13 @@
         </div>
       </div>
       <div class="grid">
-        <div class="col-8" no-gutters style="padding-top: 20px">
+        <div class="col-10" no-gutters style="padding-top: 20px; font-size: 16px">
           <p class="m-0">{{ $t('startPage.text') }}</p>
         </div>
       </div>
       <div class="grid">
         <div class="col-5" no-gutters style="padding-top: 50px">
-          <p class="m-0" style="font-weight: bold; font-size: 16px">
+          <p class="m-0" style="font-weight: bold; font-size: 18px">
             {{ $t('startPage.commonSearch') }}
           </p>
         </div>
@@ -307,5 +307,14 @@ function onAdvanceSearchLinkClick() {
 
 .advanceLink {
   float: right;
+}
+
+.p-button-link {
+  color: #0dff5c;
+  font-size: 18px;
+}
+
+.p-button-text {
+  color: #0dff5c;
 }
 </style>

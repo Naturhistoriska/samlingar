@@ -27,7 +27,10 @@
                 :value="collection.val"
                 @click="selectCollection(collection.val)"
               />
-              <label :for="collection.val" style="padding-left: 6px">
+              <label
+                :for="collection.val"
+                style="padding-left: 6px; padding-bottom: 2px; color: #fff"
+              >
                 {{ collection.val }} [{{ collection.count }}]
               </label>
             </div>
@@ -44,7 +47,10 @@
                 :value="typeStatus.val"
                 @click="selectType(typeStatus.val)"
               />
-              <label :for="typeStatus.val" style="padding-left: 6px">
+              <label
+                :for="typeStatus.val"
+                style="padding-left: 6px; padding-bottom: 2px; color: #fff"
+              >
                 {{ typeStatus.val }} [{{ typeStatus.count }}]
               </label>
             </div></AccordionContent
@@ -57,7 +63,7 @@
               v-for="family of familys"
               :key="family.val"
               class="flex items-center"
-              style="background: transparent"
+              style="padding-left: 6px; padding-bottom: 2px; color: #fff"
             >
               <RadioButton
                 v-model="selectedFamily"
@@ -66,7 +72,7 @@
                 :value="family.val"
                 @click="selectFamily(family.val)"
               />
-              <label :for="family.val" style="padding-left: 6px">
+              <label :for="family.val" style="padding-left: 6px; padding-bottom: 2px; color: #fff">
                 {{ family.val }} [{{ family.count }}]
               </label>
             </div>
@@ -355,6 +361,10 @@ function removeImageFilter() {
   background: var(--p-accordion-header-active-background);
   /* color: var(--p-accordion-header-active-color); */
   color: #fff;
+}
+
+.p-button-text {
+  color: #0dff5c;
 }
 
 /* .p-accordionpanel:not(.p-disabled).p-accordionpanel-hover > .p-accordionheader {
