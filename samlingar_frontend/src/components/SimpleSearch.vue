@@ -270,12 +270,15 @@ function searchBotCollection() {
 }
 
 function onPressEnter() {
-  const searchText = '%2Btext:' + value.value + '*'
+  // const searchText = '%2Btext:' + value.value + '*'
+
+  const searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
   search(searchText)
 }
 
 function onSearchClick() {
-  const searchText = '%2Btext:' + value.value + '*'
+  // const searchText = '%2Btext:' + value.value + '*'
+  const searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
   search(searchText)
 }
 
