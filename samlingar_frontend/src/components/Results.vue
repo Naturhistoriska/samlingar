@@ -37,7 +37,7 @@
               </Button>
             </legend>
           </div>
-          <div class="col-6">
+          <!-- <div class="col-6">
             <div>
               <Loading
                 id="myLoad"
@@ -48,7 +48,7 @@
               >
               </Loading>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <Map v-if="showMap" @resetView="handleResetView" @searchDetial="handleSearchDetail" />
@@ -258,10 +258,10 @@ function onMapLinkClick() {
     if (!isDetailView) {
       emits('fetchMapData', false)
     }
-    isLoading.value = true
-    setTimeout(() => {
-      isLoading.value = false
-    }, 5000)
+    // isLoading.value = true
+    // setTimeout(() => {
+    //   isLoading.value = false
+    // }, 5000)
   }
 }
 
