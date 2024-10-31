@@ -4,8 +4,13 @@
       <template #item="slotProps">
         <div
           class="border border-surface-200 dark:border-surface-700 rounded m-2 p-4"
-          style="width: 70px; padding: 0px"
+          style="width: 70px"
         >
+          <!-- <Image
+            :src="'https://media-service.nrm.se/images?id=' + slotProps.data + dataset"
+            style="max-width: 60px"
+            preview
+          /> -->
           <img
             :src="'https://media-service.nrm.se/images?id=' + slotProps.data + dataset"
             :alt="slotProps.data.index"
