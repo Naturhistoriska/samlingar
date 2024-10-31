@@ -71,55 +71,76 @@ export default {
     },
 
     apiAutoComplete(event) {
-      const searchText = event.query + '*'
+      let searchText = event.query
+      if (!this.itemSelected) {
+        searchText += '*'
+      }
+
+      searchText = searchText.replace(/^./, searchText[0].toUpperCase())
+      console.log('searchText', searchText)
+
       service
         .apiAutoCompleteSearch(searchText, 0, 10)
         .then((response) => {
-          this.items = response.response.map((a) => a.txFullName)
+          const facets = response.facets.txFullName
+
+          if (facets) {
+            this.items = facets.buckets.map((a) => a.val)
+          }
+
+          // this.items = response.response.map((a) => a.txFullName)
         })
         .catch()
         .finally(() => {})
     },
 
     apiSearch() {
-      console.log('what..', this.search)
-      let searchText = this.itemSelected ? this.search : this.search + '*'
-      searchText = '%2BtxFullName:' + searchText
+      let searchText = this.search
+
+      if (this.itemSelected) {
+        searchText = '%2BtxFullName:"' + searchText + '"'
+      } else {
+        searchText = '%2BtxFullName:' + searchText + '*'
+      }
+
+      console.log('what..2..', searchText)
       service
         .apiSimpleSearch(searchText, 0, 10)
         .then((response) => {
           const total = response.response.numFound
           const results = response.response.docs
-          const facets = response.facets
 
-          this.setCommentFacet(facets)
+          if (total > 0) {
+            const facets = response.facets
 
-          const familyFacet = facets.family
-          if (familyFacet !== undefined) {
-            const family = familyFacet.buckets
-            console.log('family length', family.length)
-            family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-            this.setFamily(family)
-          } else {
-            this.setFamily([])
+            this.setCommentFacet(facets)
+
+            const familyFacet = facets.family
+            if (familyFacet !== undefined) {
+              const family = familyFacet.buckets
+              console.log('family length', family.length)
+              family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+              this.setFamily(family)
+            } else {
+              this.setFamily([])
+            }
+            const genusFacet = facets.genus
+            if (genusFacet !== undefined) {
+              const genus = genusFacet.buckets
+              console.log('genus length', genus.length)
+              genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+              this.setGenus(genus)
+            } else {
+              this.setGenus([])
+            }
+
+            const collections = facets.collectionName.buckets
+            this.setCollections(collections)
+
+            const typeStatus = facets.typeStatus.buckets
+            console.log('typeStatus length', typeStatus.length)
+            this.setTypeStatus(typeStatus)
           }
-          const genusFacet = facets.genus
-          if (genusFacet !== undefined) {
-            const genus = genusFacet.buckets
-            console.log('genus length', genus.length)
-            genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-            this.setGenus(genus)
-          } else {
-            this.setGenus([])
-          }
-
-          const collections = facets.collectionName.buckets
-          this.setCollections(collections)
-
-          const typeStatus = facets.typeStatus.buckets
-          console.log('typeStatus length', typeStatus.length)
-          this.setTypeStatus(typeStatus)
-
           this.setResults(results)
           this.setTotalRecords(total)
           this.setSearchText(searchText)

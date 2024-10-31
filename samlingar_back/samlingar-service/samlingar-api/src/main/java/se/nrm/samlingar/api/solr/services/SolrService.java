@@ -55,6 +55,7 @@ public class SolrService implements Serializable {
     private final String stationFieldNumberField = "stationFieldNumber";
     private final String txFullNameField = "txFullName";
     private final String typeStatusField = "typeStatus";
+    
  
     
  
@@ -77,7 +78,8 @@ public class SolrService implements Serializable {
     private final String familyFacetKey = "family";
     private final String genusFacetKey = "genus";
     private final String geohashFacetKey = "geohash"; 
-    private final String txFullName = "txFullName";
+    private final String txFullNameFacetKey = "txFullName";
+    private final String txFacetKey = "tx";
 
     private final String textKey = "text:";
     private final String collectionNameKey = "collectionName:";
@@ -423,21 +425,26 @@ public class SolrService implements Serializable {
     }
     
     public String autoCompleteSearch(String text) {
-        query = new SolrQuery();
-        query.setQuery(txFullNameKey + text)
-                .setRows(autoCompleteNumRowsReturn) 
-                .addField(txFullName);
         
-        try { 
-            request = new QueryRequest(query);
-            request.setBasicAuthCredentials(username, password);
-            response = request.process(client);
+        final TermsFacetMap txFacet = new TermsFacetMap(txFullNameFacetKey);
+        
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(txFullNameKey + text)
+                .returnFields(txFullNameField)
+                .withFacet(txFullNameFacetKey, txFacet)
+                .setLimit(50);
+
+        jsonRequest.setBasicAuthCredentials(username, password);
+        
+        try {
+            response = jsonRequest.process(client);
+
+//            log.info("json: {}", response.jsonStr()); 
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
         }
-        return response.jsonStr();
-    }
- 
-          
+
+        return response.jsonStr(); 
+    } 
 }
