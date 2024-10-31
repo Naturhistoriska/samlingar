@@ -174,13 +174,9 @@ public class SamlingarLogic {
 
             jsonObj = jsonReader.readObject();
             JsonArray docs = jsonObj.getJsonArray(responseKey);
-
-//            for (JsonValue value : docs) {
-//                builder.add(value);
-//            } 
+ 
             docs.stream()
-                    .forEach(value -> {
-                        log.info("value: {}", value);
+                    .forEach(value -> { 
                         builder.add(value);
                     });
         }
