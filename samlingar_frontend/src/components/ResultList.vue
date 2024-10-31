@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <div v-if="showGalleria">
-      <ImageGalleria />
-    </div>
+  <div v-if="false">
+    <ImageGalleria />
+  </div>
+  <div v-else>
     <div id="resultList">
       <template v-for="(result, index) in results" :key="result.id">
         <Result v-bind:result="result" />

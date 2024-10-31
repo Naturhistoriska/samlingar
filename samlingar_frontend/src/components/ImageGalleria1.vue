@@ -1,79 +1,72 @@
 <template>
-  <div class="card flex justify-center">
+  <div class="card">
     <Galleria
-      v-model:activeIndex="activeIndex"
-      v-model:visible="displayCustom"
+      v-if="images"
+      v-model:visible="displayBasic"
       :value="images"
       :responsiveOptions="responsiveOptions"
       :numVisible="5"
-      containerStyle="max-width: 800px"
+      containerStyle="max-width: 60%"
       :circular="true"
       :fullScreen="true"
       :showItemNavigators="true"
-      :showThumbnails="false"
+      :thumbnailsPosition="position"
     >
       <template #item="slotProps">
-        <Image
+        <img
           :src="'https://media-service.nrm.se/images?id=' + slotProps.item + dataset"
-          alt="Image"
-          width="100%"
-          preview
+          :alt="slotProps.item"
+          style="width: 100%; display: block"
         />
-        <!-- <img
-          :src="'https://media-service.nrm.se/images?id=' + slotProps.item + dataset"
-          :alt="slotProps.item.alt"
-          style="display: block; width: 500px"
-        /> -->
       </template>
       <template #thumbnail="slotProps">
         <img
           :src="'https://media-service.nrm.se/images?id=' + slotProps.item + dataset"
           :alt="slotProps.item.alt"
-          style="display: block; width: 200px"
+          style="width: 70px; padding: 0px"
         />
       </template>
+      <template #caption="slotProps">
+        <div class="text-xl mb-2" @click="onClick">{{ scientificName }} [{{ catalogNum }} ]</div>
+      </template>
     </Galleria>
-
-    <div v-if="images" class="grid grid-cols-12 gap-4" style="max-width: 600px">
-      <div v-for="(image, index) of images" :key="index" class="col-span-4">
-        <img
-          :src="'https://media-service.nrm.se/images?id=' + image + dataset"
-          :alt="image.alt"
-          style="cursor: pointer; width: 100px"
-          @click="imageClick(index)"
-        />
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useStore } from 'vuex'
 import Galleria from 'primevue/galleria'
+import { ref, onMounted, watch } from 'vue'
+import { useStore } from 'vuex'
 
 const store = useStore()
 
 let dataset = ref()
-const images = ref()
-const activeIndex = ref(0)
+let images = ref()
+const displayBasic = ref(false)
+let catalogNum = ref()
+let scientificName = ref()
+const position = ref('right')
+
 const responsiveOptions = ref([
   {
-    breakpoint: '1024px',
-    numVisible: 5
+    breakpoint: '1300px',
+    numVisible: 4
   },
   {
-    breakpoint: '768px',
-    numVisible: 3
-  },
-  {
-    breakpoint: '560px',
+    breakpoint: '575px',
     numVisible: 1
   }
 ])
-const displayCustom = ref(false)
-let catalogNum = ref()
-let scientificName = ref()
+
+watch(displayBasic, async (newDisplayBasic, oldDisplayBasic) => {
+  console.log('displayBasic', newDisplayBasic, oldDisplayBasic)
+
+  if (!newDisplayBasic) {
+    setTimeout(() => {
+      store.commit('setOpenGalleria', false)
+    }, 1000)
+  }
+})
 
 onMounted(() => {
   console.log('mounted...')
@@ -120,12 +113,23 @@ onMounted(() => {
         images.value = morphbankImageId
       }
     }
-    // displayBasic.value = true
+    displayBasic.value = true
   }
 })
 
-const imageClick = (index) => {
-  activeIndex.value = index
-  displayCustom.value = true
-}
+// const showGalleria = computed(() => {
+//   return store.getters['openGalleria']
+// })
+
+// function viewDetail() {
+//   console.log('clicked...')
+//   // displayBasic.value = false
+//   store.commit('setOpenGalleria', false)
+//   store.commit('setShowDetail', true)
+// }
 </script>
+<style scoped>
+.p-button-link {
+  color: #0dff5c;
+}
+</style>
