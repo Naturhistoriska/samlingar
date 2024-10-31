@@ -1,9 +1,7 @@
 <template>
   <div>
     <div id="map" style="height: 60vh"></div>
-    <!-- <div v-if="isLoading"> -->
-    <!-- <ProgressSpinner style="width: 50px; height: 50px" animationDuration=".5s" /> -->
-    <!-- </div> -->
+
     <ProgressSpinner
       v-if="isLoading"
       aria-label="Loading"
@@ -43,8 +41,6 @@ let markers = ref()
 // let radius = ref(8000)
 
 onMounted(() => {
-  console.log('onMounted...')
-
   initMap()
 
   const isDetailView = store.getters['showDetail']

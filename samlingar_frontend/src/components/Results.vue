@@ -27,7 +27,9 @@
                 :fields="json_fields"
                 type="csv"
                 name="data.csv"
-                style="color: #34d399; font-size: 14px; cursor: pointer; padding-left: 10px"
+                :before-finish="finishDownload"
+                :before-generate="startDownload"
+                style="color: #0dff5c; font-size: 14px; cursor: pointer; padding-left: 10px"
               >
                 <small>Download Data</small>
               </download-excel>
@@ -37,18 +39,13 @@
               </Button>
             </legend>
           </div>
-          <!-- <div class="col-6">
-            <div>
-              <Loading
-                id="myLoad"
-                :active="isLoading"
-                :can-cancel="true"
-                color="#34d399"
-                background-color="#333333"
-              >
-              </Loading>
-            </div>
-          </div> -->
+          <ProgressSpinner
+            v-if="isLoading"
+            aria-label="Loading"
+            style="width: 50px; height: 50px; position: relative; padding-left: 80%"
+            strokeWidth="8"
+            fill="transparent"
+          />
         </div>
 
         <Map v-if="showMap" @resetView="handleResetView" @searchDetial="handleSearchDetail" />
@@ -157,9 +154,18 @@ function exportData() {
 
 function downloadFile() {
   console.log('downloadFile')
-  setTimeout(() => {
-    dataPrepared.value = false
-  }, 5000)
+
+  isLoading.value = true
+}
+
+function startDownload() {
+  console('start...')
+}
+
+function finishDownload() {
+  console.log('done....')
+  dataPrepared.value = false
+  isLoading.value = false
 }
 
 // search when filter link (coordinates, images, type, inSweden clicked)
@@ -190,21 +196,6 @@ const showDetail = computed(() => {
 const totalRecords = computed(() => {
   return store.getters['totalRecords']
 })
-
-// function fetchData() {
-//   console.log('fetchData')
-//   exportData()
-// }
-
-function startDownload() {
-  setTimeout(() => {
-    // loading.value = false
-  }, 5000)
-}
-
-function finishDownload() {
-  alert('hide loading')
-}
 
 // this search after clear all filter
 function handleSearch() {
@@ -244,11 +235,6 @@ function handleResetView(coordinates, total) {
 
   emits('coordinatesSearch', coordinates, total)
 }
-
-// function handleSearchByYear() {
-// search('handleSearchByYear')
-// emits('filterSearch', 'yearSearch')
-// }
 
 function onMapLinkClick() {
   showMap.value = !showMap.value

@@ -1,8 +1,5 @@
 <template>
-  <div v-if="false">
-    <ImageGalleria />
-  </div>
-  <div v-else>
+  <div>
     <div id="resultList">
       <template v-for="(result, index) in results" :key="result.id">
         <Result v-bind:result="result" />
@@ -27,7 +24,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
-import ImageGalleria from './ImageGalleria.vue'
+// import ImageGalleria from './ImageGalleria.vue'
 import Result from './Result.vue'
 
 const first = ref(0)

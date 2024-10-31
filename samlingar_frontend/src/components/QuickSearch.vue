@@ -97,11 +97,15 @@ export default {
     apiSearch() {
       let searchText = this.search
 
+      searchText = searchText.replace(/^./, searchText[0].toUpperCase())
+
       if (this.itemSelected) {
         searchText = '%2BtxFullName:"' + searchText + '"'
       } else {
-        searchText = '%2BtxFullName:' + searchText + '*'
+        searchText = '%2B(txFullName:' + searchText + '*' + ' txFullName:"' + searchText + '")'
       }
+
+      // searchText = '%2B(txFullName:' + searchText + '*' + ' txFullName:"' + searchText + '")'
 
       console.log('what..2..', searchText)
       service

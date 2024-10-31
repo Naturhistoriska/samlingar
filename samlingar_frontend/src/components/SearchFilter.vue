@@ -301,21 +301,29 @@ function selectFamily(value) {
 }
 
 function searchAllCoordinates() {
+  store.commit('setStartRecord', 0)
+  store.commit('setNumPerPage', 10)
   store.commit('setFilterCoordinates', true)
   emits('filterSearch', ' %2Bmap:*')
 }
 
 function searchAllCollectedInSweden() {
+  store.commit('setStartRecord', 0)
+  store.commit('setNumPerPage', 10)
   store.commit('setFilterInSweden', true)
   emits('filterSearch', ' %2BinSweden:*')
 }
 
 function searchAllHasImages() {
+  store.commit('setStartRecord', 0)
+  store.commit('setNumPerPage', 10)
   store.commit('setFilterImage', true)
   emits('filterSearch', ' %2Bimage:*')
 }
 
 function searchAllHasType() {
+  store.commit('setStartRecord', 0)
+  store.commit('setNumPerPage', 10)
   store.commit('setFilterType', true)
   emits('filterSearch', ' %2BisType:*')
 }
@@ -331,21 +339,29 @@ function removeFilter(value) {
 }
 
 function removeTypeSpecimensFilter() {
+  store.commit('setStartRecord', 0)
+  store.commit('setNumPerPage', 10)
   store.commit('setFilterType', false)
   removeFilter('%2BisType:*')
 }
 
 function removeCollectedInSwedenFilter() {
+  store.commit('setStartRecord', 0)
+  store.commit('setNumPerPage', 10)
   store.commit('setFilterInSweden', false)
   removeFilter('%2BinSweden:*')
 }
 
 function removeCoordinatesFilter() {
+  store.commit('setStartRecord', 0)
+  store.commit('setNumPerPage', 10)
   store.commit('setFilterCoordinates', false)
   removeFilter('%2Bmap:*')
 }
 
 function removeImageFilter() {
+  store.commit('setStartRecord', 0)
+  store.commit('setNumPerPage', 10)
   store.commit('setFilterImage', false)
   removeFilter('%2Bimage:*')
 }

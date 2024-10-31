@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 const baseUrl = import.meta.env.VITE_SBDI_API
-// const speciesSearchUrl = import.meta.env.VITE_SBDI_SPECIES_SEARCH
-const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
+const speciesSearchUrl = import.meta.env.VITE_SBDI_SPECIES_SEARCH
+// const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
 const resultsPerPage = 10
 
 // const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE

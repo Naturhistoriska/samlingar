@@ -20,7 +20,7 @@
           </InputGroup>
 
           <div class="advanceLink">
-            <Button link @click="onAdvanceSearchLinkClick" disabled>
+            <Button text @click="onAdvanceSearchLinkClick" disabled>
               <small id="simpleSearchInput-help"
                 >{{ $t('search.advanceSearch') }} (Under development)
               </small>
