@@ -4,6 +4,13 @@
     <!-- <div v-if="isLoading"> -->
     <!-- <ProgressSpinner style="width: 50px; height: 50px" animationDuration=".5s" /> -->
     <!-- </div> -->
+    <ProgressSpinner
+      v-if="isLoading"
+      aria-label="Loading"
+      style="width: 50px; height: 50px; position: relative; padding-left: 80%"
+      strokeWidth="8"
+      fill="transparent"
+    />
   </div>
 </template>
 
@@ -30,12 +37,14 @@ const emits = defineEmits(['searchDetial', 'resetView', 'search'])
 const store = useStore()
 const initialMap = ref(null)
 
-const isLoading = ref(true)
+const isLoading = ref(false)
 
 let markers = ref()
 // let radius = ref(8000)
 
 onMounted(() => {
+  console.log('onMounted...')
+
   initMap()
 
   const isDetailView = store.getters['showDetail']
@@ -43,6 +52,7 @@ onMounted(() => {
     // addSingleMarker()
     addSamlingarSinglemMarker()
   } else {
+    isLoading.value = true
     // addSamlingarMarks()
     // drawPolygon()
     // addClusterMarkers()
@@ -120,33 +130,38 @@ watch(
     })
     resetMap()
     addSamlingarMarks()
+
     // drawPolygon()
   }
 )
 
-watch(
-  () => isLoading,
-  (newValue, oldValue) => {
-    console.log('showloading changed...', isLoading)
-    isLoading.value = newValue
-  }
-)
+// watch(
+//   () => isLoading,
+//   (newValue, oldValue) => {
+//     console.log('showloading changed...', isLoading)
+//     isLoading.value = newValue
+//   }
+// )
 
 function onZoomChanged() {
   const currentZoom = initialMap.value.getZoom()
-  console.log('onZoomChanged: current zoom', currentZoom)
 
-  initialMap.value.eachLayer((layer) => {
-    if (layer instanceof L.Marker) {
-      layer.remove()
-    } else if (layer instanceof L.Circle) {
-      layer.remove()
-    } else {
-      layer.remove()
-    }
-  })
-  resetMap()
-  addSamlingarMarks()
+  const isDetailView = store.getters['showDetail']
+  console.log('onZoomChanged: current zoom', currentZoom, isDetailView)
+
+  if (!isDetailView) {
+    initialMap.value.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        layer.remove()
+      } else if (layer instanceof L.Circle) {
+        layer.remove()
+      } else {
+        layer.remove()
+      }
+    })
+    resetMap()
+    addSamlingarMarks()
+  }
 }
 
 function resetMap() {
@@ -347,6 +362,8 @@ function addSamlingarMarks() {
     }
   })
   initialMap.value.addLayer(markers)
+
+  isLoading.value = false
 
   // for (let i = 0; i < count; i++) {
   //   const div = document.createElement('div')
