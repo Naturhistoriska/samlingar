@@ -48,6 +48,7 @@ import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import Menu from 'primevue/menu'
 import Paginator from 'primevue/paginator'
+import ProgressSpinner from 'primevue/progressspinner'
 import RadioButton from 'primevue/radiobutton'
 import Select from 'primevue/select'
 import Tab from 'primevue/tab'
@@ -96,6 +97,7 @@ app.component('InputText', InputText)
 app.component('FloatLabel', FloatLabel)
 app.component('Menu', Menu)
 app.component('Paginator', Paginator)
+app.component('ProgressSpinner', ProgressSpinner)
 app.component('RadioButton', RadioButton)
 app.component('Select', Select)
 app.component('Tab', Tab)
