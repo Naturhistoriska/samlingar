@@ -74,8 +74,6 @@ function handleStatisticSearch() {
         }
       }
 
-      console.log('count ..', zooCount, paleaCount, geoCount, botanyCount)
-
       store.commit('setBotanyCollectionTotal', botanyCount)
       store.commit('setGeoCollectionTotal', geoCount)
       store.commit('setPaleaCollectionTotal', paleaCount)
@@ -113,39 +111,42 @@ function handleSimpleSearch() {
 function processAPIdata(response, value) {
   const total = response.response.numFound
   const results = response.response.docs
-  const facets = response.facets
 
-  setCommentFacet(facets)
+  if (total > 0) {
+    const facets = response.facets
 
-  const familyFacet = facets.family
-  if (familyFacet !== undefined) {
-    const family = familyFacet.buckets
-    console.log('family length', family.length)
-    family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-    store.commit('setFamily', family)
-  } else {
-    store.commit('setFamily', [])
-  }
+    setCommentFacet(facets)
 
-  const genusFacet = facets.genus
-  if (genusFacet !== undefined) {
-    const genus = genusFacet.buckets
-    console.log('genus length', genus.length)
-    genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-    store.commit('setGenus', genus)
-  } else {
-    store.commit('setGenus', [])
-  }
+    const familyFacet = facets.family
+    if (familyFacet !== undefined) {
+      const family = familyFacet.buckets
+      console.log('family length', family.length)
+      family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+      store.commit('setFamily', family)
+    } else {
+      store.commit('setFamily', [])
+    }
 
-  if (value !== 'filterByCollection') {
-    const collections = facets.collectionName.buckets
-    store.commit('setCollections', collections)
-  }
+    const genusFacet = facets.genus
+    if (genusFacet !== undefined) {
+      const genus = genusFacet.buckets
+      console.log('genus length', genus.length)
+      genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+      store.commit('setGenus', genus)
+    } else {
+      store.commit('setGenus', [])
+    }
 
-  if (value != 'filterByType') {
-    const typeStatus = facets.typeStatus.buckets
-    console.log('typeStatus length', typeStatus.length)
-    store.commit('setTypeStatus', typeStatus)
+    if (value !== 'filterByCollection') {
+      const collections = facets.collectionName.buckets
+      store.commit('setCollections', collections)
+    }
+
+    if (value != 'filterByType') {
+      const typeStatus = facets.typeStatus.buckets
+      console.log('typeStatus length', typeStatus.length)
+      store.commit('setTypeStatus', typeStatus)
+    }
   }
 
   store.commit('setTotalRecords', total)
