@@ -261,6 +261,8 @@ function clearFilter() {
   store.commit('setSelectedFamily', null)
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   displayClearLink.value = false
   emits('search')
 }
@@ -271,6 +273,8 @@ function selectType(value) {
   store.commit('setSelectedType', value)
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   displayClearLink.value = true
 
   emits('conditionalSearch', 'filterByType')
@@ -281,6 +285,8 @@ function selectCollection(value) {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setSelectedCollection', value)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
 
   displayClearLink.value = true
 
@@ -294,6 +300,8 @@ function selectFamily(value) {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setSelectedFamily', value)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
 
   displayClearLink.value = true
 
@@ -304,6 +312,8 @@ function searchAllCoordinates() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterCoordinates', true)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   emits('filterSearch', ' %2Bmap:*')
 }
 
@@ -311,6 +321,8 @@ function searchAllCollectedInSweden() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterInSweden', true)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   emits('filterSearch', ' %2BinSweden:*')
 }
 
@@ -318,6 +330,8 @@ function searchAllHasImages() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterImage', true)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   emits('filterSearch', ' %2Bimage:*')
 }
 
@@ -325,6 +339,8 @@ function searchAllHasType() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterType', true)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   emits('filterSearch', ' %2BisType:*')
 }
 
@@ -342,6 +358,8 @@ function removeTypeSpecimensFilter() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterType', false)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   removeFilter('%2BisType:*')
 }
 
@@ -349,6 +367,8 @@ function removeCollectedInSwedenFilter() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterInSweden', false)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   removeFilter('%2BinSweden:*')
 }
 
@@ -356,6 +376,8 @@ function removeCoordinatesFilter() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterCoordinates', false)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   removeFilter('%2Bmap:*')
 }
 
@@ -363,6 +385,8 @@ function removeImageFilter() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterImage', false)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
   removeFilter('%2Bimage:*')
 }
 </script>

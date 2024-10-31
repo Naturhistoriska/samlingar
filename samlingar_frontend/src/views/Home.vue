@@ -144,6 +144,7 @@ function processAPIdata(response, value) {
 
     if (value != 'filterByType') {
       const typeStatus = facets.typeStatus.buckets
+      typeStatus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
       console.log('typeStatus length', typeStatus.length)
       store.commit('setTypeStatus', typeStatus)
     }
@@ -298,8 +299,10 @@ function fetchMapDataWithSimpleSearch(resetData, value) {
     .apiGeoDataSearch(searchText, collection, typeStatus, family)
     .then((response) => {
       const array = response.geoData
+      const count = response.count
 
       store.commit('setGeoData', array)
+      store.commit('setTotalGeoData', count)
 
       if (resetData) {
         console.log('resetData...', resetData)

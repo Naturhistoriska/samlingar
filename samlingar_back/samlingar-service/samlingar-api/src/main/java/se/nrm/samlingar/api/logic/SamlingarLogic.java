@@ -81,6 +81,8 @@ public class SamlingarLogic {
     private final String collectorField = "collector";
     private final String commonNameField = "commonName";
     private final String preprationField = "prepration";
+    
+    private int total;
 
     private GeoHash geohash;
 
@@ -112,10 +114,11 @@ public class SamlingarLogic {
 
     public String mapDataSearch(String text, String collection,
             String typeStatus, String family) {
+        
+        total = 0;
 
         String jsonString = service.mapDataSearch(text, collection, typeStatus, family);
-
-//        JsonObject jsonObj = Json.createReader(new StringReader(jsonString)).readObject(); 
+ 
         JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
         JsonObject jsonObj = jsonReader.readObject();
 
@@ -134,6 +137,8 @@ public class SamlingarLogic {
                 .forEach(json -> {
                     String geohashString = json.getString(valKey);
                     int count = json.getInt(countKey);
+                    
+                    total += count;
                     geohash = GeoHash.fromGeohashString(
                             StringUtils.substringAfter(geohashString, prefix));
 
@@ -148,10 +153,12 @@ public class SamlingarLogic {
                 });
         JsonObjectBuilder jsonBuild = Json.createObjectBuilder();
         jsonBuild.add(geoDataKey, arrayBuilder.build());
+        jsonBuild.add(countKey, total);
         jsonBuild.add(facetsKey, facetJson);
         jsonBuild.add(docsKey, docs);
         JsonObject json = jsonBuild.build();
 
+        log.info("total : {}", total);
         jsonReader.close();
         return json.toString();
     }

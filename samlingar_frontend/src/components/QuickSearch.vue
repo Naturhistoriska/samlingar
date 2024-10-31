@@ -143,6 +143,7 @@ export default {
 
             const typeStatus = facets.typeStatus.buckets
             console.log('typeStatus length', typeStatus.length)
+
             this.setTypeStatus(typeStatus)
           }
           this.setResults(results)

@@ -30,7 +30,7 @@
           {{ $t('contact.emailLabel') }}
         </div>
         <div class="col-10">
-          {{ phone }}
+          {{ email }}
         </div>
       </div>
     </template>
@@ -43,7 +43,7 @@ const phone = computed(() => {
   return import.meta.env.VITE_CONTACT_PHONE
 })
 const email = computed(() => {
-  return import.meta.env.VITE_CONTACT_email
+  return import.meta.env.VITE_CONTACT_EMAIL
 })
 </script>
 <style scoped>

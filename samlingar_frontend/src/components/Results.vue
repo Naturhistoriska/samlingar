@@ -159,7 +159,7 @@ function downloadFile() {
 }
 
 function startDownload() {
-  console('start...')
+  console.log('start...')
 }
 
 function finishDownload() {
@@ -226,8 +226,13 @@ function handleConditionSearch(value) {
 
 function handleSearchDetail(coordinates) {
   console.log('handleSearchDetail', coordinates)
-  onMapLinkClick()
-  emits('detailSearch', coordinates)
+
+  const isDetailView = store.getters['showDetail']
+  if (isDetailView) {
+    showMap.value = !showMap.value
+  } else {
+    emits('detailSearch', coordinates)
+  }
 }
 
 function handleResetView(coordinates, total) {
