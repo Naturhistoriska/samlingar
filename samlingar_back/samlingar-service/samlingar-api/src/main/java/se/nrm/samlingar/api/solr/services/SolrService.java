@@ -272,8 +272,7 @@ public class SolrService implements Serializable {
     public String download(String text, String collection, String typeStatus, 
             String family, int start, int rows) {
         log.info("download");
-          
-        
+           
         query = new SolrQuery();
         query.setQuery(text)
                 .addField(authorField)
