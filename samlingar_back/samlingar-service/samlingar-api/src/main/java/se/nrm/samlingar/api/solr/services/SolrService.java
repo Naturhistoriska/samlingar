@@ -269,6 +269,14 @@ public class SolrService implements Serializable {
         return jsonResponse;
     }
 
+    public String typestatus() {
+      log.info("typestatus");
+      
+      final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey);
+      
+      return null;
+    }
+    
     public String download(String text, String collection, String typeStatus, 
             String family, int start, int rows) {
         log.info("download");

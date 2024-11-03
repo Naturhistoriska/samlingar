@@ -1,15 +1,44 @@
 import { createWebHistory, createRouter } from 'vue-router'
-import Home from '../views/Home.vue'
-import Contact from '../views/Contact.vue'
 import About from '../views/About.vue'
+import Contact from '../views/Contact.vue'
+import Home from '../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
+import Results from '../views/Results.vue'
+import ResultDetail from '../components/ResultDetail.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      title: 'Home | Samlingar'
+    }
   },
+  {
+    path: '/results',
+    name: 'Results',
+    component: Results,
+    meta: {
+      title: 'Results | Samlingar'
+    }
+  },
+  {
+    path: '/result/:id',
+    component: Results,
+    children: [
+      {
+        path: '',
+        name: 'Result',
+        component: ResultDetail
+      }
+    ]
+  },
+  // {
+  //   path: '/result/:id',
+  //   name: 'Result',
+  //   component: Results
+  // },
   {
     path: '/about',
     name: 'About',
@@ -28,8 +57,18 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_BASE_URL),
-  // history: createWebHistory(),
   routes
+  // history: createWebHistory(),
+  // mode: 'history',
+  // base: import.meta.env.BASE_URL,
+  // routes,
+  // scrollBehavior: function (to) {
+  //   if (to.hash) {
+  //     return {
+  //       selector: to.hash
+  //     }
+  //   }
+  // }
 })
 
 export default router

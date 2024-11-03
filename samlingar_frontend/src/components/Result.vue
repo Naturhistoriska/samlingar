@@ -33,9 +33,11 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import Thumbnail from './Thumbnail.vue'
 
 const store = useStore()
+const router = useRouter()
 
 const props = defineProps(['result'])
 
@@ -103,6 +105,8 @@ const associatedMedias = computed(() => {
 })
 
 function onclick() {
+  const id = props.result.id
+  router.push(`/result/${id}`)
   store.commit('setSelectedResult', props.result)
   store.commit('setShowDetail', true)
 }

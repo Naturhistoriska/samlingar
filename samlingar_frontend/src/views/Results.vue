@@ -2,6 +2,7 @@
   <div class="card">
     <div class="grid">
       <div class="flex flex-column col-5">
+        this is a view
         <SearchFilter
           class="divBg"
           @conditionalSearch="handleConditionSearch"
@@ -63,9 +64,11 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
-const router = useRouter()
+import ResultDetail from '../components/ResultDetail.vue'
+import ResultList from '../components/ResultList.vue'
+import SearchFilter from '../components/SearchFilter.vue'
+import Map from '../components/Map.vue'
 
-import Loading from 'vue3-loading-overlay'
 // // import { useLoading } from 'vue3-loading-overlay'
 import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
 // Import stylesheet
@@ -74,10 +77,9 @@ import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
 // import Loading from 'vue-loading-overlay'
 // import 'vue-loading-overlay/dist/vue-loading.css'
 
-import ResultDetail from './ResultDetail.vue'
-import ResultList from './ResultList.vue'
-import SearchFilter from './SearchFilter.vue'
-import Map from './Map.vue'
+const router = useRouter()
+
+import Loading from 'vue3-loading-overlay'
 
 // import downloadexcel from 'vue-json-excel3'
 

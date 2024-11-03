@@ -1,30 +1,43 @@
 <template>
   <div class="grid">
-    <div class="col-7" no-gutters style="padding-top: 20px">
+    <div class="col-6" no-gutters style="padding-top: 20px">
       <div class="grid">
-        <div class="flex-col gap-2 searchInput">
-          <InputGroup>
-            <InputText
-              id="simpleSearchInput1"
-              v-model="value"
-              @keydown.enter="onPressEnter"
-              :placeholder="$t('search.freeTextSearch')"
-              aria-describedby="simpleSearchInput-help"
-            />
-            <Button
-              icon="pi pi-search"
-              style="max-width: 30px; max-height: 30px"
-              :loading="loading"
-              @click="onSearchClick"
-            />
-          </InputGroup>
+        <div>
+          Free text search
+          <small>(Search species, genus, family, collectors, location, etc.)</small>
+        </div>
+        <div class="flex flex-col gap-2" style="width: 100%">
+          <div class="flex-col gap-2 searchInput">
+            <InputGroup>
+              <InputText
+                id="simpleSearchInput1"
+                v-model="value"
+                @keydown.enter="onPressEnter"
+                :placeholder="$t('search.freeTextSearch')"
+                aria-describedby="simpleSearchInput-help"
+                class="w-full"
+              />
+              <Button
+                icon="pi pi-search"
+                style="max-width: 30px; max-height: 30px"
+                :loading="loading"
+                @click="onSearchClick"
+              />
+            </InputGroup>
 
-          <div class="advanceLink">
-            <Button text @click="onAdvanceSearchLinkClick" disabled>
-              <small id="simpleSearchInput-help"
-                >{{ $t('search.advanceSearch') }} (Under development)
-              </small>
-            </Button>
+            <div class="advanceLink">
+              <Button
+                text
+                @click="onAdvanceSearchLinkClick"
+                @mouseover="hover"
+                @mouseout="out"
+                :class="btnTextColor"
+              >
+                <small id="simpleSearchInput-help"
+                  >{{ $t('search.advanceSearch') }} (Under development)
+                </small>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -41,12 +54,12 @@
         </div>
       </div>
 
-      <div class="grid">
+      <div class="grid" @click="searchAll" @mouseover="hover" @mouseout="out">
         <div class="col-6" no-gutters style="float: left; text-align: left">
-          <Button text :label="$t('startPage.allSpecimens')" @click="searchAll" />
+          <Button text :label="$t('startPage.allSpecimens')" :class="btnTextColor" />
         </div>
         <div class="col-6" style="float: left; text-align: left">
-          <Button text @click="searchAll">
+          <Button text :class="btnTextColor">
             {{ totalCount }}
           </Button>
         </div>
@@ -96,71 +109,56 @@
         </div>
       </div>
     </div>
-    <div class="col-5" no-gutters style="padding-top: 20px; float: right">
+    <div
+      class="col-6"
+      no-gutters
+      style="padding-top: 20px; float: right; cursor: pointer"
+      @click="searchBotCollection"
+    >
       <div class="grid">
-        <div class="col-5">
+        <div class="col-4">
           <Image src="/paucidentatus.jpg" alt="Image" width="180" />
         </div>
-        <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
+        <div class="col-8" style="vertical-align: bottom; float: left; padding-top: 50px">
           <div class="grid">
-            <Button link @click="searchBotCollection">
+            <Button link>
               <small>{{ $t('startPage.botanicalCollection') }}</small>
             </Button>
           </div>
-          <div class="grid">
-            <Button link @click="searchBotCollection">
-              <small>[{{ botanyCount }}]</small>
-            </Button>
-          </div>
         </div>
       </div>
-      <div class="grid">
-        <div class="col-5">
+      <div class="grid" @click="searchZooCollection" style="cursor: pointer">
+        <div class="col-4">
           <Image src="/Zoologiska.jpg" alt="Image" width="180" />
         </div>
-        <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
+        <div class="col-8" style="vertical-align: bottom; float: left; padding-top: 50px">
           <div class="grid">
-            <Button link @click="searchZooCollection">
+            <Button link>
               <small>{{ $t('startPage.zooCollection') }} </small>
             </Button>
           </div>
-          <div class="grid">
-            <Button link @click="searchZooCollection">
-              <small>[{{ zooCount }}]</small>
-            </Button>
-          </div>
         </div>
       </div>
-      <div class="grid">
-        <div class="col-5">
+      <div class="grid" style="cursor: pointer" @click="searchPalaeCollection">
+        <div class="col-4">
           <Image src="/Angelinoceras.jpg" alt="Image" width="180" />
         </div>
-        <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
+        <div class="col-8" style="vertical-align: bottom; float: left; padding-top: 50px">
           <div class="grid">
-            <Button link @click="searchPalaeCollection">
+            <Button link>
               <small>{{ $t('startPage.palaeCollection') }} </small>
             </Button>
           </div>
-          <div class="grid">
-            <Button link @click="searchPalaeCollection">
-              <small>[{{ paleaCount }}]</small>
-            </Button>
-          </div>
         </div>
       </div>
-      <div class="grid">
-        <div class="col-5">
+      <div class="grid" @click="searchGeoCollection" style="cursor: pointer">
+        <div class="col-4">
           <Image src="/Bergkristall.jpg" alt="Image" width="180" />
         </div>
-        <div class="col-7" style="vertical-align: bottom; float: left; padding-top: 30px">
+        <div class="col-8" style="vertical-align: bottom; float: left; padding-top: 50px">
           <div class="grid">
-            <Button link @click="searchGeoCollection">
+            <Button link>
               <small>{{ $t('startPage.geoCollection') }} </small>
-            </Button>
-          </div>
-          <div class="grid">
-            <Button link @click="searchGeoCollection">
-              <small>[{{ geoCount }}]</small>
             </Button>
           </div>
         </div>
@@ -178,22 +176,23 @@ const emits = defineEmits(['searchWithFilter', 'simpleSearch'])
 
 const value = ref()
 let loading = ref(false)
+let btnTextColor = ref('')
 
-const botanyCount = computed(() => {
-  return store.getters['botanyCollectionTotal']
-})
+// const botanyCount = computed(() => {
+//   return store.getters['botanyCollectionTotal']
+// })
 
-const geoCount = computed(() => {
-  return store.getters['geoCollectionTotal']
-})
+// const geoCount = computed(() => {
+//   return store.getters['geoCollectionTotal']
+// })
 
-const paleaCount = computed(() => {
-  return store.getters['paleaCollectionTotal']
-})
+// const paleaCount = computed(() => {
+//   return store.getters['paleaCollectionTotal']
+// })
 
-const zooCount = computed(() => {
-  return store.getters['zooCollectionTotal']
-})
+// const zooCount = computed(() => {
+//   return store.getters['zooCollectionTotal']
+// })
 
 const coordinatesCount = computed(() => {
   return store.getters['hasCoordinatesCount']
@@ -214,6 +213,14 @@ const totalCount = computed(() => {
 const inSwedenCount = computed(() => {
   return store.getters['inSwedenCount']
 })
+
+function out() {
+  btnTextColor.value = ''
+}
+
+function hover() {
+  btnTextColor.value = 'texthover'
+}
 
 function searchAllCoordinates() {
   store.commit('setSearchText', '%2Bmap:*')
@@ -303,7 +310,7 @@ function onAdvanceSearchLinkClick() {
 </script>
 <style scoped>
 .searchInput {
-  min-width: 80%;
+  min-width: 90%;
   text-align: left;
   float: left;
 }

@@ -1,31 +1,138 @@
 <template>
   <div class="card" style="min-width: 920px; align-items: center">
-    <Fieldset>
+    <Fieldset style="background: transparent">
       <template #legend>
-        <div class="flex items-center pl-2">
-          <span class="font-bold p-2">{{ $t('search.advanceSearch') }}</span>
+        <div
+          class="flex items-center pl-2"
+          style="background: transparent; border: 0px transparent"
+        >
+          <span class="font-bold p-2" style="font-size: 18px">{{
+            $t('search.advanceSearch')
+          }}</span>
         </div>
       </template>
-      <div class="flex flex-col gap-2 selectGroup">
-        <label class="searchLabel">
-          {{ $t('search.scientificName') }}
-        </label>
-        <InputGroup>
-          <InputText
-            id="searchScientificName"
-            v-model="scientificName"
-            @input="onInputScientificName"
-            :placeholder="$t('search.searchScientificName')"
-            class="w-11 md:w-56"
-          />
-          <Button icon="pi pi-times" v-if="showClearScentificName" @click="clearScientificName" />
-        </InputGroup>
+
+      <div class="grid" id="scientificNameDiv">
+        <div class="col-8">
+          <div class="flex flex-col gap-2 selectGroup">
+            <label class="searchLabel" for="searchScientificName">
+              {{ $t('search.scientificName') }}
+            </label>
+            <InputGroup>
+              <InputText
+                id="searchScientificName"
+                v-model="scientificName"
+                @input="onInputScientificName"
+                :placeholder="$t('search.searchScientificName')"
+                class="w-11 md:w-56"
+              />
+              <Button
+                icon="pi pi-times"
+                v-if="showClearScentificName"
+                @click="clearScientificName"
+              />
+            </InputGroup>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="flex flex flex-wrap justify-center gap-3" style="padding-top: 6px">
+            <div class="flex items-center vertical-align-middle">
+              <RadioButton
+                v-model="taxonOptions"
+                inputId="taxonOption1"
+                name="option1"
+                value="exact"
+                class="mt-1"
+              />
+              <label for="taxonOption1" class="ml-2">{{ $t('search.exact') }}</label>
+            </div>
+            <div class="flex items-center">
+              <RadioButton
+                v-model="taxonOptions"
+                inputId="taxonOption2"
+                name="option2"
+                value="contains"
+                class="mt-1"
+              />
+              <label for="taxonOption2" class="ml-2">{{ $t('search.contains') }}</label>
+            </div>
+            <div class="flex items-center">
+              <RadioButton
+                v-model="taxonOptions"
+                inputId="taxonOption3"
+                name="option3"
+                value="startsWith"
+                class="mt-1"
+              />
+              <label for="taxonOption3" class="ml-2">{{ $t('search.startsWith') }}</label>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div class="grid" id="catalogNumberDiv">
+        <div class="col-8">
+          <div class="flex flex-col gap-2 selectGroup">
+            <label class="searchLabel" for="catalogNumber">
+              {{ $t('search.catalogNumber') }}
+            </label>
+            <InputGroup>
+              <InputText
+                id="catalogNumber"
+                v-model="catalogNumber"
+                @input="onInputCatalogNumber"
+                :placeholder="$t('search.searchCatalogNumber')"
+                class="w-11 md:w-56"
+              />
+              <Button
+                icon="pi pi-times"
+                v-if="showClearCatalogNumber"
+                @click="clearCatalogNumber"
+              />
+            </InputGroup>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="flex flex flex-wrap justify-center gap-3" style="padding-top: 6px">
+            <div class="flex items-center vertical-align-middle">
+              <RadioButton
+                v-model="catlogNumOptions"
+                inputId="catOption1"
+                name="option1"
+                value="exact"
+                class="mt-1"
+              />
+              <label for="catOption1" class="ml-2">{{ $t('search.exact') }}</label>
+            </div>
+            <div class="flex items-center">
+              <RadioButton
+                v-model="catlogNumOptions"
+                inputId="catOption2"
+                name="option2"
+                value="contains"
+                class="mt-1"
+              />
+              <label for="catOption2" class="ml-2">{{ $t('search.contains') }}</label>
+            </div>
+            <div class="flex items-center">
+              <RadioButton
+                v-model="catlogNumOptions"
+                inputId="catOption3"
+                name="option3"
+                value="startsWith"
+                class="mt-1"
+              />
+              <label for="catOption3" class="ml-2">{{ $t('search.startsWith') }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="card flex justify-center selectGroup">
         <label class="searchLabel">{{ $t('search.speciesGroup') }}</label>
         <Select
           v-model="selectedGroup"
-          id="speciesGroup"
+          inputId="speciesGroup"
           :highlightOnSelect="true"
           :options="speciesGroup"
           :placeholder="$t('search.selectSpeciesGroup')"
@@ -51,23 +158,50 @@
           style="margin-left: 7px"
         />
       </div>
-
-      <div class="flex flex-col gap-2 selectGroup">
-        <label class="searchLabel">
-          {{ $t('search.catalogNumber') }}
-        </label>
-        <InputGroup>
-          <InputText
-            id="catalogNumber"
-            v-model="catalogNumber"
-            @input="onInputCatalogNumber"
-            :placeholder="$t('search.searchCatalogNumber')"
-            class="w-11 md:w-56"
-          />
-          <Button icon="pi pi-times" v-if="showClearCatalogNumber" @click="clearCatalogNumber" />
-        </InputGroup>
+      <div class="grid" id="dates">
+        <div class="col-8">
+          <div class="grid">
+            <div class="col-6">
+              <div class="flex flex-col gap-2 selectGroup">
+                <label class="searchLabel">
+                  {{ $t('search.beginDateLabel') }}
+                </label>
+                <DatePicker
+                  v-model="date"
+                  dateFormat="yy-m-dd"
+                  showIcon
+                  fluid
+                  inputId="startDate"
+                />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="flex flex-col gap-2 selectGroup">
+                <label class="searchLabel">
+                  {{ $t('search.endDateLabel') }}
+                </label>
+                <DatePicker v-model="date" dateFormat="yy-m-dd" showIcon fluid inputId="endDate" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="flex flex-col gap-2 selectGroup">
+      <div class="grid" id="typeDiv">
+        <div class="col-8">
+          <div class="flex flex-col gap-2">
+            <label class="searchLabel" for="type">
+              {{ $t('search.typeStatus') }}
+            </label>
+            <TypeStatus class="w-7" />
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="flex flex-col gap-2 selectGroup">
+            <Checkbox v-model="isType" :binary="true" inputId="type" />
+          </div>
+        </div>
+      </div>
+      <!-- <div class="flex flex-col gap-2 selectGroup">
         <label for="beginDate" class="searchLabel">
           {{ $t('search.beginDateLabel') }}
         </label>
@@ -79,11 +213,17 @@
             @input="onInputBeginDate"
             class="w-11 md:w-56"
           />
-
           <Button icon="pi pi-times" v-if="showClearBeginDate" @click="clearBeginDate" />
         </InputGroup>
-      </div>
-      <div class="flex flex-col gap-2 selectGroup">
+      </div> -->
+      <!-- <div class="flex flex-col gap-2 selectGroup">
+        <label class="searchLabel">
+          {{ $t('search.endDateLabel') }}
+        </label>
+        <DatePicker v-model="date" dateFormat="yy-m-dd" showIcon fluid inputId="endDateCal" />
+      </div> -->
+
+      <!-- <div class="flex flex-col gap-2 selectGroup">
         <label for="endDate" class="searchLabel">
           {{ $t('search.endDateLabel') }}
         </label>
@@ -97,13 +237,8 @@
           />
           <Button icon="pi pi-times" v-if="showClearEndDate" @click="clearEndDate" />
         </InputGroup>
-      </div>
-      <div class="flex flex-col gap-2 selectGroup">
-        <label for="endDate" class="searchLabel">
-          {{ $t('search.typeStatus') }}
-        </label>
-        <Checkbox v-model="isType" :binary="true" />
-      </div>
+      </div> -->
+
       <div
         id="btnDiv"
         class="flex flex-col gap-2"
@@ -118,7 +253,10 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import DatePicker from 'primevue/datepicker'
 import Fieldset from 'primevue/fieldset'
+import TypeStatus from './TypeStatus.vue'
+// import SearchOptions from './SearchOptions.vue'
 
 const store = useStore()
 const emits = defineEmits(['advanceSearch'])
@@ -137,6 +275,10 @@ let showClearBeginDate = ref(false)
 let showClearEndDate = ref(false)
 
 let loading = ref(false)
+const catlogNumOptions = ref()
+const taxonOptions = ref()
+
+const date = ref()
 
 const speciesGroup = computed(() => {
   return import.meta.env.VITE_SUPPORTED_COLLECTIONS.split(',')

@@ -104,6 +104,19 @@ public class SamlingarService {
         return Response.ok(logic
                 .mapDataSearch(text, collection, typeStatus, family)).build();
     }
+    
+    @GET
+    @Path("/typestatus")
+    @ApiOperation(value = "typestatus",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response typestatusSearch() {
+        log.info("statisticSearch: {}, {}");
+        return Response.ok(logic.getStaticData()).build();
+    }
+
 
     @GET
     @Path("/statistic")

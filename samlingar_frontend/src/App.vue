@@ -14,7 +14,22 @@ import Navigation from './components/Navigation.vue'
     <Foot />
   </div>
 </template>
-
+<style>
+.p-card {
+  color: #fff !important;
+}
+.p-button-text {
+  color: #fff !important;
+}
+.p-button-link {
+  color: #fff !important;
+  /* text-decoration: underline; */
+}
+.texthover {
+  color: #2f57f7 !important;
+  text-decoration: underline;
+}
+</style>
 <style scoped>
 .main-container {
   max-width: 100%;

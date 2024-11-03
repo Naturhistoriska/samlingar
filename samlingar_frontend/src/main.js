@@ -76,7 +76,14 @@ app.use(PrimeVue, {
     options: {
       prefix: 'p',
       darkModeSelector: 'system',
-      cssLayer: false
+      cssLayer: false,
+      primary: '#FF6E40',
+      secondary: '#FF9E80',
+      accent: '#26A69A',
+      error: '#FF3D00',
+      warning: '#EA80FC',
+      info: '#29B6F6',
+      success: '#64DD17'
     }
   },
   ripple: true

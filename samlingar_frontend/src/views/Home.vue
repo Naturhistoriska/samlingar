@@ -22,6 +22,7 @@
 </template>
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import Results from '../components/Results.vue'
 import StartPage from '../components/StartPage.vue'
 
@@ -31,10 +32,15 @@ const service = new Service()
 import { useStore } from 'vuex'
 const store = useStore()
 
+const router = useRouter()
+
 // let loading = ref(false)
 
 const isShowResults = computed(() => {
-  return store.getters['showResults']
+  console.log('router namme', router.currentRoute.value.name)
+
+  const currentRouteName = router.currentRoute.value.name
+  return currentRouteName.includes('Result')
 })
 
 function handleStatisticSearch() {
@@ -105,7 +111,9 @@ function handleSimpleSearch() {
       processAPIdata(response)
     })
     .catch()
-    .finally(() => {})
+    .finally(() => {
+      router.push('/results')
+    })
 }
 
 function processAPIdata(response, value) {
@@ -167,9 +175,9 @@ function setCommentFacet(facets) {
     store.commit('setImageCount', 0)
   }
 
-  const isTyypeFacet = facets.isType.buckets
-  if (isTyypeFacet.length > 0) {
-    const isTypeCount = isTyypeFacet[0].count
+  const isTypeFacet = facets.isType.buckets
+  if (isTypeFacet.length > 0) {
+    const isTypeCount = isTypeFacet[0].count
     store.commit('setIsTypeCount', isTypeCount)
   } else {
     store.commit('setIsTypeCount', 0)

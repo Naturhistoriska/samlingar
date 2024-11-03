@@ -76,18 +76,16 @@ export default {
         searchText += '*'
       }
 
-      searchText = searchText.replace(/^./, searchText[0].toUpperCase())
+      searchText = searchText.replace(/^./, searchText[0].toUpperCase()) // Capitalize first letter
       console.log('searchText', searchText)
 
       service
         .apiAutoCompleteSearch(searchText, 0, 10)
         .then((response) => {
           const facets = response.facets.txFullName
-
           if (facets) {
             this.items = facets.buckets.map((a) => a.val)
           }
-
           // this.items = response.response.map((a) => a.txFullName)
         })
         .catch()
@@ -98,7 +96,6 @@ export default {
       let searchText = this.search
 
       searchText = searchText.replace(/^./, searchText[0].toUpperCase())
-
       if (this.itemSelected) {
         searchText = '%2BtxFullName:"' + searchText + '"'
       } else {
@@ -157,6 +154,7 @@ export default {
         .catch()
         .finally(() => {
           this.search = null
+          this.$router.push('/results')
         })
     },
 

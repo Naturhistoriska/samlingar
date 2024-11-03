@@ -391,21 +391,19 @@ function removeImageFilter() {
 }
 </script>
 <style scoped>
-.p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
+/* .p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
   background: var(--p-accordion-header-active-background);
-  /* color: var(--p-accordion-header-active-color); */
   color: #cbcad1;
-}
+} */
 
-.p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader {
+/* .p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader {
   background: var(--p-accordion-header-active-background);
-  /* color: var(--p-accordion-header-active-color); */
   color: #fff;
-}
+} */
 
-.p-button-text {
+/* .p-button-text {
   color: #0dff5c;
-}
+} */
 
 /* .p-accordionpanel:not(.p-disabled).p-accordionpanel-hover > .p-accordionheader {
   background: var(--p-accordion-header-active-background);
