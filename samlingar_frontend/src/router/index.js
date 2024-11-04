@@ -5,11 +5,20 @@ import Home from '../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
 import Results from '../views/Results.vue'
 import ResultDetail from '../components/ResultDetail.vue'
+import SearchFilter from '../components/SearchFilter.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
+    component: Home,
+    meta: {
+      title: 'Home | Samlingar'
+    }
+  },
+  {
+    path: '/advanceSearch',
+    name: 'AdvanceSearch',
     component: Home,
     meta: {
       title: 'Home | Samlingar'
@@ -24,6 +33,22 @@ const routes = [
     }
   },
   {
+    path: '/results',
+    component: Results,
+    children: [
+      {
+        path: 'filter/:filter',
+        name: 'filter',
+        component: SearchFilter
+      },
+      {
+        path: 'type/:filter',
+        name: 'type',
+        component: SearchFilter
+      }
+    ]
+  },
+  {
     path: '/result/:id',
     component: Results,
     children: [
@@ -34,6 +59,7 @@ const routes = [
       }
     ]
   },
+
   // {
   //   path: '/result/:id',
   //   name: 'Result',

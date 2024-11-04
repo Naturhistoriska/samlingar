@@ -71,6 +71,7 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response filterSearch(@QueryParam("text") String text,
             @QueryParam("collection") String collection,
+            @QueryParam("collections") String collections,
             @QueryParam("typeStatus") String typeStatus,
             @QueryParam("family") String family,
             @QueryParam("hasCoordinates") String hasCoordinates,
@@ -83,8 +84,9 @@ public class SamlingarService {
         log.info("filter: {}, {}", collection, typeStatus);
 
         return Response.ok(logic
-                .filterSerch(start, numPerPage, text, collection, typeStatus,
-                        family, hasCoordinates, hasImage, inSweden, isType)).build();
+                .filterSerch(start, numPerPage, text, collection, collections, 
+                        typeStatus, family, hasCoordinates, hasImage, inSweden, 
+                        isType)).build();
     }
 
     @GET

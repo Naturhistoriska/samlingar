@@ -193,7 +193,14 @@ let displayClearLink = ref(false)
 
 const store = useStore()
 
-const emits = defineEmits(['conditionalSearch', 'filterSearch', 'search'])
+// const emits = defineEmits(['conditionalSearch', 'filterSearch', 'search'])
+const emits = defineEmits([
+  'collectionSearch',
+  'typeSearch',
+  'conditionalSearch',
+  'filterSearch',
+  'search'
+])
 
 watch(
   () => store.getters['selectedCollection'],
@@ -255,16 +262,17 @@ const familys = computed(() => {
   return store.getters['family']
 })
 
-function clearFilter() {
-  store.commit('setSelectedType', null)
-  store.commit('setSelectedCollection', null)
-  store.commit('setSelectedFamily', null)
+function selectCollection(value) {
+  selectedCollection.value = value
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
+  store.commit('setSelectedCollection', value)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-  displayClearLink.value = false
-  emits('search')
+
+  displayClearLink.value = true
+
+  emits('collectionSearch')
 }
 
 function selectType(value) {
@@ -277,20 +285,19 @@ function selectType(value) {
   store.commit('setShowResults', true)
   displayClearLink.value = true
 
-  emits('conditionalSearch', 'filterByType')
+  emits('typeSearch')
 }
 
-function selectCollection(value) {
-  selectedCollection.value = value
+function clearFilter() {
+  store.commit('setSelectedType', null)
+  store.commit('setSelectedCollection', null)
+  store.commit('setSelectedFamily', null)
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
-  store.commit('setSelectedCollection', value)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-
-  displayClearLink.value = true
-
-  emits('conditionalSearch', 'filterByCollection')
+  displayClearLink.value = false
+  emits('search')
 }
 
 function selectFamily(value) {

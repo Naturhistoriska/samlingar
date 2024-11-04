@@ -1,54 +1,80 @@
 <template>
-  <div>
-    <div class="grid">
-      <div class="col-12" no-gutters>
-        <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleAdvanceSearch" />
-        <SimpleSearch
-          v-else
+  <div class="grid">
+    <div class="col-6" no-gutters>
+      <div class="grid">
+        <Search />
+      </div>
+      <div class="grid">
+        <Filter
+          style="padding-top: 2em"
           @simpleSearch="handleSimpleSearch"
-          @searchWithFilter="handleSearchWithFilter"
+          @filterWithCoordinates="handleFilterWithCoordinates"
+          @filterWithImages="handleFilterWithImages"
+          @filterWithInSweden="handleFilterWithInSweden"
+          @filterWithInType="handleFilterWithType"
         />
       </div>
+    </div>
+    <div class="col-6" no-gutters>
+      <Collections
+        @searchBotanyCollections="handleSearchBotanyCollections"
+        @searchZooCollections="handleSearchZooCollections"
+        @searchPaleaCollections="handleSearchPaleaCollections"
+        @searchGeoCollections="handleSearchGeoCollections"
+      />
     </div>
   </div>
 </template>
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import Search from '../components/Search.vue'
+import Collections from '../components/Collections.vue'
+import Filter from '../components/Filter.vue'
 
-import AdvanceSearch from './AdvanceSearch.vue'
-import SimpleSearch from './SimpleSearch.vue'
+const emits = defineEmits([
+  'filterWithCoordinates',
+  'filterWithImages',
+  'filterWithInSweden',
+  'filterWithType',
+  'searchBotanyCollections',
+  'searchGeCololections',
+  'searchPaleaCollections',
+  'searchZooCollections',
+  'simpleSearch'
+])
 
-import { useStore } from 'vuex'
-const store = useStore()
-const emits = defineEmits(['advanceSearch', 'searchWithFilter', 'statiscSearch', 'simpleSearch'])
+function handleSearchBotanyCollections() {
+  emits('searchBotanyCollections')
+}
 
-onMounted(() => {
-  emits('statiscSearch')
-})
+function handleSearchZooCollections() {
+  emits('searchZooCollections')
+}
 
-const isAdvanceSearch = ref(false)
-watch(
-  () => store.getters['isAdvanceSearch'],
-  () => {
-    isAdvanceSearch.value = store.getters['isAdvanceSearch']
-  }
-)
+function handleSearchPaleaCollections() {
+  emits('searchPaleaCollections')
+}
+
+function handleSearchGeoCollections() {
+  emits('searchGeCololections')
+}
 
 function handleSimpleSearch() {
   emits('simpleSearch')
 }
 
-function handleAdvanceSearch() {
-  console.log('handleAdvanceSearch')
-  emits('advanceSearch')
+function handleFilterWithCoordinates() {
+  emits('filterWithCoordinates')
 }
 
-function handleSearchWithFilter() {
-  emits('searchWithFilter')
+function handleFilterWithImages() {
+  emits('filterWithImages')
+}
+
+function handleFilterWithInSweden() {
+  emits('filterWithInSweden')
+}
+
+function handleFilterWithType() {
+  emits('filterWithType')
 }
 </script>
-<style scoped>
-.searchInput {
-  width: 400px;
-}
-</style>

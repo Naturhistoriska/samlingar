@@ -104,15 +104,15 @@ public class SamlingarLogic {
     }
 
     public String filterSerch(int start, int numPerPage, String text,
-            String collection, String typeStatus, String family,
+            String collection, String collections, String typeStatus, String family,
             String hasCoordinates, String hasImage, String inSweden, String isType) {
         log.info("filterSerch : {} -- {}", collection, typeStatus);
 
-        return service.filterSearch(start, numPerPage, text, collection, typeStatus,
-                family, hasCoordinates, hasImage, inSweden, isType);
+        return service.filterSearch(start, numPerPage, text, collection, collections, 
+                typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
     }
 
-    public String mapDataSearch(String text, String collection,
+    public String mapDataSearch(String text, String collection, 
             String typeStatus, String family) {
         
         total = 0;

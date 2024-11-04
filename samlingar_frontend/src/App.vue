@@ -1,9 +1,3 @@
-<script setup>
-import Foot from './components/Footer.vue'
-import Header from './components/Header.vue'
-import Navigation from './components/Navigation.vue'
-</script>
-
 <template>
   <div class="main-wrapper">
     <Header />
@@ -14,6 +8,13 @@ import Navigation from './components/Navigation.vue'
     <Foot />
   </div>
 </template>
+
+<script setup>
+import Foot from './components/Footer.vue'
+import Header from './components/Header.vue'
+import Navigation from './components/Navigation.vue'
+</script>
+
 <style>
 .p-card {
   color: #fff !important;

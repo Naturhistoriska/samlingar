@@ -106,9 +106,10 @@ const associatedMedias = computed(() => {
 
 function onclick() {
   const id = props.result.id
-  router.push(`/result/${id}`)
+
   store.commit('setSelectedResult', props.result)
   store.commit('setShowDetail', true)
+  router.push(`/result/${id}`)
 }
 </script>
 

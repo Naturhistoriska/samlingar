@@ -12,17 +12,105 @@ const fiedList =
   'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'
 const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
+
+
 export default class Service {
+  async apiStatisticSearch() {
+    const url = `${samlingApi}/statistic`
+    const response = await axios.get(url)
+    return response.data
+  }
+
   async apiAutoCompleteSearch(searchText) {
     const url = `${samlingApi}/autocomplete?text=${searchText}`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiSimpleSearch(searchText, start, rows) {
+    const url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${rows}`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiCollectionsSearch(collections) {
+    const url = `${samlingApi}/filter?text=*:*&collections=${collections}&start=${0}&numPerPage=${10}`
 
     const response = await axios.get(url)
 
     return response.data
   }
 
-  async apiSimpleSearch(searchText, start, rows) {
-    const url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${rows}`
+  async apiSimpleFilterSearch(hasCoordinates, hasImages, isType, isInSweden) {
+    let url = `${samlingApi}/filter?text=*:*`
+    if (hasCoordinates) {
+      url += '&hasCoordinates=map:*'
+    }
+
+    if (hasImages) {
+      url += '&hasImage=image:*'
+    }
+
+    if (isType) {
+      url += '&isType=isType:*'
+    }
+
+    if (isInSweden) {
+      url += '&inSweden=inSweden:*'
+    }
+
+    url += `&start=${0}&numPerPage=${10}`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+
+  async apiFilterSearch(
+    searchText,
+    selectedColletion,
+    selectedTypeStatus,
+    selectedFamily,
+    hasCoordinates,
+    hasImages,
+    isType,
+    isInSweden,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/filter?text=${searchText}`
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+
+    if (hasCoordinates) {
+      url += '&hasCoordinates=map:*'
+    }
+
+    if (hasImages) {
+      url += '&hasImage=image:*'
+    }
+
+    if (isType) {
+      url += '&isType=isType:*'
+    }
+
+    if (isInSweden) {
+      url += '&inSweden=inSweden:*'
+    }
+
+    url += `&start=${start}&numPerPage=${numPerPage}`
 
     const response = await axios.get(url)
 
@@ -74,14 +162,6 @@ export default class Service {
     return response.data
   }
 
-  async apiStatisticSearch() {
-    const url = `${samlingApi}/statistic`
-
-    const response = await axios.get(url)
-
-    return response.data
-  }
-
   async apiPreparaExport(searchText, selectedColletion, selectedTypeStatus, selectedFamily, total) {
     let url = `${samlingApi}/download?text=${searchText}`
     if (selectedColletion) {
@@ -103,22 +183,20 @@ export default class Service {
   }
 
   async downloadItem(searchText, selectedColletion, selectedTypeStatus, selectedFamily, total) {
+    let url = `${samlingApi}/download?text=${searchText}`
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    }
 
-     let url = `${samlingApi}/download?text=${searchText}`
-     if (selectedColletion) {
-       url += `&collection="${selectedColletion}"`
-     }
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    }
 
-     if (selectedTypeStatus) {
-       url += `&typeStatus="${selectedTypeStatus}"`
-     }
-
-     if (selectedFamily) {
-       url += `&family="${selectedFamily}"`
-     }
-     url += `&numRows=${total}`
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+    url += `&numRows=${total}`
     axios.get(url, { responseType: 'blob' }).then((response) => {
-
       saveAs(response.data, 'downloaded-file.pdf')
     })
   }

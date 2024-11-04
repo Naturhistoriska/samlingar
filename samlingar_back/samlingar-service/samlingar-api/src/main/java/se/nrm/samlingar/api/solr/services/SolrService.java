@@ -83,6 +83,7 @@ public class SolrService implements Serializable {
 
     private final String textKey = "text:";
     private final String collectionNameKey = "collectionName:";
+    private final String collectionIdKey = "collectionId:";
     private final String typeStatusKey = "typeStatus:";
     private final String familyKey = "family:";
     private final String txFullNameKey = "txFullName:";
@@ -185,8 +186,8 @@ public class SolrService implements Serializable {
      * @return String
      */
     public String filterSearch(int start, int numPerPage, String text,
-            String collection, String typeStatus, String family, String hasCoordinates,
-            String hasImage, String inSweden, String isType) {
+            String collection, String collections, String typeStatus, String family, 
+            String hasCoordinates, String hasImage, String inSweden, String isType) {
         log.info("filterSearch: {} -- {} ", collection + " -- " + typeStatus, text);
 
         final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
@@ -221,6 +222,10 @@ public class SolrService implements Serializable {
 
         if (collection != null) {
             jsonRequest.withFilter(collectionNameKey + collection);
+        }
+        
+        if(collections != null) {
+            jsonRequest.withFilter(collectionIdKey + collections);
         }
 
         if (typeStatus != null) {

@@ -75,6 +75,7 @@ a:hover {
 }
 
 .navbg {
+  padding-left: 1em;
   background-color: #052b1e;
 }
 

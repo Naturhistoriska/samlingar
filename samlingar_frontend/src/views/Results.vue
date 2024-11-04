@@ -5,6 +5,8 @@
         this is a view
         <SearchFilter
           class="divBg"
+          @collectionSearch="handleCollectionSearch"
+          @typeSearch="handleTypeSearch"
           @conditionalSearch="handleConditionSearch"
           @filterSearch="handleFilterSearch"
           @search="handleSearch"
@@ -69,6 +71,9 @@ import ResultList from '../components/ResultList.vue'
 import SearchFilter from '../components/SearchFilter.vue'
 import Map from '../components/Map.vue'
 
+import Service from '../Service'
+const service = new Service()
+
 // // import { useLoading } from 'vue3-loading-overlay'
 import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
 // Import stylesheet
@@ -91,6 +96,7 @@ const { t } = useI18n()
 const store = useStore()
 const emits = defineEmits([
   'advanceSearch',
+  'collectionSearch',
   'conditionalSearch',
   'detailSearch',
   'coordinatesSearch',
@@ -148,6 +154,145 @@ watch(
 
 //   return toRaw(data)
 // })
+
+function handleTypeSearch() {
+  processSearch('filterByType')
+}
+
+function handleCollectionSearch() {
+  processSearch('filterByCollection')
+}
+
+function processSearch(value) {
+  const selectedCollection = store.getters['selectedCollection']
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+
+  const hasCoordinates = store.getters['filterCoordinates']
+  const hasImages = store.getters['filterImage']
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
+
+  const numPerPage = store.getters['numPerPage']
+  const start = store.getters['startRecord']
+
+  const searchText = store.getters['searchText']
+  console.log('search text', searchText)
+
+  let path
+  service
+    .apiFilterSearch(
+      searchText,
+      selectedCollection,
+      typeStatus,
+      family,
+      hasCoordinates,
+      hasImages,
+      isType,
+      isInSweden,
+      start,
+      numPerPage
+    )
+    .then((response) => {
+      processAPIdata(response, value)
+
+      if (value === 'filterByCollection') {
+        path = `filter/${selectedCollection}`
+      }
+
+      if (value === 'filterByType') {
+        path = `type/${typeStatus}`
+      }
+    })
+    .catch()
+    .finally(() => {
+      router.push(`/results/${path}`)
+    })
+}
+
+function processAPIdata(response, value) {
+  const total = response.response.numFound
+  const results = response.response.docs
+
+  if (total > 0) {
+    const facets = response.facets
+
+    setCommentFacet(facets)
+
+    const familyFacet = facets.family
+    if (familyFacet !== undefined) {
+      const family = familyFacet.buckets
+      console.log('family length', family.length)
+      family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+      store.commit('setFamily', family)
+    } else {
+      store.commit('setFamily', [])
+    }
+
+    const genusFacet = facets.genus
+    if (genusFacet !== undefined) {
+      const genus = genusFacet.buckets
+      console.log('genus length', genus.length)
+      genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+      store.commit('setGenus', genus)
+    } else {
+      store.commit('setGenus', [])
+    }
+
+    if (value !== 'filterByCollection') {
+      const collections = facets.collectionName.buckets
+      store.commit('setCollections', collections)
+    }
+
+    if (value != 'filterByType') {
+      const typeStatus = facets.typeStatus.buckets
+      typeStatus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+      console.log('typeStatus length', typeStatus.length)
+      store.commit('setTypeStatus', typeStatus)
+    }
+  }
+
+  store.commit('setTotalRecords', total)
+  store.commit('setResults', results)
+
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
+  store.commit('setResetPaging', true)
+}
+
+function setCommentFacet(facets) {
+  const imageFacet = facets.image.buckets
+  if (imageFacet.length > 0) {
+    const imageCount = imageFacet[0].count
+    store.commit('setImageCount', imageCount)
+  } else {
+    store.commit('setImageCount', 0)
+  }
+
+  const isTypeFacet = facets.isType.buckets
+  if (isTypeFacet.length > 0) {
+    const isTypeCount = isTypeFacet[0].count
+    store.commit('setIsTypeCount', isTypeCount)
+  } else {
+    store.commit('setIsTypeCount', 0)
+  }
+
+  const inSwedenFacet = facets.inSweden.buckets
+  if (inSwedenFacet.length > 0) {
+    const inSwedenCount = inSwedenFacet[0].count
+    store.commit('setInSwedenCount', inSwedenCount)
+  } else {
+    store.commit('setInSwedenCount', 0)
+  }
+
+  const mapFacet = facets.map.buckets
+  if (mapFacet.length > 0) {
+    const mapCount = mapFacet[0].count
+    store.commit('setHasCoordinatesCount', mapCount)
+  } else {
+    store.commit('setHasCoordinatesCount', 0)
+  }
+}
 
 function exportData() {
   console.log('export data')
