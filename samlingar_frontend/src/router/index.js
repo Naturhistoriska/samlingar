@@ -26,7 +26,7 @@ const routes = [
     }
   },
   {
-    path: '/results',
+    path: '/records',
     name: 'Results',
     component: Results,
     meta: {
@@ -34,7 +34,7 @@ const routes = [
     }
   },
   {
-    path: '/results',
+    path: '/records',
     component: Results,
     children: [
       {
@@ -61,7 +61,7 @@ const routes = [
     ]
   },
   {
-    path: '/result/:id',
+    path: '/record/:id',
     component: Results,
     children: [
       {
