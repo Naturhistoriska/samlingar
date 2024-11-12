@@ -177,6 +177,7 @@ public class SolrService implements Serializable {
      * @param numPerPage
      * @param text
      * @param collection
+     * @param collections
      * @param typeStatus
      * @param family
      * @param hasCoordinates
@@ -344,7 +345,9 @@ public class SolrService implements Serializable {
         return response.jsonStr();
     }
 
-    public String mapDataSearch(String text, String collection, String typeStatus, String family) {
+    public String mapDataSearch(String text, String collection, String collections,
+            String typeStatus, String family, String hasCoordinates, String hasImage, 
+            String inSweden, String isType) {
         log.info("mapDataSearch ..... : {} -- {} ", text, collection);
         
         final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
@@ -386,12 +389,32 @@ public class SolrService implements Serializable {
             jsonRequest.withFilter(collectionNameKey + collection);
         }
 
+        if(collections != null) {
+            jsonRequest.withFilter(collectionIdKey + collections);
+        }
+
         if (typeStatus != null) {
             jsonRequest.withFilter(typeStatusKey + typeStatus);
         }
 
         if (family != null) {
             jsonRequest.withFilter(familyKey + family);
+        }
+        
+        if(hasImage != null) { 
+            jsonRequest.withFilter(hasImage);
+        }
+        
+        if(hasCoordinates != null) {
+            jsonRequest.withFilter(hasCoordinates);
+        }
+        
+        if(inSweden != null) {
+            jsonRequest.withFilter(inSweden);
+        }
+        
+        if(isType != null) {
+            jsonRequest.withFilter(isType);
         }
         
         jsonRequest.setBasicAuthCredentials(properties.getUsername(), properties.getPassword());

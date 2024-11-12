@@ -81,7 +81,7 @@ public class SamlingarService {
             @QueryParam("start") int start,
             @QueryParam("numPerPage") int numPerPage) {
 
-        log.info("filter: {}, {}", collection, typeStatus);
+        log.info("filter: {}, {}", collections, typeStatus);
 
         return Response.ok(logic
                 .filterSerch(start, numPerPage, text, collection, collections, 
@@ -98,13 +98,19 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response mapData(@QueryParam("text") String text,
             @QueryParam("collection") String collection,
+            @QueryParam("collections") String collections,
             @QueryParam("typeStatus") String typeStatus,
-            @QueryParam("family") String family) {
+            @QueryParam("family") String family,
+            @QueryParam("hasCoordinates") String hasCoordinates,
+            @QueryParam("hasImage") String hasImage,
+            @QueryParam("inSweden") String inSweden,
+            @QueryParam("isType") String isType) {
 
         log.info("geo: {}, {}", collection, typeStatus);
 
         return Response.ok(logic
-                .mapDataSearch(text, collection, typeStatus, family)).build();
+                .mapDataSearch(text, collection, collections, typeStatus, family, 
+                        hasCoordinates, hasImage, inSweden, isType)).build();
     }
     
     @GET
@@ -129,7 +135,9 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response statisticSearch() {
         log.info("statisticSearch: {}, {}");
-        return Response.ok(logic.getStaticData()).build();
+        return Response.ok(logic.getStaticData())
+                .header("ACCESS_CONTROL_ALLOW_ORIGIN", "*")
+                .build();
     }
 
     @GET

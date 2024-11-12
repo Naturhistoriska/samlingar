@@ -6,6 +6,7 @@ import NotFound from '../views/NotFound.vue'
 import Results from '../views/Results.vue'
 import ResultDetail from '../components/ResultDetail.vue'
 import SearchFilter from '../components/SearchFilter.vue'
+import MapView from '../components/Map.vue'
 
 const routes = [
   {
@@ -45,6 +46,17 @@ const routes = [
         path: 'type/:filter',
         name: 'type',
         component: SearchFilter
+      }
+    ]
+  },
+  {
+    path: '/map',
+    component: Results,
+    children: [
+      {
+        path: '',
+        name: 'Map',
+        component: MapView
       }
     ]
   },

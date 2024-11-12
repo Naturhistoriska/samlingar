@@ -112,12 +112,14 @@ public class SamlingarLogic {
                 typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
     }
 
-    public String mapDataSearch(String text, String collection, 
-            String typeStatus, String family) {
+    public String mapDataSearch(String text, String collection, String collections,
+            String typeStatus, String family, String hasCoordinates, 
+            String hasImage, String inSweden, String isType) {
         
         total = 0;
 
-        String jsonString = service.mapDataSearch(text, collection, typeStatus, family);
+        String jsonString = service.mapDataSearch(text, collection, collections, 
+                typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
  
         JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
         JsonObject jsonObj = jsonReader.readObject();
