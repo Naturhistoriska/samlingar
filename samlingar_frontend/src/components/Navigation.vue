@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="grid navbg">
-      <div class="col-8">
+      <div class="col-8" style="margin-left: 1em">
         <Tabs v-model:value="value">
           <TabList>
             <Tab value="0" to="/" as="router-link" @click="onClick" class="navbg">
@@ -75,7 +75,6 @@ a:hover {
 }
 
 .navbg {
-  padding-left: 1em;
   background-color: #052b1e;
 }
 
@@ -89,6 +88,14 @@ a:hover {
   border-color: transparent !important;
 }
 
+.p-tab {
+  border-style: none !important;
+}
+
+.p-tab:hover {
+  background: #0b583d !important;
+}
+
 .p-tabmenu .p-tabmenu-tablist {
   border-style: none !important;
   border: 0px;
@@ -100,5 +107,13 @@ a:hover {
 
 .p-tabmenu > .p-tabmenu-tablist {
   border-style: none !important;
+}
+
+.pi  {
+  background-color: transparent !important;
+}
+
+.pi:hover {
+  background: #0b583d !important;
 }
 </style>
