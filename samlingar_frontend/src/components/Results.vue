@@ -47,6 +47,7 @@
             fill="transparent"
           />
         </div>
+        <LargeImage v-if="openLargeImage" />
 
         <Map v-if="showMap" @resetView="handleResetView" @searchDetial="handleSearchDetail" />
         <div v-else>
@@ -62,6 +63,8 @@ import { computed, ref, toRaw, isProxy, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+
+import LargeImage from './LargeImage'
 
 const router = useRouter()
 
@@ -184,6 +187,11 @@ function handleFilterSearch(value) {
     emits('filterSearch', value)
   }
 }
+
+const openLargeImage = computed(() => {
+  console.log('openLarge image ', store.getters['openGalleria'])
+  return store.getters['openGalleria']
+})
 
 const mapLinkText = computed(() => {
   if (showMap.value) {

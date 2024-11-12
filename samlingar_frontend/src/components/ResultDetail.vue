@@ -58,11 +58,11 @@
         </div>
         <div class="col-3 textColor" no-gutters>{{ $t('results.latitude') }}:</div>
         <div class="col-9 textColor">
-          {{ result.latitudeText }}
+          {{ result.latitude }}
         </div>
         <div class="col-3 textColor" no-gutters>{{ $t('results.longitude') }}:</div>
         <div class="col-9 textColor">
-          {{ result.longitudeText }}
+          {{ result.longitude }}
         </div>
         <div class="col-3 textColor" no-gutters>Synonym:</div>
         <div class="col-9 textColor">
@@ -96,9 +96,11 @@
 import ImageGalleria from './ImageGalleria.vue'
 
 import { computed, ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 const store = useStore()
+const router = useRouter()
 
 const result = computed(() => {
   return store.getters['selectedResult']
@@ -115,6 +117,7 @@ onMounted(() => {})
 
 function onclick() {
   store.commit('setShowDetail', false)
+  router.push('/results')
 }
 </script>
 <style scoped>

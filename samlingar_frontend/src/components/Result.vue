@@ -1,6 +1,6 @@
 <template>
-  <div style="cursor: pointer; font-size: 12px" :class="{ active: hover }" @click="onclick()">
-    <div class="grid" @mouseover="hover = true" @mouseleave="hover = false">
+  <div style="cursor: pointer; font-size: 12px" :class="{ active: hover }">
+    <div class="grid" @mouseover="hover = true" @mouseleave="hover = false" @click="onclick()">
       <div class="col-3 reducePadding">Scientific Name</div>
       <div class="col-9 reducePadding">
         {{ scientificName }}

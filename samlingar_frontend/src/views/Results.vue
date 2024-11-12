@@ -2,12 +2,11 @@
   <div class="card">
     <div class="grid">
       <div class="flex flex-column col-5">
-        this is a view
         <SearchFilter
           class="divBg"
           @collectionSearch="handleCollectionSearch"
           @typeSearch="handleTypeSearch"
-          @conditionalSearch="handleConditionSearch"
+          @familySearch="handleFamilySearch"
           @filterSearch="handleFilterSearch"
           @search="handleSearch"
         />
@@ -51,6 +50,7 @@
           />
         </div>
 
+        <LargeImage v-if="openLargeImage" />
         <Map v-if="showMap" @resetView="handleResetView" @searchDetial="handleSearchDetail" />
         <div v-else>
           <ResultDetail v-if="showDetail" />
@@ -70,6 +70,8 @@ import ResultDetail from '../components/ResultDetail.vue'
 import ResultList from '../components/ResultList.vue'
 import SearchFilter from '../components/SearchFilter.vue'
 import Map from '../components/Map.vue'
+
+import LargeImage from '../components/LargeImage.vue'
 
 import Service from '../Service'
 const service = new Service()
@@ -148,6 +150,16 @@ watch(
   }
 )
 
+watch(
+  () => router.currentRoute.value.name,
+  () => {
+    const currentRouteName = router.currentRoute.value.name
+    if (currentRouteName !== 'Map') {
+      showMap.value = false
+    }
+  }
+)
+
 // const json_data = computed(() => {
 //   const data = store.getters['exportData']
 //   console.log('data: ', data.length)
@@ -155,16 +167,159 @@ watch(
 //   return toRaw(data)
 // })
 
+function handleSearchDetail(id) {
+  console.log('handleSearchDetail', id)
+
+  const isDetailView = store.getters['showDetail']
+  if (isDetailView) {
+    showMap.value = !showMap.value
+    router.push(`/result/${id}`)
+  } else {
+    emits('detailSearch', coordinates)
+  }
+}
+
+function onMapLinkClick() {
+  showMap.value = !showMap.value
+
+  if (showMap.value) {
+    const isDetailView = store.getters['showDetail']
+    if (!isDetailView) {
+      const isAdvanceSearch = store.getters['isAdvanceSearch']
+      if (isAdvanceSearch) {
+      } else {
+        fetchMapDataWithSimpleSearch(false)
+      }
+    }
+    router.push('/map')
+  }
+}
+
 function handleTypeSearch() {
-  processSearch('filterByType')
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (showMap.value) {
+    if (isAdvanceSearch) {
+    } else {
+      fetchMapDataWithSimpleSearch(true, 'filterByType')
+    }
+  } else {
+    processSearch('filterByType')
+  }
 }
 
 function handleCollectionSearch() {
-  processSearch('filterByCollection')
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (showMap.value) {
+    if (isAdvanceSearch) {
+    } else {
+      fetchMapDataWithSimpleSearch(true, 'filterByCollection')
+    }
+  } else {
+    processSearch('filterByCollection')
+  }
+}
+
+function handleFamilySearch() {
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (showMap.value) {
+    if (isAdvanceSearch) {
+    } else {
+      fetchMapDataWithSimpleSearch(true, 'filterByFamily')
+    }
+  } else {
+    processSearch('filterByFamily')
+  }
+}
+
+function fetchMapDataWithSimpleSearch(resetData, value) {
+  console.log('fetchMapDataWithSimpleSearch', resetData, value)
+  const collection = store.getters['selectedCollection']
+  const searchText = store.getters['searchText']
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+
+  let collectionGroup = collection ? null : store.getters['collectionGroup']
+
+  console.log('collectionGroup', collectionGroup)
+
+  const hasCoordinates = store.getters['filterCoordinates']
+  const hasImages = store.getters['filterImage']
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
+
+  service
+    .apiGeoDataSearch(
+      searchText,
+      collection,
+      typeStatus,
+      family,
+      collectionGroup,
+      hasCoordinates,
+      hasImages,
+      isType,
+      isInSweden
+    )
+    .then((response) => {
+      const array = response.geoData
+      const count = response.count
+
+      store.commit('setGeoData', array)
+      store.commit('setTotalGeoData', count)
+
+      if (resetData) {
+        console.log('resetData...', resetData)
+        const facets = response.facets
+        setCommentFacet(facets)
+
+        const results = response.docs
+        const total = facets.count
+
+        const familyFacet = facets.family
+        if (familyFacet !== undefined) {
+          const family = familyFacet.buckets
+          console.log('family length', family.length)
+          family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+          store.commit('setFamily', family)
+        } else {
+          store.commit('setFamily', [])
+        }
+
+        const genusFacet = facets.genus
+        if (genusFacet !== undefined) {
+          const genus = genusFacet.buckets
+          console.log('genus length', genus.length)
+          genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+          store.commit('setGenus', genus)
+        } else {
+          store.commit('setGenus', [])
+        }
+
+        if (value !== 'filterByCollection') {
+          const collections = facets.collectionName.buckets
+          store.commit('setCollections', collections)
+        }
+
+        if (value != 'filterByType') {
+          const typeStatus = facets.typeStatus.buckets
+          console.log('typeStatus length', typeStatus.length)
+          store.commit('setTypeStatus', typeStatus)
+        }
+
+        store.commit('setTotalRecords', total)
+        store.commit('setResults', results)
+      }
+    })
+    .catch()
+    .finally(() => {})
 }
 
 function processSearch(value) {
   const selectedCollection = store.getters['selectedCollection']
+
+  let collectionGroup = selectedCollection ? null : store.getters['collectionGroup']
+
+  console.log('collectionGroup', collectionGroup)
+
   const typeStatus = store.getters['selectedType']
   const family = store.getters['selectedFamily']
 
@@ -179,13 +334,14 @@ function processSearch(value) {
   const searchText = store.getters['searchText']
   console.log('search text', searchText)
 
-  let path
+  // let path
   service
     .apiFilterSearch(
       searchText,
       selectedCollection,
       typeStatus,
       family,
+      collectionGroup,
       hasCoordinates,
       hasImages,
       isType,
@@ -196,18 +352,50 @@ function processSearch(value) {
     .then((response) => {
       processAPIdata(response, value)
 
-      if (value === 'filterByCollection') {
-        path = `filter/${selectedCollection}`
-      }
+      // if (value === 'filterByCollection') {
+      //   path = `filter/${selectedCollection}`
+      // }
 
-      if (value === 'filterByType') {
-        path = `type/${typeStatus}`
-      }
+      // if (value === 'filterByType') {
+      //   path = `type/${typeStatus}`
+      // }
     })
     .catch()
     .finally(() => {
-      router.push(`/results/${path}`)
+      router.push('/results')
+      // router.push(`/results/${path}`)
     })
+}
+
+function handleFilterSearch() {
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (showMap.value) {
+    if (isAdvanceSearch) {
+    } else {
+      fetchMapDataWithSimpleSearch(true)
+    }
+  } else {
+    processSearch()
+  }
+}
+
+// this search after clear all filter
+function handleSearch() {
+  console.log('handleSearch [clear filter search]')
+
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (showMap.value) {
+    if (isAdvanceSearch) {
+    } else {
+      fetchMapDataWithSimpleSearch(true)
+    }
+  } else {
+    processSearch()
+  }
+}
+
+function handlePaginateSearch() {
+  processSearch()
 }
 
 function processAPIdata(response, value) {
@@ -319,7 +507,7 @@ function finishDownload() {
 }
 
 // search when filter link (coordinates, images, type, inSweden clicked)
-function handleFilterSearch(value) {
+function handleFilterSearch1() {
   console.log('handleFilterSearch', value)
   if (showMap.value) {
     let searchText = store.getters['searchText']
@@ -331,6 +519,11 @@ function handleFilterSearch(value) {
     emits('filterSearch', value)
   }
 }
+
+const openLargeImage = computed(() => {
+  console.log('openLarge image ', store.getters['openGalleria'])
+  return store.getters['openGalleria']
+})
 
 const mapLinkText = computed(() => {
   if (showMap.value) {
@@ -351,67 +544,20 @@ const totalRecords = computed(() => {
   return store.getters['totalRecords']
 })
 
-// this search after clear all filter
-function handleSearch() {
-  console.log('handleSearch [clear filter search]')
+// function handleConditionSearch(value) {
+//   console.log('handleConditionSearch')
 
-  const isAdvanceSearch = store.getters['isAdvanceSearch']
-
-  if (showMap.value) {
-    emits('fetchMapData', true)
-  } else {
-    if (isAdvanceSearch) {
-      emits('advanceSearch')
-    } else {
-      emits('simpleSearch')
-    }
-  }
-}
-
-function handleConditionSearch(value) {
-  console.log('handleConditionSearch')
-
-  if (showMap.value) {
-    emits('fetchMapData', true, value)
-  } else {
-    emits('conditionalSearch', value)
-  }
-}
-
-function handleSearchDetail(coordinates) {
-  console.log('handleSearchDetail', coordinates)
-
-  const isDetailView = store.getters['showDetail']
-  if (isDetailView) {
-    showMap.value = !showMap.value
-  } else {
-    emits('detailSearch', coordinates)
-  }
-}
+//   if (showMap.value) {
+//     emits('fetchMapData', true, value)
+//   } else {
+//     emits('conditionalSearch', value)
+//   }
+// }
 
 function handleResetView(coordinates, total) {
   console.log('handleResetView', coordinates, total)
 
   emits('coordinatesSearch', coordinates, total)
-}
-
-function onMapLinkClick() {
-  showMap.value = !showMap.value
-
-  if (showMap.value) {
-    const isDetailView = store.getters['showDetail']
-    if (!isDetailView) {
-      emits('fetchMapData', false)
-    }
-    // isLoading.value = true
-    // setTimeout(() => {
-    //   isLoading.value = false
-    // }, 5000)
-  }
-}
-
-function handlePaginateSearch() {
-  emits('conditionalSearch', 'paginateSearch')
 }
 </script>
 <style scoped>

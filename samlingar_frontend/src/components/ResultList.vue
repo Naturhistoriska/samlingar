@@ -50,10 +50,10 @@ const totalRecords = computed(() => {
   return store.getters['totalRecords']
 })
 
-const showGalleria = computed(() => {
-  return store.getters['openGalleria']
-})
-
+// const showGalleria = computed(() => {
+// return store.getters['openGalleria']
+// })
+//
 function onPage(event) {
   const start = event.first
   const numPerPage = event.rows

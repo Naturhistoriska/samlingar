@@ -19,11 +19,6 @@
           width="100%"
           preview
         />
-        <!-- <img
-          :src="'https://media-service.nrm.se/images?id=' + slotProps.item + dataset"
-          :alt="slotProps.item.alt"
-          style="display: block; width: 500px"
-        /> -->
       </template>
       <template #thumbnail="slotProps">
         <img

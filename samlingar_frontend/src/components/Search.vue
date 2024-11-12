@@ -10,16 +10,16 @@
           <InputText
             id="simpleSearchInput1"
             v-model="value"
-            @keydown.enter="onPressEnter"
+            @keydown.enter="onSearch"
             :placeholder="$t('search.freeTextSearch')"
             aria-describedby="simpleSearchInput-help"
             class="w-full"
           />
           <Button
             icon="pi pi-search"
-            style="max-width: 30px; max-height: 30px"
+            style="max-width: 30px; min-height: 30px"
             :loading="loading"
-            @click="onSearchClick"
+            @click="onSearch"
           />
         </InputGroup>
 
@@ -39,6 +39,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
+const emits = defineEmits(['simpleSearch'])
+
 const store = useStore()
 const router = useRouter()
 
@@ -50,12 +52,27 @@ function onAdvanceSearchLinkClick() {
   router.push('/advanceSearch')
 }
 
-function onPressEnter() {
-  console.log('onPressEnter')
-}
+// function onPressEnter() {
+//   console.log('onPressEnter')
+//   search()
+// }
 
-function onSearchClick() {
-  console.log('onSearchClick')
+// function onSearchClick() {
+//   console.log('onSearchClick')
+//   search()
+// }
+
+function onSearch() {
+  loading.value = true
+
+  const searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
+
+  store.commit('setSearchText', searchText)
+  emits('simpleSearch')
+
+  setTimeout(() => {
+    loading.value = false
+  }, 2000)
 }
 </script>
 <style scoped>

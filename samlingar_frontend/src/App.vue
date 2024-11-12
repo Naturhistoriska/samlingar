@@ -16,15 +16,33 @@ import Navigation from './components/Navigation.vue'
 </script>
 
 <style>
-.p-card {
+.p-inputtext {
+  background: #000 !important;
   color: #fff !important;
+}
+.p-fieldset {
+  color: #fff !important;
+}
+.p-fieldset-legend {
+  background: none !important;
+}
+.p-select {
+  background: #000 !important;
+  color: #fff !important;
+}
+.p-select-label {
+  color: #fff !important;
+}
+.p-card {
+  color: #160202 !important;
 }
 .p-button-text {
   color: #fff !important;
+  text-decoration: underline;
 }
 .p-button-link {
   color: #fff !important;
-  /* text-decoration: underline; */
+  text-decoration: underline;
 }
 .texthover {
   color: #2f57f7 !important;

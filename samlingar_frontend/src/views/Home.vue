@@ -20,7 +20,6 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import StartPage from '../components/StartPage.vue'
 import AdvanceSearch from '../components/AdvanceSearch.vue'
-// import Filter from '../components/Filter.vue'
 
 import Service from '../Service'
 const service = new Service()
@@ -45,6 +44,7 @@ const isAdvanceSearch = computed(() => {
 function handleSearchBotanyCollections() {
   const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
   store.commit('setSearchText', '*:*')
+  store.commit('setCollectionGroup', botanyGroup)
   service
     .apiCollectionsSearch(botanyGroup)
     .then((response) => {
@@ -57,8 +57,10 @@ function handleSearchBotanyCollections() {
 }
 
 function handleSearchPaleaCollections() {
-  store.commit('setSearchText', '*:*')
   const paleaGroup = import.meta.env.VITE_PALEA_GROUP
+  store.commit('setSearchText', '*:*')
+  store.commit('setCollectionGroup', paleaGroup)
+
   service
     .apiCollectionsSearch(paleaGroup)
     .then((response) => {
@@ -71,8 +73,10 @@ function handleSearchPaleaCollections() {
 }
 
 function handleSearchGeCololectionss() {
-  store.commit('setSearchText', '*:*')
   const geoGroup = import.meta.env.VITE_GEO_GROUP
+  store.commit('setSearchText', '*:*')
+  store.commit('setCollectionGroup', geoGroup)
+
   service
     .apiCollectionsSearch(geoGroup)
     .then((response) => {
@@ -85,8 +89,9 @@ function handleSearchGeCololectionss() {
 }
 
 function handleSearchZooCollections() {
-  store.commit('setSearchText', '*:*')
   const zooGroup = import.meta.env.VITE_ZOO_GROUP
+  store.commit('setSearchText', '*:*')
+  store.commit('setCollectionGroup', zooGroup)
   service
     .apiCollectionsSearch(zooGroup)
     .then((response) => {

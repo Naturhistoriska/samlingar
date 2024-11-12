@@ -82,18 +82,28 @@
     </template>
     <template #footer>
       <div class="grid" v-if="coordinatesCount > 0">
-        <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text @click="searchAllCoordinates" :disabled="coordinatesFiltered">
-            <small>
-              {{ $t('startPage.specimensWithCoordinates') }}
-            </small>
-          </Button>
+        <div
+          class="col-10"
+          @click="searchAllCoordinates"
+          no-gutters
+          style="float: left; text-align: left"
+        >
+          <div class="grid">
+            <div class="col-9" no-gutters style="float: left; text-align: left">
+              <Button text :disabled="coordinatesFiltered">
+                <small>
+                  {{ $t('startPage.specimensWithCoordinates') }}
+                </small>
+              </Button>
+            </div>
+            <div class="col-3" no-gutters style="float: left; text-align: left">
+              <Button text :disabled="coordinatesFiltered">
+                <small>{{ coordinatesCount }}</small>
+              </Button>
+            </div>
+          </div>
         </div>
-        <div class="col-2" style="float: left; text-align: left">
-          <Button text @click="searchAllCoordinates" :disabled="coordinatesFiltered">
-            <small>{{ coordinatesCount }}</small>
-          </Button>
-        </div>
+
         <div class="col-2" style="float: left; text-align: left" v-if="coordinatesFiltered">
           <Button
             text
@@ -105,17 +115,21 @@
         </div>
       </div>
       <div class="grid" v-if="inSwedenCount > 0">
-        <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text :disabled="inSwedenFiltered" @click="searchAllCollectedInSweden">
-            <small>
-              {{ $t('startPage.specimensFromSweden') }}
-            </small>
-          </Button>
-        </div>
-        <div class="col-2" style="float: left; text-align: left">
-          <Button text :disabled="inSwedenFiltered" @click="searchAllCollectedInSweden">
-            <small>{{ inSwedenCount }}</small>
-          </Button>
+        <div class="col-10" @click="searchAllCollectedInSweden">
+          <div class="grid">
+            <div class="col-9" no-gutters style="float: left; text-align: left">
+              <Button text :disabled="inSwedenFiltered">
+                <small>
+                  {{ $t('startPage.specimensFromSweden') }}
+                </small>
+              </Button>
+            </div>
+            <div class="col-3" style="float: left; text-align: left">
+              <Button text :disabled="inSwedenFiltered">
+                <small>{{ inSwedenCount }}</small>
+              </Button>
+            </div>
+          </div>
         </div>
         <div class="col-2" style="float: left; text-align: left" v-if="inSwedenFiltered">
           <Button
@@ -128,17 +142,21 @@
         </div>
       </div>
       <div class="grid" v-if="imageCount > 0">
-        <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text :disabled="imageFiltered" @click="searchAllHasImages">
-            <small>
-              {{ $t('startPage.specimensWithImages') }}
-            </small>
-          </Button>
-        </div>
-        <div class="col-2" style="float: left; text-align: left">
-          <Button text :disabled="imageFiltered" @click="searchAllHasImages">
-            <small>{{ imageCount }}</small>
-          </Button>
+        <div class="col-10" @click="searchAllHasImages">
+          <div class="grid">
+            <div class="col-9" no-gutters style="float: left; text-align: left">
+              <Button text :disabled="imageFiltered">
+                <small>
+                  {{ $t('startPage.specimensWithImages') }}
+                </small>
+              </Button>
+            </div>
+            <div class="col-3" style="float: left; text-align: left">
+              <Button text :disabled="imageFiltered">
+                <small>{{ imageCount }}</small>
+              </Button>
+            </div>
+          </div>
         </div>
         <div class="col-2" style="float: left; text-align: left" v-if="imageFiltered">
           <Button
@@ -151,17 +169,26 @@
         </div>
       </div>
       <div class="grid" v-if="isTypeCount > 0">
-        <div class="col-8" no-gutters style="float: left; text-align: left">
-          <Button text :disabled="typeFiltered" @click="searchAllHasType">
-            <small>
-              {{ $t('startPage.specimensWithType') }}
-            </small>
-          </Button>
-        </div>
-        <div class="col-2" style="float: left; text-align: left">
-          <Button text :disabled="typeFiltered" @click="searchAllHasType">
-            <small>{{ isTypeCount }}</small>
-          </Button>
+        <div
+          class="col-10"
+          no-gutters
+          style="float: left; text-align: left"
+          @click="searchAllHasType"
+        >
+          <div class="grid">
+            <div class="col-9" no-gutters style="float: left; text-align: left">
+              <Button text :disabled="typeFiltered">
+                <small>
+                  {{ $t('startPage.specimensWithType') }}
+                </small>
+              </Button>
+            </div>
+            <div class="col-3" style="float: left; text-align: left">
+              <Button text :disabled="typeFiltered">
+                <small>{{ isTypeCount }}</small>
+              </Button>
+            </div>
+          </div>
         </div>
         <div class="col-2" style="float: left; text-align: left" v-if="typeFiltered">
           <Button
@@ -187,19 +214,20 @@ import AccordionContent from 'primevue/accordioncontent'
 
 let selectedCollection = ref()
 let selectedFamily = ref()
-
 let selectedType = ref()
 let displayClearLink = ref(false)
+
+// let coordinatesFiltered = ref(false)
 
 const store = useStore()
 
 // const emits = defineEmits(['conditionalSearch', 'filterSearch', 'search'])
 const emits = defineEmits([
   'collectionSearch',
+  'familySearch',
   'typeSearch',
-  'conditionalSearch',
-  'filterSearch',
-  'search'
+  'search',
+  'filterSearch'
 ])
 
 watch(
@@ -216,6 +244,14 @@ watch(
   }
 )
 
+// watch(
+//   () => store.getters['filterCoordinates'],
+//   () => {
+//     console.log('filterCoordinates changed...')
+//     coordinatesFiltered.value = store.getters['filterCoordinates']
+//   }
+// )
+
 const imageFiltered = computed(() => {
   return store.getters['filterImage']
 })
@@ -229,6 +265,7 @@ const inSwedenFiltered = computed(() => {
 })
 
 const coordinatesFiltered = computed(() => {
+  console.log('coordinatesFiltered', store.getters['filterCoordinates'])
   return store.getters['filterCoordinates']
 })
 
@@ -288,6 +325,19 @@ function selectType(value) {
   emits('typeSearch')
 }
 
+function selectFamily(value) {
+  console.log('selectFamily', value)
+  selectedFamily.value = value
+  store.commit('setSelectedFamily', value)
+  store.commit('setStartRecord', 0)
+  store.commit('setNumPerPage', 10)
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
+  displayClearLink.value = true
+
+  emits('familySearch')
+}
+
 function clearFilter() {
   store.commit('setSelectedType', null)
   store.commit('setSelectedCollection', null)
@@ -300,37 +350,24 @@ function clearFilter() {
   emits('search')
 }
 
-function selectFamily(value) {
-  console.log('selectFamily')
-
-  selectFamily.value = value
-  store.commit('setStartRecord', 0)
-  store.commit('setNumPerPage', 10)
-  store.commit('setSelectedFamily', value)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
-
-  displayClearLink.value = true
-
-  emits('conditionalSearch', 'filterByFamily')
-}
-
 function searchAllCoordinates() {
+  console.log('searchAllCoordinates')
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterCoordinates', true)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-  emits('filterSearch', ' %2Bmap:*')
+  emits('filterSearch')
 }
 
 function searchAllCollectedInSweden() {
+  console.log('searchAllCollectedInSweden')
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterInSweden', true)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-  emits('filterSearch', ' %2BinSweden:*')
+  emits('filterSearch')
 }
 
 function searchAllHasImages() {
@@ -339,7 +376,7 @@ function searchAllHasImages() {
   store.commit('setFilterImage', true)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-  emits('filterSearch', ' %2Bimage:*')
+  emits('filterSearch')
 }
 
 function searchAllHasType() {
@@ -348,26 +385,27 @@ function searchAllHasType() {
   store.commit('setFilterType', true)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-  emits('filterSearch', ' %2BisType:*')
+  emits('filterSearch')
 }
 
-function removeFilter(value) {
-  let searchText = store.getters['searchText']
-  searchText = searchText.replace(value, '').trim()
-  if (searchText.length === 0) {
-    searchText = '*:*'
-  }
-  store.commit('setSearchText', searchText)
-  emits('filterSearch', '')
-}
+// function removeFilter(value) {
+//   let searchText = store.getters['searchText']
+//   searchText = searchText.replace(value, '').trim()
+//   if (searchText.length === 0) {
+//     searchText = '*:*'
+//   }
+//   store.commit('setSearchText', searchText)
+//   emits('filterSearch', '')
+// }
 
 function removeTypeSpecimensFilter() {
+  console.log('removeTypeSpecimensFilter')
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterType', false)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-  removeFilter('%2BisType:*')
+  emits('filterSearch')
 }
 
 function removeCollectedInSwedenFilter() {
@@ -376,16 +414,17 @@ function removeCollectedInSwedenFilter() {
   store.commit('setFilterInSweden', false)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-  removeFilter('%2BinSweden:*')
+  emits('filterSearch')
 }
 
 function removeCoordinatesFilter() {
+  console.log('removeCoordinatesFilter')
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterCoordinates', false)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-  removeFilter('%2Bmap:*')
+  emits('filterSearch')
 }
 
 function removeImageFilter() {
@@ -394,7 +433,7 @@ function removeImageFilter() {
   store.commit('setFilterImage', false)
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
-  removeFilter('%2Bimage:*')
+  emits('filterSearch')
 }
 </script>
 <style scoped>

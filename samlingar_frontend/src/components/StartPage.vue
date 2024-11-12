@@ -2,7 +2,7 @@
   <div class="grid">
     <div class="col-6" no-gutters>
       <div class="grid">
-        <Search />
+        <Search @simpleSearch="handleSimpleSearch" />
       </div>
       <div class="grid">
         <Filter

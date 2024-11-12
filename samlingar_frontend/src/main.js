@@ -2,6 +2,8 @@ import "primeicons/primeicons.css"
 import './assets/main.css'
 import '/node_modules/primeflex/primeflex.css'
 
+
+
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
@@ -18,6 +20,7 @@ import i18n from './i18n'
 import PrimeVue from 'primevue/config'
 
 import Aura from '@primevue/themes/aura'
+// import Lara from '@primevue/themes/lara'
 
 import Ripple from 'primevue/ripple'
 
@@ -29,7 +32,6 @@ import VueAxios from 'vue-axios'
 import moment from 'moment'
 
 import JsonExcel from 'vue-json-excel3'
-
 
 
 

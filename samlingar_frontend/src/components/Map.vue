@@ -207,15 +207,16 @@ function onClickDetail(latitude, longitude) {
   emits('searchDetial', latitude, longitude)
 }
 
-function displayDetail(latitude, longitude) {
-  console.log('onClickDetail', latitude, longitude)
-  emits('searchDetial', latitude, longitude)
+function displayDetail(id) {
+  console.log('displayDetail', id)
+  emits('searchDetial', id)
 }
 
 function addSamlingarSinglemMarker() {
   console.log('addSamlingarSinglemMarker')
   const record = store.getters['selectedResult']
   const {
+    id,
     catalogNumber,
     collectionName,
     country,
@@ -252,7 +253,7 @@ function addSamlingarSinglemMarker() {
     button.innerHTML = 'More details'
 
     button.onclick = function () {
-      displayDetail(latitude, longitude)
+      displayDetail(id)
     }
     div.style.cssText = ' overflow-wrap: break-word;   '
     div.appendChild(button)

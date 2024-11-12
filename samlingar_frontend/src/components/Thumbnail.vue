@@ -6,16 +6,17 @@
           class="border border-surface-200 dark:border-surface-700 rounded m-2 p-4"
           style="width: 70px"
         >
-          <!-- <Image
-            :src="'https://media-service.nrm.se/images?id=' + slotProps.data + dataset"
-            style="max-width: 60px"
-            preview
-          /> -->
-          <img
+          <!-- <img
             :src="'https://media-service.nrm.se/images?id=' + slotProps.data + dataset"
             :alt="slotProps.data.index"
             style="width: 60px"
             @click="openImage"
+          /> -->
+          <Image
+            :src="'https://media-service.nrm.se/images?id=' + slotProps.data + dataset"
+            alt="Image"
+            width="60"
+            preview
           />
         </div>
       </template>
@@ -42,7 +43,6 @@ const thumbnails = computed(() => {
 
 function openImage() {
   console.log('openImage')
-  store.commit('setOpenGalleria', false)
 
   store.commit('setSelectedResult', props.result)
 

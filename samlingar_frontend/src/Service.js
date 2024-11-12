@@ -17,6 +17,8 @@ const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimi
 export default class Service {
   async apiStatisticSearch() {
     const url = `${samlingApi}/statistic`
+
+
     const response = await axios.get(url)
     return response.data
   }
@@ -68,12 +70,12 @@ export default class Service {
     return response.data
   }
 
-
   async apiFilterSearch(
     searchText,
     selectedColletion,
     selectedTypeStatus,
     selectedFamily,
+    collections,
     hasCoordinates,
     hasImages,
     isType,
@@ -94,6 +96,9 @@ export default class Service {
       url += `&family="${selectedFamily}"`
     }
 
+    if (collections) {
+      url += `&collections=${collections}`
+    }
     if (hasCoordinates) {
       url += '&hasCoordinates=map:*'
     }
@@ -114,6 +119,53 @@ export default class Service {
 
     const response = await axios.get(url)
 
+    return response.data
+  }
+
+  async apiGeoDataSearch(
+    searchText,
+    selectedColletion,
+    selectedTypeStatus,
+    selectedFamily,
+    collections,
+    hasCoordinates,
+    hasImages,
+    isType,
+    isInSweden
+  ) {
+    let url = `${samlingApi}/geo?text=${searchText}`
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+
+    if (collections) {
+      url += `&collections=${collections}`
+    }
+    if (hasCoordinates) {
+      url += '&hasCoordinates=map:*'
+    }
+
+    if (hasImages) {
+      url += '&hasImage=image:*'
+    }
+
+    if (isType) {
+      url += '&isType=isType:*'
+    }
+
+    if (isInSweden) {
+      url += '&inSweden=inSweden:*'
+    }
+
+    const response = await axios.get(url)
     return response.data
   }
 
@@ -141,24 +193,6 @@ export default class Service {
 
     const response = await axios.get(url)
 
-    return response.data
-  }
-
-  async apiGeoDataSearch(searchText, selectedColletion, selectedTypeStatus, selectedFamily) {
-    let url = `${samlingApi}/geo?text=${searchText}`
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    }
-
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    }
-
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
-
-    const response = await axios.get(url)
     return response.data
   }
 

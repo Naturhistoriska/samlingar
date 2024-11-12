@@ -5,6 +5,7 @@ export default createStore({
     botanyCollectionTotal: 0,
     catalogNumber: null,
     collectons: [],
+    collectionGroup: null,
     classs: [],
     dataset: null,
     endDate: null,
@@ -62,6 +63,9 @@ export default createStore({
     },
     collectons(state) {
       return state.collectons
+    },
+    collectionGroup(state) {
+      return state.collectionGroup
     },
     dataset(state) {
       return state.dataset
@@ -196,6 +200,7 @@ export default createStore({
     setCatalogNumber: (state, payload) => (state.catalogNumber = payload),
     setClasss: (state, payload) => (state.classs = payload),
     setCollections: (state, payload) => (state.collectons = payload),
+    setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
     setDataset: (state, payload) => (state.dataset = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
     setExportData: (state, payload) => (state.exportData = payload),

@@ -12,8 +12,10 @@ import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 // https://vitejs.dev/config/
 export default defineConfig({
   // devServer: {
-  //   proxy: 'https://solr-samlingar.nrm.se/'
+  //   proxy: 'https://naturarv-stage.nrm.se'
   // },
+
+
   plugins: [
     vue({
       // template: { transformAssetUrls }
