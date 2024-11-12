@@ -5,7 +5,7 @@
     </template>
     <template #content>
       <div>{{ $t('contact.text') }}</div>
-      <div>
+      <div style="padding-top: 2em">
         <h2>{{ $t('contact.contactInfo') }}</h2>
       </div>
       <div>
