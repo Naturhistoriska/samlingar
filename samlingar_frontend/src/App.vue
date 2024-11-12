@@ -34,7 +34,8 @@ import Navigation from './components/Navigation.vue'
   color: #fff !important;
 }
 .p-card {
-  color: #160202 !important;
+  color: #fff !important;
+  background: transparent !important;
 }
 .p-button-text {
   color: #fff !important;
