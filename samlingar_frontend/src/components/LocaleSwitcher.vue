@@ -8,11 +8,11 @@
       aria-haspopup="true"
       aria-controls="overlay_tmenu"
       plain
-      text
+      variant="link"
     />
     <Menu id="overlay_tmenu" ref="menu" :model="items" :popup="true" class="w-min flex">
-      <template #item="{ item }">
-        <Button :label="item.label" @click="select(item.label)" plain text />
+      <template #item="{ item }" class="w-full">
+        <Button class="btn" :label="item.label" link />
       </template>
     </Menu>
   </div>
@@ -27,10 +27,16 @@ export default {
       selectedLocale: 'en',
       items: [
         {
-          label: 'English'
+          label: 'English',
+          command: () => {
+            this.select('en')
+          }
         },
         {
-          label: 'Svenska'
+          label: 'Svenska',
+          command: () => {
+            this.select('sv')
+          }
         }
       ]
     }
@@ -55,7 +61,9 @@ export default {
       this.$refs.menu.toggle(event)
     },
     select(clocale) {
-      this.selectedLocale = clocale === 'English' ? 'en' : 'sv'
+      console.log('clocale', clocale)
+      //
+      this.selectedLocale = clocale
     }
   }
 }
@@ -64,4 +72,9 @@ export default {
 .ui-menu {
   max-width: 50px;
 }
+/* .btn:hover * {
+  color: #828085 !important;
+  text-decoration: none !important;
+  background: transparent !important;
+} */
 </style>

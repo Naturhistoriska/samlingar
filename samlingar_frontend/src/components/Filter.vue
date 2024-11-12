@@ -15,10 +15,10 @@
 
     <div class="grid" style="min-width: 100%; cursor: pointer" @click="searchAll">
       <div class="col-6" no-gutters style="float: left; text-align: left">
-        <Button text :label="$t('startPage.allSpecimens')" />
+        <Button link :label="$t('startPage.allSpecimens')" />
       </div>
       <div class="col-6" style="float: left; text-align: left">
-        <Button text>
+        <Button link>
           {{ totalCount }}
         </Button>
       </div>
