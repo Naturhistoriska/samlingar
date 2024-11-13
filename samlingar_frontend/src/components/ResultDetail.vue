@@ -117,7 +117,7 @@ onMounted(() => {})
 
 function onclick() {
   store.commit('setShowDetail', false)
-  router.push('/results')
+  router.push('/records')
 }
 </script>
 <style scoped>

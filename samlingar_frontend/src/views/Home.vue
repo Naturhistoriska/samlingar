@@ -52,7 +52,7 @@ function handleSearchBotanyCollections() {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
     })
 }
 
@@ -68,7 +68,7 @@ function handleSearchPaleaCollections() {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
     })
 }
 
@@ -84,7 +84,7 @@ function handleSearchGeCololectionss() {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
     })
 }
 
@@ -99,7 +99,7 @@ function handleSearchZooCollections() {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
     })
 }
 
@@ -117,7 +117,7 @@ function handleSimpleSearch() {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
     })
 }
 
@@ -181,7 +181,7 @@ function handleFilterWithCoordinates() {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
     })
 }
 
@@ -195,7 +195,7 @@ function handleFilterWithImages() {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
     })
 }
 
@@ -209,7 +209,7 @@ function handleFilterWIthInSweden() {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
     })
 }
 
@@ -223,7 +223,7 @@ function handleFilterWithType() {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
     })
 }
 

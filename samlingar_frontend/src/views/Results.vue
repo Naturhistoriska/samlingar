@@ -362,7 +362,7 @@ function processSearch(value) {
     })
     .catch()
     .finally(() => {
-      router.push('/results')
+      router.push('/records')
       // router.push(`/results/${path}`)
     })
 }

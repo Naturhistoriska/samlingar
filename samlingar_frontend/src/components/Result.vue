@@ -109,7 +109,7 @@ function onclick() {
 
   store.commit('setSelectedResult', props.result)
   store.commit('setShowDetail', true)
-  router.push(`/result/${id}`)
+  router.push(`/record/${id}`)
 }
 </script>
 

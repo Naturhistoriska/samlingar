@@ -13,17 +13,17 @@
       </div>
     </div>
 
-    <div class="grid" style="min-width: 100%; cursor: pointer" @click="searchAll">
+    <div class="grid divLink" @click="searchAll">
       <div class="col-6" no-gutters style="float: left; text-align: left">
-        <Button link :label="$t('startPage.allSpecimens')" />
+        <Button text :label="$t('startPage.allSpecimens')" />
       </div>
       <div class="col-6" style="float: left; text-align: left">
-        <Button link>
+        <Button text>
           {{ totalCount }}
         </Button>
       </div>
     </div>
-    <div class="grid" style="min-width: 100%; cursor: pointer" @click="searchAllCoordinates">
+    <div class="grid divLink" @click="searchAllCoordinates">
       <div class="col-6" no-gutters style="float: left; text-align: left">
         <Button text :label="$t('startPage.specimensWithCoordinates')" />
       </div>
@@ -33,7 +33,7 @@
         </Button>
       </div>
     </div>
-    <div class="grid" style="min-width: 100%; cursor: pointer" @click="searchInSweden">
+    <div class="grid divLink" @click="searchInSweden">
       <div class="col-6" no-gutters style="float: left; text-align: left">
         <Button text :label="$t('startPage.specimensFromSweden')" />
       </div>
@@ -43,7 +43,7 @@
         </Button>
       </div>
     </div>
-    <div class="grid" style="min-width: 100%; cursor: pointer" @click="searchWithImage">
+    <div class="grid divLink" @click="searchWithImage">
       <div class="col-6" no-gutters style="float: left; text-align: left">
         <Button text :label="$t('startPage.specimensWithImages')" />
       </div>
@@ -53,7 +53,7 @@
         </Button>
       </div>
     </div>
-    <div class="grid" style="min-width: 100%" @click="searchWithType">
+    <div class="grid divLink" @click="searchWithType">
       <div class="col-6" no-gutters style="float: left; text-align: left">
         <Button text :label="$t('startPage.specimensWithType')" />
       </div>
@@ -121,4 +121,14 @@ function searchWithType() {
   emits('filterWithInType')
 }
 </script>
-<style scoped></style>
+<style scoped>
+.p-button-text:hover {
+  color: #9dabf3 !important;
+  text-decoration: none !important;
+  background: transparent !important;
+}
+.divLink {
+  min-width: 100% !important;
+  cursor: pointer !important;
+}
+</style>
