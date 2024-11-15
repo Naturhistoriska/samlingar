@@ -10,7 +10,7 @@
         {{ result.catalogNumber }}
       </div>
       <div class="col-3 reducePadding">High classification</div>
-      <div class="col-9 reducePadding">
+      <div class="col-9 reducePadding" style="max-width: 80%; overflow-wrap: break-word">
         {{ result.higherTx }}
       </div>
       <div class="col-3 reducePadding">Collection name</div>

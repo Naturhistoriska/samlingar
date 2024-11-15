@@ -437,6 +437,10 @@ function removeImageFilter() {
 }
 </script>
 <style scoped>
+.p-button-text {
+  color: #fff !important;
+  text-decoration: underline;
+}
 /* .p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
   background: var(--p-accordion-header-active-background);
   color: #cbcad1;

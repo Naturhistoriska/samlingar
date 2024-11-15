@@ -7,12 +7,11 @@
       @click="toggle"
       aria-haspopup="true"
       aria-controls="overlay_tmenu"
-      plain
-      variant="link"
+      variant="text"
     />
     <Menu id="overlay_tmenu" ref="menu" :model="items" :popup="true" class="w-min flex">
       <template #item="{ item }" class="w-full">
-        <Button class="btn" :label="item.label" link />
+        <Button class="btn" :label="item.label" text />
       </template>
     </Menu>
   </div>
@@ -72,9 +71,16 @@ export default {
 .ui-menu {
   max-width: 50px;
 }
-/* .btn:hover * {
-  color: #828085 !important;
+.p-button-text {
+  color: #fff !important;
+  background: transparent !important;
+  text-decoration: none;
+}
+
+.p-button-text:hover {
+  /* color: #9dabf3 !important; */
+  color: var(--p-emerald-500) !important;
   text-decoration: none !important;
   background: transparent !important;
-} */
+}
 </style>

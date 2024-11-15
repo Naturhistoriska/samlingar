@@ -123,9 +123,15 @@ function searchWithType() {
 </script>
 <style scoped>
 .p-button-text:hover {
-  color: #9dabf3 !important;
+  color: var(--p-emerald-500) !important;
+  /* color: #9dabf3 !important; */
   text-decoration: none !important;
   background: transparent !important;
+}
+
+.p-button-text {
+  color: #fff !important;
+  text-decoration: underline;
 }
 .divLink {
   min-width: 100% !important;

@@ -65,7 +65,10 @@ function onAdvanceSearchLinkClick() {
 function onSearch() {
   loading.value = true
 
-  const searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
+  let searchText = '*:*'
+  if (value.value) {
+    searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
+  }
 
   store.commit('setSearchText', searchText)
   emits('simpleSearch')

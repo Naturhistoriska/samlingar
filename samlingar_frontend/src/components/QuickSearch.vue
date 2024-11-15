@@ -154,7 +154,7 @@ export default {
         .catch()
         .finally(() => {
           this.search = null
-          this.$router.push('/results')
+          this.$router.push('/records')
         })
     },
 
@@ -256,4 +256,17 @@ export default {
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+.p-button-text {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+.p-button-text:hover {
+  color: #fff !important;
+  text-decoration: none !important;
+  background: var(--p-emerald-500) !important;
+  border-start-end-radius: var(--p-inputgroup-addon-border-radius);
+  border-end-end-radius: var(--p-inputgroup-addon-border-radius);
+  border: 1px solid var(--p-button-primary-border-color);
+}
+</style>

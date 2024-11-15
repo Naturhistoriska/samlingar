@@ -109,7 +109,7 @@ a:hover {
   border-style: none !important;
 }
 
-.pi  {
+.pi {
   background-color: transparent !important;
 }
 

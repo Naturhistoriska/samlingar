@@ -122,9 +122,11 @@
     "selectSpeciesGroup": "Select a species group",
     "searchScientificName": "Search scientific name",
     "searchTypeStatus": "Search typestatus",
+    "searchSynonym": "Search synonym",
     "simpleSearch": "Simple search",
     "speciesGroup": "Species group",
     "startsWith": "Börja med",
+    "synonym": "Synonym",
     "typeStatus": "Typestatus",
     "year": "År"
   },

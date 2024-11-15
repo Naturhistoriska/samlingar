@@ -8,6 +8,7 @@ export default createStore({
     collectionGroup: null,
     classs: [],
     dataset: null,
+    dateRange: null,
     endDate: null,
     exportData: [],
     family: [],
@@ -35,9 +36,11 @@ export default createStore({
     scientificName: null,
     searchText: null,
     selectedCollection: null,
+    selectedDataset: null,
     selectedFamily: null,
     selectedResult: null,
     selectedType: null,
+    selectedTypes: [],
     showDetail: false,
     showResults: false,
     speciesGrouup: null,
@@ -69,6 +72,9 @@ export default createStore({
     },
     dataset(state) {
       return state.dataset
+    },
+    dateRange(state) {
+      return state.dateRange
     },
     endDate(state) {
       return state.endDate
@@ -154,6 +160,9 @@ export default createStore({
     selectedCollection(state) {
       return state.selectedCollection
     },
+    selectedDataset(state) {
+      return state.selectedDataset
+    },
     selectedFamily(state) {
       return state.selectedFamily
     },
@@ -162,6 +171,9 @@ export default createStore({
     },
     selectedType(state) {
       return state.selectedType
+    },
+    selectedTypes(state) {
+      return state.selectedTypes
     },
     showDetail(state) {
       return state.showDetail
@@ -202,6 +214,7 @@ export default createStore({
     setCollections: (state, payload) => (state.collectons = payload),
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
     setDataset: (state, payload) => (state.dataset = payload),
+    setDateRange: (state, payload) => (state.dateRange = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
     setExportData: (state, payload) => (state.exportData = payload),
     setImageCount: (state, payload) => (state.imageCount = payload),
@@ -230,9 +243,11 @@ export default createStore({
     setScientificName: (state, payload) => (state.scientificName = payload),
     setSearchText: (state, payload) => (state.searchText = payload),
     setSelectedCollection: (state, payload) => (state.selectedCollection = payload),
+    setSelectedDataset: (state, payload) => (state.selectedDataset = payload),
     setSelectedFamily: (state, payload) => (state.selectedFamily = payload),
     setSelectedResult: (state, payload) => (state.selectedResult = payload),
     setSelectedType: (state, payload) => (state.selectedType = payload),
+    setSelectedTypes: (state, payload) => (state.selectedTypes = payload),
     setShowDetail: (state, payload) => (state.showDetail = payload),
     setShowResults: (state, payload) => (state.showResults = payload),
     setSpeciesGroup: (state, payload) => (state.speciesGrouup = payload),
