@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.api.logic.SamlingarLogic;
 
 /**
@@ -32,6 +33,8 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
         })
 @Slf4j
 public class SamlingarService {
+    
+    private final String wildCard = "*:*";
 
     @Inject
     private SamlingarLogic logic;
@@ -47,6 +50,9 @@ public class SamlingarService {
             @QueryParam("start") int start, @QueryParam("numPerPage") int numPerPage) {
         log.info("search {} -- {}", text, start + " -- " + numPerPage);
 
+        if(StringUtils.isAllBlank(text)) {
+            text = wildCard;
+        }
         return Response.ok(logic.simpleSearch(text, start, numPerPage)).build();
     }
 
@@ -122,7 +128,7 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response typestatusSearch() {
         log.info("statisticSearch: {}, {}");
-        return Response.ok(logic.getStaticData()).build();
+        return Response.ok(logic.getTypeStatus()).build();
     }
 
 

@@ -275,12 +275,37 @@ public class SolrService implements Serializable {
         return jsonResponse;
     }
 
-    public String typestatus() {
-      log.info("typestatus");
-      
-      final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey);
-      
-      return null;
+    public String getTypeStatus() {
+        log.info("typestatus");
+
+        final TermsFacetMap typeStatusFacet = new TermsFacetMap(typeStatusFacetKey)
+                 .setLimit(120);
+
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(wildSearch)
+                .withFacet(typeStatusFacetKey, typeStatusFacet)
+                .setLimit(1);
+
+        jsonRequest.setBasicAuthCredentials(username, password);
+
+        String jsonResponse;
+        try {
+            response = jsonRequest.process(client);
+
+            rawJsonResponseParser = new NoOpResponseParser();
+            rawJsonResponseParser.setWriterType(jsonKey);
+            jsonRequest.setResponseParser(rawJsonResponseParser);
+
+            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
+
+//            log.info("type status... {}", jsonResponse);
+
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        return jsonResponse;
     }
     
     public String download(String text, String collection, String typeStatus, 

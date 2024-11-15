@@ -164,6 +164,10 @@ public class SamlingarLogic {
         jsonReader.close();
         return json.toString();
     }
+    
+    public String getTypeStatus() {
+        return service.getTypeStatus();
+    }
 
     public String download(String text, String collection,
             String typeStatus, String family, int numRows) {
