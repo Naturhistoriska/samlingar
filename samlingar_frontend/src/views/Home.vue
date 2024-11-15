@@ -1,6 +1,6 @@
 <template>
   <div class="grid">
-    <AdvanceSearch v-if="isAdvanceSearch" />
+    <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleAdvanceSearch" />
     <start-page
       v-else
       @simpleSearch="handleSimpleSearch"
@@ -161,6 +161,15 @@ function processAPIdata(response, value) {
       console.log('typeStatus length', typeStatus.length)
       store.commit('setTypeStatus', typeStatus)
     }
+  } else {
+    store.commit('setFamily', [])
+    store.commit('setGenus', [])
+    store.commit('setCollections', [])
+    store.commit('setTypeStatus', [])
+    store.commit('setImageCount', 0)
+    store.commit('setIsTypeCount', 0)
+    store.commit('setHasCoordinatesCount', 0)
+    store.commit('setInSwedenCount', 0)
   }
 
   store.commit('setTotalRecords', total)
@@ -220,6 +229,26 @@ function handleFilterWithType() {
     .then((response) => {
       processAPIdata(response)
       store.commit('setFilterType', true)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/records')
+    })
+}
+
+function handleAdvanceSearch() {
+  const scientificName = store.getters['scientificName']
+  const catalogNumber = store.getters['catalogNumber']
+  const selectedGroup = store.getters['selectedGroup']
+  const selectedDataset = store.getters['selectedDataset']
+  const dateRange = store.getters['dateRange']
+
+  const types = store.getters['selectedTypes']
+
+  service
+    .apiAdvanceSearch(scientificName, catalogNumber, selectedDataset, dateRange, types, 0, 10)
+    .then((response) => {
+      processAPIdata(response)
     })
     .catch()
     .finally(() => {
@@ -566,7 +595,7 @@ async function preparaExportData() {
 }
 
 // SBDI
-function handleAdvanceSearch() {
+function handleAdvanceSearchSbdi() {
   console.log('handleAdvanceSearch')
 
   const speciesGroup = store.getters['speciesGrouup']
