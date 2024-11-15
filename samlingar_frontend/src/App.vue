@@ -41,17 +41,15 @@ import Navigation from './components/Navigation.vue'
   color: #fff !important;
   background: transparent !important;
 }
-.p-button-text {
-  color: #fff !important;
-  text-decoration: underline;
-}
+
 .p-button-link {
   color: #fff !important;
   background: transparent !important;
   text-decoration: underline;
 }
 .p-button-link:hover * {
-  color: #9dabf3 !important;
+  color: var(--p-emerald-500) !important;
+  /* color: #9dabf3 !important; */
   text-decoration: none !important;
   background: transparent !important;
   font-size: 16px;
