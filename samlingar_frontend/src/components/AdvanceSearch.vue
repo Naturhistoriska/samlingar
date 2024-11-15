@@ -327,11 +327,11 @@ let beginDate = ref()
 let catalogNumber = ref()
 let endDate = ref()
 let scientificName = ref()
-const synonym = ref()
+let synonym = ref()
 
 // let selectedGroup = ref()
 // let selectedDataset = ref()
-const selectedGroupDataset = ref()
+let selectedGroupDataset = ref()
 
 let showClearScentificName = ref(false)
 let showClearCatalogNumber = ref(false)
@@ -342,9 +342,9 @@ let catlogNumOptions = ref()
 let taxonOptions = ref()
 let synonymOptions = ref()
 
-const selectedTypes = ref()
-const types = ref([])
-const selectAll = ref(false)
+let selectedTypes = ref()
+let types = ref([])
+let selectAll = ref(false)
 let disableSelect = ref(false)
 
 // const speciesGroup = computed(() => {
@@ -403,6 +403,8 @@ const groupDataset = ref([
 // )
 
 onMounted(() => {
+  console.log('advance search mounted')
+
   service
     .apiSearchTypeStatus()
     .then((response) => {
@@ -488,10 +490,30 @@ function search() {
     store.commit('setCatalogNumber', null)
   }
 
+  if (synonym.value) {
+    const option = synonymOptions.value
+    let searchSynonym
+    if (option === 'exact') {
+      searchSynonym = `%2Bsynonym:"${synonym.value}"`
+    } else if (option === 'startsWith') {
+      searchSynonym = `%2B(synonym:${synonym.value}* synonym:${synonym.value})`
+    } else {
+      // '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
+      searchSynonym = `%2B(synonym:*${synonym.value}* synonym:"${synonym.value}")`
+    }
+    if (searchSynonym) {
+      store.commit('setSynonym', searchSynonym)
+    }
+  } else {
+    store.commit('setSynonym', null)
+  }
+
   if (selectedGroupDataset.value) {
     console.log('selectedGroupDataset', selectedGroupDataset.value.value)
     const collectionCode = `%2BcollectionId:${selectedGroupDataset.value.value}`
     store.commit('setSelectedDataset', collectionCode)
+  } else {
+    store.commit('setSelectedDataset', null)
   }
 
   // startDate:[2019-11-12T00:00:00Z TO 2022-11-16T00:00:00Z]
@@ -510,6 +532,8 @@ function search() {
     const finishDate = moment(endDate.value).format('yyyy-MM-DDT00:00:00')
     const dateSearch = `%2BstartDate:[${startDate} TO ${finishDate}Z]`
     store.commit('setDateRange', dateSearch)
+  } else {
+    store.commit('setDateRange', null)
   }
 
   if (selectedTypes.value) {
@@ -524,12 +548,6 @@ function search() {
   } else {
     store.commit('setSelectedTypes', null)
   }
-
-  // store.commit('setSpeciesGroup', selectedGroup)
-  // store.commit('setDataset', selectedDataset)
-  // store.commit('setStartDate', beginDate)
-  // store.commit('setEndDate', endDate)
-  //
 
   emits('advanceSearch')
 
@@ -580,6 +598,7 @@ function clearAll() {
 
   catalogNumber.value = ''
   scientificName.value = ''
+  synonym.value = ''
   beginDate.value = ''
   endDate.value = ''
 
@@ -594,13 +613,12 @@ function clearAll() {
   //   selectedGroup = undefined
   // }
 
-  if (selectedGroupDataset !== undefined) {
-    // selectedGroup.value = ''
-    selectedGroupDataset = undefined
+  if (selectedGroupDataset.value) {
+    selectedGroupDataset.value = ''
   }
-  if (selectedTypes !== undefined) {
-    // selectedGroup.value = ''
-    selectedTypes = undefined
+
+  if (selectedTypes.value) {
+    selectedTypes.value = ''
   }
   // store.commit('setSelectedTypes', null)
 }

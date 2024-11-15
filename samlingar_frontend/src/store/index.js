@@ -46,6 +46,7 @@ export default createStore({
     speciesGrouup: null,
     startDate: null,
     startRecord: 0,
+    synonym: null,
     totalCount: 0,
     typeStatus: [],
     totalRecords: 0,
@@ -190,6 +191,9 @@ export default createStore({
     startRecord(state) {
       return state.startRecord
     },
+    synonym(state) {
+      return state.synonym
+    },
     totalGeoData(state) {
       return state.totalGeoData
     },
@@ -253,6 +257,7 @@ export default createStore({
     setSpeciesGroup: (state, payload) => (state.speciesGrouup = payload),
     setStartDate: (state, payload) => (state.startDate = payload),
     setStartRecord: (state, payload) => (state.startRecord = payload),
+    setSynonym: (state, payload) => (state.synonym = payload),
     setTotalGeoData: (state, payload) => (state.totalGeoData = payload),
     setTotalRecords: (state, payload) => (state.totalRecords = payload),
     setTypeStatus: (state, payload) => (state.typeStatus = payload),

@@ -137,4 +137,8 @@ function searchWithType() {
   min-width: 100% !important;
   cursor: pointer !important;
 }
+.divLink:hover {
+  background: #0e3a12;
+  color: var(--p-emerald-500) !important;
+}
 </style>

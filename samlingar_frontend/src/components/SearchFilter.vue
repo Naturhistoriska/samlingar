@@ -17,7 +17,7 @@
               v-for="collection of collections"
               :key="collection.val"
               class="flex items-center"
-              style="background: transparent"
+              style="background: transparent; padding: 0.1rem"
             >
               <RadioButton
                 v-model="selectedCollection"
@@ -39,7 +39,12 @@
         <AccordionPanel value="1" style="background: transparent; font-size: 12px">
           <AccordionHeader style="background: transparent">Type status</AccordionHeader>
           <AccordionContent style="background: transparent" :unstyled="true">
-            <div v-for="typeStatus of typeStatus" :key="typeStatus.val" class="flex items-center">
+            <div
+              v-for="typeStatus of typeStatus"
+              :key="typeStatus.val"
+              class="flex items-center"
+              style="background: transparent; padding: 0.1rem"
+            >
               <RadioButton
                 v-model="selectedType"
                 :inputId="typeStatus.val"
@@ -63,7 +68,7 @@
               v-for="family of familys"
               :key="family.val"
               class="flex items-center"
-              style="padding-left: 6px; padding-bottom: 2px; color: #fff"
+              style="background: transparent; padding: 0.1rem"
             >
               <RadioButton
                 v-model="selectedFamily"
@@ -81,7 +86,7 @@
       </Accordion>
     </template>
     <template #footer>
-      <div class="grid" v-if="coordinatesCount > 0">
+      <div class="grid divLink" v-if="coordinatesCount > 0">
         <div
           class="col-10"
           @click="searchAllCoordinates"
@@ -114,7 +119,7 @@
           />
         </div>
       </div>
-      <div class="grid" v-if="inSwedenCount > 0">
+      <div class="grid divLink" v-if="inSwedenCount > 0">
         <div class="col-10" @click="searchAllCollectedInSweden">
           <div class="grid">
             <div class="col-9" no-gutters style="float: left; text-align: left">
@@ -141,7 +146,7 @@
           />
         </div>
       </div>
-      <div class="grid" v-if="imageCount > 0">
+      <div class="grid divLink" v-if="imageCount > 0">
         <div class="col-10" @click="searchAllHasImages">
           <div class="grid">
             <div class="col-9" no-gutters style="float: left; text-align: left">
@@ -168,7 +173,7 @@
           />
         </div>
       </div>
-      <div class="grid" v-if="isTypeCount > 0">
+      <div class="grid divLink" v-if="isTypeCount > 0">
         <div
           class="col-10"
           no-gutters
@@ -440,11 +445,30 @@ function removeImageFilter() {
 .p-button-text {
   color: #fff !important;
   text-decoration: underline;
+  font-size: 1rem;
 }
-/* .p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
+.p-button-text:hover {
+  color: var(--p-emerald-500) !important;
+  text-decoration: none !important;
+  background: transparent !important;
+}
+.p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
   background: var(--p-accordion-header-active-background);
   color: #cbcad1;
-} */
+  font-size: 1rem;
+}
+.divLink {
+  min-width: 100% !important;
+  cursor: pointer !important;
+}
+.divLink:hover {
+  background: #0e3a12;
+  color: var(--p-emerald-500) !important;
+}
+/* .p-accordionpanel:not(.p-disabled).p-accordionpanel-hover > .p-accordionheader { */
+/* background: var(--p-accordion-header-active-background); */
+/* color: #e70808; */
+/* } */
 
 /* .p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader {
   background: var(--p-accordion-header-active-background);
@@ -453,11 +477,6 @@ function removeImageFilter() {
 
 /* .p-button-text {
   color: #0dff5c;
-} */
-
-/* .p-accordionpanel:not(.p-disabled).p-accordionpanel-hover > .p-accordionheader {
-  background: var(--p-accordion-header-active-background);
-  color: #e70808;
 } */
 
 /* .p-accordion-header-variant-a .p-accordion-header-link {
@@ -494,8 +513,8 @@ function removeImageFilter() {
 /* .p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
   background: rgba(255, 255, 255, 0.04);
   border-color: red;
-  color: rgba(255, 255, 255, 0.87); */
-/* } */
+  color: rgba(255, 255, 255, 0.87);
+} */
 /* .p-accordioncontent-content {
   background-color: red;
 } */

@@ -30,14 +30,47 @@ const store = useStore()
 const router = useRouter()
 
 onMounted(() => {
+  console.log('home mounted')
+  clearStore()
   fetchStatisticData()
 })
+
+function clearStore() {
+  store.commit('setFamily', [])
+  store.commit('setGenus', [])
+  store.commit('setCollections', [])
+  store.commit('setTypeStatus', [])
+  store.commit('setImageCount', 0)
+  store.commit('setIsTypeCount', 0)
+  store.commit('setHasCoordinatesCount', 0)
+  store.commit('setInSwedenCount', 0)
+  store.commit('setTotalRecords', 0)
+  store.commit('setResults', [])
+
+  store.commit('setScientificName', null)
+  store.commit('setCatalogNumber', null)
+  store.commit('setSynonym', null)
+  store.commit('setSelectedDataset', null)
+  store.commit('setDateRange', null)
+  store.commit('setSelectedTypes', null)
+
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', false)
+}
 
 const isAdvanceSearch = computed(() => {
   console.log('router namme', router.currentRoute.value.name)
 
   const currentRouteName = router.currentRoute.value.name
-  return currentRouteName === 'AdvanceSearch'
+  const isAdvance = currentRouteName === 'AdvanceSearch'
+  if (isAdvance) {
+    store.commit('setIsAdvanceSearch', true)
+  } else {
+    store.commit('setIsAdvanceSearch', false)
+  }
+  return isAdvance
+  // return currentRouteName === 'AdvanceSearch'
+
   // return store.getters['isAdvanceSearch']
 })
 
@@ -239,14 +272,23 @@ function handleFilterWithType() {
 function handleAdvanceSearch() {
   const scientificName = store.getters['scientificName']
   const catalogNumber = store.getters['catalogNumber']
-  const selectedGroup = store.getters['selectedGroup']
+  const synonym = store.getters['synonym']
   const selectedDataset = store.getters['selectedDataset']
   const dateRange = store.getters['dateRange']
 
   const types = store.getters['selectedTypes']
 
   service
-    .apiAdvanceSearch(scientificName, catalogNumber, selectedDataset, dateRange, types, 0, 10)
+    .apiAdvanceSearch(
+      scientificName,
+      catalogNumber,
+      synonym,
+      selectedDataset,
+      dateRange,
+      types,
+      0,
+      10
+    )
     .then((response) => {
       processAPIdata(response)
     })

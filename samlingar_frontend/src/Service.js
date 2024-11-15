@@ -35,7 +35,16 @@ export default class Service {
     return response.data
   }
 
-  async apiAdvanceSearch(scientificName, catalogNumber, dataset, dateRange, types, start, rows) {
+  async apiAdvanceSearch(
+    scientificName,
+    catalogNumber,
+    synonym,
+    dataset,
+    dateRange,
+    types,
+    start,
+    rows
+  ) {
     let url = `${samlingApi}/search?text=`
 
     if (scientificName) {
@@ -43,6 +52,10 @@ export default class Service {
     }
     if (catalogNumber) {
       url += ` ${catalogNumber}`
+    }
+
+    if (synonym) {
+      url += ` ${synonym}`
     }
 
     if (dataset) {
@@ -58,6 +71,85 @@ export default class Service {
     }
 
     url += `&start=${start}&numPerPage=${rows}`
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  async apiAdvanceSearchWithFilters(
+    scientificName,
+    catalogNumber,
+    synonym,
+    dataset,
+    dateRange,
+    types,
+    selectedColletion,
+    selectedTypeStatus,
+    selectedFamily,
+    hasCoordinates,
+    hasImages,
+    isType,
+    isInSweden,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/filter?text=`
+
+    if (scientificName) {
+      url += `${scientificName}`
+    }
+    if (catalogNumber) {
+      url += ` ${catalogNumber}`
+    }
+
+    if (synonym) {
+      url += ` ${synonym}`
+    }
+
+    if (dataset && !selectedColletion) {
+      url += ` ${dataset}`
+    }
+
+    if (dateRange) {
+      url += ` ${dateRange}`
+    }
+
+    if (!selectedTypeStatus) {
+      if (types) {
+        url += ` ${types}`
+      }
+    }
+
+
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+
+    if (hasCoordinates) {
+      url += '&hasCoordinates=map:*'
+    }
+
+    if (hasImages) {
+      url += '&hasImage=image:*'
+    }
+
+    if (isType) {
+      url += '&isType=isType:*'
+    }
+
+    if (isInSweden) {
+      url += '&inSweden=inSweden:*'
+    }
+
+    url += `&start=${start}&numPerPage=${numPerPage}`
     const response = await axios.get(url)
 
     return response.data

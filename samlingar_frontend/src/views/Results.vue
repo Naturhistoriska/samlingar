@@ -167,6 +167,124 @@ watch(
 //   return toRaw(data)
 // })
 
+function handleFilterSearch() {
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  console.log('isAdvanceSearch', isAdvanceSearch)
+  if (showMap.value) {
+    if (isAdvanceSearch) {
+    } else {
+      fetchMapDataWithSimpleSearch(true)
+    }
+  } else {
+    if (isAdvanceSearch) {
+      handleAdvanceSearch()
+    } else {
+      processSearch()
+    }
+  }
+}
+
+function handleAdvanceSearch() {
+  const scientificName = store.getters['scientificName']
+  const catalogNumber = store.getters['catalogNumber']
+  const synonym = store.getters['synonym']
+  const selectedDataset = store.getters['selectedDataset']
+  const dateRange = store.getters['dateRange']
+  const types = store.getters['selectedTypes']
+
+  const selectedCollection = store.getters['selectedCollection']
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+
+  const hasCoordinates = store.getters['filterCoordinates']
+  const hasImages = store.getters['filterImage']
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
+
+  const numPerPage = store.getters['numPerPage']
+  const start = store.getters['startRecord']
+
+  service
+    .apiAdvanceSearchWithFilters(
+      scientificName,
+      catalogNumber,
+      synonym,
+      selectedDataset,
+      dateRange,
+      types,
+      selectedCollection,
+      typeStatus,
+      family,
+      hasCoordinates,
+      hasImages,
+      isType,
+      isInSweden,
+      start,
+      numPerPage
+    )
+    .then((response) => {
+      processAPIdata(response)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/records')
+    })
+}
+
+function processSearch(value) {
+  const selectedCollection = store.getters['selectedCollection']
+
+  let collectionGroup = selectedCollection ? null : store.getters['collectionGroup']
+
+  console.log('collectionGroup', collectionGroup)
+
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+
+  const hasCoordinates = store.getters['filterCoordinates']
+  const hasImages = store.getters['filterImage']
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
+
+  const numPerPage = store.getters['numPerPage']
+  const start = store.getters['startRecord']
+
+  const searchText = store.getters['searchText']
+  console.log('search text', searchText)
+
+  // let path
+  service
+    .apiFilterSearch(
+      searchText,
+      selectedCollection,
+      typeStatus,
+      family,
+      collectionGroup,
+      hasCoordinates,
+      hasImages,
+      isType,
+      isInSweden,
+      start,
+      numPerPage
+    )
+    .then((response) => {
+      processAPIdata(response, value)
+
+      // if (value === 'filterByCollection') {
+      //   path = `filter/${selectedCollection}`
+      // }
+
+      // if (value === 'filterByType') {
+      //   path = `type/${typeStatus}`
+      // }
+    })
+    .catch()
+    .finally(() => {
+      router.push('/records')
+      // router.push(`/results/${path}`)
+    })
+}
+
 function handleSearchDetail(id) {
   console.log('handleSearchDetail', id)
 
@@ -313,72 +431,6 @@ function fetchMapDataWithSimpleSearch(resetData, value) {
     .finally(() => {})
 }
 
-function processSearch(value) {
-  const selectedCollection = store.getters['selectedCollection']
-
-  let collectionGroup = selectedCollection ? null : store.getters['collectionGroup']
-
-  console.log('collectionGroup', collectionGroup)
-
-  const typeStatus = store.getters['selectedType']
-  const family = store.getters['selectedFamily']
-
-  const hasCoordinates = store.getters['filterCoordinates']
-  const hasImages = store.getters['filterImage']
-  const isType = store.getters['filterType']
-  const isInSweden = store.getters['filterInSweden']
-
-  const numPerPage = store.getters['numPerPage']
-  const start = store.getters['startRecord']
-
-  const searchText = store.getters['searchText']
-  console.log('search text', searchText)
-
-  // let path
-  service
-    .apiFilterSearch(
-      searchText,
-      selectedCollection,
-      typeStatus,
-      family,
-      collectionGroup,
-      hasCoordinates,
-      hasImages,
-      isType,
-      isInSweden,
-      start,
-      numPerPage
-    )
-    .then((response) => {
-      processAPIdata(response, value)
-
-      // if (value === 'filterByCollection') {
-      //   path = `filter/${selectedCollection}`
-      // }
-
-      // if (value === 'filterByType') {
-      //   path = `type/${typeStatus}`
-      // }
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-      // router.push(`/results/${path}`)
-    })
-}
-
-function handleFilterSearch() {
-  const isAdvanceSearch = store.getters['isAdvanceSearch']
-  if (showMap.value) {
-    if (isAdvanceSearch) {
-    } else {
-      fetchMapDataWithSimpleSearch(true)
-    }
-  } else {
-    processSearch()
-  }
-}
-
 // this search after clear all filter
 function handleSearch() {
   console.log('handleSearch [clear filter search]')
@@ -438,6 +490,15 @@ function processAPIdata(response, value) {
       console.log('typeStatus length', typeStatus.length)
       store.commit('setTypeStatus', typeStatus)
     }
+  } else {
+    store.commit('setFamily', [])
+    store.commit('setGenus', [])
+    store.commit('setCollections', [])
+    store.commit('setTypeStatus', [])
+    store.commit('setImageCount', 0)
+    store.commit('setIsTypeCount', 0)
+    store.commit('setHasCoordinatesCount', 0)
+    store.commit('setInSwedenCount', 0)
   }
 
   store.commit('setTotalRecords', total)
