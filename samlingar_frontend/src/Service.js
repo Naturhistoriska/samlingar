@@ -17,8 +17,6 @@ const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimi
 export default class Service {
   async apiStatisticSearch() {
     const url = `${samlingApi}/statistic`
-
-
     const response = await axios.get(url)
     return response.data
   }
@@ -34,6 +32,34 @@ export default class Service {
     const url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${rows}`
 
     const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiAdvanceSearch(scientificName, catalogNumber, dataset, dateRange, types, start, rows) {
+    let url = `${samlingApi}/search?text=`
+
+    if (scientificName) {
+      url += `${scientificName}`
+    }
+    if (catalogNumber) {
+      url += ` ${catalogNumber}`
+    }
+
+    if (dataset) {
+      url += ` ${dataset}`
+    }
+
+    if (dateRange) {
+      url += ` ${dateRange}`
+    }
+
+    if (types) {
+      url += ` ${types}`
+    }
+
+    url += `&start=${start}&numPerPage=${rows}`
+    const response = await axios.get(url)
+
     return response.data
   }
 
@@ -193,6 +219,12 @@ export default class Service {
 
     const response = await axios.get(url)
 
+    return response.data
+  }
+
+  async apiSearchTypeStatus() {
+    const url = `${samlingApi}/typestatus`
+    const response = await axios.get(url)
     return response.data
   }
 
