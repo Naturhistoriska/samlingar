@@ -17,25 +17,8 @@
             <legend>
               {{ $t('results.searchResults') }} [{{ $t('results.num_results', totalRecords) }}]
               <br />
+              <Download @exportData="preparaExportData" />
 
-              <Button link @click="exportData" v-if="!dataPrepared" style="width: 420px">
-                <small>{{ $t('exportData.export') }}</small>
-              </Button>
-              <download-excel
-                v-else
-                @click="downloadFile"
-                class="btn btn-default"
-                :data="json_data"
-                :fields="json_fields"
-                type="csv"
-                name="data.csv"
-                :before-finish="finishDownload"
-                :before-generate="startDownload"
-                style="color: #0dff5c; font-size: 14px; cursor: pointer; padding-left: 10px"
-              >
-                <small>Download Data</small>
-              </download-excel>
-              <br />
               <Button link @click="onMapLinkClick">
                 <small>{{ mapLinkText }}</small>
               </Button>
@@ -66,6 +49,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
+import Download from '../components/Download.vue'
 import ResultDetail from '../components/ResultDetail.vue'
 import ResultList from '../components/ResultList.vue'
 import SearchFilter from '../components/SearchFilter.vue'
@@ -76,22 +60,10 @@ import LargeImage from '../components/LargeImage.vue'
 import Service from '../Service'
 const service = new Service()
 
-// // import { useLoading } from 'vue3-loading-overlay'
-import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
-// Import stylesheet
-// import 'vue3-loading-overlay/dist/vue3-loading.css'
-
-// import Loading from 'vue-loading-overlay'
-// import 'vue-loading-overlay/dist/vue-loading.css'
-
 const router = useRouter()
 
-import Loading from 'vue3-loading-overlay'
-
-// import downloadexcel from 'vue-json-excel3'
-
-// import Service from '../Service'
-// const service = new Service()
+// import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
+// import Loading from 'vue3-loading-overlay'
 
 const { t } = useI18n()
 
@@ -113,43 +85,6 @@ let dataPrepared = ref(false)
 let json_data = ref()
 const isLoading = ref(false)
 
-let json_fields = {
-  'Collection Name': 'collectionName',
-  'Catalogue Number': 'catalogNumber',
-  Locality: 'locality',
-  District: 'district',
-  'State Province': 'state',
-  Country: 'country',
-  Continent: 'continent',
-  Latitude: 'latitudeText',
-  Longitude: 'longitudeText',
-  'Station field number': 'stationFieldNumber',
-  Determiner: 'determiner',
-  Family: 'family',
-  Genus: 'genus',
-  Species: 'species',
-  'High classification': 'higherTx',
-  Prepration: 'prepration',
-  Preservation: 'preservation',
-  'Vernacular Name': 'commonName',
-  'Cataloged date': 'catalogedDate',
-  'Event date': 'startDate',
-  Collectors: 'collector',
-  Author: 'author'
-}
-
-watch(
-  () => store.getters['exportData'],
-  () => {
-    console.log('data changed')
-    json_data.value = store.getters['exportData']
-    setTimeout(() => {
-      dataPrepared.value = true
-      isLoading.value = false
-    }, 2000)
-  }
-)
-
 watch(
   () => router.currentRoute.value.name,
   () => {
@@ -160,12 +95,27 @@ watch(
   }
 )
 
-// const json_data = computed(() => {
-//   const data = store.getters['exportData']
-//   console.log('data: ', data.length)
+function preparaExportData() {
+  console.log('preparaExportData')
 
-//   return toRaw(data)
-// })
+  // store.commit('setExportData', null)
+
+  const collection = store.getters['selectedCollection']
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+  const totalRecords = store.getters['totalRecords']
+  const searchText = store.getters['searchText']
+
+  service
+    .apiPreparaExport(searchText, collection, typeStatus, family, totalRecords)
+    .then((response) => {
+      const results = response
+
+      store.commit('setExportData', results)
+    })
+    .catch()
+    .finally(() => {})
+}
 
 function handleFilterSearch() {
   const isAdvanceSearch = store.getters['isAdvanceSearch']
@@ -184,7 +134,7 @@ function handleFilterSearch() {
   }
 }
 
-function handleAdvanceSearch() {
+function handleAdvanceSearch(value) {
   const scientificName = store.getters['scientificName']
   const catalogNumber = store.getters['catalogNumber']
   const synonym = store.getters['synonym']
@@ -223,7 +173,7 @@ function handleAdvanceSearch() {
       numPerPage
     )
     .then((response) => {
-      processAPIdata(response)
+      processAPIdata(response, value)
     })
     .catch()
     .finally(() => {
@@ -321,7 +271,11 @@ function handleTypeSearch() {
       fetchMapDataWithSimpleSearch(true, 'filterByType')
     }
   } else {
-    processSearch('filterByType')
+    if (isAdvanceSearch) {
+      handleAdvanceSearch('filterByType')
+    } else {
+      processSearch('filterByType')
+    }
   }
 }
 
@@ -333,7 +287,11 @@ function handleCollectionSearch() {
       fetchMapDataWithSimpleSearch(true, 'filterByCollection')
     }
   } else {
-    processSearch('filterByCollection')
+    if (isAdvanceSearch) {
+      handleAdvanceSearch('filterByCollection')
+    } else {
+      processSearch('filterByCollection')
+    }
   }
 }
 
@@ -345,7 +303,11 @@ function handleFamilySearch() {
       fetchMapDataWithSimpleSearch(true, 'filterByFamily')
     }
   } else {
-    processSearch('filterByFamily')
+    if (isAdvanceSearch) {
+      handleAdvanceSearch('filterByFamily')
+    } else {
+      processSearch('filterByFamily')
+    }
   }
 }
 
@@ -442,12 +404,21 @@ function handleSearch() {
       fetchMapDataWithSimpleSearch(true)
     }
   } else {
-    processSearch()
+    if (isAdvanceSearch) {
+      handleAdvanceSearch()
+    } else {
+      processSearch()
+    }
   }
 }
 
 function handlePaginateSearch() {
-  processSearch()
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (isAdvanceSearch) {
+    handleAdvanceSearch()
+  } else {
+    processSearch()
+  }
 }
 
 function processAPIdata(response, value) {
@@ -604,16 +575,6 @@ const showDetail = computed(() => {
 const totalRecords = computed(() => {
   return store.getters['totalRecords']
 })
-
-// function handleConditionSearch(value) {
-//   console.log('handleConditionSearch')
-
-//   if (showMap.value) {
-//     emits('fetchMapData', true, value)
-//   } else {
-//     emits('conditionalSearch', value)
-//   }
-// }
 
 function handleResetView(coordinates, total) {
   console.log('handleResetView', coordinates, total)

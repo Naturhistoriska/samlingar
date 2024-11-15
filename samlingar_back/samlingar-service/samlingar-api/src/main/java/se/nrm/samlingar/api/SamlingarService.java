@@ -33,7 +33,7 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
         })
 @Slf4j
 public class SamlingarService {
-    
+
     private final String wildCard = "*:*";
 
     @Inject
@@ -50,7 +50,7 @@ public class SamlingarService {
             @QueryParam("start") int start, @QueryParam("numPerPage") int numPerPage) {
         log.info("search {} -- {}", text, start + " -- " + numPerPage);
 
-        if(StringUtils.isAllBlank(text)) {
+        if (StringUtils.isAllBlank(text)) {
             text = wildCard;
         }
         return Response.ok(logic.simpleSearch(text, start, numPerPage)).build();
@@ -89,9 +89,13 @@ public class SamlingarService {
 
         log.info("filter: {}, {}", collections, typeStatus);
 
+        if (StringUtils.isAllBlank(text)) {
+            text = wildCard;
+        }
+
         return Response.ok(logic
-                .filterSerch(start, numPerPage, text, collection, collections, 
-                        typeStatus, family, hasCoordinates, hasImage, inSweden, 
+                .filterSerch(start, numPerPage, text, collection, collections,
+                        typeStatus, family, hasCoordinates, hasImage, inSweden,
                         isType)).build();
     }
 
@@ -113,12 +117,16 @@ public class SamlingarService {
             @QueryParam("isType") String isType) {
 
         log.info("geo: {}, {}", collection, typeStatus);
+        
+             if(StringUtils.isAllBlank(text)) {
+            text = wildCard;
+        }
 
         return Response.ok(logic
-                .mapDataSearch(text, collection, collections, typeStatus, family, 
+                .mapDataSearch(text, collection, collections, typeStatus, family,
                         hasCoordinates, hasImage, inSweden, isType)).build();
     }
-    
+
     @GET
     @Path("/typestatus")
     @ApiOperation(value = "typestatus",
@@ -130,7 +138,6 @@ public class SamlingarService {
         log.info("statisticSearch: {}, {}");
         return Response.ok(logic.getTypeStatus()).build();
     }
-
 
     @GET
     @Path("/statistic")
@@ -168,7 +175,7 @@ public class SamlingarService {
     @GET
     @Produces({"application/pdf"})
     public StreamingOutput getFileContent() throws Exception {
-     
+
 //        InputStream myStream = ;
 //        
 //        
@@ -181,5 +188,5 @@ public class SamlingarService {
 //        IOUtils.copy(myStream, response.getOutputStream());
 //        response.flushBuffer();
         return null;
-    } 
+    }
 }
