@@ -12,8 +12,6 @@ const fiedList =
   'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'
 const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
-
-
 export default class Service {
   async apiStatisticSearch() {
     const url = `${samlingApi}/statistic`
@@ -21,15 +19,60 @@ export default class Service {
     return response.data
   }
 
-  async apiAutoCompleteSearch(searchText) {
-    const url = `${samlingApi}/autocomplete?text=${searchText}`
+  async apiSimpleSearch(searchText, start, rows) {
+    const url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
 
     const response = await axios.get(url)
     return response.data
   }
 
-  async apiSimpleSearch(searchText, start, rows) {
-    const url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${rows}`
+  async apiSimpleFilterSearch(hasCoordinates, hasImages, isType, isInSweden) {
+    let url = `${samlingApi}/filter?text=*:*&sort=catalogedDate desc`
+    if (hasCoordinates) {
+      url += '&hasCoordinates=map:*'
+    }
+    if (hasImages) {
+      url += '&hasImage=image:*'
+    }
+    if (isType) {
+      url += '&isType=isType:*'
+    }
+    if (isInSweden) {
+      url += '&inSweden=inSweden:*'
+    }
+    url += `&start=${0}&numPerPage=${10}&sort=catalogedDate desc`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiCollectionGroupSearch(collections) {
+    const url = `${samlingApi}/filter?text=*:*&collections=${collections}&start=${0}&numPerPage=${10}&sort=catalogedDate desc`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  async apiAutoCompleteSearch(searchText) {
+    const url = `${samlingApi}/autocomplete?text=${searchText}`
 
     const response = await axios.get(url)
     return response.data
@@ -70,7 +113,7 @@ export default class Service {
       url += ` ${types}`
     }
 
-    url += `&start=${start}&numPerPage=${rows}`
+    url += `&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
     const response = await axios.get(url)
 
     return response.data
@@ -120,7 +163,6 @@ export default class Service {
       }
     }
 
-
     if (selectedColletion) {
       url += `&collection="${selectedColletion}"`
     }
@@ -149,40 +191,7 @@ export default class Service {
       url += '&inSweden=inSweden:*'
     }
 
-    url += `&start=${start}&numPerPage=${numPerPage}`
-    const response = await axios.get(url)
-
-    return response.data
-  }
-
-  async apiCollectionsSearch(collections) {
-    const url = `${samlingApi}/filter?text=*:*&collections=${collections}&start=${0}&numPerPage=${10}`
-
-    const response = await axios.get(url)
-
-    return response.data
-  }
-
-  async apiSimpleFilterSearch(hasCoordinates, hasImages, isType, isInSweden) {
-    let url = `${samlingApi}/filter?text=*:*`
-    if (hasCoordinates) {
-      url += '&hasCoordinates=map:*'
-    }
-
-    if (hasImages) {
-      url += '&hasImage=image:*'
-    }
-
-    if (isType) {
-      url += '&isType=isType:*'
-    }
-
-    if (isInSweden) {
-      url += '&inSweden=inSweden:*'
-    }
-
-    url += `&start=${0}&numPerPage=${10}`
-
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
     const response = await axios.get(url)
 
     return response.data
@@ -233,7 +242,7 @@ export default class Service {
       url += '&inSweden=inSweden:*'
     }
 
-    url += `&start=${start}&numPerPage=${numPerPage}`
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
 
     const response = await axios.get(url)
 
@@ -307,7 +316,7 @@ export default class Service {
     if (selectedFamily) {
       url += `&family="${selectedFamily}"`
     }
-    url += `&start=${start}&numPerPage=${numPerPage}`
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
 
     const response = await axios.get(url)
 

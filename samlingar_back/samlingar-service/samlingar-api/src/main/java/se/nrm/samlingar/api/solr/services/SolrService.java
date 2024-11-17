@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject; 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -120,11 +121,14 @@ public class SolrService implements Serializable {
      * @param start
      * @param numPerPage
      * @param text
+     * @param sort 
      * @return String
      */
-    public String simpleSearch(int start, int numPerPage, String text) {
+    public String simpleSearch(int start, int numPerPage, String text, 
+            String sort ) {
         log.info("simpleSearch ..... : {} -- {} ", start + " -- " + numPerPage, text);
 
+        // sort :    (e.g. "startdate asc")
         final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
         final TermsFacetMap imageFacet = new TermsFacetMap(imageFacetKey);
         final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSwedenFacetKey);
@@ -147,6 +151,12 @@ public class SolrService implements Serializable {
                 .withFacet(typeStatusFacetKey, typeStatusFacet)
                 .withFacet(familyFacetKey, familyFacet)
                 .withFacet(collectionNameFacetKey, collectionFacet);
+                
+                
+                if(!StringUtils.isBlank(sort)) {
+                    jsonRequest.setSort(sort);
+                }
+                 
 //                .withFacet(geohashFacetKey, geoHashFacet);
 
         jsonRequest.setBasicAuthCredentials(username, password);
@@ -184,11 +194,12 @@ public class SolrService implements Serializable {
      * @param hasImage
      * @param inSweden
      * @param isType
+     * @param sort
      * @return String
      */
     public String filterSearch(int start, int numPerPage, String text,
             String collection, String collections, String typeStatus, String family, 
-            String hasCoordinates, String hasImage, String inSweden, String isType) {
+            String hasCoordinates, String hasImage, String inSweden, String isType, String sort) {
         log.info("filterSearch: {} -- {} ", collection + " -- " + typeStatus, text);
 
         final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
@@ -210,6 +221,11 @@ public class SolrService implements Serializable {
                 .withFacet(isTypeFacetKey, isTypeFacet)
                 .withFacet(typeStatusFacetKey, typeStatusFacet) 
                 .withFacet(collectionNameFacetKey, collectionFacet);
+        
+                if(!StringUtils.isBlank(sort)) {
+                    jsonRequest.setSort(sort);
+                }
+                
 
         if (family != null && family.length() > 0) {
             final TermsFacetMap genusFacet = new TermsFacetMap(genusFacetKey)
@@ -372,7 +388,7 @@ public class SolrService implements Serializable {
 
     public String mapDataSearch(String text, String collection, String collections,
             String typeStatus, String family, String hasCoordinates, String hasImage, 
-            String inSweden, String isType) {
+            String inSweden, String isType)  {
         log.info("mapDataSearch ..... : {} -- {} ", text, collection);
         
         final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
@@ -408,8 +424,7 @@ public class SolrService implements Serializable {
                 .withFacet(familyFacetKey, familyFacet)
                 .withFacet(collectionNameFacetKey, collectionFacet)
                 .withFacet(geohashFacetKey, geoHashFacet);
- 
-
+           
         if (collection != null) {
             jsonRequest.withFilter(collectionNameKey + collection);
         }

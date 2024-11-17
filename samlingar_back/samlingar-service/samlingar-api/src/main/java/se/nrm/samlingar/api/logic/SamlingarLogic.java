@@ -94,9 +94,10 @@ public class SamlingarLogic {
         return service.searchStatisticData();
     }
 
-    public String simpleSearch(String text, int start, int numPerPage) {
+    public String simpleSearch(String text, int start, int numPerPage, 
+            String sort ) {
         log.info("simpleSearch : {}", text);
-        return service.simpleSearch(start, numPerPage, text);
+        return service.simpleSearch(start, numPerPage, text, sort);
     }
 
     public String autoCompleteSearch(String text) {
@@ -104,12 +105,13 @@ public class SamlingarLogic {
     }
 
     public String filterSerch(int start, int numPerPage, String text,
-            String collection, String collections, String typeStatus, String family,
-            String hasCoordinates, String hasImage, String inSweden, String isType) {
+            String collection, String collections, String typeStatus, 
+            String family, String hasCoordinates, String hasImage, 
+            String inSweden, String isType, String sort) {
         log.info("filterSerch : {} -- {}", collection, typeStatus);
 
         return service.filterSearch(start, numPerPage, text, collection, collections, 
-                typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
+                typeStatus, family, hasCoordinates, hasImage, inSweden, isType, sort);
     }
 
     public String mapDataSearch(String text, String collection, String collections,

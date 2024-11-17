@@ -47,13 +47,14 @@ public class SamlingarService {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public Response search(@QueryParam("text") String text,
-            @QueryParam("start") int start, @QueryParam("numPerPage") int numPerPage) {
+            @QueryParam("start") int start, @QueryParam("numPerPage") int numPerPage,
+            @QueryParam("sort") String sort ) {
         log.info("search {} -- {}", text, start + " -- " + numPerPage);
 
         if (StringUtils.isAllBlank(text)) {
             text = wildCard;
         }
-        return Response.ok(logic.simpleSearch(text, start, numPerPage)).build();
+        return Response.ok(logic.simpleSearch(text, start, numPerPage, sort )).build();
     }
 
     @GET
@@ -85,7 +86,8 @@ public class SamlingarService {
             @QueryParam("inSweden") String inSweden,
             @QueryParam("isType") String isType,
             @QueryParam("start") int start,
-            @QueryParam("numPerPage") int numPerPage) {
+            @QueryParam("numPerPage") int numPerPage,
+            @QueryParam("sort") String sort) {
 
         log.info("filter: {}, {}", collections, typeStatus);
 
@@ -96,7 +98,7 @@ public class SamlingarService {
         return Response.ok(logic
                 .filterSerch(start, numPerPage, text, collection, collections,
                         typeStatus, family, hasCoordinates, hasImage, inSweden,
-                        isType)).build();
+                        isType, sort)).build();
     }
 
     @GET
