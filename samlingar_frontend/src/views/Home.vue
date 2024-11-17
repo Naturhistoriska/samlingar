@@ -38,14 +38,15 @@ onMounted(() => {
 function clearStore() {
   store.commit('setFamily', [])
   store.commit('setGenus', [])
+
   store.commit('setCollections', [])
   store.commit('setTypeStatus', [])
   store.commit('setImageCount', 0)
   store.commit('setIsTypeCount', 0)
   store.commit('setHasCoordinatesCount', 0)
   store.commit('setInSwedenCount', 0)
-  store.commit('setTotalRecords', 0)
-  store.commit('setResults', [])
+  // store.commit('setTotalRecords', 0)
+  // store.commit('setResults', [])
 
   store.commit('setScientificName', null)
   store.commit('setCatalogNumber', null)
@@ -54,9 +55,202 @@ function clearStore() {
   store.commit('setDateRange', null)
   store.commit('setSelectedTypes', null)
 
+  store.commit('setFilterCoordinates', false)
+  store.commit('setFilterImage', false)
+  store.commit('setFilterInSweden', false)
+  store.commit('setFilterType', false)
+
   store.commit('setShowDetail', false)
   store.commit('setShowResults', false)
 }
+
+function handleSimpleSearch() {
+  const searchText = store.getters['searchText']
+  const start = 0
+  const numRows = 10
+
+  service
+    .apiSimpleSearch(searchText, start, numRows)
+    .then((response) => {
+      processSearchData(response)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/records')
+    })
+}
+
+function handleFilterWithCoordinates() {
+  store.commit('setFilterCoordinates', true)
+  filterSearch(true, false, false, false)
+}
+
+function handleFilterWithImages() {
+  store.commit('setFilterImage', true)
+  filterSearch(false, true, false, false)
+}
+
+function handleFilterWIthInSweden() {
+  store.commit('setFilterInSweden', true)
+  filterSearch(false, false, false, true)
+}
+
+function handleFilterWithType() {
+  store.commit('setFilterType', true)
+  filterSearch(false, false, true, false)
+}
+
+function filterSearch(hasCoordinates, hasImages, isType, isInSweden) {
+  store.commit('setSearchText', '*:*')
+  service
+    .apiSimpleFilterSearch(hasCoordinates, hasImages, isType, isInSweden)
+    .then((response) => {
+      processSearchData(response)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/records')
+    })
+}
+
+function handleSearchBotanyCollections() {
+  const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
+  store.commit('setSearchText', '*:*')
+  store.commit('setCollectionGroup', botanyGroup)
+  searchCollectionGroup(botanyGroup)
+}
+
+function handleSearchPaleaCollections() {
+  const paleaGroup = import.meta.env.VITE_PALEA_GROUP
+  store.commit('setSearchText', '*:*')
+  store.commit('setCollectionGroup', paleaGroup)
+  searchCollectionGroup(paleaGroup)
+}
+
+function handleSearchGeCololectionss() {
+  const geoGroup = import.meta.env.VITE_GEO_GROUP
+  store.commit('setSearchText', '*:*')
+  store.commit('setCollectionGroup', geoGroup)
+  searchCollectionGroup(geoGroup)
+}
+
+function handleSearchZooCollections() {
+  const zooGroup = import.meta.env.VITE_ZOO_GROUP
+  store.commit('setSearchText', '*:*')
+  store.commit('setCollectionGroup', zooGroup)
+  searchCollectionGroup(zooGroup)
+}
+
+function searchCollectionGroup(value) {
+  service
+    .apiCollectionGroupSearch(value)
+    .then((response) => {
+      processSearchData(response)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/records')
+    })
+}
+
+function processSearchData(response, value) {
+  const total = response.response.numFound
+  const results = response.response.docs
+
+  if (total > 0) {
+    const facets = response.facets
+
+    setSearchCommentFacet(facets)
+
+    const familyFacet = facets.family
+    if (familyFacet !== undefined) {
+      const family = familyFacet.buckets
+      console.log('family length', family.length)
+      family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+      store.commit('setFamily', family)
+    } else {
+      store.commit('setFamily', [])
+    }
+
+    const genusFacet = facets.genus
+    if (genusFacet !== undefined) {
+      const genus = genusFacet.buckets
+      console.log('genus length', genus.length)
+      genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+      store.commit('setGenus', genus)
+    } else {
+      store.commit('setGenus', [])
+    }
+
+    if (value !== 'filterByCollection') {
+      const collections = facets.collectionName.buckets
+      store.commit('setCollections', collections)
+    }
+
+    if (value != 'filterByType') {
+      const typeStatus = facets.typeStatus.buckets
+      typeStatus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+      console.log('typeStatus length', typeStatus.length)
+      store.commit('setTypeStatus', typeStatus)
+    }
+  } else {
+    store.commit('setFamily', [])
+    store.commit('setGenus', [])
+    store.commit('setCollections', [])
+    store.commit('setTypeStatus', [])
+    store.commit('setImageCount', 0)
+    store.commit('setIsTypeCount', 0)
+    store.commit('setHasCoordinatesCount', 0)
+    store.commit('setInSwedenCount', 0)
+  }
+
+  store.commit('setTotalRecords', total)
+  store.commit('setResults', results)
+
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', true)
+  store.commit('setResetPaging', true)
+}
+
+function setSearchCommentFacet(facets) {
+  const imageFacet = facets.image.buckets
+  const imageCount = imageFacet.length > 0 ? imageFacet[0].count : 0
+  store.commit('setImageCount', imageCount)
+
+  const isTypeFacet = facets.isType.buckets
+  const isTypeCount = isTypeFacet.length > 0 ? isTypeFacet[0].count : 0
+  store.commit('setIsTypeCount', isTypeCount)
+
+  const inSwedenFacet = facets.inSweden.buckets
+  const inSwedenCount = inSwedenFacet.length > 0 ? inSwedenFacet[0].count : 0
+  store.commit('setInSwedenCount', inSwedenCount)
+
+  const mapFacet = facets.map.buckets
+  const mapCount = mapFacet.length > 0 ? mapFacet[0].count : 0
+  store.commit('setHasCoordinatesCount', mapCount)
+}
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+//
+//
+//
+//
+//
 
 const isAdvanceSearch = computed(() => {
   console.log('router namme', router.currentRoute.value.name)
@@ -73,86 +267,6 @@ const isAdvanceSearch = computed(() => {
 
   // return store.getters['isAdvanceSearch']
 })
-
-function handleSearchBotanyCollections() {
-  const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
-  store.commit('setSearchText', '*:*')
-  store.commit('setCollectionGroup', botanyGroup)
-  service
-    .apiCollectionsSearch(botanyGroup)
-    .then((response) => {
-      processAPIdata(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
-
-function handleSearchPaleaCollections() {
-  const paleaGroup = import.meta.env.VITE_PALEA_GROUP
-  store.commit('setSearchText', '*:*')
-  store.commit('setCollectionGroup', paleaGroup)
-
-  service
-    .apiCollectionsSearch(paleaGroup)
-    .then((response) => {
-      processAPIdata(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
-
-function handleSearchGeCololectionss() {
-  const geoGroup = import.meta.env.VITE_GEO_GROUP
-  store.commit('setSearchText', '*:*')
-  store.commit('setCollectionGroup', geoGroup)
-
-  service
-    .apiCollectionsSearch(geoGroup)
-    .then((response) => {
-      processAPIdata(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
-
-function handleSearchZooCollections() {
-  const zooGroup = import.meta.env.VITE_ZOO_GROUP
-  store.commit('setSearchText', '*:*')
-  store.commit('setCollectionGroup', zooGroup)
-  service
-    .apiCollectionsSearch(zooGroup)
-    .then((response) => {
-      processAPIdata(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
-
-function handleSimpleSearch() {
-  const searchText = store.getters['searchText']
-
-  console.log('search text ...', searchText)
-  const start = 0
-  const numRows = 10
-
-  service
-    .apiSimpleSearch(searchText, start, numRows)
-    .then((response) => {
-      processAPIdata(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
 
 function processAPIdata(response, value) {
   const total = response.response.numFound
@@ -211,62 +325,6 @@ function processAPIdata(response, value) {
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
   store.commit('setResetPaging', true)
-}
-
-function handleFilterWithCoordinates() {
-  store.commit('setSearchText', '*:*')
-  service
-    .apiSimpleFilterSearch(true, false, false, false)
-    .then((response) => {
-      processAPIdata(response)
-      store.commit('setFilterCoordinates', true)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
-
-function handleFilterWithImages() {
-  store.commit('setSearchText', '*:*')
-  service
-    .apiSimpleFilterSearch(false, true, false, false)
-    .then((response) => {
-      processAPIdata(response)
-      store.commit('setFilterImage', true)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
-
-function handleFilterWIthInSweden() {
-  store.commit('setSearchText', '*:*')
-  service
-    .apiSimpleFilterSearch(false, false, false, true)
-    .then((response) => {
-      processAPIdata(response)
-      store.commit('setFilterInSweden', true)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
-
-function handleFilterWithType() {
-  store.commit('setSearchText', '*:*')
-  service
-    .apiSimpleFilterSearch(false, false, true, false)
-    .then((response) => {
-      processAPIdata(response)
-      store.commit('setFilterType', true)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
 }
 
 function handleAdvanceSearch() {

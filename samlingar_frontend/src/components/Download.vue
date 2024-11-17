@@ -1,8 +1,9 @@
 <template>
   <div>
-    <Button link @click="exportData" v-if="!dataPrepared" style="width: 420px">
+    <div v-if="!dataPrepared" class="preparaDataLink" @click="exportData">
       <small>{{ $t('exportData.export') }}</small>
-    </Button>
+      <small style="padding-left: 10px"><i class="pi pi-file-export"></i></small>
+    </div>
     <downloadexcel
       v-else
       @click="downloadFile"
@@ -13,14 +14,16 @@
       name="data.csv"
       :before-finish="finishDownload"
       :before-generate="startDownload"
-      style="color: #0dff5c; font-size: 14px; cursor: pointer; padding-left: 10px"
+      style="color: var(--p-emerald-500); font-size: 14px; cursor: pointer; padding-left: 8px"
     >
       <small>Download Data</small>
+      <small style="padding-left: 10px"><i class="pi pi-download"></i></small>
     </downloadexcel>
+
     <ProgressSpinner
       v-if="isLoading"
       aria-label="Loading"
-      style="width: 50px; height: 50px; position: relative; padding-left: 80%"
+      style="width: 50px; height: 50px; position: fixed; padding-left: 20%; z-index: 200"
       strokeWidth="8"
       fill="transparent"
     />
@@ -97,3 +100,15 @@ function downloadFile() {
   isLoading.value = true
 }
 </script>
+<style scoped>
+.preparaDataLink {
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer !important;
+}
+.preparaDataLink:hover {
+  color: var(--p-emerald-500) !important;
+  font-size: 15px;
+  text-decoration: none;
+}
+</style>

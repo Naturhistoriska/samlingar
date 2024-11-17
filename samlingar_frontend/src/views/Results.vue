@@ -13,15 +13,19 @@
       </div>
       <div class="col-7">
         <div class="grid">
-          <div class="col-7" style="font-size: 20px">
+          <div class="col-12" style="font-size: 20px; float: left">
             <legend>
               {{ $t('results.searchResults') }} [{{ $t('results.num_results', totalRecords) }}]
               <br />
-              <Download @exportData="preparaExportData" />
+              <div class="col-12" style="float: left; text-align: left">
+                <Download @exportData="preparaExportData" />
+              </div>
 
-              <Button link @click="onMapLinkClick">
-                <small>{{ mapLinkText }}</small>
-              </Button>
+              <div>
+                <Button link @click="onMapLinkClick">
+                  <small>{{ mapLinkText }}</small>
+                </Button>
+              </div>
             </legend>
           </div>
           <ProgressSpinner

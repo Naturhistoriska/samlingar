@@ -70,29 +70,35 @@ const associatedMedias = computed(() => {
   const zoo = 'ev, et, fish, herps'
 
   let smallImage = 'mini'
+  let mediumImage = 'medi'
   if (associatedMedia) {
     if (botnayColection.includes(collectionId)) {
       if (kbo.includes(collectionId)) {
-        smallImage = 'tumme1'
+        // smallImage = 'tumme1'
+        mediumImage = 'stor'
         dataset.value = '&dataset=kbo'
       } else {
         dataset.value = '&dataset=fbo'
       }
       return associatedMedia
-        .filter((media) => media.includes(smallImage))
+        .filter((media) => media.includes(mediumImage))
         .map((a) => (a = a.match(/(?<=\[).+?(?=\])/g).toString()))
+      // return associatedMedia
+      //   .filter((media) => media.includes(smallImage))
+      //   .map((a) => (a = a.match(/(?<=\[).+?(?=\])/g).toString()))
     }
 
     if (paleo.includes(collectionId)) {
-      smallImage = 'thumb'
+      mediumImage = 'medium'
       dataset.value = '&dataset=pal'
-      return associatedMedia.filter((media) => media.includes(smallImage))
+      return associatedMedia.filter((media) => media.includes(mediumImage))
     }
 
     if (zoo.includes(collectionId)) {
-      smallImage = 'thumb'
+      // smallImage = 'thumb'
+      mediumImage = 'Full_size'
       dataset.value = '&dataset=' + collectionId
-      return associatedMedia.filter((media) => media.includes(smallImage))
+      return associatedMedia.filter((media) => media.includes(mediumImage))
     }
   } else if (morphbankImageId) {
     console.log('collectin id', collectionId)
