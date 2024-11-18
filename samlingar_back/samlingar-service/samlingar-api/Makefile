@@ -3,9 +3,9 @@
 all: build
 
 build:
-	docker build -t dina/samlingar-api:v0.1.4 .
+	docker build -t dina/samlingar-api:v0.1.5 .
 
 
 # docker login
 release:
-	docker push dina/samlingar-api:v0.1.4
+	docker push dina/samlingar-api:v0.1.5
