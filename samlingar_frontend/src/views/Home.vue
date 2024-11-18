@@ -153,6 +153,34 @@ function searchCollectionGroup(value) {
     })
 }
 
+function handleAdvanceSearch() {
+  const scientificName = store.getters['scientificName']
+  const catalogNumber = store.getters['catalogNumber']
+  const synonym = store.getters['synonym']
+  const selectedDataset = store.getters['selectedDataset']
+  const dateRange = store.getters['dateRange']
+  const types = store.getters['selectedTypes']
+
+  service
+    .apiAdvanceSearch(
+      scientificName,
+      catalogNumber,
+      synonym,
+      selectedDataset,
+      dateRange,
+      types,
+      0,
+      10
+    )
+    .then((response) => {
+      processSearchData(response)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/records')
+    })
+}
+
 function processSearchData(response, value) {
   const total = response.response.numFound
   const results = response.response.docs
@@ -325,35 +353,6 @@ function processAPIdata(response, value) {
   store.commit('setShowDetail', false)
   store.commit('setShowResults', true)
   store.commit('setResetPaging', true)
-}
-
-function handleAdvanceSearch() {
-  const scientificName = store.getters['scientificName']
-  const catalogNumber = store.getters['catalogNumber']
-  const synonym = store.getters['synonym']
-  const selectedDataset = store.getters['selectedDataset']
-  const dateRange = store.getters['dateRange']
-
-  const types = store.getters['selectedTypes']
-
-  service
-    .apiAdvanceSearch(
-      scientificName,
-      catalogNumber,
-      synonym,
-      selectedDataset,
-      dateRange,
-      types,
-      0,
-      10
-    )
-    .then((response) => {
-      processAPIdata(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
 }
 
 // statistic data when page mounted

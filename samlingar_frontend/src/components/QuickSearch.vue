@@ -101,9 +101,6 @@ export default {
       } else {
         searchText = '%2B(txFullName:' + searchText + '*' + ' txFullName:"' + searchText + '")'
       }
-
-      // searchText = '%2B(txFullName:' + searchText + '*' + ' txFullName:"' + searchText + '")'
-
       console.log('what..2..', searchText)
       service
         .apiSimpleSearch(searchText, 0, 10)

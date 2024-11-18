@@ -5,8 +5,8 @@ const speciesSearchUrl = import.meta.env.VITE_SBDI_SPECIES_SEARCH
 // const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
 const resultsPerPage = 10
 
-// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
-const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
+const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
+// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
 
 const fiedList =
   'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'
@@ -15,6 +15,13 @@ const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimi
 export default class Service {
   async apiStatisticSearch() {
     const url = `${samlingApi}/statistic`
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiAutoCompleteSearch(searchText) {
+    const url = `${samlingApi}/autocomplete?text=${searchText}`
+
     const response = await axios.get(url)
     return response.data
   }
@@ -48,31 +55,6 @@ export default class Service {
 
   async apiCollectionGroupSearch(collections) {
     const url = `${samlingApi}/filter?text=*:*&collections=${collections}&start=${0}&numPerPage=${10}&sort=catalogedDate desc`
-
-    const response = await axios.get(url)
-    return response.data
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  async apiAutoCompleteSearch(searchText) {
-    const url = `${samlingApi}/autocomplete?text=${searchText}`
 
     const response = await axios.get(url)
     return response.data

@@ -182,36 +182,6 @@
         </div>
       </div>
 
-      <!-- <div class="card flex justify-center selectGroup">
-        <label class="searchLabel">{{ $t('search.speciesGroup') }}</label>
-        <Select
-          v-model="selectedGroup"
-          inputId="speciesGroup"
-          :highlightOnSelect="true"
-          :options="speciesGroup"
-          :placeholder="$t('search.selectSpeciesGroup')"
-          class="w-full md:w-56"
-          checkmark
-          showClear
-          style="margin-left: 7px"
-        />
-      </div> -->
-      <!-- <div class="card flex justify-center selectGroup">
-        <label class="searchLabel">
-          {{ $t('search.datasetName') }}
-        </label>
-        <Select
-          id="datasetName"
-          v-model="selectedDataset"
-          :options="datasetName"
-          :placeholder="$t('search.selectDatasetName')"
-          checkmark
-          :highlightOnSelect="true"
-          class="w-full md:w-56"
-          showClear
-          style="margin-left: 7px"
-        />
-      </div> -->
       <div class="card flex justify-center selectGroup">
         <label class="searchLabel">
           {{ $t('search.datasetName') }}
