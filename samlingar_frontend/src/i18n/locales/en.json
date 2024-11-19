@@ -1,7 +1,10 @@
 {
   "about": {
-    "header": "About us"
+    "header": "Here you can search for the Museum of Natural history’s collections currently in GBIF.",
+    "header2": "The collections you can search for are: "
   },
+
+
   "common": {
     "cancel": "Cancel",
     "clearAll": "Clear all",

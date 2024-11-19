@@ -1,26 +1,27 @@
 {
   "about": {
-    "header": "About us"
+    "header": "Här kan du söka efter alla föremål från Naturhistoriska riksmuseet som är registrerade och finns åtkomliga i GBIF",
+    "header2": "Du kan söka efter föremål från följande samlingar"
   },
   "collectionName": {
     "Algae Collection": "Alger",
-    "Entomological Collections (NRM)": "Entomologisk",
-    "Fish Collection NRM": "Fisk",
-    "Fishbase Database": "Fishbase Database",
+    "Entomological Collections (NRM)": "Entomologiska",
+    "Fish Collection NRM": "Fiskar",
+    "Fishbase Database": "Fishbase",
     "Fungi Collection": "Svampar/Lavar",
     "Herpetology Collection NRM": "Herpetology Collection NRM",
     "Invertebrates Collection NRM": "Evertebrater",
     "Invertebrates Type Specimen Collection NRM": "Evertebrater typsamling",
     "Lepidoptera Collection NRM": "Lepidoptera Collections",
-    "Lepidoptera Observations": "Lepidoptera Observations",
+    "Lepidoptera Observations": "Lepidoptera observationer",
     "Moss Collection": "Mossor",
     "Phanerogamic Botanical Collections": "Kärlväxter",
-    "Palaeozoological Collection": "Paleozoologisk",
-    "Porpoise Observation Database": "Porpoise Observation Database",
-    "Swedish Bird Ringing Centre": "Swedish Bird Ringing Centre",
-    "Swedish Malaise Trap Project - Collection Inventory": "Swedish Malaise Trap (Inventory)",
+    "Palaeozoological Collection": "Paleozoologiska",
+    "Porpoise Observation Database": "Observationer av tumlare",
+    "Swedish Bird Ringing Centre": "Ringmärkningscentralen",
+    "Swedish Malaise Trap Project - Collection Inventory": "Svenska Malaisefälleprojektet (Inventoring)",
     "amphibians": "Grod- och kräldjur",
-    "bird": "Fågel",
+    "bird": "Fåglar",
     "mammals": "Däggdjur",
     "paleobotany": "Paleobotanisk",
     "isotope": "Isotopgeologi",
@@ -29,7 +30,7 @@
   },
   "common": {
     "cancel": "Avbryt",
-    "clearAll": "Clear all",
+    "clearAll": "Rensa allt",
     "close": "Stäng",
     "contactus": "Kontakta oss",
     "delete": "Radera",
@@ -54,7 +55,7 @@
     "text": "Hör gärna av dig till oss med frågor, tips och kommentarer. Vi försöker alltid hjälpa till så gott vi kan."
   },
   "exportData": {
-    "download": "Download",
+    "download": "Ladda ner data",
     "export": "Export data [Click to prepare data for download (max: 50000 records)]"
   },
   "footer": {
@@ -62,10 +63,10 @@
     "currentLanguage": "SVENSKA"
   },
   "home": {
-    "header": "Välkommen till Naturhistoriska riksmuseets sökportalför naturhistoriska samlingar"
+    "header": "Välkommen till Naturhistoriska riksmuseets sökportal för naturhistoriska samlingar"
   },
   "locale": {
-    "en": "Engelsk",
+    "en": "Engelska",
     "sv": "Svenska"
   },
   "nav": {
@@ -74,41 +75,41 @@
     "contactUs": "Kontakta oss"
   },
   "results": {
-    "backToResultListView": "Back to result list view",
-    "backToReslutView": "Back to result view",
+    "backToResultListView": "Tillbaka till resultatlistan",
+    "backToReslutView": "Tillbaka till resultatlistan",
     "catalogNumber": "Katalognummer",
-    "collectionName": "Collection name",
-    "continet": "Continent",
-    "country": "country",
+    "collectionName": "Namn på samling",
+    "continet": "Kontinent",
+    "country": "Land",
     "eventDate": "Event date",
-    "highClassification": "High Classification",
-    "latitude": "Latitude",
-    "longitude": "Longitude",
-    "locality": "Locality",
-    "num_results": "Totalt 0 rekord | Totalt {n} rekord | Totalt {n} rekord",
-    "preparation": "Preparations",
+    "highClassification": "Högre klassifikation",
+    "latitude": "Latitud",
+    "longitude": "Longitud",
+    "locality": "Lokal",
+    "num_results": "Totalt 0 poster | Totalt {n} poster | Totalt {n} poster",
+    "preparation": "Preparationer",
     "recordedBy": "Recorded by",
     "rank": "Identified to rank",
     "resultDetail": "Resultatdetaljer",
-    "scientificName": "Scientific Name",
+    "scientificName": "Vetenskapligt namn",
     "searchResults": "Sökresultat",
-    "showMapView": "Show map view",
+    "showMapView": "Visa kartvyn",
     "state": "State or Territory",
     "typeStatus": "Typ-status",
     "vernacularName": "Vernacular name"
   },
   "search": {
     "advanceSearch": "Avancerad sökning",
-    "backToResultsList": "Back to results list",
-    "beginDate": "Begin date [YYYY-MM-DD]",
-    "beginDateLabel": "Begin date",
+    "backToResultsList": "Tillbaka till resultatlistan",
+    "beginDate": "Startdatum [YYYY-MM-DD]",
+    "beginDateLabel": "Startdatum",
     "catalogNumber": "Katalognummer",
-    "clearFilter": "Clear filter",
+    "clearFilter": "Rensa alla val",
     "closeAdvanceSearch": "Stäng avancerad sökning",
     "contains": "Innehåller",
-    "datasetName": "Dataset name",
-    "endDate": "End date [YYYY-MM-DD]",
-    "endDateLabel": "End date",
+    "datasetName": "Namn på dataset",
+    "endDate": "Slutdatum [YYYY-MM-DD]",
+    "endDateLabel": "Slutdatum",
     "exact": "Exakt",
     "freeTextSearch": "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)",
     "providScientificName": "Provided scientific name",
