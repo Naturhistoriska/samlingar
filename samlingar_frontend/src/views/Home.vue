@@ -1,6 +1,6 @@
 <template>
   <div class="grid">
-    <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleAdvanceSearch" />
+    <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleSimpleSearch" />
     <start-page
       v-else
       @simpleSearch="handleSimpleSearch"
@@ -17,7 +17,7 @@
 </template>
 <script setup>
 import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
 import StartPage from '../components/StartPage.vue'
 import AdvanceSearch from '../components/AdvanceSearch.vue'
 
@@ -29,39 +29,90 @@ const store = useStore()
 
 const router = useRouter()
 
+onBeforeRouteUpdate(async (to, from) => {
+  // react to route changes...
+  console.log('onBeforeRouteUpdate', to, from)
+  // userData.value = await fetchUser(to.params.id)
+})
+
+onBeforeRouteLeave((to, from) => {
+  console.log('onBeforeRouteLeave', to, from)
+  const { name } = to
+  if (name === 'Home') {
+    // store.commit('setShowResults', false)
+  }
+})
+
 onMounted(() => {
   console.log('home mounted')
-  clearStore()
   fetchStatisticData()
 })
 
-function clearStore() {
-  store.commit('setFamily', [])
-  store.commit('setGenus', [])
+const isAdvanceSearch = computed(() => {
+  console.log('router namme', router.currentRoute.value.name)
 
-  store.commit('setCollections', [])
-  store.commit('setTypeStatus', [])
-  store.commit('setImageCount', 0)
-  store.commit('setIsTypeCount', 0)
-  store.commit('setHasCoordinatesCount', 0)
-  store.commit('setInSwedenCount', 0)
-  // store.commit('setTotalRecords', 0)
-  // store.commit('setResults', [])
+  const currentRouteName = router.currentRoute.value.name
+  const isAdvance = currentRouteName === 'AdvanceSearch'
+  if (isAdvance) {
+    store.commit('setIsAdvanceSearch', true)
+  } else {
+    store.commit('setIsAdvanceSearch', false)
+  }
+  return isAdvance
+})
 
-  store.commit('setScientificName', null)
-  store.commit('setCatalogNumber', null)
-  store.commit('setSynonym', null)
-  store.commit('setSelectedDataset', null)
-  store.commit('setDateRange', null)
-  store.commit('setSelectedTypes', null)
+function fetchStatisticData() {
+  service
+    .apiStatisticSearch()
+    .then((response) => {
+      const facets = response.facets
 
-  store.commit('setFilterCoordinates', false)
-  store.commit('setFilterImage', false)
-  store.commit('setFilterInSweden', false)
-  store.commit('setFilterType', false)
+      const totalCount = facets.count
+      store.commit('setTotalCount', totalCount)
 
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', false)
+      setSearchCommentFacet(facets)
+
+      const zooGroup = import.meta.env.VITE_ZOO_GROUP
+      const geoGroup = import.meta.env.VITE_GEO_GROUP
+      const paleaGroup = import.meta.env.VITE_PALEA_GROUP
+      const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
+
+      let zooCount = 0
+      let paleaCount = 0
+      let botanyCount = 0
+      let geoCount = 0
+      const collections = facets.collectionId.buckets
+
+      for (let i = 0; i < collections.length; i++) {
+        const collection = collections[i]
+        const collectionId = collection.val
+        const count = collection.count
+        if (zooGroup.includes(collectionId)) {
+          zooCount += count
+        } else if (paleaGroup.includes(collectionId)) {
+          paleaCount += count
+        } else if (geoGroup.includes(collectionId)) {
+          geoCount += count
+        } else if (botanyGroup.includes(collectionId)) {
+          botanyCount += collection.count
+        }
+      }
+      store.commit('setBotanyCollectionTotal', botanyCount)
+      store.commit('setGeoCollectionTotal', geoCount)
+      store.commit('setPaleaCollectionTotal', paleaCount)
+      store.commit('setZooCollectionTotal', zooCount)
+
+      store.commit('setFilterImage', false)
+      store.commit('setFilterCoordinates', false)
+      store.commit('setFilterInSweden', false)
+      store.commit('setFilterType', false)
+
+      store.commit('setSelectedCollection', null)
+      store.commit('setSelectedType', null)
+      store.commit('setSelectedFamily', null)
+    })
+    .catch()
+    .finally(() => {})
 }
 
 function handleSimpleSearch() {
@@ -144,34 +195,6 @@ function handleSearchZooCollections() {
 function searchCollectionGroup(value) {
   service
     .apiCollectionGroupSearch(value)
-    .then((response) => {
-      processSearchData(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
-
-function handleAdvanceSearch() {
-  const scientificName = store.getters['scientificName']
-  const catalogNumber = store.getters['catalogNumber']
-  const synonym = store.getters['synonym']
-  const selectedDataset = store.getters['selectedDataset']
-  const dateRange = store.getters['dateRange']
-  const types = store.getters['selectedTypes']
-
-  service
-    .apiAdvanceSearch(
-      scientificName,
-      catalogNumber,
-      synonym,
-      selectedDataset,
-      dateRange,
-      types,
-      0,
-      10
-    )
     .then((response) => {
       processSearchData(response)
     })
@@ -273,176 +296,243 @@ function setSearchCommentFacet(facets) {
 //
 //
 //
-
 //
 //
 //
 //
 //
 
-const isAdvanceSearch = computed(() => {
-  console.log('router namme', router.currentRoute.value.name)
+function handleAdvanchSearch(value) {
+  console.log('handleAdvanceSearch', value)
+  const searchText = store.getters['searchText']
+  console.log('handleAdvanchSearch', searchText)
 
-  const currentRouteName = router.currentRoute.value.name
-  const isAdvance = currentRouteName === 'AdvanceSearch'
-  if (isAdvance) {
-    store.commit('setIsAdvanceSearch', true)
-  } else {
-    store.commit('setIsAdvanceSearch', false)
-  }
-  return isAdvance
-  // return currentRouteName === 'AdvanceSearch'
+  const selectedCollection = store.getters['selectedCollection']
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
 
-  // return store.getters['isAdvanceSearch']
-})
+  const hasCoordinates = store.getters['filterCoordinates']
+  const hasImages = store.getters['filterImage']
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
 
-function processAPIdata(response, value) {
-  const total = response.response.numFound
-  const results = response.response.docs
+  const numPerPage = store.getters['numPerPage']
+  const start = store.getters['startRecord']
 
-  if (total > 0) {
-    const facets = response.facets
-
-    setCommentFacet(facets)
-
-    const familyFacet = facets.family
-    if (familyFacet !== undefined) {
-      const family = familyFacet.buckets
-      console.log('family length', family.length)
-      family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-      store.commit('setFamily', family)
-    } else {
-      store.commit('setFamily', [])
-    }
-
-    const genusFacet = facets.genus
-    if (genusFacet !== undefined) {
-      const genus = genusFacet.buckets
-      console.log('genus length', genus.length)
-      genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-      store.commit('setGenus', genus)
-    } else {
-      store.commit('setGenus', [])
-    }
-
-    if (value !== 'filterByCollection') {
-      const collections = facets.collectionName.buckets
-      store.commit('setCollections', collections)
-    }
-
-    if (value != 'filterByType') {
-      const typeStatus = facets.typeStatus.buckets
-      typeStatus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-      console.log('typeStatus length', typeStatus.length)
-      store.commit('setTypeStatus', typeStatus)
-    }
-  } else {
-    store.commit('setFamily', [])
-    store.commit('setGenus', [])
-    store.commit('setCollections', [])
-    store.commit('setTypeStatus', [])
-    store.commit('setImageCount', 0)
-    store.commit('setIsTypeCount', 0)
-    store.commit('setHasCoordinatesCount', 0)
-    store.commit('setInSwedenCount', 0)
-  }
-
-  store.commit('setTotalRecords', total)
-  store.commit('setResults', results)
-
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
-  store.commit('setResetPaging', true)
-}
-
-// statistic data when page mounted
-function fetchStatisticData() {
   service
-    .apiStatisticSearch()
+    .apiAdvanceSearchWithFilters(
+      searchText,
+      selectedCollection,
+      typeStatus,
+      family,
+      hasCoordinates,
+      hasImages,
+      isType,
+      isInSweden,
+      start,
+      numPerPage
+    )
     .then((response) => {
-      const facets = response.facets
-
-      const totalCount = facets.count
-      store.commit('setTotalCount', totalCount)
-
-      setCommentFacet(facets)
-
-      const zooGroup = import.meta.env.VITE_ZOO_GROUP
-      const geoGroup = import.meta.env.VITE_GEO_GROUP
-      const paleaGroup = import.meta.env.VITE_PALEA_GROUP
-      const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
-
-      let zooCount = 0
-      let paleaCount = 0
-      let botanyCount = 0
-      let geoCount = 0
-      const collections = facets.collectionId.buckets
-
-      for (let i = 0; i < collections.length; i++) {
-        const collection = collections[i]
-        const collectionId = collection.val
-        const count = collection.count
-        if (zooGroup.includes(collectionId)) {
-          zooCount += count
-        } else if (paleaGroup.includes(collectionId)) {
-          paleaCount += count
-        } else if (geoGroup.includes(collectionId)) {
-          geoCount += count
-        } else if (botanyGroup.includes(collectionId)) {
-          botanyCount += collection.count
-        }
-      }
-      store.commit('setBotanyCollectionTotal', botanyCount)
-      store.commit('setGeoCollectionTotal', geoCount)
-      store.commit('setPaleaCollectionTotal', paleaCount)
-      store.commit('setZooCollectionTotal', zooCount)
-
-      store.commit('setFilterImage', false)
-      store.commit('setFilterCoordinates', false)
-      store.commit('setFilterInSweden', false)
-      store.commit('setFilterType', false)
-
-      store.commit('setSelectedCollection', null)
-      store.commit('setSelectedType', null)
-      store.commit('setSelectedFamily', null)
+      processSearchData(response, value)
     })
     .catch()
-    .finally(() => {})
+    .finally(() => {
+      router.push('/records')
+    })
 }
 
-function setCommentFacet(facets) {
-  const imageFacet = facets.image.buckets
-  if (imageFacet.length > 0) {
-    const imageCount = imageFacet[0].count
-    store.commit('setImageCount', imageCount)
-  } else {
-    store.commit('setImageCount', 0)
-  }
+// Filter link from results page
+function handleFilterSearch(value) {
+  const selectedCollection = store.getters['selectedCollection']
 
-  const isTypeFacet = facets.isType.buckets
-  if (isTypeFacet.length > 0) {
-    const isTypeCount = isTypeFacet[0].count
-    store.commit('setIsTypeCount', isTypeCount)
-  } else {
-    store.commit('setIsTypeCount', 0)
-  }
+  let collectionGroup = selectedCollection ? null : store.getters['collectionGroup']
 
-  const inSwedenFacet = facets.inSweden.buckets
-  if (inSwedenFacet.length > 0) {
-    const inSwedenCount = inSwedenFacet[0].count
-    store.commit('setInSwedenCount', inSwedenCount)
-  } else {
-    store.commit('setInSwedenCount', 0)
-  }
+  console.log('collectionGroup', collectionGroup)
 
-  const mapFacet = facets.map.buckets
-  if (mapFacet.length > 0) {
-    const mapCount = mapFacet[0].count
-    store.commit('setHasCoordinatesCount', mapCount)
-  } else {
-    store.commit('setHasCoordinatesCount', 0)
-  }
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+
+  const hasCoordinates = store.getters['filterCoordinates']
+  const hasImages = store.getters['filterImage']
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
+
+  const numPerPage = store.getters['numPerPage']
+  const start = store.getters['startRecord']
+
+  const searchText = store.getters['searchText']
+  console.log('search text', searchText)
+
+  // let path
+  service
+    .apiFilterSearch(
+      searchText,
+      selectedCollection,
+      typeStatus,
+      family,
+      collectionGroup,
+      hasCoordinates,
+      hasImages,
+      isType,
+      isInSweden,
+      start,
+      numPerPage
+    )
+    .then((response) => {
+      processSearchData(response, value)
+
+      // if (value === 'filterByCollection') {
+      //   path = `filter/${selectedCollection}`
+      // }
+
+      // if (value === 'filterByType') {
+      //   path = `type/${typeStatus}`
+      // }
+    })
+    .catch()
+    .finally(() => {
+      router.push('/records')
+      // router.push(`/results/${path}`)
+    })
 }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+//
+//
+//
+//
+//
+
+// function handleAdvanceSearch() {
+//   // const scientificName = store.getters['scientificName']
+//   // const catalogNumber = store.getters['catalogNumber']
+//   // const synonym = store.getters['synonym']
+//   // const selectedDataset = store.getters['selectedDataset']
+//   // const dateRange = store.getters['dateRange']
+//   // const types = store.getters['selectedTypes']
+
+//   const searchText = store.getters['searchText']
+
+//   service
+//     .apiSimpleSearch(searchText, 0, 10)
+//     .then((response) => {
+//       processSearchData(response)
+//     })
+//     .catch()
+//     .finally(() => {
+//       router.push('/records')
+//     })
+// }
+
+// function processAPIdata(response, value) {
+//   const total = response.response.numFound
+//   const results = response.response.docs
+
+//   if (total > 0) {
+//     const facets = response.facets
+
+//     setCommentFacet(facets)
+
+//     const familyFacet = facets.family
+//     if (familyFacet !== undefined) {
+//       const family = familyFacet.buckets
+//       console.log('family length', family.length)
+//       family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+//       store.commit('setFamily', family)
+//     } else {
+//       store.commit('setFamily', [])
+//     }
+
+//     const genusFacet = facets.genus
+//     if (genusFacet !== undefined) {
+//       const genus = genusFacet.buckets
+//       console.log('genus length', genus.length)
+//       genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+//       store.commit('setGenus', genus)
+//     } else {
+//       store.commit('setGenus', [])
+//     }
+
+//     if (value !== 'filterByCollection') {
+//       const collections = facets.collectionName.buckets
+//       store.commit('setCollections', collections)
+//     }
+
+//     if (value != 'filterByType') {
+//       const typeStatus = facets.typeStatus.buckets
+//       typeStatus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+//       console.log('typeStatus length', typeStatus.length)
+//       store.commit('setTypeStatus', typeStatus)
+//     }
+//   } else {
+//     store.commit('setFamily', [])
+//     store.commit('setGenus', [])
+//     store.commit('setCollections', [])
+//     store.commit('setTypeStatus', [])
+//     store.commit('setImageCount', 0)
+//     store.commit('setIsTypeCount', 0)
+//     store.commit('setHasCoordinatesCount', 0)
+//     store.commit('setInSwedenCount', 0)
+//   }
+
+//   store.commit('setTotalRecords', total)
+//   store.commit('setResults', results)
+
+//   store.commit('setShowDetail', false)
+//   store.commit('setShowResults', true)
+//   store.commit('setResetPaging', true)
+// }
+
+// statistic data when page mounted
+
+// function setCommentFacet(facets) {
+// const imageFacet = facets.image.buckets
+// if (imageFacet.length > 0) {
+// const imageCount = imageFacet[0].count
+// store.commit('setImageCount', imageCount)
+// } else {
+// store.commit('setImageCount', 0)
+// }
+//
+// const isTypeFacet = facets.isType.buckets
+// if (isTypeFacet.length > 0) {
+// const isTypeCount = isTypeFacet[0].count
+// store.commit('setIsTypeCount', isTypeCount)
+// } else {
+// store.commit('setIsTypeCount', 0)
+// }
+//
+// const inSwedenFacet = facets.inSweden.buckets
+// if (inSwedenFacet.length > 0) {
+// const inSwedenCount = inSwedenFacet[0].count
+// store.commit('setInSwedenCount', inSwedenCount)
+// } else {
+// store.commit('setInSwedenCount', 0)
+// }
+//
+// const mapFacet = facets.map.buckets
+// if (mapFacet.length > 0) {
+// const mapCount = mapFacet[0].count
+// store.commit('setHasCoordinatesCount', mapCount)
+// } else {
+// store.commit('setHasCoordinatesCount', 0)
+// }
+// }
 
 // function handleSimpleSearch() {
 //   const searchText = store.getters['searchText']
@@ -534,6 +624,25 @@ function setCommentFacet(facets) {
 //     .catch()
 //     .finally(() => {})
 // }
+function preparaExportData() {
+  console.log('preparaExportData')
+
+  const collection = store.getters['selectedCollection']
+  const typeStatus = store.getters['selectedType']
+  const family = store.getters['selectedFamily']
+  const totalRecords = store.getters['totalRecords']
+  const searchText = store.getters['searchText']
+
+  service
+    .apiPreparaExport(searchText, collection, typeStatus, family, totalRecords)
+    .then((response) => {
+      const results = response
+
+      store.commit('setExportData', results)
+    })
+    .catch()
+    .finally(() => {})
+}
 
 function handConditionalSearch(value) {
   console.log('handConditionalSearch')
@@ -561,23 +670,6 @@ function conditionalSearch(value) {
     })
     .catch()
     .finally(() => {})
-}
-
-// Filter link from results page
-function handleFilterSearch(value) {
-  console.log('handleFilterSearch', value)
-  let searchText = store.getters['searchText']
-
-  searchText = searchText + value
-  console.log('what...', searchText)
-
-  store.commit('setSearchText', searchText)
-  const isAdvanceSearch = store.getters['isAdvanceSearch']
-
-  if (isAdvanceSearch) {
-  } else {
-    conditionalSearch()
-  }
 }
 
 // simple search filter with map, type, sweden, coordinates and collections from start page
@@ -666,28 +758,6 @@ function fetchMapDataWithSimpleSearch(resetData, value) {
         store.commit('setTotalRecords', total)
         store.commit('setResults', results)
       }
-    })
-    .catch()
-    .finally(() => {})
-}
-
-async function preparaExportData() {
-  console.log('preparaExportData')
-
-  // store.commit('setExportData', null)
-
-  const collection = store.getters['selectedCollection']
-  const typeStatus = store.getters['selectedType']
-  const family = store.getters['selectedFamily']
-  const totalRecords = store.getters['totalRecords']
-  const searchText = store.getters['searchText']
-
-  await service
-    .apiPreparaExport(searchText, collection, typeStatus, family, totalRecords)
-    .then((response) => {
-      const results = response
-
-      store.commit('setExportData', results)
     })
     .catch()
     .finally(() => {})

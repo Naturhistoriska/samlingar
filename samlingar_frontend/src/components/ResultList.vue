@@ -24,7 +24,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
-// import ImageGalleria from './ImageGalleria.vue'
 import Result from './Result.vue'
 
 const first = ref(0)
@@ -50,10 +49,6 @@ const totalRecords = computed(() => {
   return store.getters['totalRecords']
 })
 
-// const showGalleria = computed(() => {
-// return store.getters['openGalleria']
-// })
-//
 function onPage(event) {
   const start = event.first
   const numPerPage = event.rows
@@ -65,27 +60,33 @@ function onPage(event) {
 }
 </script>
 <style scoped>
-.p-paginator-page,
+/* .p-paginator-page,
 .p-paginator-next,
 .p-paginator-last,
 .p-paginator-first,
 .p-paginator-prev {
-  /* ... */
   background: red !important;
   padding: 0;
-  /* ... */
-}
+} */
 
-.custom-paginator .p-paginator {
+/* .customPaginator .p-paginator {
   font-size: 36px;
-  background-color: #333;
+  background-color: #333 !important;
 }
 .p-paginator {
   width: 18rem;
   background: #000 !important;
 }
 
-:root {
+.p-paginator-page:not(.p-disabled):not(.p-paginator-page-selected):hover {
+  background: #000 !important;
+}
+
+.customPaginator.nav.p-paginator {
+  background: #000 !important;
+} */
+
+/* :root {
   --p-paginator-padding: 0.5rem 1rem;
   --p-paginator-gap: 0.25rem;
   --p-paginator-border-radius: var(--p-content-border-radius);
@@ -108,9 +109,9 @@ function onPage(event) {
   --p-paginator-nav-button-focus-ring-shadow: var(--p-focus-ring-shadow);
   --p-paginator-current-page-report-color: var(--p-text-muted-color);
   --p-paginator-jump-to-page-input-max-width: 2.5rem;
-}
+} */
 
-.p-paginator {
+/* .p-paginator {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,9 +121,9 @@ function onPage(event) {
   padding: var(--p-paginator-padding);
   border-radius: var(--p-paginator-border-radius);
   gap: var(--p-paginator-gap);
-}
+} */
 
-.customStyle {
+/* .customStyle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +133,7 @@ function onPage(event) {
   padding: var(--p-paginator-padding);
   border-radius: var(--p-paginator-border-radius);
   gap: var(--p-paginator-gap);
-}
+} */
 /* style="
         display: flex;
         align-items: center;

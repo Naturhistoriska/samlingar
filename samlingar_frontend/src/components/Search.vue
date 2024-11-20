@@ -2,7 +2,7 @@
   <div class="grid">
     <div>
       Free text search
-      <small>(Search species, genus, family, collectors, location, etc.)</small>
+      <small style="font-size: 11px">[{{ $t('search.freeTextSearch') }}]</small>
     </div>
     <div class="flex flex-col gap-2" style="width: 100%">
       <div class="flex-col gap-2 searchInput">
@@ -51,16 +51,6 @@ function onAdvanceSearchLinkClick() {
   store.commit('setIsAdvanceSearch', true)
   router.push('/advanceSearch')
 }
-
-// function onPressEnter() {
-//   console.log('onPressEnter')
-//   search()
-// }
-
-// function onSearchClick() {
-//   console.log('onSearchClick')
-//   search()
-// }
 
 function onSearch() {
   loading.value = true

@@ -5,8 +5,8 @@ const speciesSearchUrl = import.meta.env.VITE_SBDI_SPECIES_SEARCH
 // const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
 const resultsPerPage = 10
 
-const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
-// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
+// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
+const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
 
 const fiedList =
   'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'
@@ -60,6 +60,172 @@ export default class Service {
     return response.data
   }
 
+  async apiFilterSearch(
+    searchText,
+    selectedColletion,
+    selectedTypeStatus,
+    selectedFamily,
+    collections,
+    hasCoordinates,
+    hasImages,
+    isType,
+    isInSweden,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/filter?text=${searchText}`
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    } else {
+      if (collections) {
+        url += `&collections=${collections}`
+      }
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    } else {
+      if (isType) {
+        url += '&isType=isType:*'
+      }
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+
+    if (hasCoordinates) {
+      url += '&hasCoordinates=map:*'
+    }
+
+    if (hasImages) {
+      url += '&hasImage=image:*'
+    }
+
+    if (isInSweden) {
+      url += '&inSweden=inSweden:*'
+    }
+
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  async apiAdvanceSearchWithFilters(
+    searchText,
+    selectedColletion,
+    selectedTypeStatus,
+    selectedFamily,
+    hasCoordinates,
+    hasImages,
+    isType,
+    isInSweden,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/filter?text=${searchText}`
+
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+
+    if (hasCoordinates) {
+      url += '&hasCoordinates=map:*'
+    }
+
+    if (hasImages) {
+      url += '&hasImage=image:*'
+    }
+
+    if (isType) {
+      url += '&isType=isType:*'
+    }
+
+    if (isInSweden) {
+      url += '&inSweden=inSweden:*'
+    }
+
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  async apiGeoDataSearch(
+    searchText,
+    selectedColletion,
+    selectedTypeStatus,
+    selectedFamily,
+    collections,
+    hasCoordinates,
+    hasImages,
+    isType,
+    isInSweden
+  ) {
+    let url = `${samlingApi}/geo?text=${searchText}`
+    if (selectedColletion) {
+      url += `&collection="${selectedColletion}"`
+    } else {
+      if (collections) {
+        url += `&collections=${collections}`
+      }
+    }
+
+    if (selectedTypeStatus) {
+      url += `&typeStatus="${selectedTypeStatus}"`
+    } else {
+      if (isType) {
+        url += '&isType=isType:*'
+      }
+    }
+
+    if (selectedFamily) {
+      url += `&family="${selectedFamily}"`
+    }
+
+    if (hasCoordinates) {
+      url += '&hasCoordinates=map:*'
+    }
+
+    if (hasImages) {
+      url += '&hasImage=image:*'
+    }
+
+    if (isInSweden) {
+      url += '&inSweden=inSweden:*'
+    }
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   async apiAdvanceSearch(
     scientificName,
     catalogNumber,
@@ -98,183 +264,6 @@ export default class Service {
     url += `&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
     const response = await axios.get(url)
 
-    return response.data
-  }
-
-  async apiAdvanceSearchWithFilters(
-    scientificName,
-    catalogNumber,
-    synonym,
-    dataset,
-    dateRange,
-    types,
-    selectedColletion,
-    selectedTypeStatus,
-    selectedFamily,
-    hasCoordinates,
-    hasImages,
-    isType,
-    isInSweden,
-    start,
-    numPerPage
-  ) {
-    let url = `${samlingApi}/filter?text=`
-
-    if (scientificName) {
-      url += `${scientificName}`
-    }
-    if (catalogNumber) {
-      url += ` ${catalogNumber}`
-    }
-
-    if (synonym) {
-      url += ` ${synonym}`
-    }
-
-    if (dataset && !selectedColletion) {
-      url += ` ${dataset}`
-    }
-
-    if (dateRange) {
-      url += ` ${dateRange}`
-    }
-
-    if (!selectedTypeStatus) {
-      if (types) {
-        url += ` ${types}`
-      }
-    }
-
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    }
-
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    }
-
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
-
-    if (hasCoordinates) {
-      url += '&hasCoordinates=map:*'
-    }
-
-    if (hasImages) {
-      url += '&hasImage=image:*'
-    }
-
-    if (isType) {
-      url += '&isType=isType:*'
-    }
-
-    if (isInSweden) {
-      url += '&inSweden=inSweden:*'
-    }
-
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
-    const response = await axios.get(url)
-
-    return response.data
-  }
-
-  async apiFilterSearch(
-    searchText,
-    selectedColletion,
-    selectedTypeStatus,
-    selectedFamily,
-    collections,
-    hasCoordinates,
-    hasImages,
-    isType,
-    isInSweden,
-    start,
-    numPerPage
-  ) {
-    let url = `${samlingApi}/filter?text=${searchText}`
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    }
-
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    }
-
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
-
-    if (collections) {
-      url += `&collections=${collections}`
-    }
-    if (hasCoordinates) {
-      url += '&hasCoordinates=map:*'
-    }
-
-    if (hasImages) {
-      url += '&hasImage=image:*'
-    }
-
-    if (isType) {
-      url += '&isType=isType:*'
-    }
-
-    if (isInSweden) {
-      url += '&inSweden=inSweden:*'
-    }
-
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
-
-    const response = await axios.get(url)
-
-    return response.data
-  }
-
-  async apiGeoDataSearch(
-    searchText,
-    selectedColletion,
-    selectedTypeStatus,
-    selectedFamily,
-    collections,
-    hasCoordinates,
-    hasImages,
-    isType,
-    isInSweden
-  ) {
-    let url = `${samlingApi}/geo?text=${searchText}`
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    }
-
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    }
-
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
-
-    if (collections) {
-      url += `&collections=${collections}`
-    }
-    if (hasCoordinates) {
-      url += '&hasCoordinates=map:*'
-    }
-
-    if (hasImages) {
-      url += '&hasImage=image:*'
-    }
-
-    if (isType) {
-      url += '&isType=isType:*'
-    }
-
-    if (isInSweden) {
-      url += '&inSweden=inSweden:*'
-    }
-
-    const response = await axios.get(url)
     return response.data
   }
 

@@ -103,7 +103,7 @@ const associatedMedias = computed(() => {
   } else if (morphbankImageId) {
     console.log('collectin id', collectionId)
     if (collectionId == '163840') {
-      dataset.value = '&imgType=thumbs'
+      dataset.value = '&imgType=jpg'
       console.log('collectin id 1', collectionId, morphbankImageId)
       return morphbankImageId
     }

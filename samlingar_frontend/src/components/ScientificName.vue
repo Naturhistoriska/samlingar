@@ -10,6 +10,8 @@
             id="searchScientificName"
             v-model="scientificName"
             @input="onInputScientificName"
+            @blur="onBlur"
+            @mouseout="onMouseout"
             :placeholder="$t('search.searchScientificName')"
             class="w-11 md:w-56"
           />
@@ -73,23 +75,27 @@ watch(
 function onInputScientificName() {
   showClearScentificName = scientificName.value
 
-  // '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
-  if (scientificName.value) {
-    const option = taxonOptions.value
-    let searchTaxon
-    if (option === 'exact') {
-      searchTaxon = `%2Btx:"${scientificName.value}"`
-    } else if (option === 'startsWith') {
-      searchTaxon = `%2B(tx:${scientificName.value}* tx:${scientificName.value})`
-    } else {
-      searchTaxon = `%2B(tx:*${scientificName.value}* tx:"${scientificName.value}")`
-    }
-    if (searchTaxon) {
-      store.commit('setScientificName', searchTaxon)
-    }
-  } else {
-    store.commit('setScientificName', null)
+  if (scientificName !== undefined && scientificName.value) {
+    store.commit('setScientificName', scientificName.value)
   }
+
+  // '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
+  // if (scientificName.value) {
+  //   const option = taxonOptions.value
+  //   let searchTaxon
+  //   if (option === 'exact') {
+  //     searchTaxon = `%2Btx:"${scientificName.value}"`
+  //   } else if (option === 'startsWith') {
+  //     searchTaxon = `%2B(tx:${scientificName.value}* tx:${scientificName.value})`
+  //   } else {
+  //     searchTaxon = `%2B(tx:*${scientificName.value}* tx:"${scientificName.value}")`
+  //   }
+  //   if (searchTaxon) {
+  //     store.commit('setScientificName', searchTaxon)
+  //   }
+  // } else {
+  //   store.commit('setScientificName', null)
+  // }
 }
 
 function clearScientificName() {

@@ -292,7 +292,6 @@ const inSwedenCount = computed(() => {
 
 const collections = computed(() => {
   const c = store.getters['collectons']
-  console.log('collections', c)
   return store.getters['collectons']
 })
 
@@ -318,7 +317,6 @@ function selectCollection(value) {
 }
 
 function selectType(value) {
-  console.log('selectType', value)
   selectedType.value = value
   store.commit('setSelectedType', value)
   store.commit('setStartRecord', 0)
@@ -331,7 +329,6 @@ function selectType(value) {
 }
 
 function selectFamily(value) {
-  console.log('selectFamily', value)
   selectedFamily.value = value
   store.commit('setSelectedFamily', value)
   store.commit('setStartRecord', 0)
@@ -349,8 +346,6 @@ function clearFilter() {
   store.commit('setSelectedFamily', null)
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
   displayClearLink.value = false
   emits('search')
 }
@@ -360,8 +355,6 @@ function searchAllCoordinates() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterCoordinates', true)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
   emits('filterSearch')
 }
 
@@ -370,8 +363,6 @@ function searchAllCollectedInSweden() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterInSweden', true)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
   emits('filterSearch')
 }
 
@@ -379,8 +370,6 @@ function searchAllHasImages() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterImage', true)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
   emits('filterSearch')
 }
 
@@ -388,28 +377,14 @@ function searchAllHasType() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterType', true)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
   emits('filterSearch')
 }
-
-// function removeFilter(value) {
-//   let searchText = store.getters['searchText']
-//   searchText = searchText.replace(value, '').trim()
-//   if (searchText.length === 0) {
-//     searchText = '*:*'
-//   }
-//   store.commit('setSearchText', searchText)
-//   emits('filterSearch', '')
-// }
 
 function removeTypeSpecimensFilter() {
   console.log('removeTypeSpecimensFilter')
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterType', false)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
   emits('filterSearch')
 }
 
@@ -417,8 +392,6 @@ function removeCollectedInSwedenFilter() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterInSweden', false)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
   emits('filterSearch')
 }
 
@@ -427,8 +400,6 @@ function removeCoordinatesFilter() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterCoordinates', false)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
   emits('filterSearch')
 }
 
@@ -436,8 +407,6 @@ function removeImageFilter() {
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
   store.commit('setFilterImage', false)
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', true)
   emits('filterSearch')
 }
 </script>

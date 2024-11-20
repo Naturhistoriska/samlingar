@@ -216,6 +216,7 @@
                   fluid
                   inputId="startDate"
                   :placeholder="$t('search.beginDateLabel')"
+                  @date-select="onSelect"
                 />
               </div>
             </div>
@@ -317,13 +318,6 @@ let types = ref([])
 let selectAll = ref(false)
 let disableSelect = ref(false)
 
-// const speciesGroup = computed(() => {
-//   return import.meta.env.VITE_SUPPORTED_COLLECTIONS.split(',')
-// })
-// const datasetName = computed(() => {
-//   return import.meta.env.VITE_SUPPORTED_DATASET.split(':')
-// })
-
 const groupDataset = ref([
   {
     label: 'Zoological Collection',
@@ -365,13 +359,6 @@ const groupDataset = ref([
   }
 ])
 
-// watch(
-//   () => scientificName.value,
-//   (newValue, oldValue) => {
-//     scientificName.value = newValue
-//   }
-// )
-
 onMounted(() => {
   console.log('advance search mounted')
 
@@ -389,13 +376,10 @@ onMounted(() => {
 
 function onInputScientificName() {
   showClearScentificName = scientificName.value
-  // showClearScentificName =
-  //   scientificName === undefined || scientificName.value === '' ? false : true
 }
 
 function onInputCatalogNumber() {
   showClearCatalogNumber = catalogNumber.value
-  // showClearCatalogNumber = catalogNumber === undefined || catalogNumber.value === '' ? false : true
 }
 
 function onInputSynonym() {
@@ -420,68 +404,52 @@ function clearSynonym() {
   synonymOptions.value = null
 }
 
+function onSelect(event) {
+  console.log('onSelect', event.value, beginDate.value)
+}
+
 function search() {
   loading.value = true
 
+  // '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
+  let searchText
   if (scientificName.value) {
     const option = taxonOptions.value
-    let searchTaxon
+
     if (option === 'exact') {
-      searchTaxon = `%2Btx:"${scientificName.value}"`
+      searchText = `%2Btx:"${scientificName.value}"`
     } else if (option === 'startsWith') {
-      searchTaxon = `%2B(tx:${scientificName.value}* tx:${scientificName.value})`
+      searchText = `%2B(tx:${scientificName.value}* tx:${scientificName.value})`
     } else {
-      // '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
-      searchTaxon = `%2B(tx:*${scientificName.value}* tx:"${scientificName.value}")`
+      searchText = `%2B(tx:*${scientificName.value}* tx:"${scientificName.value}")`
     }
-    if (searchTaxon) {
-      store.commit('setScientificName', searchTaxon)
-    }
-  } else {
-    store.commit('setScientificName', null)
   }
 
   if (catalogNumber.value) {
     const option = catlogNumOptions.value
-    let searchCatalogNumber
     if (option === 'exact') {
-      searchCatalogNumber = `%2Bcn:"${catalogNumber.value}"`
+      searchText += ` %2Bcn:"${catalogNumber.value}"`
     } else if (option === 'startsWith') {
-      searchCatalogNumber = `%2B(cn:${catalogNumber.value}* cn:${catalogNumber.value})`
+      searchText += ` %2B(cn:${catalogNumber.value}* cn:${catalogNumber.value})`
     } else {
-      // '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
-      searchCatalogNumber = `%2B(cn:*${catalogNumber.value}* cn:${catalogNumber.value})`
+      searchText += ` %2B(cn:*${catalogNumber.value}* cn:${catalogNumber.value})`
     }
-    if (searchCatalogNumber) {
-      store.commit('setCatalogNumber', searchCatalogNumber)
-    }
-    console.log('catgalogNumber', searchCatalogNumber)
-  } else {
-    store.commit('setCatalogNumber', null)
   }
-
   if (synonym.value) {
     const option = synonymOptions.value
-    let searchSynonym
     if (option === 'exact') {
-      searchSynonym = `%2Bsynonym:"${synonym.value}"`
+      searchText += ` %2Bsynonym:"${synonym.value}"`
     } else if (option === 'startsWith') {
-      searchSynonym = `%2B(synonym:${synonym.value}* synonym:${synonym.value})`
+      searchText += ` %2B(synonym:${synonym.value}* synonym:${synonym.value})`
     } else {
-      // '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
-      searchSynonym = `%2B(synonym:*${synonym.value}* synonym:"${synonym.value}")`
+      searchText += ` %2B(synonym:*${synonym.value}* synonym:"${synonym.value}")`
     }
-    if (searchSynonym) {
-      store.commit('setSynonym', searchSynonym)
-    }
-  } else {
-    store.commit('setSynonym', null)
   }
 
   if (selectedGroupDataset.value) {
     console.log('selectedGroupDataset', selectedGroupDataset.value.value)
-    const collectionCode = `%2BcollectionId:${selectedGroupDataset.value.value}`
-    store.commit('setSelectedDataset', collectionCode)
+    searchText += ` %2BcollectionId:${selectedGroupDataset.value.value}`
+    store.commit('setSelectedDataset', searchText)
   } else {
     store.commit('setSelectedDataset', null)
   }
@@ -490,34 +458,26 @@ function search() {
   if (beginDate.value && endDate.value) {
     const startDate = moment(beginDate.value).format('yyyy-MM-DDT00:00:00')
     const finishDate = moment(endDate.value).format('yyyy-MM-DDT00:00:00')
-    const dateSearch = `%2BstartDate:[${startDate}Z TO ${finishDate}Z]`
-    store.commit('setDateRange', dateSearch)
+    searchText += ` %2BstartDate:[${startDate}Z TO ${finishDate}Z]`
   } else if (beginDate.value) {
     const startDate = moment(beginDate.value).format('yyyy-MM-DDT00:00:00')
     const finishDate = '*'
-    const dateSearch = `%2BstartDate:[${startDate}Z TO ${finishDate}]`
-    store.commit('setDateRange', dateSearch)
+    searchText += ` %2BstartDate:[${startDate}Z TO ${finishDate}]`
   } else if (endDate.value) {
     const startDate = '*'
     const finishDate = moment(endDate.value).format('yyyy-MM-DDT00:00:00')
-    const dateSearch = `%2BstartDate:[${startDate} TO ${finishDate}Z]`
-    store.commit('setDateRange', dateSearch)
-  } else {
-    store.commit('setDateRange', null)
+    searchText += ` %2BstartDate:[${startDate} TO ${finishDate}Z]`
   }
 
   if (selectedTypes.value) {
-    let searchTypes
     if (selectAll.value) {
-      searchTypes = '%2BisType:*'
+      searchText += ' %2BisType:*'
     } else {
       const typestatus = selectedTypes.value.join(' ')
-      searchTypes = `%2BtypeStatus:(${typestatus})`
+      searchText += ` %2BtypeStatus:(${typestatus})`
     }
-    store.commit('setSelectedTypes', searchTypes)
-  } else {
-    store.commit('setSelectedTypes', null)
   }
+  store.commit('setSearchText', searchText)
 
   emits('advanceSearch')
 
@@ -528,7 +488,6 @@ function search() {
 
 function onChange(event) {
   selectAll.value = event.value !== null ? event.value.length === types.value.length : false
-  // selectedTypes.value = event.checked ? types.value.map((type) => type.label) : []
   if (event.value) {
     if (event.value.length === 3) {
       types.value.forEach((type) => {
@@ -544,11 +503,9 @@ function onChange(event) {
       }
     }
   }
-  // store.commit('setSelectedTypes', types.value)
 }
 
 function onSelectAllChange(event) {
-  console.log('event 1', event.value)
   selectedTypes.value = event.checked ? types.value.map((type) => type.label) : []
   selectAll.value = event.checked
 
@@ -558,9 +515,6 @@ function onSelectAllChange(event) {
       type.disable = false
     })
   }
-  // if (selectAll.value) {
-  //   store.commit('setIsType', true)
-  // }
 }
 
 function clearAll() {
@@ -574,14 +528,11 @@ function clearAll() {
 
   showClearCatalogNumber = false
   showClearScentificName = false
+  showClearSynonym = false
 
-  // if (selectedDataset !== undefined) {
-  //   selectedDataset = undefined
-  // }
-
-  // if (selectedGroup !== undefined) {
-  //   selectedGroup = undefined
-  // }
+  catalogNumber.value = null
+  taxonOptions.value = null
+  synonym.value = null
 
   if (selectedGroupDataset.value) {
     selectedGroupDataset.value = ''
@@ -590,7 +541,6 @@ function clearAll() {
   if (selectedTypes.value) {
     selectedTypes.value = ''
   }
-  // store.commit('setSelectedTypes', null)
 }
 </script>
 <style scoped>
