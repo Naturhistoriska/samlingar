@@ -207,6 +207,7 @@ function onClickDetail(latitude, longitude) {
   emits('searchDetial', latitude, longitude)
 }
 
+// From detail single marker
 function displayDetail(id) {
   console.log('displayDetail', id)
   emits('searchDetial', id)
