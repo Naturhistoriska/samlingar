@@ -22,44 +22,73 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
+import { ref, watch } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import LocaleSwitcher from './LocaleSwitcher.vue'
-import { mapMutations } from 'vuex'
 
-export default {
-  components: {
-    LocaleSwitcher
-  },
-  data() {
-    return {
-      value: '0'
-    }
-  },
-  watch: {
-    $route(to) {
-      const { name } = to
-      switch (name) {
-        case 'Home':
-          this.value = '0'
-          break
-        case 'About':
-          this.value = '1'
-          break
-        case 'Contact':
-          this.value = '2'
-          break
-        default:
-          this.value = '0'
-      }
-    }
-  },
-  methods: {
-    ...mapMutations(['setIsAdvanceSearch', 'setShowResults']),
-    onClick() {
-      this.setShowResults(false)
-      this.setIsAdvanceSearch(false)
+const store = useStore()
+
+let value = ref('0')
+const router = useRouter()
+
+watch(
+  () => router.currentRoute.value.name,
+  () => {
+    const currentRouteName = router.currentRoute.value.name
+
+    switch (currentRouteName) {
+      case 'Home':
+        value.value = '0'
+        break
+      case 'About':
+        value.value = '1'
+        break
+      case 'Contact':
+        value.value = '2'
+        break
+      default:
+        value.value = '0'
     }
   }
+)
+
+function onClick() {
+  store.commit('setShowResults', false)
+  store.commit('setIsAdvanceSearch', false)
+  store.commit('setShowDetail', false)
+
+  clearStore()
+}
+
+function clearStore() {
+  store.commit('setFamily', [])
+  store.commit('setGenus', [])
+
+  store.commit('setCollections', [])
+  store.commit('setTypeStatus', [])
+  store.commit('setImageCount', 0)
+  store.commit('setIsTypeCount', 0)
+  store.commit('setHasCoordinatesCount', 0)
+  store.commit('setInSwedenCount', 0)
+  store.commit('setTotalRecords', 0)
+  store.commit('setResults', [])
+
+  store.commit('setScientificName', null)
+  store.commit('setCatalogNumber', null)
+  store.commit('setSynonym', null)
+  store.commit('setSelectedDataset', null)
+  store.commit('setDateRange', null)
+  store.commit('setSelectedTypes', null)
+
+  store.commit('setFilterCoordinates', false)
+  store.commit('setFilterImage', false)
+  store.commit('setFilterInSweden', false)
+  store.commit('setFilterType', false)
+
+  store.commit('setShowDetail', false)
+  store.commit('setShowResults', false)
 }
 </script>
 
