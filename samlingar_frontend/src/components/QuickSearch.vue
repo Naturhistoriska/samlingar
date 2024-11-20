@@ -45,6 +45,10 @@ export default {
     ...mapMutations([
       'setCollections',
       'setFamily',
+      'setFilterCoordinates',
+      'setFilterImage',
+      'setFilterInSweden',
+      'setFilterType',
       'setGenus',
       'setHasCoordinatesCount',
       'setImageCount',
@@ -147,6 +151,10 @@ export default {
           this.setShowDetail(false)
           this.setShowResults(true)
           this.setResetPaging(true)
+          this.setFilterCoordinates(false)
+          this.setFilterImage(false)
+          this.setFilterInSweden(false)
+          this.setFilterType(false)
         })
         .catch()
         .finally(() => {
