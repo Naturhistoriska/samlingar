@@ -1,6 +1,6 @@
 {
   "about": {
-    "header": "Here you can search for the Museum of Natural history’s collections currently in GBIF.",
+    "header": "Here you can search for the Museum of Natural history’s collections",
     "header2": "The collections you can search for are: "
   },
 
@@ -26,7 +26,7 @@
     "Entomological Collections (NRM)": "Entomological Collections",
     "Fish Collection NRM": "Fish",
     "Fishbase Database": "Fishbase Database",
-    "Fungi Collection": "Fungi/Lichens",
+    "Fungi Collection": "Fungi and Lichens",
     "Herpetology Collection NRM": "Herpetology Collection NRM",
     "Invertebrates Collection NRM": "Invertebrate Main Collections",
     "Invertebrates Type Specimen Collection NRM": "Invertebrate Type Collections",

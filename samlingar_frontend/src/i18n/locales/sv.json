@@ -1,6 +1,6 @@
 {
   "about": {
-    "header": "Här kan du söka efter alla föremål från Naturhistoriska riksmuseet som är registrerade och finns åtkomliga i GBIF",
+    "header": "Här kan du söka efter alla föremål från Naturhistoriska riksmuseet som är registrerade",
     "header2": "Du kan söka efter föremål från följande samlingar"
   },
   "collectionName": {
@@ -19,7 +19,7 @@
     "Palaeozoological Collection": "Paleozoologiska",
     "Porpoise Observation Database": "Observationer av tumlare",
     "Swedish Bird Ringing Centre": "Ringmärkningscentralen",
-    "Swedish Malaise Trap Project - Collection Inventory": "Svenska Malaisefälleprojektet (Inventoring)",
+    "Swedish Malaise Trap Project - Collection Inventory": "Svenska Malaisefälleprojektet (Inventering)",
     "amphibians": "Grod- och kräldjur",
     "bird": "Fåglar",
     "mammals": "Däggdjur",
