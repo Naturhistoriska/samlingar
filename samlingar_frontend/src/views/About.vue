@@ -30,3 +30,4 @@
     {{ $t('collectionName.mineralogy') }}<br />
   </div>
 </template>
+<script setup></script>
