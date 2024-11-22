@@ -26,10 +26,10 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
 @SwaggerDefinition(
         info = @Info(
                 title = "Samlingar service",
-                version = "0.0.1"
+                version = "0.1.5"
         ),
         tags = {
-            @Tag(name = "samlingar-service", description = "samlingar tool")
+            @Tag(name = "samlingar-service", description = "samlingar api")
         })
 @Slf4j
 public class SamlingarService {
@@ -140,6 +140,20 @@ public class SamlingarService {
         log.info("statisticSearch: {}, {}");
         return Response.ok(logic.getTypeStatus()).build();
     }
+    
+    
+    @GET
+    @Path("/initialData")
+    @ApiOperation(value = "Statistic",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getInitalData() {
+        log.info("getInitalData: {}, {}");
+        return Response.ok(logic.getInitalData()) 
+                .build();
+    }
 
     @GET
     @Path("/statistic")
@@ -150,9 +164,8 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response statisticSearch() {
         log.info("statisticSearch: {}, {}");
-        return Response.ok(logic.getStaticData())
-                .header("ACCESS_CONTROL_ALLOW_ORIGIN", "*")
-                .build();
+      
+        return Response.ok(logic.getStatisticData()).build();
     }
 
     @GET

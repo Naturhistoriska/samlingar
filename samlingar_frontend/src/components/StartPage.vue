@@ -1,27 +1,32 @@
 <template>
   <div class="grid">
-    <div class="col-6" no-gutters>
-      <div class="grid">
-        <Search @simpleSearch="handleSimpleSearch" />
+    <div class="grid">
+      <div class="col-6" no-gutters>
+        <div class="grid">
+          <Search @simpleSearch="handleSimpleSearch" />
+        </div>
+        <div class="grid">
+          <Filter
+            style="padding-top: 2rem"
+            @simpleSearch="handleSimpleSearch"
+            @filterWithCoordinates="handleFilterWithCoordinates"
+            @filterWithImages="handleFilterWithImages"
+            @filterWithInSweden="handleFilterWithInSweden"
+            @filterWithInType="handleFilterWithType"
+          />
+        </div>
+        <MonthChart />
+        <YearChart />
       </div>
-      <div class="grid">
-        <Filter
-          style="padding-top: 2em"
-          @simpleSearch="handleSimpleSearch"
-          @filterWithCoordinates="handleFilterWithCoordinates"
-          @filterWithImages="handleFilterWithImages"
-          @filterWithInSweden="handleFilterWithInSweden"
-          @filterWithInType="handleFilterWithType"
+
+      <div class="col-6" no-gutters>
+        <Collections
+          @searchBotanyCollections="handleSearchBotanyCollections"
+          @searchZooCollections="handleSearchZooCollections"
+          @searchPaleaCollections="handleSearchPaleaCollections"
+          @searchGeoCollections="handleSearchGeoCollections"
         />
       </div>
-    </div>
-    <div class="col-6" no-gutters>
-      <Collections
-        @searchBotanyCollections="handleSearchBotanyCollections"
-        @searchZooCollections="handleSearchZooCollections"
-        @searchPaleaCollections="handleSearchPaleaCollections"
-        @searchGeoCollections="handleSearchGeoCollections"
-      />
     </div>
   </div>
 </template>
@@ -29,6 +34,8 @@
 import Search from '../components/Search.vue'
 import Collections from '../components/Collections.vue'
 import Filter from '../components/Filter.vue'
+import MonthChart from '../components/MonthChart.vue'
+import YearChart from '../components/YearChart.vue'
 
 const emits = defineEmits([
   'filterWithCoordinates',

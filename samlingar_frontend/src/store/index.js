@@ -27,6 +27,7 @@ export default createStore({
     isType: false,
     latLong: [],
     mapRecords: [],
+    monthData: [],
     numPerPage: 10,
     occurrenceYears: [],
     openGalleria: false,
@@ -52,7 +53,8 @@ export default createStore({
     totalRecords: 0,
     totalGeoData: 0,
     zooCollectionTotal: 0,
-    year: null
+    year: null,
+    yearData: []
   },
 
   getters: {
@@ -134,6 +136,9 @@ export default createStore({
     mapRecords(state) {
       return state.mapRecords
     },
+    monthData(state) {
+      return state.monthData
+    },
     numPerPage(state) {
       return state.numPerPage
     },
@@ -208,6 +213,9 @@ export default createStore({
     },
     year(state) {
       return state.year
+    },
+    yearData(state) {
+      return state.yearData
     }
   },
 
@@ -238,6 +246,7 @@ export default createStore({
     setIsType: (state, payload) => (state.isType = payload),
     setLatLong: (state, payload) => (state.latLong = payload),
     setMapRecords: (state, payload) => (state.mapRecords = payload),
+    setMonthData: (state, payload) => (state.monthData = payload),
     setNumPerPage: (state, payload) => (state.numPerPage = payload),
     setOccurrenceYears: (state, payload) => (state.occurrenceYears = payload),
     setOpenGalleria: (state, payload) => (state.openGalleria = payload),
@@ -262,6 +271,7 @@ export default createStore({
     setTotalRecords: (state, payload) => (state.totalRecords = payload),
     setTypeStatus: (state, payload) => (state.typeStatus = payload),
     setZooCollectionTotal: (state, payload) => (state.zooCollectionTotal = payload),
-    setYear: (state, payload) => (state.year = payload)
+    setYear: (state, payload) => (state.year = payload),
+    setYearData: (state, payload) => (state.yearData = payload)
   }
 })

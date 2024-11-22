@@ -89,9 +89,9 @@ public class SamlingarLogic {
     private JsonObjectBuilder attBuilder;
     private JsonArrayBuilder arrayBuilder;
 
-    public String getStaticData() {
+    public String getInitalData() {
         log.info("getStaticData");
-        return service.searchStatisticData();
+        return service.getInitalData();
     }
 
     public String simpleSearch(String text, int start, int numPerPage, 
@@ -303,5 +303,9 @@ public class SamlingarLogic {
 //        InputStream stream = new ByteArrayInputStream(sw.toString().getBytes());
 //     
 //        File file = new DefaultStreamedContent(stream, mimetype, "downloadFile.csv");  
+    }
+    
+    public String getStatisticData() {
+        return service.getStatisticData();
     }
 }
