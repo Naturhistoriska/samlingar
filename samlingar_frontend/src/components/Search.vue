@@ -25,9 +25,7 @@
 
         <div class="advanceLink">
           <Button variant="link" @click="onAdvanceSearchLinkClick">
-            <small id="simpleSearchInput-help"
-              >{{ $t('search.advanceSearch') }} (Under development)
-            </small>
+            <small id="simpleSearchInput-help">{{ $t('search.advanceSearch') }} </small>
           </Button>
         </div>
       </div>
