@@ -142,7 +142,7 @@ function handleFilterSearch() {
     }
   } else {
     if (isAdvanceSearch) {
-      handleAdvanceSearch(0, 10)
+      processAdvanceSearch(0, 10)
     } else {
       processSearch(0, 10)
     }
