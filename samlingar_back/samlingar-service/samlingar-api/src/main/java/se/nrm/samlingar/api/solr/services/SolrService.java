@@ -488,7 +488,10 @@ public class SolrService implements Serializable {
         final TermsFacetMap inSwedenFacet = new TermsFacetMap(inSwedenFacetKey);
         final TermsFacetMap typeFacet = new TermsFacetMap(isTypeFacetKey);
         final TermsFacetMap collectionFacet = new TermsFacetMap(collectionIdFacetKey)
-                .setLimit(50);
+                .setLimit(50); 
+        
+        collectionFacet.withSubFacet("catalogedYear", rangeFacet);
+        
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(wildSearch)
