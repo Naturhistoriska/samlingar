@@ -64,141 +64,72 @@ const isAdvanceSearch = computed(() => {
   return isAdvance
 })
 
-function fetchStatisticData() {
-  const now = new Date()
-  const currentMonth = now.getMonth()
-
-  const monStr = moment().month(currentMonth).format('MMMM')
-
-  const currentYear = now.getFullYear()
-  console.log('currentyear', currentYear, monStr)
-
-  service
-    .apiMonthChartData()
-    .then((response) => {
-      const facets = response.facets
-      const years = facets.catalogedYear.buckets
-
-      console.log('years1', years)
-
-      const total = facets.count
-
-      const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
-      console.log('sum', sum)
-
-      let cumulatedTotal = total - sum
-      console.log('previous', cumulatedTotal)
-
-      years.map((year) => {
-        const count = year.count
-        cumulatedTotal += count
-        year.count = cumulatedTotal
-      })
-
-      console.log('years....', years)
-
-      const currentYear = moment().year()
-      const currentMonth = moment().format('MMMM')
-
-      const currentYearData = years.filter((year) => year.val === currentYear)
-      console.log(
-        'currentYearData Date:',
-        currentYearData[0].val,
-        currentYearData[0].catalogedMonth
-      )
-      let currentYearMonthData = currentYearData[0].catalogedMonth.buckets
-      currentYearMonthData.map((m) => {
-        if (moment(m.val, 'MMM') > moment(monStr, 'MMM')) {
-          m.val = m.val + '-' + (currentYear - 1)
-        } else {
-          m.val = m.val + '-' + currentYear
-        }
-      })
-      currentYearMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
-      const numOfCurrentMonths = currentYearMonthData.length
-      if (numOfCurrentMonths < 12) {
-        const lastYear = currentYear - 1
-        const lastYearData = years.filter((year) => year.val === lastYear)
-        console.log('lastYearData', lastYearData)
-
-        let lastYearMonthData = lastYearData[0].catalogedMonth.buckets
-        if (numOfCurrentMonths === 11) {
-          const data = lastYearMonthData.filter((month) => month.val === 'DECEMBER')
-          console.log('data', data[0])
-          currentYearMonthData.unshift({ val: data[0].val + '-' + lastYear, count: data[0].count })
-        }
-      }
-      store.commit('setMonthData', currentYearMonthData)
-      store.commit('setYearData', years)
-
-      console.log('currentMonthData', currentYearMonthData, currentYearMonthData.length)
-
-      console.log('Current Date:', moment().toString())
-      console.log('Current year is:', moment().year(), currentMonth)
-    })
-    .catch()
-    .finally(() => {})
-}
-
 function setChartData(facets) {
   const total = facets.count
   const years = facets.catalogedYear.buckets
 
-  // const now = new Date()
-  // const currentMonth = now.getMonth()
-
-  // const monStr = moment().month(currentMonth).format('MMMM')
-
+  // cumulatedTotal from last ten years
   const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
-  console.log('sum', sum)
 
+  // cumulatedTotal before last ten years
   let cumulatedTotal = total - sum
-  console.log('previous', cumulatedTotal)
 
+  // Setup cumulatedTotal for last ten years
   years.map((year) => {
     const count = year.count
     cumulatedTotal += count
     year.count = cumulatedTotal
   })
 
-  console.log('years....', years)
-
   const currentYear = moment().year()
+  const lastYear = currentYear - 1
+
   const currentMonth = moment().month()
-  // const currentMonthStr = moment().format('MMMM')
 
   const currentYearData = years.filter((year) => year.val === currentYear)
-  console.log('currentYearData Date:', currentYearData[0].val, currentYearData[0].catalogedMonth)
-  let currentYearMonthData = currentYearData[0].catalogedMonth.buckets
-  currentYearMonthData.map((m) => {
-    if (moment(m.val, 'MMM') > currentMonth) {
-      m.val = m.val + '-' + (currentYear - 1)
-    } else {
-      m.val = m.val + '-' + currentYear
-    }
-  })
-  currentYearMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
-  const numOfCurrentMonths = currentYearMonthData.length
-  if (numOfCurrentMonths < 12) {
-    const lastYear = currentYear - 1
-    const lastYearData = years.filter((year) => year.val === lastYear)
-    console.log('lastYearData', lastYearData)
+  const lastYearData = years.filter((year) => year.val === lastYear)
 
-    let lastYearMonthData = lastYearData[0].catalogedMonth.buckets
-    if (numOfCurrentMonths === 11) {
-      const data = lastYearMonthData.filter((month) => month.val === 'DECEMBER')
-      console.log('data', data[0])
-      currentYearMonthData.unshift({ val: data[0].val + '-' + lastYear, count: data[0].count })
+  let monthLabel
+  let currentYearMonthData
+  if (currentYearData[0].count > 0) {
+    currentYearMonthData = currentYearData[0].catalogedMonth.buckets
+    currentYearMonthData.map((m) => {
+      m.val = m.val + '-' + currentYear
+    })
+    let length = currentYearMonthData.length
+    if (length < 12) {
+      let filterMonth = currentMonth + 1
+      if (lastYearData[0].count > 0) {
+        const lastYearMonthData = lastYearData[0].catalogedMonth.buckets
+        while (length < 12) {
+          const filterMonthStr = moment().month(filterMonth).format('MMMM').toUpperCase()
+          const data = lastYearMonthData.filter((month) => month.val === filterMonthStr)
+          currentYearMonthData.unshift({ val: data[0].val + '-' + lastYear, count: data[0].count })
+          length = currentYearMonthData.length
+          filterMonth++
+        }
+      } else {
+        while (length < 12) {
+          const filterMonthStr = moment().month(filterMonth).format('MMMM').toUpperCase()
+          currentYearMonthData.unshift({ val: filterMonthStr + '-' + lastYear, count: 0 })
+          length = currentYearMonthData.length
+          filterMonth++
+        }
+      }
+    }
+  } else {
+    currentYearMonthData = new Array()
+    for (let i = 11; i >= 0; i--) {
+      monthLabel = moment().subtract(i, 'months').format('MMMM-YYYY')
+      currentYearMonthData.push({ val: monthLabel, count: 0 })
     }
   }
+  currentYearMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
   store.commit('setMonthData', currentYearMonthData)
   store.commit('setYearData', years)
-
-  console.log('currentMonthData', currentYearMonthData, currentYearMonthData.length)
-
-  // console.log('Current Date:', moment().toString())
-  // console.log('Current year is:', moment().year(), currentMonth)
 }
+
+function setCollectionsChartData() {}
 
 function fetchInitdata() {
   service
@@ -557,6 +488,82 @@ function handleFilterSearch(value) {
 //
 //
 //
+
+function fetchStatisticData() {
+  const now = new Date()
+  const currentMonth = now.getMonth()
+
+  const monStr = moment().month(currentMonth).format('MMMM')
+
+  const currentYear = now.getFullYear()
+  console.log('currentyear', currentYear, monStr)
+
+  service
+    .apiMonthChartData()
+    .then((response) => {
+      const facets = response.facets
+      const years = facets.catalogedYear.buckets
+
+      console.log('years1', years)
+
+      const total = facets.count
+
+      const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
+      console.log('sum', sum)
+
+      let cumulatedTotal = total - sum
+      console.log('previous', cumulatedTotal)
+
+      years.map((year) => {
+        const count = year.count
+        cumulatedTotal += count
+        year.count = cumulatedTotal
+      })
+
+      console.log('years....', years)
+
+      const currentYear = moment().year()
+      const currentMonth = moment().format('MMMM')
+
+      const currentYearData = years.filter((year) => year.val === currentYear)
+      console.log(
+        'currentYearData Date:',
+        currentYearData[0].val,
+        currentYearData[0].catalogedMonth
+      )
+      let currentYearMonthData = currentYearData[0].catalogedMonth.buckets
+      currentYearMonthData.map((m) => {
+        if (moment(m.val, 'MMM') > moment(monStr, 'MMM')) {
+          m.val = m.val + '-' + (currentYear - 1)
+        } else {
+          m.val = m.val + '-' + currentYear
+        }
+      })
+      currentYearMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
+      const numOfCurrentMonths = currentYearMonthData.length
+      if (numOfCurrentMonths < 12) {
+        const lastYear = currentYear - 1
+        const lastYearData = years.filter((year) => year.val === lastYear)
+        console.log('lastYearData', lastYearData)
+
+        let lastYearMonthData = lastYearData[0].catalogedMonth.buckets
+        if (numOfCurrentMonths === 11) {
+          const data = lastYearMonthData.filter((month) => month.val === 'DECEMBER')
+          console.log('data', data[0])
+          currentYearMonthData.unshift({ val: data[0].val + '-' + lastYear, count: data[0].count })
+        }
+      }
+      store.commit('setMonthData', currentYearMonthData)
+      store.commit('setYearData', years)
+
+      console.log('currentMonthData', currentYearMonthData, currentYearMonthData.length)
+
+      console.log('Current Date:', moment().toString())
+      console.log('Current year is:', moment().year(), currentMonth)
+    })
+    .catch()
+    .finally(() => {})
+}
 
 // function handleAdvanceSearch() {
 //   // const scientificName = store.getters['scientificName']
