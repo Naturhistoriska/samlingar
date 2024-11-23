@@ -6,12 +6,6 @@
           class="border border-surface-200 dark:border-surface-700 rounded m-2 p-4"
           style="width: 70px"
         >
-          <!-- <img
-            :src="'https://media-service.nrm.se/images?id=' + slotProps.data + dataset"
-            :alt="slotProps.data.index"
-            style="width: 60px"
-            @click="openImage"
-          /> -->
           <Image
             :src="'https://media-service.nrm.se/images?id=' + slotProps.data + dataset"
             alt="Image"
@@ -25,11 +19,11 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { useStore } from 'vuex'
+import { computed } from 'vue'
+// import { useStore } from 'vuex'
 import Carousel from 'primevue/carousel'
 
-const store = useStore()
+// const store = useStore()
 
 const props = defineProps(['associatedMedias', 'collectionId', 'dataset', 'result'])
 
@@ -41,13 +35,13 @@ const thumbnails = computed(() => {
   return props.associatedMedias
 })
 
-function openImage() {
-  console.log('openImage')
+// function openImage() {
+//   console.log('openImage')
 
-  store.commit('setSelectedResult', props.result)
+//   store.commit('setSelectedResult', props.result)
 
-  store.commit('setOpenGalleria', true)
-}
+//   store.commit('setOpenGalleria', true)
+// }
 
 // const thumbnailsStyle = computed(() => {
 //   const collectionId = props.collectionId
