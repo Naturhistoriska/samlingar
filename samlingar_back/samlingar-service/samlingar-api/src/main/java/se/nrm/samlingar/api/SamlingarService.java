@@ -13,8 +13,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j; 
 import se.nrm.samlingar.api.logic.SamlingarLogic;
 
 /**
@@ -51,7 +50,7 @@ public class SamlingarService {
             @QueryParam("sort") String sort ) {
         log.info("search {} -- {}", text, start + " -- " + numPerPage);
 
-        if (StringUtils.isAllBlank(text)) {
+        if (text == null || text.isEmpty()) {
             text = wildCard;
         }
         return Response.ok(logic.simpleSearch(text, start, numPerPage, sort )).build();
@@ -91,7 +90,7 @@ public class SamlingarService {
 
         log.info("filter: {}, {}", collections, typeStatus);
 
-        if (StringUtils.isAllBlank(text)) {
+        if (text == null || text.isEmpty()) {
             text = wildCard;
         }
 
@@ -120,7 +119,7 @@ public class SamlingarService {
 
         log.info("geo: {}, {}", collection, typeStatus);
         
-             if(StringUtils.isAllBlank(text)) {
+             if(text == null || text.isEmpty()) {
             text = wildCard;
         }
 
