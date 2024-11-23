@@ -32,7 +32,7 @@
 </template>
 <script setup>
 import Search from '../components/Search.vue'
-import Collections from '../components/Collections.vue'
+import Collections from '../components/CollectionsFilter.vue'
 import Filter from '../components/Filter.vue'
 import MonthChart from '../components/MonthChart.vue'
 import YearChart from '../components/YearChart.vue'
