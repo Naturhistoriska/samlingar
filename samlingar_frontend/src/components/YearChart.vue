@@ -17,12 +17,8 @@ const { t } = useI18n()
 const chartData = computed(() => {
   const documentStyle = getComputedStyle(document.documentElement)
   const data = store.getters['yearData']
-
   const labels = data.map((d) => d.val)
-
   const monthData = data.map((d) => d.count)
-
-  console.log('labs', labels, monthData)
   return {
     labels: labels,
     datasets: [
