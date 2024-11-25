@@ -570,7 +570,7 @@ public class SolrService implements Serializable {
         try {
             response = jsonRequest.process(client);
 
-            log.info("json: {}", response.jsonStr());
+//            log.info("json: {}", response.jsonStr());
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
@@ -606,7 +606,7 @@ public class SolrService implements Serializable {
         try {
             response = jsonRequest.process(client);
 
-            log.info("json: {}", response.jsonStr());
+//            log.info("json: {}", response.jsonStr());
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
