@@ -6,29 +6,23 @@
 
 <script setup>
 import Chart from 'primevue/chart'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useStore } from 'vuex'
-const store = useStore()
 const { t } = useI18n()
 
-const props = defineProps(['collection'])
-
-onMounted(() => {
-  console.log('chart mounted', props.collection)
-
-  // fetchStatisticData()
-})
+const props = defineProps(['chart', 'collection'])
 
 const chartData = computed(() => {
   const documentStyle = getComputedStyle(document.documentElement)
-  const data = store.getters['monthData']
+  const { chart } = props
 
-  const labels = data.map((d) => d.val)
-
-  const monthData = data.map((d) => d.count)
-
+  let labels
+  let monthData
+  if (chart) {
+    labels = chart.map((d) => d.val)
+    monthData = chart.map((d) => d.count)
+  }
   return {
     labels: labels,
     datasets: [

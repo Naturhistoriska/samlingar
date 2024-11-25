@@ -305,6 +305,10 @@ public class SamlingarLogic {
 //        File file = new DefaultStreamedContent(stream, mimetype, "downloadFile.csv");  
     }
     
+    public String getChartData(String collection) {
+        return service.getChartData(collection);
+    }
+    
     public String getStatisticData() {
         return service.getStatisticData();
     }

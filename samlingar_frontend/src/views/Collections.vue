@@ -4,12 +4,31 @@
       <h2>Statistic Data</h2>
     </template>
     <template #content>
-      <CollectionStatisticChart v-bind:dataset="zooCollections" v-bind:dataGroup="zooDataGroup" />
+      <CollectionStatisticChart
+        id="zoo"
+        v-bind:dataset="zooCollections"
+        v-bind:dataGroup="zooDataGroup"
+      />
+      <CollectionStatisticChart
+        id="botany"
+        v-bind:dataset="botanyCollections"
+        v-bind:dataGroup="botanyDataGroup"
+      />
+      <CollectionStatisticChart
+        id="paleo"
+        v-bind:dataset="paleoCollections"
+        v-bind:dataGroup="paleoDataGroup"
+      />
+      <CollectionStatisticChart
+        id="geo"
+        v-bind:dataset="geoCollections"
+        v-bind:dataGroup="geoDataGroup"
+      />
     </template>
   </Card>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import CollectionStatisticChart from '../components/CollectionStatisticChart.vue'
 
 const zooCollections = computed(() => {
@@ -27,6 +46,15 @@ const paleoCollections = computed(() => {
 
 const zooDataGroup = computed(() => {
   return 'startPage.zooCollection'
+})
+const botanyDataGroup = computed(() => {
+  return 'startPage.botanicalCollection'
+})
+const paleoDataGroup = computed(() => {
+  return 'startPage.palaeCollection'
+})
+const geoDataGroup = computed(() => {
+  return 'startPage.geoCollection'
 })
 </script>
 <style scoped>

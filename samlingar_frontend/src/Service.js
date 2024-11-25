@@ -209,8 +209,8 @@ export default class Service {
     return response.data
   }
 
-  async apiMonthChartData() {
-    let url = `${samlingApi}/statistic`
+  async apiCollectionsChartData(collection) {
+    let url = `${samlingApi}/chart?collection="${collection}"`
     const response = await axios.get(url)
     return response.data
   }

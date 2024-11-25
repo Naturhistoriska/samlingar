@@ -4,6 +4,24 @@ export default createStore({
   state: {
     botanyCollectionTotal: 0,
     catalogNumber: null,
+    chartDataAlgae: [],
+    chartDataBird: [],
+    chartDataEntomology: [],
+    chartDataEt: [],
+    chartDataEv: [],
+    chartDataFish: [],
+    chartDataFungi: [],
+    chartDataHerps: [],
+    chartDataIsotope: [],
+    chartDataMammals: [],
+    chartDataMineralogy: [],
+    chartDataMosses: [],
+    chartDataNodules: [],
+    chartDataPb: [],
+    chartDataPz: [],
+    chartDataSmtpObject: [],
+    chartDataSmtpList: [],
+    chartDataVp: [],
     collectons: [],
     collectionGroup: null,
     classs: [],
@@ -72,6 +90,61 @@ export default createStore({
     },
     collectionGroup(state) {
       return state.collectionGroup
+    },
+
+    chartDataAlgae(state) {
+      return state.chartDataAlgae
+    },
+    chartDataBird(state) {
+      return state.chartDataBird
+    },
+    chartDataEntomology(state) {
+      return state.chartDataEntomology
+    },
+    chartDataEt(state) {
+      return state.chartDataEt
+    },
+    chartDataEv(state) {
+      return state.chartDataEv
+    },
+    chartDataFish(state) {
+      return state.chartDataFish
+    },
+    chartDataFungi(state) {
+      return state.chartDataFungi
+    },
+    chartDataHerps(state) {
+      return state.chartDataHerps
+    },
+    chartDataIsotope(state) {
+      return state.chartDataIsotope
+    },
+    chartDataMammals(state) {
+      return state.chartDataMammals
+    },
+    chartDataMineralogy(state) {
+      return state.chartDataMineralogy
+    },
+    chartDataMosses(state) {
+      return state.chartDataMosses
+    },
+    chartDataNodules(state) {
+      return state.chartDataNodules
+    },
+    chartDataPb(state) {
+      return state.chartDataPb
+    },
+    chartDataPz(state) {
+      return state.chartDataPz
+    },
+    chartDataSmtpObject(state) {
+      return state.chartDataSmtpObject
+    },
+    chartDataSmtpList(state) {
+      return state.chartDataSmtpList
+    },
+    chartDataVp(state) {
+      return state.chartDataVp
     },
     dataset(state) {
       return state.dataset
@@ -225,6 +298,26 @@ export default createStore({
     setClasss: (state, payload) => (state.classs = payload),
     setCollections: (state, payload) => (state.collectons = payload),
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
+
+    setChartDataAlgae: (state, payload) => (state.chartDataAlgae = payload),
+    setChartDataEntomology: (state, payload) => (state.chartDataEntomology = payload),
+    setChartDataEt: (state, payload) => (state.chartDataEt = payload),
+    setChartDataEv: (state, payload) => (state.chartDataEv = payload),
+    setChartDataMineralogy: (state, payload) => (state.chartDataMineralogy = payload),
+    setChartDataFish: (state, payload) => (state.chartDataFish = payload),
+    setChartDataFungi: (state, payload) => (state.chartDataFungi = payload),
+    setChartDataHerps: (state, payload) => (state.chartDataHerps = payload),
+    setChartDataIsotope: (state, payload) => (state.chartDataIsotope = payload),
+    setChartDataMammals: (state, payload) => (state.chartDataMammals = payload),
+    setChartDataMosses: (state, payload) => (state.chartDataMosses = payload),
+    setChartDataNodules: (state, payload) => (state.chartDataNodules = payload),
+    setChartDataPb: (state, payload) => (state.chartDataPb = payload),
+    setChartDataPz: (state, payload) => (state.chartDataPz = payload),
+    setChartDataSmtpObject: (state, payload) => (state.chartDataSmtpObject = payload),
+    setChartDataSmtpList: (state, payload) => (state.chartDataSmtpList = payload),
+    setChartDataBird: (state, payload) => (state.chartDataBird = payload),
+    setChartDataVp: (state, payload) => (state.chartDataVp = payload),
+
     setDataset: (state, payload) => (state.dataset = payload),
     setDateRange: (state, payload) => (state.dateRange = payload),
     setEndDate: (state, payload) => (state.endDate = payload),

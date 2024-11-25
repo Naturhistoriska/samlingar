@@ -480,7 +480,7 @@ public class SolrService implements Serializable {
                         .setLimit(collectionFacetLimit);
 
         final RangeFacetMap rangeFacet = new RangeFacetMap(
-                "catalogedYear", lastTenYear, nextYear, 1);
+                catalogedYearFacetKey, lastTenYear, nextYear, 1);
         rangeFacet.withSubFacet(catalogedMonthFacetKey, catalogedMonthFacet);
 
         final TermsFacetMap mapFacet = new TermsFacetMap(mapFacetKey);
@@ -490,7 +490,7 @@ public class SolrService implements Serializable {
         final TermsFacetMap collectionFacet = new TermsFacetMap(collectionIdFacetKey)
                 .setLimit(50); 
         
-        collectionFacet.withSubFacet("catalogedYear", rangeFacet);
+        collectionFacet.withSubFacet(catalogedYearFacetKey, rangeFacet);
         
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
@@ -547,19 +547,60 @@ public class SolrService implements Serializable {
 
         nextYear = yearOfToday + 1;
         lastTenYear = yearOfToday - 10;
+        
+        final TermsFacetMap collectionFacet = new TermsFacetMap(collectionIdFacetKey)
+                .setLimit(50); 
 
         final TermsFacetMap catalogedMonthFacet
-                = new TermsFacetMap("catalogedMonthString")
+                = new TermsFacetMap(catalogedMonthStringFacetKey)
                         .setLimit(collectionFacetLimit);
 
         final RangeFacetMap rangeFacet = new RangeFacetMap(
-                "catalogedYear", lastTenYear, nextYear, 1);
-        rangeFacet.withSubFacet("catalogedMonth", catalogedMonthFacet);
+                catalogedYearFacetKey, lastTenYear, nextYear, 1);
+        rangeFacet.withSubFacet(catalogedMonthFacetKey, catalogedMonthFacet);
+        
+        collectionFacet.withSubFacet("catalogedYear", rangeFacet);
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(wildSearch)
-                .returnFields("collectionName")
-                .withFacet("catalogedYear", rangeFacet);
+                .returnFields(collectionNameField)
+                .withFacet(collectionIdFacetKey, collectionFacet);
+
+        jsonRequest.setBasicAuthCredentials(username, password);
+        try {
+            response = jsonRequest.process(client);
+
+            log.info("json: {}", response.jsonStr());
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+        return response.jsonStr();
+    }
+
+    public String getChartData(String collection) {
+        
+        yearMonth = YearMonth.from(LocalDate.now());
+        yearOfToday = yearMonth.getYear();
+
+        nextYear = yearOfToday + 1;
+        lastTenYear = yearOfToday - 10;
+        
+        
+        final TermsFacetMap catalogedMonthFacet
+                = new TermsFacetMap(catalogedMonthStringFacetKey)
+                        .setLimit(12);
+        
+        final RangeFacetMap rangeFacet = new RangeFacetMap(
+                catalogedYearFacetKey, lastTenYear, nextYear, 1);
+        
+         
+        rangeFacet.withSubFacet(catalogedMonthFacetKey, catalogedMonthFacet);
+
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(collectionNameKey + collection)
+                .returnFields(collectionNameField)
+                .withFacet(collectionIdFacetKey, rangeFacet);
 
         jsonRequest.setBasicAuthCredentials(username, password);
         try {

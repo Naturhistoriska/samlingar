@@ -14,15 +14,18 @@ import { useStore } from 'vuex'
 const store = useStore()
 const { t } = useI18n()
 
+const props = defineProps(['chart'])
+
 const chartData = computed(() => {
   const documentStyle = getComputedStyle(document.documentElement)
-  const data = store.getters['yearData']
+  const { chart } = props
 
-  const labels = data.map((d) => d.val)
-
-  const monthData = data.map((d) => d.count)
-
-  console.log('labs', labels, monthData)
+  let labels
+  let monthData
+  if (chart) {
+    labels = chart.map((d) => d.val)
+    monthData = chart.map((d) => d.count)
+  }
   return {
     labels: labels,
     datasets: [

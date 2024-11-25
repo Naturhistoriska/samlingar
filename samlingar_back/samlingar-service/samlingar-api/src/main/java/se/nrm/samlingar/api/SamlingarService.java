@@ -13,7 +13,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import lombok.extern.slf4j.Slf4j; 
+import lombok.extern.slf4j.Slf4j;
 import se.nrm.samlingar.api.logic.SamlingarLogic;
 
 /**
@@ -47,13 +47,13 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response search(@QueryParam("text") String text,
             @QueryParam("start") int start, @QueryParam("numPerPage") int numPerPage,
-            @QueryParam("sort") String sort ) {
+            @QueryParam("sort") String sort) {
         log.info("search {} -- {}", text, start + " -- " + numPerPage);
 
         if (text == null || text.isEmpty()) {
             text = wildCard;
         }
-        return Response.ok(logic.simpleSearch(text, start, numPerPage, sort )).build();
+        return Response.ok(logic.simpleSearch(text, start, numPerPage, sort)).build();
     }
 
     @GET
@@ -118,8 +118,8 @@ public class SamlingarService {
             @QueryParam("isType") String isType) {
 
         log.info("geo: {}, {}", collection, typeStatus);
-        
-             if(text == null || text.isEmpty()) {
+
+        if (text == null || text.isEmpty()) {
             text = wildCard;
         }
 
@@ -139,8 +139,7 @@ public class SamlingarService {
         log.info("statisticSearch: {}, {}");
         return Response.ok(logic.getTypeStatus()).build();
     }
-    
-    
+
     @GET
     @Path("/initialData")
     @ApiOperation(value = "Statistic",
@@ -150,7 +149,7 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInitalData() {
         log.info("getInitalData: {}, {}");
-        return Response.ok(logic.getInitalData()) 
+        return Response.ok(logic.getInitalData())
                 .build();
     }
 
@@ -163,7 +162,7 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response statisticSearch() {
         log.info("statisticSearch: {}, {}");
-      
+
         return Response.ok(logic.getStatisticData()).build();
     }
 
@@ -183,6 +182,17 @@ public class SamlingarService {
 
         return Response.ok(logic
                 .download(text, collection, typeStatus, family, numRows)).build();
+    }
+
+    @GET
+    @Path("chart/")
+    @ApiOperation(value = "ChartData",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getChartData(@QueryParam("collection") String collection) {
+        return Response.ok(logic.getChartData(collection)).build();
     }
 
     @Path("file/")
