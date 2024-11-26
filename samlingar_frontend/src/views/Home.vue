@@ -15,7 +15,7 @@
         @searchGeCololections="handleSearchGeCololectionss"
       />
     </div>
-    <div class="grid" v-if="!isAdvanceSearch">
+    <div class="grid" v-if="!isAdvanceSearch" style="margin-top: 10px">
       <StatisticCharts />
     </div>
   </div>
@@ -228,9 +228,6 @@ function fetchInitdata() {
         const collection = collections[i]
         const collectionId = collection.val
 
-        const chartData = collection.catalogedYear.buckets
-        // setCollectionsChartData(collectionId, chartData)
-
         const count = collection.count
         if (zooGroup.includes(collectionId)) {
           zooCount += count
@@ -261,66 +258,66 @@ function fetchInitdata() {
     .finally(() => {})
 }
 
-function setCollectionsChartData(collectionId, chartData) {
-  switch (collectionId) {
-    case 'vp':
-      store.commit('setChartDataVp', chartData)
-      break
-    case 'fungi':
-      store.commit('setChartDataFungi', chartData)
-      break
-    case 'pz':
-      store.commit('setChartDataPz', chartData)
-      break
-    case 'mosses':
-      store.commit('setChartDataMosses', chartData)
-      break
-    case '163840':
-      store.commit('setChartDataEntomology', chartData)
-      break
-    case 'ev':
-      store.commit('setChartDataEv', chartData)
-      break
-    case '557057':
-      store.commit('setChartDataMineralogy', chartData)
-      break
-    case '262144':
-      store.commit('setChartDataSmtpObject', chartData)
-      break
-    case 'va':
-      store.commit('setChartDataBird', chartData)
-      break
-    case 'pb':
-      store.commit('setChartDataPb', chartData)
-      break
-    case 'fish':
-      store.commit('setChartDataFish', chartData)
-      break
-    case 'ma':
-      store.commit('setChartDataMammals', chartData)
-      break
-    case 'algae':
-      store.commit('setChartDataAlgae', chartData)
-      break
-    case '655361':
-      store.commit('setChartDataSmtpList', chartData)
-      break
-    case 'et':
-      store.commit('setChartDataEt', chartData)
-      break
-    case 'herps':
-      store.commit('setChartDataHerps', chartData)
-      break
-    case '753664':
-      store.commit('setChartDataIsotope', chartData)
-      break
-    case '786432':
-      store.commit('setChartDataNodules', chartData)
-      break
-    default:
-      break
-  }
-}
+// function setCollectionsChartData(collectionId, chartData) {
+//   switch (collectionId) {
+//     case 'vp':
+//       store.commit('setChartDataVp', chartData)
+//       break
+//     case 'fungi':
+//       store.commit('setChartDataFungi', chartData)
+//       break
+//     case 'pz':
+//       store.commit('setChartDataPz', chartData)
+//       break
+//     case 'mosses':
+//       store.commit('setChartDataMosses', chartData)
+//       break
+//     case '163840':
+//       store.commit('setChartDataEntomology', chartData)
+//       break
+//     case 'ev':
+//       store.commit('setChartDataEv', chartData)
+//       break
+//     case '557057':
+//       store.commit('setChartDataMineralogy', chartData)
+//       break
+//     case '262144':
+//       store.commit('setChartDataSmtpObject', chartData)
+//       break
+//     case 'va':
+//       store.commit('setChartDataBird', chartData)
+//       break
+//     case 'pb':
+//       store.commit('setChartDataPb', chartData)
+//       break
+//     case 'fish':
+//       store.commit('setChartDataFish', chartData)
+//       break
+//     case 'ma':
+//       store.commit('setChartDataMammals', chartData)
+//       break
+//     case 'algae':
+//       store.commit('setChartDataAlgae', chartData)
+//       break
+//     case '655361':
+//       store.commit('setChartDataSmtpList', chartData)
+//       break
+//     case 'et':
+//       store.commit('setChartDataEt', chartData)
+//       break
+//     case 'herps':
+//       store.commit('setChartDataHerps', chartData)
+//       break
+//     case '753664':
+//       store.commit('setChartDataIsotope', chartData)
+//       break
+//     case '786432':
+//       store.commit('setChartDataNodules', chartData)
+//       break
+//     default:
+//       break
+//   }
+// }
 
 function handleSimpleSearch() {
   const searchText = store.getters['searchText']

@@ -490,7 +490,7 @@ public class SolrService implements Serializable {
         final TermsFacetMap collectionFacet = new TermsFacetMap(collectionIdFacetKey)
                 .setLimit(50); 
         
-        collectionFacet.withSubFacet(catalogedYearFacetKey, rangeFacet);
+//        collectionFacet.withSubFacet(catalogedYearFacetKey, rangeFacet);
         
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
