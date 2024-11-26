@@ -15,8 +15,8 @@
             @filterWithInType="handleFilterWithType"
           />
         </div>
-        <MonthChart />
-        <YearChart />
+        <!-- <MonthChart />
+        <YearChart /> -->
       </div>
 
       <div class="col-6" no-gutters>

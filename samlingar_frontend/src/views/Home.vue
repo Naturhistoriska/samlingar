@@ -1,18 +1,23 @@
 <template>
-  <div class="grid">
-    <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleSimpleSearch" />
-    <start-page
-      v-else
-      @simpleSearch="handleSimpleSearch"
-      @filterWithCoordinates="handleFilterWithCoordinates"
-      @filterWithImages="handleFilterWithImages"
-      @filterWithInSweden="handleFilterWIthInSweden"
-      @filterWithType="handleFilterWithType"
-      @searchBotanyCollections="handleSearchBotanyCollections"
-      @searchZooCollections="handleSearchZooCollections"
-      @searchPaleaCollections="handleSearchPaleaCollections"
-      @searchGeCololections="handleSearchGeCololectionss"
-    />
+  <div>
+    <div class="grid">
+      <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleSimpleSearch" />
+      <start-page
+        v-else
+        @simpleSearch="handleSimpleSearch"
+        @filterWithCoordinates="handleFilterWithCoordinates"
+        @filterWithImages="handleFilterWithImages"
+        @filterWithInSweden="handleFilterWIthInSweden"
+        @filterWithType="handleFilterWithType"
+        @searchBotanyCollections="handleSearchBotanyCollections"
+        @searchZooCollections="handleSearchZooCollections"
+        @searchPaleaCollections="handleSearchPaleaCollections"
+        @searchGeCololections="handleSearchGeCololectionss"
+      />
+    </div>
+    <div class="grid" v-if="!isAdvanceSearch">
+      <StatisticCharts />
+    </div>
   </div>
 </template>
 <script setup>
@@ -20,6 +25,7 @@ import { computed, onMounted } from 'vue'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
 import StartPage from '../components/StartPage.vue'
 import AdvanceSearch from '../components/AdvanceSearch.vue'
+import StatisticCharts from '../components/StatisticCharts.vue'
 
 import moment from 'moment'
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="card" style="margin-right: 1rem">
+  <div class="card" style="min-width: 80%">
     <Chart type="bar" :data="chartData" :options="chartOptions" class="h-[30rem]" />
   </div>
 </template>
