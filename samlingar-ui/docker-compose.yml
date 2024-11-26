@@ -1,9 +1,0 @@
-version: '3.7'
-
-services:
-  ui:
-    image: dina/smalingar-ui:v0.1
-    container_name: smalingar-ui
-    restart: always
-    ports:
-      - 8080:80
