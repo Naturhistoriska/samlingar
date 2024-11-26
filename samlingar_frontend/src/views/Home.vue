@@ -64,69 +64,135 @@ const isAdvanceSearch = computed(() => {
   return isAdvance
 })
 
-function setChartData(facets) {
-  const total = facets.count
-  const years = facets.catalogedYear.buckets
-
+function setYearChartData(total, years) {
   // cumulatedTotal from last ten years
   const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
 
   // cumulatedTotal before last ten years
   let cumulatedTotal = total - sum
-
   // Setup cumulatedTotal for last ten years
   years.map((year) => {
     const count = year.count
     cumulatedTotal += count
     year.count = cumulatedTotal
   })
+  store.commit('setYearData', years)
+}
 
+function buildMonthChartData(years) {
   const currentYear = moment().year()
   const lastYear = currentYear - 1
-
   const currentMonth = moment().month()
 
   const currentYearData = years.filter((year) => year.val === currentYear)
   const lastYearData = years.filter((year) => year.val === lastYear)
 
+  let lastYearMonthData
+  if (lastYearData[0].count > 0) {
+    lastYearMonthData = lastYearData[0].catalogedMonth.buckets
+  } else {
+    lastYearMonthData = new Array()
+  }
+
   let monthLabel
   let currentYearMonthData
   if (currentYearData[0].count > 0) {
     currentYearMonthData = currentYearData[0].catalogedMonth.buckets
-    currentYearMonthData.map((m) => {
-      m.val = m.val + '-' + currentYear
-    })
-    let length = currentYearMonthData.length
-    if (length < 12) {
-      let filterMonth = currentMonth + 1
-      if (lastYearData[0].count > 0) {
-        const lastYearMonthData = lastYearData[0].catalogedMonth.buckets
-        while (length < 12) {
-          const filterMonthStr = moment().month(filterMonth).format('MMMM').toUpperCase()
-          const data = lastYearMonthData.filter((month) => month.val === filterMonthStr)
-          currentYearMonthData.unshift({ val: data[0].val + '-' + lastYear, count: data[0].count })
-          length = currentYearMonthData.length
-          filterMonth++
-        }
-      } else {
-        while (length < 12) {
-          const filterMonthStr = moment().month(filterMonth).format('MMMM').toUpperCase()
-          currentYearMonthData.unshift({ val: filterMonthStr + '-' + lastYear, count: 0 })
-          length = currentYearMonthData.length
-          filterMonth++
-        }
-      }
-    }
   } else {
     currentYearMonthData = new Array()
-    for (let i = 11; i >= 0; i--) {
-      monthLabel = moment().subtract(i, 'months').format('MMMM-YYYY')
-      currentYearMonthData.push({ val: monthLabel, count: 0 })
+  }
+
+  let newMonthData = new Array()
+
+  for (let i = 0; i < 12; i++) {
+    const filterMonth = moment().month(i).format('MMMM').toUpperCase()
+
+    if (i <= currentMonth) {
+      monthLabel = moment().month(i).format('MMMM YYYY').toUpperCase()
+    } else {
+      monthLabel = filterMonth + ' ' + lastYear
+    }
+
+    const month =
+      currentMonth >= i
+        ? currentYearMonthData.filter((month) => month.val === filterMonth)
+        : lastYearMonthData.filter((month) => month.val === filterMonth)
+
+    if (!month || month.length === 0) {
+      newMonthData.push({ val: monthLabel, count: 0 })
+    } else {
+      newMonthData.push({ val: monthLabel, count: month[0].count })
     }
   }
-  currentYearMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
-  store.commit('setMonthData', currentYearMonthData)
-  store.commit('setYearData', years)
+  newMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
+  store.commit('setMonthData', newMonthData)
+}
+
+function setChartData(facets) {
+  const total = facets.count
+  const years = facets.catalogedYear.buckets
+
+  buildMonthChartData(years)
+  setYearChartData(total, years)
+
+  // cumulatedTotal from last ten years
+  // const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
+
+  // cumulatedTotal before last ten years
+  // let cumulatedTotal = total - sum
+
+  // Setup cumulatedTotal for last ten years
+  // years.map((year) => {
+  //   const count = year.count
+  //   cumulatedTotal += count
+  //   year.count = cumulatedTotal
+  // })
+
+  // const currentYear = moment().year()
+  // const lastYear = currentYear - 1
+
+  // const currentMonth = moment().month()
+
+  // const currentYearData = years.filter((year) => year.val === currentYear)
+  // const lastYearData = years.filter((year) => year.val === lastYear)
+
+  // let monthLabel
+  // let currentYearMonthData
+  // if (currentYearData[0].count > 0) {
+  //   currentYearMonthData = currentYearData[0].catalogedMonth.buckets
+  //   currentYearMonthData.map((m) => {
+  //     m.val = m.val + '-' + currentYear
+  //   })
+  //   let length = currentYearMonthData.length
+  //   if (length < 12) {
+  //     let filterMonth = currentMonth + 1
+  //     if (lastYearData[0].count > 0) {
+  //       const lastYearMonthData = lastYearData[0].catalogedMonth.buckets
+  //       while (length < 12) {
+  //         const filterMonthStr = moment().month(filterMonth).format('MMMM').toUpperCase()
+  //         const data = lastYearMonthData.filter((month) => month.val === filterMonthStr)
+  //         currentYearMonthData.unshift({ val: data[0].val + '-' + lastYear, count: data[0].count })
+  //         length = currentYearMonthData.length
+  //         filterMonth++
+  //       }
+  //     } else {
+  //       while (length < 12) {
+  //         const filterMonthStr = moment().month(filterMonth).format('MMMM').toUpperCase()
+  //         currentYearMonthData.unshift({ val: filterMonthStr + '-' + lastYear, count: 0 })
+  //         length = currentYearMonthData.length
+  //         filterMonth++
+  //       }
+  //     }
+  //   }
+  // } else {
+  //   currentYearMonthData = new Array()
+  //   for (let i = 11; i >= 0; i--) {
+  //     monthLabel = moment().subtract(i, 'months').format('MMMM-YYYY')
+  //     currentYearMonthData.push({ val: monthLabel, count: 0 })
+  //   }
+  // }
+  // currentYearMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
+  // store.commit('setMonthData', currentYearMonthData)
 }
 
 function fetchInitdata() {

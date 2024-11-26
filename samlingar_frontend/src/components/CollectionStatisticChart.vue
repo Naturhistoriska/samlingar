@@ -2,14 +2,14 @@
   <card>
     <template #title>{{ $t(dataGroup) }} </template>
     <template #content>
-      <Accordion multiple class="p-accordion-header-variant-a">
+      <Accordion multiple class="p-accordion-header-variant-a" v-model:value="active">
         <AccordionPanel v-for="tab in tabs" :key="tab" :value="tab" style="font-size: 12px">
           <AccordionHeader style="background: transparent" @click="onTabClick(tab)">
             {{ tab }}
           </AccordionHeader>
           <AccordionContent style="background: transparent" :unstyled="true">
             <CollectionMonthChart v-bind:collection="tab" v-bind:chart="getMonthData(tab)" />
-            <CollectionYearChart v-bind:chart="getYearData(tab)" />
+            <CollectionYearChart v-bind:chart="getYearData(tab)" style="margin-top: 2rem" />
           </AccordionContent>
         </AccordionPanel>
       </Accordion>
@@ -29,6 +29,8 @@ import Service from '../Service'
 const service = new Service()
 
 import moment from 'moment'
+
+const active = ref()
 
 let herpMonth = ref()
 let birdMonth = ref()
@@ -169,20 +171,22 @@ function getYearData(tab) {
 }
 
 function onTabClick(tab) {
-  service
-    .apiCollectionsChartData(tab)
-    .then((response) => {
-      const facets = response.facets
+  if (active.value.includes(tab)) {
+    service
+      .apiCollectionsChartData(tab)
+      .then((response) => {
+        const facets = response.facets
 
-      const totalCount = facets.count
-      const collection = facets.collectionId.buckets
-      const monthChartData = buildMonthChartData(collection)
-      const yearChartData = buildMYearChartData(totalCount, collection)
+        const totalCount = facets.count
+        const collection = facets.collectionId.buckets
+        const monthChartData = buildMonthChartData(collection)
+        const yearChartData = buildMYearChartData(totalCount, collection)
 
-      setData(tab, monthChartData, yearChartData)
-    })
-    .catch()
-    .finally(() => {})
+        setData(tab, monthChartData, yearChartData)
+      })
+      .catch()
+      .finally(() => {})
+  }
 }
 
 function buildMYearChartData(totalCount, years) {
