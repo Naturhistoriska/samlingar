@@ -5,7 +5,7 @@
       <Accordion multiple class="p-accordion-header-variant-a" v-model:value="active">
         <AccordionPanel v-for="tab in tabs" :key="tab" :value="tab" style="font-size: 12px">
           <AccordionHeader style="background: transparent" @click="onTabClick(tab)">
-            {{ tab }}
+            {{ $t('collectionName.' + tab) }}
           </AccordionHeader>
           <AccordionContent style="background: transparent" :unstyled="true">
             <CollectionMonthChart v-bind:collection="tab" v-bind:chart="getMonthData(tab)" />
