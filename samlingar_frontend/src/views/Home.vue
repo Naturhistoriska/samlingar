@@ -27,6 +27,8 @@ import StartPage from '../components/StartPage.vue'
 import AdvanceSearch from '../components/AdvanceSearch.vue'
 import StatisticCharts from '../components/StatisticCharts.vue'
 
+import { useI18n } from 'vue-i18n'
+
 import moment from 'moment'
 
 import Service from '../Service'
@@ -36,6 +38,8 @@ import { useStore } from 'vuex'
 const store = useStore()
 
 const router = useRouter()
+
+const { t } = useI18n()
 
 onBeforeRouteUpdate(async (to, from) => {
   // react to route changes...
@@ -114,6 +118,8 @@ function buildMonthChartData(years) {
     const filterMonth = moment().month(i).format('MMMM').toUpperCase()
 
     if (i <= currentMonth) {
+      // let monName = moment().month(i).format('MMMM').toUpperCase()
+      // monthLabel = t('chart.' + `${monName}`) + ' ' + currentYear
       monthLabel = moment().month(i).format('MMMM YYYY').toUpperCase()
     } else {
       monthLabel = filterMonth + ' ' + lastYear
