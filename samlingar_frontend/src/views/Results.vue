@@ -1,6 +1,26 @@
 <template>
   <div class="card">
     <div class="grid">
+      <div class="flex-col gap-2 searchInput">
+        <InputGroup>
+          <InputText
+            id="simpleSearchInput1"
+            v-model="value"
+            @keydown.enter="onSearch"
+            :placeholder="$t('search.freeTextSearch')"
+            aria-describedby="simpleSearchInput-help"
+            class="w-full"
+          />
+          <Button
+            icon="pi pi-search"
+            style="max-width: 30px; min-height: 30px"
+            :loading="loading"
+            @click="onSearch"
+          />
+        </InputGroup>
+      </div>
+    </div>
+    <div class="grid">
       <div class="flex flex-column col-5">
         <SearchFilter
           class="divBg"
@@ -69,6 +89,9 @@ const store = useStore()
 
 let showMap = ref(false)
 const isLoading = ref(false)
+const loading = ref(false)
+
+const value = ref()
 
 watch(
   () => router.currentRoute.value.name,
@@ -473,15 +496,16 @@ function fetchMapDataWithSimpleSearch(resetData, value) {
       isInSweden
     )
     .then((response) => {
-      const array = response.geoData
-      const count = response.count
+      const facets = response.facets
+      const array = facets.geohash.buckets
+      // const count = response.count
 
       store.commit('setGeoData', array)
-      store.commit('setTotalGeoData', count)
+      // store.commit('setTotalGeoData', count)
 
       if (resetData) {
         console.log('resetData...', resetData)
-        const facets = response.facets
+
         setCommentFacet(facets)
 
         const results = response.docs
@@ -525,6 +549,29 @@ function fetchMapDataWithSimpleSearch(resetData, value) {
     .catch()
     .finally(() => {})
 }
+function onSearch() {
+  loading.value = true
+
+  let searchText = '*:*'
+  if (value.value) {
+    searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
+  }
+
+  const isAdvanceSearch = store.getters['isAdvanceSearch']
+  if (isAdvanceSearch) {
+    searchText = searchText + ' ' + store.getters['searchText']
+  }
+  console.log('search text : ', searchText)
+  store.commit('setSearchText', searchText)
+
+  handleSearch()
+
+  // emits('simpleSearch')
+
+  setTimeout(() => {
+    loading.value = false
+  }, 2000)
+}
 </script>
 <style scoped>
 .divBg {
@@ -537,5 +584,12 @@ function fetchMapDataWithSimpleSearch(resetData, value) {
 
 .ui-button-text {
   padding: 0px !important;
+}
+
+.searchInput {
+  min-width: 60%;
+  margin-bottom: 40px;
+  text-align: left;
+  float: left;
 }
 </style>
