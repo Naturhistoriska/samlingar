@@ -28,7 +28,7 @@
   </Card>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import CollectionStatisticChart from '../components/CollectionStatisticChart.vue'
 
 const zooCollections = computed(() => {
