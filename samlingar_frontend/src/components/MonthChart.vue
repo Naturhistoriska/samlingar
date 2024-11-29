@@ -17,7 +17,15 @@ const chartData = computed(() => {
   const documentStyle = getComputedStyle(document.documentElement)
   const data = store.getters['monthData']
 
-  const labels = data.map((d) => d.val)
+  const labels = data.map((d) => {
+    const val = d.val
+    const mon = val.split(' ')
+
+    return t('chart.' + mon[0]) + ' ' + mon[1]
+    // console.log('mon', t('chart.' + mon[0]) + ' ' + mon[1])
+  })
+
+  console.log('labels' + labels)
 
   const monthData = data.map((d) => d.count)
 

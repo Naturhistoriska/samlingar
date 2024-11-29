@@ -3,6 +3,20 @@
     "header": "Här kan du söka efter alla föremål från Naturhistoriska riksmuseet som är registrerade",
     "header2": "Du kan söka efter föremål från följande samlingar"
   },
+  "chart": {
+    "JANUARY": "jan",
+    "FEBRUARY": "feb",
+    "MARCH": "mar",
+    "APRIL": "apr",
+    "MAY": "maj",
+    "JUNE": "jun",
+    "JULY": "jul",
+    "AUGUST": "aug",
+    "SEPTEMBER": "sep",
+    "OCTOBER": "okt",
+    "NOVEMBER": "nov",
+    "DECEMBER": "dec"
+  },
   "collectionName": {
     "Amphibians and reptiles": "Grod- och kräldjur",
     "Bird": "Fågel",

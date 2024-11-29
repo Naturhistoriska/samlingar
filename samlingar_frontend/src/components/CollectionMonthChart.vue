@@ -20,7 +20,12 @@ const chartData = computed(() => {
   let labels
   let monthData
   if (chart) {
-    labels = chart.map((d) => d.val)
+    labels = chart.map((d) => {
+      const val = d.val
+      const mon = val.split(' ')
+
+      return t('chart.' + mon[0]) + ' ' + mon[1]
+    })
     monthData = chart.map((d) => d.count)
   }
   return {
