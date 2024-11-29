@@ -16,6 +16,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import moment from 'moment'
+import Geohash from 'latlon-geohash'
 
 // import 'leaflet/dist/leaflet.css'
 // import 'leaflet.markercluster'
@@ -320,8 +321,72 @@ function getRadius(d) {
     return 10000
   }
 }
-
 function addSamlingarMarks() {
+  console.log('addSamlingarMarks')
+
+  const geoArray = store.getters['geoData']
+  markers = L.markerClusterGroup({
+    spiderfyOnMaxZoom: false,
+    chunkedLoading: true
+  })
+
+  const currentZoom = initialMap.value.getZoom()
+
+  const radius = getRadius(currentZoom)
+
+  geoArray.forEach((geo) => {
+    const { count, val } = geo
+
+    console.log('geohash', val.substring(2))
+
+    const latlon = Geohash.decode(val.substring(2))
+    console.log('latlon', latlon.lat, latlon.lon)
+
+    const latitude = latlon.lat
+    const longitude = latlon.lon
+
+    if (count === 1) {
+      const div = document.createElement('div')
+      div.innerHTML = `Coordinates: ${latitude}, ${longitude}<br><br>`
+
+      const button = document.createElement('button')
+      button.innerHTML = 'More details'
+
+      button.onclick = function () {
+        displayDetail(latitude, longitude)
+      }
+      div.style.cssText = 'width: auto;  '
+      div.appendChild(button)
+
+      const marker = new L.marker([latitude, longitude]).bindPopup(div)
+
+      markers.addLayer(marker)
+    } else {
+      const marker = L.circle([latlon.lat, latlon.lon], {
+        id: val,
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius
+      })
+
+      const div = document.createElement('div')
+      div.innerHTML = `<br>Total occurrences: ${count}<br><br><br> `
+
+      const button = document.createElement('button')
+      button.innerHTML = 'Click to open for detail'
+
+      button.onclick = function () {
+        onCircleClick(marker, val)
+      }
+      div.appendChild(button)
+
+      marker.bindPopup(div).addTo(initialMap.value)
+    }
+  })
+}
+
+function addSamlingarMarks1() {
   console.log('addSamlingarMarks')
 
   const geoArray = store.getters['geoData']
