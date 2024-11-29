@@ -5,7 +5,11 @@
     <h3>{{ $t('about.header2') }}</h3>
 
     <br />
-    {{ $t('collectionName.Algae Collection') }}<br />
+    <template v-for="(collection, index) in collections" :key="index">
+      {{ $t('collectionName.' + collection) }}<br />
+    </template>
+
+    <!-- {{ $t('collectionName.Algae Collection') }}<br />
     {{ $t('collectionName.Entomological Collections (NRM)') }}<br />
     {{ $t('collectionName.Fish Collection NRM') }}<br />
     {{ $t('collectionName.Fishbase Database') }}<br />
@@ -27,7 +31,14 @@
     {{ $t('collectionName.amphibians') }}<br />
     {{ $t('collectionName.isotope') }}<br />
     {{ $t('collectionName.nodules') }}<br />
-    {{ $t('collectionName.mineralogy') }}<br />
+    {{ $t('collectionName.mineralogy') }}<br /> -->
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { computed } from 'vue'
+
+const collections = computed(() => {
+  const collectionList = import.meta.env.VITE_SUPPORTED_DATASET
+  return collectionList.split(':')
+})
+</script>
