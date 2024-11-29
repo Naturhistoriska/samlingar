@@ -113,59 +113,115 @@ public class SamlingarLogic {
         return service.filterSearch(start, numPerPage, text, collection, collections, 
                 typeStatus, family, hasCoordinates, hasImage, inSweden, isType, sort);
     }
-
+    
     public String mapDataSearch(String text, String collection, String collections,
             String typeStatus, String family, String hasCoordinates, 
             String hasImage, String inSweden, String isType) {
-        
-        total = 0;
+         
 
-        String jsonString = service.mapDataSearch(text, collection, collections, 
+        return service.mapDataSearch(text, collection, collections, 
                 typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
  
-        JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
-        JsonObject jsonObj = jsonReader.readObject();
-
-        JsonArray docs = jsonObj.getJsonArray(responseKey);
-        JsonObject facetJson = jsonObj.getJsonObject(facetsKey);
-
-        JsonArray array = facetJson.getJsonObject(geohashKey)
-                .getJsonArray(bucketsKey);
-
-        log.info("geo length : {}", array.size());
-
-        arrayBuilder = Json.createArrayBuilder();
-        attBuilder = Json.createObjectBuilder();
-        array.getValuesAs(JsonObject.class)
-                .stream()
-                .forEach(json -> {
-                    String geohashString = json.getString(valKey);
-                    int count = json.getInt(countKey);
-                    
-                    total += count;
-                    geohash = GeoHash.fromGeohashString(
-                            StringUtils.substringAfter(geohashString, prefix));
-
-                    double originLat = geohash.getOriginatingPoint().getLatitude();
-                    double originLong = geohash.getOriginatingPoint().getLongitude();
-
-                    attBuilder.add(geohashKey, geohashString);
-                    attBuilder.add(latitudeKey, originLat);
-                    attBuilder.add(longitudeKey, originLong);
-                    attBuilder.add(countKey, count);
-                    arrayBuilder.add(attBuilder);
-                });
-        JsonObjectBuilder jsonBuild = Json.createObjectBuilder();
-        jsonBuild.add(geoDataKey, arrayBuilder.build());
-        jsonBuild.add(countKey, total);
-        jsonBuild.add(facetsKey, facetJson);
-        jsonBuild.add(docsKey, docs);
-        JsonObject json = jsonBuild.build();
-
-        log.info("total : {}", total);
-        jsonReader.close();
-        return json.toString();
+//        JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
+//        JsonObject jsonObj = jsonReader.readObject();
+//
+//        JsonArray docs = jsonObj.getJsonArray(responseKey);
+//        JsonObject facetJson = jsonObj.getJsonObject(facetsKey);
+//
+//        JsonArray array = facetJson.getJsonObject(geohashKey)
+//                .getJsonArray(bucketsKey);
+//
+//        log.info("geo length : {}", array.size());
+//
+//        arrayBuilder = Json.createArrayBuilder();
+//        attBuilder = Json.createObjectBuilder();
+//        array.getValuesAs(JsonObject.class)
+//                .stream()
+//                .forEach(json -> {
+//                    String geohashString = json.getString(valKey);
+//                    int count = json.getInt(countKey);
+//                    
+//                    total += count;
+//                    geohash = GeoHash.fromGeohashString(
+//                            StringUtils.substringAfter(geohashString, prefix));
+//                    
+//            
+//
+//                    double originLat = geohash.getOriginatingPoint().getLatitude();
+//                    double originLong = geohash.getOriginatingPoint().getLongitude();
+//
+//                    attBuilder.add(geohashKey, geohashString);
+//                    attBuilder.add(latitudeKey, originLat);
+//                    attBuilder.add(longitudeKey, originLong);
+//                    attBuilder.add(countKey, count);
+//                    arrayBuilder.add(attBuilder);
+//                });
+//        JsonObjectBuilder jsonBuild = Json.createObjectBuilder();
+//        jsonBuild.add(geoDataKey, arrayBuilder.build());
+//        jsonBuild.add(countKey, total);
+//        jsonBuild.add(facetsKey, facetJson);
+//        jsonBuild.add(docsKey, docs);
+//        JsonObject json = jsonBuild.build();
+//
+//        log.info("total : {}", total);
+//        jsonReader.close();
+//        return json.toString();
     }
+
+//    public String mapDataSearch(String text, String collection, String collections,
+//            String typeStatus, String family, String hasCoordinates, 
+//            String hasImage, String inSweden, String isType) {
+//        
+//        total = 0;
+//
+//        String jsonString = service.mapDataSearch(text, collection, collections, 
+//                typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
+// 
+//        JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
+//        JsonObject jsonObj = jsonReader.readObject();
+//
+//        JsonArray docs = jsonObj.getJsonArray(responseKey);
+//        JsonObject facetJson = jsonObj.getJsonObject(facetsKey);
+//
+//        JsonArray array = facetJson.getJsonObject(geohashKey)
+//                .getJsonArray(bucketsKey);
+//
+//        log.info("geo length : {}", array.size());
+//
+//        arrayBuilder = Json.createArrayBuilder();
+//        attBuilder = Json.createObjectBuilder();
+//        array.getValuesAs(JsonObject.class)
+//                .stream()
+//                .forEach(json -> {
+//                    String geohashString = json.getString(valKey);
+//                    int count = json.getInt(countKey);
+//                    
+//                    total += count;
+//                    geohash = GeoHash.fromGeohashString(
+//                            StringUtils.substringAfter(geohashString, prefix));
+//                    
+//            
+//
+//                    double originLat = geohash.getOriginatingPoint().getLatitude();
+//                    double originLong = geohash.getOriginatingPoint().getLongitude();
+//
+//                    attBuilder.add(geohashKey, geohashString);
+//                    attBuilder.add(latitudeKey, originLat);
+//                    attBuilder.add(longitudeKey, originLong);
+//                    attBuilder.add(countKey, count);
+//                    arrayBuilder.add(attBuilder);
+//                });
+//        JsonObjectBuilder jsonBuild = Json.createObjectBuilder();
+//        jsonBuild.add(geoDataKey, arrayBuilder.build());
+//        jsonBuild.add(countKey, total);
+//        jsonBuild.add(facetsKey, facetJson);
+//        jsonBuild.add(docsKey, docs);
+//        JsonObject json = jsonBuild.build();
+//
+//        log.info("total : {}", total);
+//        jsonReader.close();
+//        return json.toString();
+//    }
     
     public String getTypeStatus() {
         return service.getTypeStatus();
