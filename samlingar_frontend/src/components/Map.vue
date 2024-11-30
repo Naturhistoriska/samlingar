@@ -337,10 +337,7 @@ function addSamlingarMarks() {
   geoArray.forEach((geo) => {
     const { count, val } = geo
 
-    console.log('geohash', val.substring(2))
-
     const latlon = Geohash.decode(val.substring(2))
-    console.log('latlon', latlon.lat, latlon.lon)
 
     const latitude = latlon.lat
     const longitude = latlon.lon
@@ -384,6 +381,9 @@ function addSamlingarMarks() {
       marker.bindPopup(div).addTo(initialMap.value)
     }
   })
+  initialMap.value.addLayer(markers)
+
+  isLoading.value = false
 }
 
 function addSamlingarMarks1() {

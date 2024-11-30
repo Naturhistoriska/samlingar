@@ -48,13 +48,13 @@
               </div>
             </legend>
           </div>
-          <ProgressSpinner
+          <!-- <ProgressSpinner
             v-if="isLoading"
             aria-label="Loading"
             style="width: 50px; height: 50px; position: relative; padding-left: 80%"
             strokeWidth="8"
             fill="transparent"
-          />
+          /> -->
         </div>
 
         <Map v-if="showMap" @resetView="handleResetView" @searchDetial="handleSearchDetail" />
@@ -88,7 +88,7 @@ const { t } = useI18n()
 const store = useStore()
 
 let showMap = ref(false)
-const isLoading = ref(false)
+// const isLoading = ref(false)
 const loading = ref(false)
 
 const value = ref()
@@ -501,7 +501,6 @@ function fetchMapDataWithSimpleSearch(resetData, value) {
       // const count = response.count
 
       store.commit('setGeoData', array)
-      // store.commit('setTotalGeoData', count)
 
       if (resetData) {
         console.log('resetData...', resetData)
