@@ -32,3 +32,5 @@ specify-to-dwc
 /samlingar_back/samlingar-service/samlingar-api/target/
 
 documents
+/samlingar-csv-solr/samlingar-data-process/target/
+/samlingar-csv-solr/project-initdata.yml
