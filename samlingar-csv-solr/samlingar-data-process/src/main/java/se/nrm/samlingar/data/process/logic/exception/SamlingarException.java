@@ -8,7 +8,7 @@ import javax.ejb.ApplicationException;
  */
 @ApplicationException
 public class SamlingarException extends RuntimeException {
-
+ 
     private int errorCode;
     private String errorMsg;
 
@@ -26,7 +26,7 @@ public class SamlingarException extends RuntimeException {
         this.errorMsg = s;
 
     }
-
+     
     public int getErrorCode() {
         return errorCode;
     }

@@ -31,16 +31,15 @@ public class PaleoJsonConverter implements Serializable {
     private String synonym;
     private String synonymAuthor;
 
-    private JsonObject mappingJson; 
+    private JsonObject mappingJson;
     private JsonObject synonymJson;
     private JsonObject classificationJson;
     private JsonObject eventDateJson;
     private JsonObject coordinatesJson;
 
-    
     private final String synonymKey = "synonyms";
     private final String synonymAuthorKey = "synonymAuthor";
-    
+
     private String latitude;
     private String longitude;
 
@@ -54,7 +53,7 @@ public class PaleoJsonConverter implements Serializable {
     private JsonArrayBuilder synomyAuthorsArrayBuilder;
 
     private boolean isAddSynomys;
-    
+
     @Inject
     private CoordinatesBuilder coordinatesBuilder;
 
@@ -66,93 +65,93 @@ public class PaleoJsonConverter implements Serializable {
         attBuilder = Json.createObjectBuilder();
 
         collectionName = JsonHelper.getInstance().getCollectionName(collectionJson);
-        mappingJson = JsonHelper.getInstance().getMappingJson(collectionJson); 
+        mappingJson = JsonHelper.getInstance().getMappingJson(collectionJson);
         synonymJson = JsonHelper.getInstance().getSynonymJson(collectionJson);
         classificationJson = JsonHelper.getInstance().getClassificationJson(collectionJson);
-        
-        classificationKeys = new ArrayList(); 
+
+        classificationKeys = new ArrayList();
         classificationJson.keySet()
                 .stream().forEach(key -> {
                     classificationKeys.add(classificationJson.getString(key));
                 });
-    
-        eventDateJson =  JsonHelper.getInstance().getEventDateJson(collectionJson);
+
+        eventDateJson = JsonHelper.getInstance().getEventDateJson(collectionJson);
         coordinatesJson = JsonHelper.getInstance().getCoordinatesJson(collectionJson);
-        
+
         isAddSynomys = false;
         AtomicInteger counter = new AtomicInteger(0);
         records.stream().forEach(record -> {
+            try {
+                catalogNumber = record.get(JsonHelper.getInstance()
+                        .getCatalogNumberCsvKey(collectionJson)).trim();
+                catalogedDate = record.get(JsonHelper.getInstance()
+                        .getCatalogedDateCsvKey(collectionJson)).trim();
+                log.info("catalogNumber : {}", catalogNumber);
+                if (hasCatalogNumber(catalogNumber)) {
+                    if (isAddSynomys) {
+                        attBuilder.add(synonymKey, synomysArrayBuilder);
+                        attBuilder.add(synonymAuthorKey, synomyAuthorsArrayBuilder);
+                    }
+                    arrayBuilder.add(attBuilder);
 
-            catalogNumber = record.get(JsonHelper.getInstance()
-                    .getCatalogNumberCsvKey(collectionJson)).trim();
-            catalogedDate = record.get(JsonHelper.getInstance()
-                    .getCatalogedDateCsvKey(collectionJson)).trim();
-
-            
-            log.info("catalogNumber : {}", catalogNumber);
-            if (hasCatalogNumber(catalogNumber)) {
-                if (isAddSynomys) {
-                    attBuilder.add(synonymKey, synomysArrayBuilder);
-                    attBuilder.add(synonymAuthorKey, synomyAuthorsArrayBuilder);
-                }
-                arrayBuilder.add(attBuilder); 
-
-                if (counter.get() % batchSize == 0) {   
-                    list.add(arrayBuilder.build());
+                    if (counter.get() % batchSize == 0) {
+                        list.add(arrayBuilder.build());
 //                    log.info("list : {}", list);
-                    arrayBuilder = Json.createArrayBuilder();
-                }
-                
-                counter.getAndIncrement();
-                attBuilder = Json.createObjectBuilder();
-                synomysArrayBuilder = Json.createArrayBuilder();
-                synomyAuthorsArrayBuilder = Json.createArrayBuilder();
-                isAddSynomys = false;
+                        arrayBuilder = Json.createArrayBuilder();
+                    }
 
-                JsonHelper.getInstance().addId(attBuilder, catalogNumber, collectionId);
-               
-                JsonHelper.getInstance().addCollectionName(attBuilder, collectionName);
-               
-                JsonHelper.getInstance().addCollectionCode(attBuilder, collectionId);
-                
-                JsonHelper.getInstance().addCatalogNumber(attBuilder, catalogNumber);
-                
-                JsonHelper.getInstance().addCatalogDate(attBuilder, catalogedDate);
-                
-                JsonHelper.getInstance().addClassification(attBuilder, classificationKeys, record);
+                    counter.getAndIncrement();
+                    attBuilder = Json.createObjectBuilder();
+                    synomysArrayBuilder = Json.createArrayBuilder();
+                    synomyAuthorsArrayBuilder = Json.createArrayBuilder();
+                    isAddSynomys = false;
 
-                JsonHelper.getInstance().addImages(attBuilder,
-                        record.get(JsonHelper.getInstance()
-                                .getAssociatedMediaCsvKey(collectionJson))); 
-                
-                JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record); 
-                JsonHelper.getInstance().addTypeStatus(attBuilder, collectionJson, record);
-                
-                JsonHelper.getInstance().addCountry(attBuilder, collectionJson, record);
-                
-                JsonHelper.getInstance().addMappingValue(attBuilder, mappingJson, record);
-                
-                latitude = record.get(JsonHelper.getInstance()
-                        .getLatitudeCsvKey(coordinatesJson)).trim();
-                longitude = record.get(JsonHelper
-                        .getInstance().getLongitudeCsvKey(coordinatesJson)).trim();
-                
-                coordinatesBuilder.build(attBuilder, latitude, longitude);
-                 
-                
-                addSynonyms(record, synonymJson);
-            } else {
-                if (isAddSynomys) {
+                    JsonHelper.getInstance().addId(attBuilder, catalogNumber, collectionId);
+
+                    JsonHelper.getInstance().addCollectionName(attBuilder, collectionName);
+
+                    JsonHelper.getInstance().addCollectionCode(attBuilder, collectionId);
+
+                    JsonHelper.getInstance().addCatalogNumber(attBuilder, catalogNumber);
+
+                    JsonHelper.getInstance().addCatalogDate(attBuilder, catalogedDate);
+
+                    JsonHelper.getInstance().addClassification(attBuilder, classificationKeys, record);
+
+                    JsonHelper.getInstance().addImages(attBuilder,
+                            record.get(JsonHelper.getInstance()
+                                    .getAssociatedMediaCsvKey(collectionJson)));
+
+                    JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
+                    JsonHelper.getInstance().addTypeStatus(attBuilder, 
+                            record.get(JsonHelper.getInstance().getTypeStatusCsvKey(collectionJson)));
+
+                    JsonHelper.getInstance().addCountry(attBuilder, collectionJson, record);
+
+                    JsonHelper.getInstance().addMappingValue(attBuilder, mappingJson, record);
+
+                    latitude = record.get(JsonHelper.getInstance()
+                            .getLatitudeCsvKey(coordinatesJson)).trim();
+                    longitude = record.get(JsonHelper
+                            .getInstance().getLongitudeCsvKey(coordinatesJson)).trim();
+
+                    coordinatesBuilder.build(attBuilder, latitude, longitude);
                     addSynonyms(record, synonymJson);
+                } else {
+                    if (isAddSynomys) {
+                        addSynonyms(record, synonymJson);
+                    }
                 }
-            }
 
+            } catch (Exception ex) {
+                log.error(ex.getMessage());
+            }
         });
         if (isAddSynomys) {
             attBuilder.add(synonymKey, synomysArrayBuilder);
             attBuilder.add(synonymAuthorKey, synomyAuthorsArrayBuilder);
         }
-       
+
         arrayBuilder.add(attBuilder);
 
         list.add(arrayBuilder.build());
@@ -160,8 +159,7 @@ public class PaleoJsonConverter implements Serializable {
     }
 
     private void addSynonyms(CSVRecord record, JsonObject synonymJson) {
-        
-        
+
         synonym = record.get(JsonHelper.getInstance().getSynonymCsvKey(synonymJson));
 
         if (!StringUtils.isBlank(synonym)) {

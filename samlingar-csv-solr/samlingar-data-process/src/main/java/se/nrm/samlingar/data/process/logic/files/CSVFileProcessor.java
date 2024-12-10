@@ -8,15 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.Serializable;
-import java.net.URL;
+import java.io.Serializable; 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.csv.QuoteMode;
-import org.apache.commons.io.input.BOMInputStream;
+import org.apache.commons.csv.CSVFormat; 
+import org.apache.commons.csv.CSVRecord; 
 import se.nrm.samlingar.data.process.logic.util.Util;
 
 /**
@@ -56,9 +52,21 @@ public class CSVFileProcessor implements Serializable {
         }
         return null;
     }
+    
+    public List<CSVRecord> read(String filePath, char delimiter, String encoding) {
+        log.info("read : {}", filePath);
 
-    private List<CSVRecord> processFile(File file, char delimiter, String encoding) {
-        log.info("processFile");
+        File file = new File(filePath);
+        if (file.exists()) {
+            log.info("file exist : {}", file.getName());
+            return processFile(file, delimiter, encoding);
+        } else {
+            log.error("file not exist : {}", file.getName());
+        }
+        return null;
+    }
+
+    private List<CSVRecord> processFile(File file, char delimiter, String encoding) { 
 
         InputStream in;
         Reader reader = null;

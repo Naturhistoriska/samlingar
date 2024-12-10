@@ -13,6 +13,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +42,7 @@ public class JsonHelper {
     private final String synonymAuthorKey = "synonymAuthor";
     private final String classificationKay = "classification";
     private final String scientificNameKey = "scientificName";
+    private final String hasImagesKey = "hasImage";
     private final String higherClassificationKey = "higherClassification";
     private final String taxonRankKey = "taxonRank";
     private final String eventDateKey = "eventDate";
@@ -58,14 +60,20 @@ public class JsonHelper {
     private final String verbatimCoordinatesKey = "verbatimCoordinates";
     private final String pointKey = "point";
     private final String countryKey = "country";
+    
+    
+    private final String fileNameKey = "fileName";
 
     private final String doubleFormat1 = "%.1f";
     private final String doubleFormat2 = "%.2f";
     private final String doubleFormat3 = "%.3f";
-
+    
+    
+    private final String zeroOne = "01";
     private final String sweden = "Sweden";
     private final String sverige = "Sverige";
     private final String seKey = "se";
+    private final String descriptionKey = "description";
 
     private String csvKey;
 
@@ -91,6 +99,7 @@ public class JsonHelper {
 
     private final char comma = ',';
     private final String slash = "/";
+    private final String dash = "-"; 
     private final String underScore = "_";
     private final String emptySpace = " ";
 
@@ -105,10 +114,12 @@ public class JsonHelper {
     private JsonArrayBuilder imageArrayBuilder;
     private JsonArrayBuilder georHashArrayBuilder;
     private JsonArrayBuilder pointArrayBuilder;
-    private StringBuilder geoHashSb;
-    private StringBuilder geopointSb;
+    private StringBuilder geoHashSb; 
 
     private StringBuilder pointSb;
+    
+    private StringBuilder dateSb;
+     
 
     private static JsonHelper instance = null;
 
@@ -121,21 +132,35 @@ public class JsonHelper {
         return instance;
     }
 
-    public JsonObject getMappingJson(JsonObject collectionJson) {
-        return collectionJson.getJsonObject(mappingKey);
+    public JsonObject getMappingJson(JsonObject json) {
+        return json.getJsonObject(mappingKey);
     }
 
     public String getIdPrefix(JsonObject json) {
         return json.getString(idPrefixKey);
     }
 
-    public char getDelimiter(JsonObject json, String key) {
+    public char getDelimiter(JsonObject json, String key) { 
         return getJsonValue(json, key) != null ? getJsonValue(json, key).charAt(0) : comma;
     }
 
+    public String getFileName(JsonObject json) {
+        return json.containsKey(fileNameKey) ? json.getString(fileNameKey) : null;
+    }
+    
     public String getJsonValue(JsonObject json, String key) {
         return json.containsKey(key) ? json.getString(key) : null;
     }
+    
+         
+    public void addIdForBird(JsonObjectBuilder attBuilder, long recordNumber, String idPrefix) {
+        sb = new StringBuilder();
+        sb.append(idPrefix);
+        sb.append(underScore);
+        sb.append(recordNumber);
+        attBuilder.add(idKey, sb.toString().trim());
+    }
+        
 
     public String getCatalogNumberCsvKey(JsonObject json) {
         return json.getString(catalogNumberKey);
@@ -146,7 +171,7 @@ public class JsonHelper {
     }
 
     public String getCatalogedDateCsvKey(JsonObject json) {
-        return json.getString(catalogedDateKey);
+        return json.containsKey(catalogedDateKey) ? json.getString(catalogedDateKey) : null;
     }
 
     public String getLatitudeCsvKey(JsonObject coordinatesJson) {
@@ -164,33 +189,52 @@ public class JsonHelper {
     public String getSynonymAuthorCsvKey(JsonObject json) {
         return json.getString(synonymAuthorKey);
     }
+    
+    public String getDescriptionCsvKey(JsonObject json) {
+        return json.getString(descriptionKey);
+    }
+    
+    public boolean isStringCoordinates(JsonObject json) {
+        return JsonValue.ValueType.STRING.equals(json.get(coordinatesKey).getValueType());
+    }
 
     public JsonObject getSynonymJson(JsonObject json) {
         return json.getJsonObject(synonymKey);
     }
 
-    public JsonObject getClassificationJson(JsonObject json) {
-        return json.getJsonObject(classificationKay);
+    public JsonObject getClassificationJson(JsonObject json) { 
+        return json.containsKey(classificationKay) ? 
+                json.getJsonObject(classificationKay) : null;
     }
 
     public JsonObject getEventDateJson(JsonObject json) {
         return json.getJsonObject(eventDateKey);
     }
+    
+    public String getEventDateCsvKey(JsonObject json) {
+        return json.containsKey(eventDateKey) ? json.getString(eventDateKey) : null;
+    }
 
     public JsonObject getCoordinatesJson(JsonObject json) {
         return json.getJsonObject(coordinatesKey);
     }
-
+  
+    public String getCoordinatesCsvKey(JsonObject json) {
+        return json.getString(coordinatesKey);
+    }
+    
+    public String getTypeStatusCsvKey(JsonObject json) {
+        return json.containsKey(typeStatusKey) ? json.getString(typeStatusKey) : null;
+    }
+        
     public void addClassification(JsonObjectBuilder attBuilder,
-            List<String> classificationKeys, CSVRecord record) {
+            List<String> classificationKeys, CSVRecord record) { 
 
         isScientificNameSet = false;
         classificationList = new ArrayList();
         classificationKeys.stream()
                 .forEach(key -> { 
-                    taxon = record.get(key).trim();
-                    
-                    addAttValue(attBuilder, key, taxon);
+                    taxon = record.get(key).trim(); 
                     if (!StringUtils.isBlank(taxon)) {
                         if (isScientificNameSet) {
                             classificationList.add(taxon);
@@ -225,8 +269,12 @@ public class JsonHelper {
     public void addCatalogNumber(JsonObjectBuilder attBuilder, String catalogNumber) {
         addAttValue(attBuilder, catalogNumberKey, catalogNumber);
     }
+    
+
+ 
 
     public void addCatalogDate(JsonObjectBuilder attBuilder, String date) {
+        log.info("addCatalogDate : {}", date);
         catalogedDate = Util.getInstance().stringToLocalDate(date);
         if (catalogedDate != null) {
             attBuilder.add(catalogedDateKey, catalogedDate.toString());
@@ -240,8 +288,7 @@ public class JsonHelper {
     }
 
     public void addMappingValue(JsonObjectBuilder attBuilder,
-            JsonObject mappingJson, CSVRecord record)  {
-
+            JsonObject mappingJson, CSVRecord record)  { 
         mappingJson.keySet().stream()
                 .forEach(key -> {
                     csvKey = mappingJson.getString(key);
@@ -256,6 +303,7 @@ public class JsonHelper {
                     .forEach(s -> {
                         imageArrayBuilder.add(s);
                     });
+            attBuilder.add(hasImagesKey, true);
             attBuilder.add(associatedMediaKey, imageArrayBuilder);
         }
     }
@@ -277,6 +325,111 @@ public class JsonHelper {
             synomyAuthorsArrayBuilder.add(synonymAuthorSb.toString().trim());
         }
     }
+    
+    private String buildDate(String year, String month, String day) { 
+        dateSb = new StringBuilder();
+        dateSb.append(year);
+        dateSb.append(dash);
+        dateSb.append(month);
+        dateSb.append(dash);
+        dateSb.append(day);
+        return dateSb.toString().trim();
+    }
+    
+    private String padZero(String value) {
+        return value.length() == 1 ? StringUtils.leftPad(value, 2, zero) : one;
+    }
+
+    
+    public void addEventDate(JsonObjectBuilder attBuilder, String date) { 
+        log.info("addEventDate : {}", date);
+        
+        if(!StringUtils.isBlank(date)) {
+            String[] dateArray;
+            if(date.contains(slash)) {
+                dateArray = date.split(slash);
+            } else {
+                dateArray = date.split(dash); 
+            }
+            
+            if(dateArray[0].length() == 4) {
+                if(dateArray.length == 1 ) { 
+                    attBuilder.add(verbatimEventDateKey, dateArray[0]);
+                    attBuilder.add(verbatimEventDateKey, buildDate(dateArray[0], zeroOne, zeroOne));
+                } else if(dateArray.length == 2) {
+                    String m;
+                    if(dateArray[1].length() == 2) {
+                        m = 0 + dateArray[1];
+                    }
+                    
+                    
+                    if(dateArray[1].length() == 2) {
+                        attBuilder.add(verbatimEventDateKey, );
+                        attBuilder.add(dateArray[0], buildDate(dateArray[0], dateArray[1], zeroOne));
+                    } else if(dateArray[1].length() == 1) {
+                        attBuilder.add(dateArray[0], buildDate(dateArray[0], 0 + dateArray[1], zeroOne));
+                    } 
+                } else if(dateArray.length == 3) {
+                    attBuilder.add(dateArray[0], buildDate(dateArray[0], zeroOne, zeroOne));
+                }
+            }
+            
+            
+        }
+         
+        String[] dateArray;
+        if(!StringUtils.isBlank(date)) { 
+            
+            if(date.contains(slash)) {
+                dateArray = date.split(slash);
+            } else {
+                dateArray = date.split(dash); 
+            }
+             
+            if(dateArray != null)  {
+                switch (dateArray.length) {
+                    case 3:
+                        eventDate  = Util.getInstance().stringToLocalDate(date);
+                        year = dateArray[0];
+                        month = dateArray[1];
+                        day = dateArray[2];
+                        break;
+                    case 2:
+                        year = dateArray[0];
+                        month = dateArray[1];
+                        day = null;
+                        break;
+                    default:
+                        year = date;
+                        month = null;
+                        day = null;
+                        break;
+                } 
+            } 
+            addEventDate(attBuilder, year, month, day);
+        } 
+    }
+
+    private void addEventDate(JsonObjectBuilder attBuilder, String year, String month, String day) { 
+        eventDate = Util.getInstance().fixDate(year, month, day); 
+
+        if (eventDate != null) {
+            attBuilder.add(eventDateKey, eventDate.toString());
+            attBuilder.add(startDayOfYearKey, eventDate.getDayOfYear());
+
+            if (StringUtils.isBlank(month)) {
+                attBuilder.add(verbatimEventDateKey, year);
+            } else {
+                if (StringUtils.isBlank(day)) {
+                    yearMonth = Year.parse(year, yDtf)
+                            .atMonth(Util.getInstance().stringToInt(month));
+                    attBuilder.add(verbatimEventDateKey, yearMonth.toString());
+                } else {
+                    attBuilder.add(verbatimEventDateKey, eventDate.toString());
+                }
+            }
+        }
+    }
 
     public void addEventDate(JsonObjectBuilder attBuilder, JsonObject eventDateJson, CSVRecord record) {
 
@@ -284,27 +437,8 @@ public class JsonHelper {
         month = record.get(eventDateJson.getString(monthKey));
         day = record.get(eventDateJson.getString(dayKey));
 
-        if (!StringUtils.isBlank(year)) {
-
-            eventDate = Util.getInstance().fixDate(year, month, day);
-            log.info("event date: {}", eventDate);
-
-            if (eventDate != null) {
-                attBuilder.add(eventDateKey, eventDate.toString());
-                attBuilder.add(startDayOfYearKey, eventDate.getDayOfYear());
-
-                if (StringUtils.isBlank(month)) {
-                    attBuilder.add(verbatimEventDateKey, year);
-                } else {
-                    if (StringUtils.isBlank(day)) {
-                        yearMonth = Year.parse(year, yDtf)
-                                .atMonth(Util.getInstance().stringToInt(month));
-                        attBuilder.add(verbatimEventDateKey, yearMonth.toString());
-                    } else {
-                        attBuilder.add(verbatimEventDateKey, eventDate.toString());
-                    }
-                }
-            }
+        if (!StringUtils.isBlank(year)) { 
+            addEventDate(attBuilder, year, month, day);
         }
     }
 
@@ -318,9 +452,11 @@ public class JsonHelper {
         } 
     }
 
-    public void addTypeStatus(JsonObjectBuilder attBuilder, JsonObject json, CSVRecord record) {
-        typeStatus = record.get(json.getString(typeStatusKey));
-        addAttValue(attBuilder, typeStatusKey, StringUtils.capitalize(typeStatus).trim());
+    public void addTypeStatus(JsonObjectBuilder attBuilder, String typeStatus) { 
+        log.info("addTypeStatus : {}", typeStatus);
+        if(!StringUtils.isBlank(typeStatus)) {
+            addAttValue(attBuilder, typeStatusKey, StringUtils.capitalize(typeStatus).trim());
+        } 
     }
 
     public void addLatAndLong(JsonObjectBuilder attBuilder, double latitude, double longitude) {  
@@ -369,7 +505,7 @@ public class JsonHelper {
         for (int i = 1; i < 4; i++) {
             format = getDoubleFormat(i);
             formattedLat = String.format(format, latitude);
-            formattedLong = String.format(format, latitude);
+            formattedLong = String.format(format, longtude);
 
             pointSb = new StringBuilder();
             pointSb.append(i);
@@ -379,8 +515,7 @@ public class JsonHelper {
             pointSb.append(formattedLong);
             pointArrayBuilder.add(pointSb.toString().trim());
         }
-        attBuilder.add(pointKey, pointArrayBuilder);
-//        log.info("what... : {}", attBuilder.build().toString());
+        attBuilder.add(pointKey, pointArrayBuilder); 
     }
 
     private String getDoubleFormat(int i) {

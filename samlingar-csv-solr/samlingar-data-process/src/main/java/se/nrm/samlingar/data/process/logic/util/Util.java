@@ -20,6 +20,7 @@ public class Util {
 
     private final String dash = "-";
     private final String slash = "/";
+    private final String signs = "-/";
     private final String colon = ":";
     private final String emptySpace = " ";
     
@@ -53,10 +54,11 @@ public class Util {
         return csvFileSb.toString().trim();
     }
 
-    public LocalDate stringToLocalDate(String strDate) {
-        if (strDate == null) {
+    public LocalDate stringToLocalDate(String strDate) { 
+        if (StringUtils.isAllBlank(strDate)) {
             return null;
         }
+        
         try {
             if (strDate.contains(slash)) {
                 return LocalDate.parse(strDate, formatter);
@@ -83,8 +85,7 @@ public class Util {
         return null;
     }
 
-    public LocalDate fixDate(String year, String month, String day) { 
-        
+    public LocalDate fixDate(String year, String month, String day) {  
         if (StringUtils.isBlank(year)) {
             return null;
         }
@@ -100,10 +101,11 @@ public class Util {
             return Year.parse(year, yDtf).atMonth(intMonth).atDay(intDay);   
         } catch(DateTimeParseException e) {
             log.error("DateTimeParseException: {}", e.getMessage());
+            return null; 
         } catch(Exception e) {
             log.error("Exception: {}", e.getMessage());
-        }
-        return null; 
+            return null; 
+        } 
     }
 
     public int stringToInt(String value) { 
@@ -121,4 +123,9 @@ public class Util {
             throw new NumberFormatException(e.getMessage());
         }
     }
+    
+    public boolean isStringContainsSign(String string) {
+        return StringUtils.containsAny(string, signs);
+    }
+    
 }

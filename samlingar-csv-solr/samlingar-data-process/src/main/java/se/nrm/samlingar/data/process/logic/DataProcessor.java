@@ -1,13 +1,13 @@
 package se.nrm.samlingar.data.process.logic;
 
-import java.io.Serializable; 
+import java.io.Serializable;  
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.json.JsonArray;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j; 
 import org.wildfly.swarm.Swarm;
 import se.nrm.samlingar.data.process.config.InitialProperties;
-import se.nrm.samlingar.data.process.logic.bot.BotDataProcessor;
+import se.nrm.samlingar.data.process.logic.bot.BotDataProcessor; 
 import se.nrm.samlingar.data.process.logic.files.JsonFileHandler;
 import se.nrm.samlingar.data.process.logic.paleo.PaleoDataProcessor;
 import se.nrm.samlingar.data.process.logic.zoo.ZooDataProcessor;
@@ -25,8 +25,9 @@ public class DataProcessor implements Serializable  {
      
     private JsonArray array; 
     private String collection;
-    private String csvFilePath;
+    private String csvFilePath; 
     private boolean deleteData;
+    private String imageMappingFile;
     
     @Inject
     private InitialProperties propeties;
@@ -51,10 +52,12 @@ public class DataProcessor implements Serializable  {
             array = fileHander.readMappingJsonFile(getMappingFilePath(collection)); 
             csvFilePath = getCsvFilePath(collection);
             deleteData = delete();
+            imageMappingFile = getImageMappingFilePath();
             
             switch (collection) {
-            case zooCollection:
-                zoo.process(csvFilePath, array);
+            case zooCollection:  
+                zoo.process(csvFilePath, array,
+                        imageMappingFile, getZooImageFilePath(),deleteData);
                 break;
             case paleoCollection:
                 paleo.process(csvFilePath, array, deleteData);
@@ -97,6 +100,15 @@ public class DataProcessor implements Serializable  {
     private String getMappingFilePath(String collection) {
         return propeties.getMapingFilePath(collection); 
     }
+    
+    private String getImageMappingFilePath() {  
+        return propeties.getImageMappingFilePath();
+    }
+    
+    private String getZooImageFilePath() {  
+        return propeties.getImageZooCsvPath();
+    }
+    
     
     private void stopServer() {
         log.info("stopServer");

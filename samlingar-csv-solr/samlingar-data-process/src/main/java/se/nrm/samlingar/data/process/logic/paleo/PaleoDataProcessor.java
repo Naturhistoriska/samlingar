@@ -29,9 +29,7 @@ public class PaleoDataProcessor implements Serializable {
     private List<JsonArray> list;
     
     private int status;
-    
-    
-    
+     
     @Inject
     private CSVFileProcessor fileProcessor;
     @Inject
@@ -56,7 +54,7 @@ public class PaleoDataProcessor implements Serializable {
                             collectionId = JsonHelper.getInstance().getIdPrefix(collectionJson);
                             
                             delimiter = JsonHelper.getInstance().getDelimiter(
-                                    collectionJson, CommonString.getInstance().getSepartorKey());
+                                    collectionJson, CommonString.getInstance().getSeparatorKey());
                             encoding = JsonHelper.getInstance().getJsonValue(
                                     collectionJson, CommonString.getInstance().getEncodingKey());
                             log.info("encoding... {}", encoding);
