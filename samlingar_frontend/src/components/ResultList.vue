@@ -60,99 +60,20 @@ function onPage(event) {
 }
 </script>
 <style scoped>
-/* .p-paginator-page,
+::v-deep .p-paginator {
+  background-color: transparent !important; /* Change background */
+}
+
+::v-deep .p-paginator-page:not(.p-disabled):not(.p-paginator-page-selected):hover {
+  background: #a8a7a7 !important;
+}
+
+/* ::v-deep .p-paginator-page,
 .p-paginator-next,
 .p-paginator-last,
 .p-paginator-first,
 .p-paginator-prev {
-  background: red !important;
+  background: var(--p-emerald-500) !important;
   padding: 0;
-} */
-
-/* .customPaginator .p-paginator {
-  font-size: 36px;
-  background-color: #333 !important;
-}
-.p-paginator {
-  width: 18rem;
-  background: #000 !important;
-}
-
-.p-paginator-page:not(.p-disabled):not(.p-paginator-page-selected):hover {
-  background: #000 !important;
-}
-
-.customPaginator.nav.p-paginator {
-  background: #000 !important;
-} */
-
-/* :root {
-  --p-paginator-padding: 0.5rem 1rem;
-  --p-paginator-gap: 0.25rem;
-  --p-paginator-border-radius: var(--p-content-border-radius);
-  --p-paginator-background: red !important;
-  --p-paginator-color: var(--p-content-color);
-  --p-paginator-transition-duration: var(--p-transition-duration);
-  --p-paginator-nav-button-background: transparent;
-  --p-paginator-nav-button-hover-background: var(--p-content-hover-background);
-  --p-paginator-nav-button-selected-background: var(--p-highlight-background);
-  --p-paginator-nav-button-color: var(--p-text-muted-color);
-  --p-paginator-nav-button-hover-color: var(--p-text-hover-muted-color);
-  --p-paginator-nav-button-selected-color: var(--p-highlight-color);
-  --p-paginator-nav-button-width: 2.5rem;
-  --p-paginator-nav-button-height: 2.5rem;
-  --p-paginator-nav-button-border-radius: 50%;
-  --p-paginator-nav-button-focus-ring-width: var(--p-focus-ring-width);
-  --p-paginator-nav-button-focus-ring-style: var(--p-focus-ring-style);
-  --p-paginator-nav-button-focus-ring-color: var(--p-focus-ring-color);
-  --p-paginator-nav-button-focus-ring-offset: var(--p-focus-ring-offset);
-  --p-paginator-nav-button-focus-ring-shadow: var(--p-focus-ring-shadow);
-  --p-paginator-current-page-report-color: var(--p-text-muted-color);
-  --p-paginator-jump-to-page-input-max-width: 2.5rem;
-} */
-
-/* .p-paginator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  background: red;
-  color: var(--p-paginator-color);
-  padding: var(--p-paginator-padding);
-  border-radius: var(--p-paginator-border-radius);
-  gap: var(--p-paginator-gap);
-} */
-
-/* .customStyle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  background: transparent;
-  color: #fff;
-  padding: var(--p-paginator-padding);
-  border-radius: var(--p-paginator-border-radius);
-  gap: var(--p-paginator-gap);
-} */
-/* style="
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        background: transparent;
-        color: #fff;
-        padding: var(--p-paginator-padding);
-        border-radius: var(--p-paginator-border-radius);
-        gap: var(--p-paginator-gap);
-      " */
-/* .p-paginator-page,
-.p-paginator-next,
-.p-paginator-last,
-.p-paginator-first,
-.p-paginator-prev {
-  color: red !important;
-}
-.p-paginator {
-  background: transparent !important;
 } */
 </style>
