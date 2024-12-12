@@ -23,16 +23,20 @@ public class Util {
     private final String signs = "-/";
     private final String colon = ":";
     private final String emptySpace = " ";
-    
 
+    private final String zeroOne = "01";
+    private final String zero = "0";
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
-    private final DateTimeFormatter ymDtf = DateTimeFormatter.ofPattern("uuuu-MM");
+    private final DateTimeFormatter ymDtf = DateTimeFormatter.ofPattern("uuuu-M");
     private final DateTimeFormatter yDtf = DateTimeFormatter.ofPattern("uuuu");
-     
+
     private int intMonth;
     private int intDay;
+
+    private String[] dateArray;
+    private StringBuilder dateSb;
 
     private static Util instance = null;
 
@@ -54,11 +58,11 @@ public class Util {
         return csvFileSb.toString().trim();
     }
 
-    public LocalDate stringToLocalDate(String strDate) { 
+    public LocalDate stringToLocalDate(String strDate) {
         if (StringUtils.isAllBlank(strDate)) {
             return null;
         }
-        
+
         try {
             if (strDate.contains(slash)) {
                 return LocalDate.parse(strDate, formatter);
@@ -67,8 +71,9 @@ public class Util {
             }
             return LocalDate.parse(strDate);
         } catch (DateTimeException ex) {
-            log.error("invalid date: {}", strDate);
-            return fixInvalidDate(strDate);
+//            log.error("invalid date: {}", strDate);
+//            return fixInvalidDate(strDate);
+            return null;
         }
     }
 
@@ -85,37 +90,37 @@ public class Util {
         return null;
     }
 
-    public LocalDate fixDate(String year, String month, String day) {  
+    public LocalDate fixDate(String year, String month, String day) {
         if (StringUtils.isBlank(year)) {
             return null;
         }
-  
+
         if (StringUtils.isBlank(month)) {
             return Year.parse(year, yDtf).atDay(1);
         }
- 
+
         intMonth = stringToInt(month);
-        intDay = StringUtils.isBlank(day) ? 1 : stringToInt(day); 
-        
-        try { 
-            return Year.parse(year, yDtf).atMonth(intMonth).atDay(intDay);   
-        } catch(DateTimeParseException e) {
+        intDay = StringUtils.isBlank(day) ? 1 : stringToInt(day);
+
+        try {
+            return Year.parse(year, yDtf).atMonth(intMonth).atDay(intDay);
+        } catch (DateTimeParseException e) {
             log.error("DateTimeParseException: {}", e.getMessage());
-            return null; 
-        } catch(Exception e) {
+            return null;
+        } catch (Exception e) {
             log.error("Exception: {}", e.getMessage());
-            return null; 
-        } 
+            return null;
+        }
     }
 
-    public int stringToInt(String value) { 
+    public int stringToInt(String value) {
         try {
             return Integer.parseInt(value);
-        } catch (NumberFormatException ex) { 
+        } catch (NumberFormatException ex) {
             throw new NumberFormatException(ex.getMessage());
         }
     }
-    
+
     public double stringToDouble(String value) {
         try {
             return Double.parseDouble(value);
@@ -123,9 +128,55 @@ public class Util {
             throw new NumberFormatException(e.getMessage());
         }
     }
-    
+
     public boolean isStringContainsSign(String string) {
         return StringUtils.containsAny(string, signs);
     }
-    
+
+    public String buildDate(String date) {
+
+        if (date.contains(slash)) {
+            dateArray = date.split(slash);
+        } else {
+            dateArray = date.split(dash);
+        }
+        dateSb = new StringBuilder();
+
+        if (dateArray.length <= 3 && dateArray[0].length() == 4) {
+            if (dateArray.length == 1) {
+                dateSb.append(date);
+                dateSb.append(dash);
+                dateSb.append(zeroOne);
+                dateSb.append(dash);
+                dateSb.append(zeroOne);
+                return dateSb.toString().trim();
+            }
+
+            if (dateArray.length == 2) { 
+                if(dateArray[1].length() > 2) {
+                    return null;
+                } else {
+                    if (dateArray[1].length() == 1) {
+                        dateSb.append(dateArray[0]);
+                        dateSb.append(dash);
+                        dateSb.append(zero);
+                        dateSb.append(dateArray[1]);
+                        dateSb.append(dash);
+                        dateSb.append(zeroOne); 
+                    } else {
+                        dateSb.append(date);
+                        dateSb.append(dash);
+                        dateSb.append(zeroOne);  
+                    } 
+                    return dateSb.toString().trim();
+                } 
+            } else if (dateArray.length == 3) {
+                return date;
+            }
+        } else {
+            return null;
+        } 
+        return null;
+    }
+
 }

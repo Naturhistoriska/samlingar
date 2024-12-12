@@ -26,7 +26,8 @@ public class CoordinatesConverter implements Serializable {
 
     private final String dmsFormatRegex3 = "^\\d{1,3}°\\d{1,2}\\.\\d+'\\d{1,2}\\.\\d+\"$";  // 71°28.8'0.0" 71°28.8'0.0" N  
 
-    private final String dmsFormatRegex4 = "^\\d{1,3}°\\d{2}(\\.\\d+)?'\\d+(\\.\\d+)?''$";  // 70°08.5'0.0'' 
+    private final String dmsFormatRegex4 = "^\\d{1,3}°\\d{1,2}(\\.\\d+)?'\\d+(\\.\\d+)?''$";  // 70°08.5'0.0'' 
+    private final String dmsFormatRegex9 = "^\\d{1,3}°\\d{1,2}(\\.\\d+)?'\\''$";              // 70°08.5''' 
 
     private final String dmsFormatRegex5 = "^\\d{1,3}°\\d{2}'\\d{1,3}$";                    // 65°51'00
     private final String dmsFormatRegex6 = "^\\d{1,3}°\\d{1,2}´\\d{1,3}\"$";                // 76°27´00"
@@ -47,6 +48,9 @@ public class CoordinatesConverter implements Serializable {
     private final String regex4 = "^(\\d+)\\'\\d+\\\"\\d+\\\"$";                            // 34'40"00"  N34'40"00" 
     private final String regex5 = "^(\\d+)\\'\\d+\\\"\\d{1,2}$";                            // E111'55"00
     private final String regex6 = "^(\\d+)\\s\\d+$";                                        // N63 05   
+    
+    private final String regex7 = "^-?\\d{1,3}\\.\\d+°$";                                   //  -51.70° 
+    
     
     // pfossil.csv
     // W240°24'50"
@@ -129,6 +133,17 @@ public class CoordinatesConverter implements Serializable {
                 degrees = isNorthEast ? degrees : (-1) * degrees;
                 return convert(degrees, dblMinuts, seconds);
                 
+            } 
+             else if(latOrLong.matches(dmsFormatRegex9)) {
+                    // 8°6'''
+                    degrees = Util.getInstance().stringToInt(
+                            StringUtils.substringBefore(latOrLong, degreeSign));
+                    minutes = Util.getInstance().stringToInt(
+                            StringUtils.substringBetween(latOrLong, degreeSign, minuteSign));
+                    seconds = 0;
+                    degrees = isNorthEast ? degrees : (-1) * degrees;
+                     
+                    return convert(degrees, minutes, seconds);
             } else if (latOrLong.matches(dmsFormatRegex5)) {
                 // 65°51'00 
                 degrees = Util.getInstance().stringToInt(StringUtils.substringBefore(latOrLong, degreeSign));
@@ -217,6 +232,10 @@ public class CoordinatesConverter implements Serializable {
                 minutes = Util.getInstance().stringToInt(StringUtils.substringAfter(latOrLong, emptySpace)); 
                 degrees = isNorthEast ? degrees : (-1) * degrees;
                 return convert(degrees, minutes, dblZero);
+            } else if (latOrLong.matches(regex7)) {
+                log.info("what... : {}", latOrLong);
+                //  -51.70° 
+                return Util.getInstance().stringToDouble(StringUtils.substringBefore(latOrLong, degreeSign));  
             } else {
                 if (!latOrLong.equals("57°44'52.4\"N 18°29'40.6\"E")) {
                     log.error("invalid lat or long : {} -- {}", latOrLong, isNorthEast);
@@ -226,7 +245,7 @@ public class CoordinatesConverter implements Serializable {
             }
 
         } catch (NumberFormatException e) {
-//            log.error("NumberFormatException: {} ", e.getMessage());
+            log.error("NumberFormatException: {} ", e.getMessage());
             throw new SamlingarException(e.getMessage());
         }
 

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.inject.Inject;
 import javax.json.JsonObjectBuilder;
 import lombok.extern.slf4j.Slf4j; 
+import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.data.process.logic.exception.SamlingarException;
 import se.nrm.samlingar.data.process.logic.json.JsonHelper; 
 
@@ -16,10 +17,15 @@ import se.nrm.samlingar.data.process.logic.json.JsonHelper;
 public class CoordinatesBuilder implements Serializable {
 
     private final int numberOfCharacters = 5; 
+    private final String emptySpace = " ";
      
     private String geoHash; 
     private double dblLat;
     private double dblLong; 
+    
+    private String strLatitude;
+    private String strLongitude;
+    private String[] latLngArray;
     
     @Inject 
     private CoordinatesConverter convert;
@@ -28,6 +34,16 @@ public class CoordinatesBuilder implements Serializable {
 
     }
 
+    public void build(JsonObjectBuilder attBuilder, String coordinates) {
+        if(!StringUtils.isBlank(coordinates)) {
+            latLngArray = coordinates.split(emptySpace);
+
+            strLatitude = latLngArray[0].trim();
+            strLongitude = latLngArray[1].trim();
+            build(attBuilder, strLatitude, strLongitude);
+        }
+    }
+    
     public void build(JsonObjectBuilder attBuilder, String latitude, String longitude) {
         log.info("build: {} -- {}", latitude, longitude);
         

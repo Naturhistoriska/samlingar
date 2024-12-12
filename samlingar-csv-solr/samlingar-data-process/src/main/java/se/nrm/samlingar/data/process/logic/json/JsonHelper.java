@@ -60,21 +60,23 @@ public class JsonHelper {
     private final String verbatimCoordinatesKey = "verbatimCoordinates";
     private final String pointKey = "point";
     private final String countryKey = "country";
-    
-    
+
     private final String fileNameKey = "fileName";
 
     private final String doubleFormat1 = "%.1f";
     private final String doubleFormat2 = "%.2f";
     private final String doubleFormat3 = "%.3f";
-    
-    
+
     private final String zeroOne = "01";
+    private final String zero = "0";
     private final String sweden = "Sweden";
     private final String sverige = "Sverige";
     private final String seKey = "se";
     private final String descriptionKey = "description";
-
+    private final String speciesRank = "species";
+    
+    private final String currentDetermination = "CurrentDetermination";
+    
     private String csvKey;
 
     private StringBuilder synonymAuthorSb;
@@ -82,7 +84,7 @@ public class JsonHelper {
     private List<String> classificationList;
     private List<String> images;
     private LocalDate eventDate;
-    private String typeStatus;
+//    private String typeStatus;
     private String year;
     private String month;
     private String day;
@@ -99,7 +101,7 @@ public class JsonHelper {
 
     private final char comma = ',';
     private final String slash = "/";
-    private final String dash = "-"; 
+    private final String dash = "-";
     private final String underScore = "_";
     private final String emptySpace = " ";
 
@@ -114,12 +116,12 @@ public class JsonHelper {
     private JsonArrayBuilder imageArrayBuilder;
     private JsonArrayBuilder georHashArrayBuilder;
     private JsonArrayBuilder pointArrayBuilder;
-    private StringBuilder geoHashSb; 
+    private StringBuilder geoHashSb;
 
     private StringBuilder pointSb;
-    
+
     private StringBuilder dateSb;
-     
+    private String[] dateArray;
 
     private static JsonHelper instance = null;
 
@@ -140,19 +142,18 @@ public class JsonHelper {
         return json.getString(idPrefixKey);
     }
 
-    public char getDelimiter(JsonObject json, String key) { 
+    public char getDelimiter(JsonObject json, String key) {
         return getJsonValue(json, key) != null ? getJsonValue(json, key).charAt(0) : comma;
     }
 
     public String getFileName(JsonObject json) {
         return json.containsKey(fileNameKey) ? json.getString(fileNameKey) : null;
     }
-    
+
     public String getJsonValue(JsonObject json, String key) {
         return json.containsKey(key) ? json.getString(key) : null;
     }
-    
-         
+
     public void addIdForBird(JsonObjectBuilder attBuilder, long recordNumber, String idPrefix) {
         sb = new StringBuilder();
         sb.append(idPrefix);
@@ -160,7 +161,6 @@ public class JsonHelper {
         sb.append(recordNumber);
         attBuilder.add(idKey, sb.toString().trim());
     }
-        
 
     public String getCatalogNumberCsvKey(JsonObject json) {
         return json.getString(catalogNumberKey);
@@ -189,11 +189,11 @@ public class JsonHelper {
     public String getSynonymAuthorCsvKey(JsonObject json) {
         return json.getString(synonymAuthorKey);
     }
-    
+
     public String getDescriptionCsvKey(JsonObject json) {
         return json.getString(descriptionKey);
     }
-    
+
     public boolean isStringCoordinates(JsonObject json) {
         return JsonValue.ValueType.STRING.equals(json.get(coordinatesKey).getValueType());
     }
@@ -202,15 +202,15 @@ public class JsonHelper {
         return json.getJsonObject(synonymKey);
     }
 
-    public JsonObject getClassificationJson(JsonObject json) { 
-        return json.containsKey(classificationKay) ? 
-                json.getJsonObject(classificationKay) : null;
+    public JsonObject getClassificationJson(JsonObject json) {
+        return json.containsKey(classificationKay)
+                ? json.getJsonObject(classificationKay) : null;
     }
 
     public JsonObject getEventDateJson(JsonObject json) {
         return json.getJsonObject(eventDateKey);
     }
-    
+
     public String getEventDateCsvKey(JsonObject json) {
         return json.containsKey(eventDateKey) ? json.getString(eventDateKey) : null;
     }
@@ -218,32 +218,61 @@ public class JsonHelper {
     public JsonObject getCoordinatesJson(JsonObject json) {
         return json.getJsonObject(coordinatesKey);
     }
-  
+
     public String getCoordinatesCsvKey(JsonObject json) {
         return json.getString(coordinatesKey);
     }
-    
+
     public String getTypeStatusCsvKey(JsonObject json) {
         return json.containsKey(typeStatusKey) ? json.getString(typeStatusKey) : null;
     }
-        
-    public void addClassification(JsonObjectBuilder attBuilder,
-            List<String> classificationKeys, CSVRecord record) { 
+    
+    public void addClassification(JsonObjectBuilder attBuilder,  
+            JsonObject classificationJson, CSVRecord record) {
+        isScientificNameSet = false;
+        classificationList = new ArrayList();
+        classificationJson.keySet()
+                .stream()
+                .forEach(key -> {
+                    taxon = record.get(classificationJson.getString(key)).trim(); 
+                    if (!StringUtils.isBlank(taxon)) {
+                        if (isScientificNameSet) {
+                            classificationList.add(taxon); 
+                        } else { 
+//                            addAttValue(attBuilder, scientificNameKey, taxon);
+//                            addAttValue(attBuilder, taxonRankKey, key); 
+                            isScientificNameSet = true;
+                        } 
+                    }
+                    addAttValue(attBuilder, key, taxon);
+                });
+        Collections.reverse(classificationList);
+        addAttValue(attBuilder, higherClassificationKey,
+                classificationList.stream().collect(Collectors.joining(slash)));
+    }
 
+    public void addClassification(JsonObjectBuilder attBuilder,
+            List<String> classificationKeys, CSVRecord record) {
+         
         isScientificNameSet = false;
         classificationList = new ArrayList();
         classificationKeys.stream()
-                .forEach(key -> { 
-                    taxon = record.get(key).trim(); 
+                .forEach(key -> {
+                    taxon = record.get(key).trim();
                     if (!StringUtils.isBlank(taxon)) {
                         if (isScientificNameSet) {
                             classificationList.add(taxon);
+                            addAttValue(attBuilder, key, taxon);
                         } else {
                             addAttValue(attBuilder, scientificNameKey, taxon);
-                            addAttValue(attBuilder, taxonRankKey, key);
+                            if(key.equals(scientificNameKey) || key.equals(currentDetermination)) {
+                                addAttValue(attBuilder, taxonRankKey, speciesRank);
+                            } else {
+                                addAttValue(attBuilder, taxonRankKey, key);
+                            } 
                             isScientificNameSet = true;
                         }
-                    } 
+                    }
                 });
         Collections.reverse(classificationList);
         addAttValue(attBuilder, higherClassificationKey,
@@ -269,9 +298,6 @@ public class JsonHelper {
     public void addCatalogNumber(JsonObjectBuilder attBuilder, String catalogNumber) {
         addAttValue(attBuilder, catalogNumberKey, catalogNumber);
     }
-    
-
- 
 
     public void addCatalogDate(JsonObjectBuilder attBuilder, String date) {
         log.info("addCatalogDate : {}", date);
@@ -288,12 +314,12 @@ public class JsonHelper {
     }
 
     public void addMappingValue(JsonObjectBuilder attBuilder,
-            JsonObject mappingJson, CSVRecord record)  { 
+            JsonObject mappingJson, CSVRecord record) {
         mappingJson.keySet().stream()
                 .forEach(key -> {
                     csvKey = mappingJson.getString(key);
                     addAttValue(attBuilder, key, record.get(csvKey));
-                }); 
+                });
     }
 
     public void addImages(JsonObjectBuilder attBuilder, List<String> imageList) {
@@ -325,93 +351,66 @@ public class JsonHelper {
             synomyAuthorsArrayBuilder.add(synonymAuthorSb.toString().trim());
         }
     }
-    
-    private String buildDate(String year, String month, String day) { 
+
+    private String buildDate(String year, String month, String day) {
+        log.info("buildDate : {} -- {}", year, month + " -- " + day);
         dateSb = new StringBuilder();
         dateSb.append(year);
         dateSb.append(dash);
+        if(month.length() == 1) {
+            dateSb.append(zero);
+        }
         dateSb.append(month);
         dateSb.append(dash);
+        if(day.length() == 1) {
+            dateSb.append(zero);
+        }
         dateSb.append(day);
         return dateSb.toString().trim();
     }
-    
-    private String padZero(String value) {
-        return value.length() == 1 ? StringUtils.leftPad(value, 2, zero) : one;
-    }
 
-    
-    public void addEventDate(JsonObjectBuilder attBuilder, String date) { 
+    public void addEventDate(JsonObjectBuilder attBuilder, String date) {
         log.info("addEventDate : {}", date);
-        
-        if(!StringUtils.isBlank(date)) {
-            String[] dateArray;
-            if(date.contains(slash)) {
-                dateArray = date.split(slash);
+
+        if (!StringUtils.isBlank(date)) {
+            eventDate = Util.getInstance().stringToLocalDate(date); 
+            if (eventDate != null) { 
+                attBuilder.add(verbatimEventDateKey, eventDate.toString());
             } else {
-                dateArray = date.split(dash); 
-            }
-            
-            if(dateArray[0].length() == 4) {
-                if(dateArray.length == 1 ) { 
-                    attBuilder.add(verbatimEventDateKey, dateArray[0]);
-                    attBuilder.add(verbatimEventDateKey, buildDate(dateArray[0], zeroOne, zeroOne));
-                } else if(dateArray.length == 2) {
-                    String m;
-                    if(dateArray[1].length() == 2) {
-                        m = 0 + dateArray[1];
+                if (date.contains(slash)) {
+                    dateArray = date.split(slash);
+                } else {
+                    dateArray = date.split(dash);
+                }
+ 
+                if (dateArray[0].length() == 4) { 
+                    switch (dateArray.length) {
+                        case 1:
+                            eventDate = Util.getInstance().stringToLocalDate(buildDate(dateArray[0], zeroOne, zeroOne));
+                            break;
+                        case 2:
+                            eventDate = Util.getInstance().stringToLocalDate(buildDate(dateArray[0], dateArray[1], zeroOne));
+                            break;
+                        case 3:
+                            eventDate = Util.getInstance().stringToLocalDate(buildDate(dateArray[0], dateArray[1], dateArray[2]));
+                            break;
+                        default:
+                            eventDate = null;
+                            break;
                     }
-                    
-                    
-                    if(dateArray[1].length() == 2) {
-                        attBuilder.add(verbatimEventDateKey, );
-                        attBuilder.add(dateArray[0], buildDate(dateArray[0], dateArray[1], zeroOne));
-                    } else if(dateArray[1].length() == 1) {
-                        attBuilder.add(dateArray[0], buildDate(dateArray[0], 0 + dateArray[1], zeroOne));
-                    } 
-                } else if(dateArray.length == 3) {
-                    attBuilder.add(dateArray[0], buildDate(dateArray[0], zeroOne, zeroOne));
                 }
             }
-            
-            
-        }
-         
-        String[] dateArray;
-        if(!StringUtils.isBlank(date)) { 
-            
-            if(date.contains(slash)) {
-                dateArray = date.split(slash);
-            } else {
-                dateArray = date.split(dash); 
+            attBuilder.add(verbatimEventDateKey, date); 
+            if (eventDate != null) {
+                attBuilder.add(eventDateKey, eventDate.toString());
+                attBuilder.add(startDayOfYearKey, eventDate.getDayOfYear());
             }
-             
-            if(dateArray != null)  {
-                switch (dateArray.length) {
-                    case 3:
-                        eventDate  = Util.getInstance().stringToLocalDate(date);
-                        year = dateArray[0];
-                        month = dateArray[1];
-                        day = dateArray[2];
-                        break;
-                    case 2:
-                        year = dateArray[0];
-                        month = dateArray[1];
-                        day = null;
-                        break;
-                    default:
-                        year = date;
-                        month = null;
-                        day = null;
-                        break;
-                } 
-            } 
-            addEventDate(attBuilder, year, month, day);
-        } 
+            log.info("eventDate 1 : {}", eventDate);
+        }
     }
 
-    private void addEventDate(JsonObjectBuilder attBuilder, String year, String month, String day) { 
-        eventDate = Util.getInstance().fixDate(year, month, day); 
+    private void addEventDate(JsonObjectBuilder attBuilder, String year, String month, String day) {
+        eventDate = Util.getInstance().fixDate(year, month, day);
 
         if (eventDate != null) {
             attBuilder.add(eventDateKey, eventDate.toString());
@@ -437,7 +436,7 @@ public class JsonHelper {
         month = record.get(eventDateJson.getString(monthKey));
         day = record.get(eventDateJson.getString(dayKey));
 
-        if (!StringUtils.isBlank(year)) { 
+        if (!StringUtils.isBlank(year)) {
             addEventDate(attBuilder, year, month, day);
         }
     }
@@ -449,17 +448,17 @@ public class JsonHelper {
             if (country.equalsIgnoreCase(sweden)) {
                 addAttValue(attBuilder, seKey, sverige);
             }
-        } 
+        }
     }
 
-    public void addTypeStatus(JsonObjectBuilder attBuilder, String typeStatus) { 
+    public void addTypeStatus(JsonObjectBuilder attBuilder, String typeStatus) {
         log.info("addTypeStatus : {}", typeStatus);
-        if(!StringUtils.isBlank(typeStatus)) {
+        if (!StringUtils.isBlank(typeStatus)) {
             addAttValue(attBuilder, typeStatusKey, StringUtils.capitalize(typeStatus).trim());
-        } 
+        }
     }
 
-    public void addLatAndLong(JsonObjectBuilder attBuilder, double latitude, double longitude) {  
+    public void addLatAndLong(JsonObjectBuilder attBuilder, double latitude, double longitude) {
         attBuilder.add(latitudeKey, latitude);
         attBuilder.add(longitudeKey, longitude);
     }
@@ -515,7 +514,7 @@ public class JsonHelper {
             pointSb.append(formattedLong);
             pointArrayBuilder.add(pointSb.toString().trim());
         }
-        attBuilder.add(pointKey, pointArrayBuilder); 
+        attBuilder.add(pointKey, pointArrayBuilder);
     }
 
     private String getDoubleFormat(int i) {
@@ -528,7 +527,7 @@ public class JsonHelper {
                 return doubleFormat3;
         }
     }
- 
+
     private void addAttValue(JsonObjectBuilder attBuilder, String key, String value) {
         if (!StringUtils.isBlank(value)) {
             attBuilder.add(key, value);

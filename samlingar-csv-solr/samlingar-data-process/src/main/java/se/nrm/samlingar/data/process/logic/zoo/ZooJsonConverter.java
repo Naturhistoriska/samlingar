@@ -25,8 +25,9 @@ import se.nrm.samlingar.data.process.logic.json.JsonHelper;
 @Slf4j
 public class ZooJsonConverter implements Serializable {
 
-    private final int batchSize = 2000;
+    private final int batchSize = 6000;
     private final String birdCollection = "Bird";
+    private final String mammalCollection = "Mammals";
 
     private String catalogedDate;
     private String catalogNumber;
@@ -63,6 +64,7 @@ public class ZooJsonConverter implements Serializable {
 
     private boolean isStringCoordinates;
     private boolean hasCatalogedDate;
+    private boolean isBirdOrMammalCollection;
     
         
     @Inject
@@ -103,6 +105,8 @@ public class ZooJsonConverter implements Serializable {
         csvCatalogedDate = JsonHelper.getInstance().getCatalogedDateCsvKey(json); 
         csvTypeStatusKey = JsonHelper.getInstance().getTypeStatusCsvKey(json);
         
+        isBirdOrMammalCollection = isBirdCollection() ? true : isMammalCollection();
+        
         AtomicInteger counter = new AtomicInteger(0);
 
         records.stream()
@@ -112,8 +116,9 @@ public class ZooJsonConverter implements Serializable {
                     try {
                         counter.getAndIncrement();
                         catalogNumber = record.get(csvCatalogNumberKey).trim();
-                        log.info("catalogNumber : {}", catalogNumber);
-
+//                        log.info("catalogNumber : {} -- {}", catalogNumber, record.getRecordNumber() );
+                        log.info("catalogNumber : {}  ", catalogNumber  );
+                        
                         if (isBirdCollection()) {
                             JsonHelper.getInstance().addIdForBird(attBuilder, record.getRecordNumber(), collectionId);
                         } else {
@@ -134,14 +139,21 @@ public class ZooJsonConverter implements Serializable {
                             JsonHelper.getInstance().addImages(attBuilder,
                                     imageMap.get(catalogNumber));
                         } 
-                        if (!classificationKeys.isEmpty()) {
-                            JsonHelper.getInstance().addClassification(attBuilder, classificationKeys, record);
+                     
+                        if (classificationJson != null) {  
+                            JsonHelper.getInstance().addClassification(attBuilder, classificationJson, record);  
                         }
+//                        if (classificationJson != null) { 
+//                            if(isBirdOrMammalCollection) {
+//                                JsonHelper.getInstance().addClassification(attBuilder, classificationJson, record);
+//                            } else {
+//                                JsonHelper.getInstance().addClassification(attBuilder, classificationKeys, record);
+//                            } 
+//                        }
 //                        log.info("add classification: {}", classificationKeys);
-                        
-//                        log.info("coordinates json: {}", coordinatesJson);
-                        if (isStringCoordinates) {
-//                            convert.convertZooCoordinates(attBuilder, record.get(csvCoordinatesKey));
+                         
+                        if (isStringCoordinates) { 
+                            coordinatesBuilder.build(attBuilder, record.get(csvCoordinatesKey));
                         } else {
                             latitude = record.get(JsonHelper.getInstance()
                                     .getLatitudeCsvKey(coordinatesJson)).trim();
@@ -170,7 +182,7 @@ public class ZooJsonConverter implements Serializable {
                             JsonHelper.getInstance().addTypeStatus(attBuilder, 
                                     record.get(csvTypeStatusKey)); 
                         } 
-                        log.info("add typestatus " );
+//                        log.info("add typestatus " );
                         JsonHelper.getInstance().addCountry(attBuilder, json, record); 
 //                        log.info("add coutry " );
                         arrayBuilder.add(attBuilder);
@@ -184,14 +196,13 @@ public class ZooJsonConverter implements Serializable {
                     }
                 });
         list.add(arrayBuilder.build());
-
+        log.info("count : {}", counter.get());
         return list;
     }
 
     
-//    private final Predicate<CSVRecord> isValid = record
-//            -> isBirdCollection()
-//            || !StringUtils.isBlank(record.get(csvCatalogNumberKey));
+    private final Predicate<CSVRecord> isValid1 = record
+            ->  StringUtils.isBlank(record.get(csvCatalogNumberKey));
     
     
     private final Predicate<CSVRecord> isValid = record
@@ -202,6 +213,9 @@ public class ZooJsonConverter implements Serializable {
         return collectionName.equals(birdCollection);
     }
 
+    private boolean isMammalCollection() {
+        return collectionName.equals(mammalCollection);
+    }
 //            s != null && !s.trim().isEmpty();
 //    private final Predicate<CSVRecord> isValid = record
 //            -> isBirdCollection()
