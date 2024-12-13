@@ -52,7 +52,7 @@
         <div class="col-9 textColor">
           {{ result.state }}
         </div>
-        <div class="col-3 textColor" no-gutters>county:</div>
+        <div class="col-3 textColor" no-gutters> {{$t('results.county')}}:</div>
         <div class="col-9 textColor">
           {{ result.county }}
         </div>
@@ -64,27 +64,27 @@
         <div class="col-9 textColor">
           {{ result.longitude }}
         </div>
-        <div class="col-3 textColor" no-gutters>Synonym:</div>
+        <div class="col-3 textColor" no-gutters>{{$t('results.Synonym') }}</div>
         <div class="col-9 textColor">
           {{ result.synonymAuthor }}
         </div>
-        <div class="col-3 textColor" no-gutters>Determiner:</div>
+        <div class="col-3 textColor" no-gutters>{{$t('results.Determiner') }}</div>
         <div class="col-9 textColor">
           {{ result.determiner }}
         </div>
-        <div class="col-3 textColor" no-gutters>Collectors:</div>
+        <div class="col-3 textColor" no-gutters>{{$t('Collectors') }}</div>
         <div class="col-9 textColor">
           {{ result.collector }}
         </div>
-        <div class="col-3 textColor" no-gutters>{{ $t('results.eventDate') }}:</div>
+        <div class="col-3 textColor" no-gutters>{{$t('results.eventDate')}}</div>
         <div class="col-9 textColor">
           {{ result.startDate }}
         </div>
-        <div class="col-3 textColor" no-gutters>Cataloged Date:</div>
+        <div class="col-3 textColor" no-gutters>{{$t('Cataloged Date') }}</div>
         <div class="col-9 textColor">
           {{ result.catalogedDate }}
         </div>
-        <div class="col-3 textColor" no-gutters>Occurrence Remark:</div>
+        <div class="col-3 textColor" no-gutters>{{$t('Occurrence Remark') }}</div>
         <div class="col-9 textColor">
           {{ result.remarks }}
         </div>
