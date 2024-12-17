@@ -1,6 +1,5 @@
 package se.nrm.samlingar.data.process.logic.zoo.images;
-
-import com.sun.javafx.scene.control.skin.VirtualFlow;
+ 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

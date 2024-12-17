@@ -28,6 +28,7 @@ public class DataProcessor implements Serializable  {
     private String csvFilePath; 
     private boolean deleteData;
     private String imageMappingFile;
+    private JsonArray imageArray; 
     
     @Inject
     private InitialProperties propeties;
@@ -40,6 +41,8 @@ public class DataProcessor implements Serializable  {
     private PaleoDataProcessor paleo;
     @Inject
     private ZooDataProcessor zoo;
+    @Inject
+    private JsonFileHandler jsonFileHander;
     
     public DataProcessor() {
         
@@ -51,19 +54,19 @@ public class DataProcessor implements Serializable  {
             collection = propeties.getCollection();
             array = fileHander.readMappingJsonFile(getMappingFilePath(collection)); 
             csvFilePath = getCsvFilePath(collection);
-            deleteData = delete();
-            imageMappingFile = getImageMappingFilePath();
+            deleteData = delete(); 
+            imageArray = jsonFileHander.readMappingJsonFile(propeties.getImageMappingFilePath());
             
             switch (collection) {
             case zooCollection:  
                 zoo.process(csvFilePath, array,
-                        imageMappingFile, getZooImageFilePath(),deleteData);
+                        imageArray, getZooImageFilePath(),deleteData);
                 break;
             case paleoCollection:
                 paleo.process(csvFilePath, array, deleteData);
                 break;
-            case botCollection: 
-                bot.process(propeties, array);
+            case botCollection:  
+                bot.process(propeties, array, imageArray, deleteData);
                 break;
             default: 
                 break;
@@ -100,11 +103,7 @@ public class DataProcessor implements Serializable  {
     private String getMappingFilePath(String collection) {
         return propeties.getMapingFilePath(collection); 
     }
-    
-    private String getImageMappingFilePath() {  
-        return propeties.getImageMappingFilePath();
-    }
-    
+ 
     private String getZooImageFilePath() {  
         return propeties.getImageZooCsvPath();
     }

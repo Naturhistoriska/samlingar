@@ -1,7 +1,6 @@
 package se.nrm.samlingar.data.process.logic.json;
 
-import java.time.LocalDate;
-import java.time.Year;
+import java.time.LocalDate; 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -36,7 +35,8 @@ public class JsonHelper {
     private final String catalogedDateKey = "catalogedDate";
     private final String catalogedMonthKey = "catalogedMonth";
     private final String catalogedYearKey = "catalogedYear";
-
+    private final String catalogIDKey = "catalogID";
+    
     private final String associatedMediaKey = "associatedMedia";
     private final String synonymKey = "synonym";
     private final String synonymAuthorKey = "synonymAuthor";
@@ -58,8 +58,9 @@ public class JsonHelper {
     private final String geohashKey = "geohash";
     private final String geopointKey = "geopoint";
     private final String verbatimCoordinatesKey = "verbatimCoordinates";
-    private final String pointKey = "point";
+    private final String pointKey = "point"; 
     private final String countryKey = "country";
+    private final String exsiccatKey = "exsiccat";
 
     private final String fileNameKey = "fileName";
 
@@ -74,9 +75,9 @@ public class JsonHelper {
     private final String seKey = "se";
     private final String descriptionKey = "description";
     private final String speciesRank = "species";
-    
+
     private final String currentDetermination = "CurrentDetermination";
-    
+
     private String csvKey;
 
     private StringBuilder synonymAuthorSb;
@@ -154,6 +155,10 @@ public class JsonHelper {
         return json.containsKey(key) ? json.getString(key) : null;
     }
 
+    public JsonObject getJsonObject(JsonObject json, String key) {
+        return json.containsKey(key) ? json.getJsonObject(key) : null;
+    }
+
     public void addIdForBird(JsonObjectBuilder attBuilder, long recordNumber, String idPrefix) {
         sb = new StringBuilder();
         sb.append(idPrefix);
@@ -168,6 +173,10 @@ public class JsonHelper {
 
     public String getAssociatedMediaCsvKey(JsonObject json) {
         return json.getString(associatedMediaKey);
+    }
+    
+    public String getExsicaatCsvKey(JsonObject json) {
+        return json.containsKey(exsiccatKey) ? json.getString(exsiccatKey) : null; 
     }
 
     public String getCatalogedDateCsvKey(JsonObject json) {
@@ -192,6 +201,10 @@ public class JsonHelper {
 
     public String getDescriptionCsvKey(JsonObject json) {
         return json.getString(descriptionKey);
+    }
+    
+    public String getCatalogIdCsvKey(JsonObject json) {
+        return json.getString(catalogIDKey);
     }
 
     public boolean isStringCoordinates(JsonObject json) {
@@ -226,23 +239,47 @@ public class JsonHelper {
     public String getTypeStatusCsvKey(JsonObject json) {
         return json.containsKey(typeStatusKey) ? json.getString(typeStatusKey) : null;
     }
-    
-    public void addClassification(JsonObjectBuilder attBuilder,  
+
+    public void addClassification(JsonObjectBuilder attBuilder,
             JsonObject classificationJson, CSVRecord record) {
         isScientificNameSet = false;
         classificationList = new ArrayList();
         classificationJson.keySet()
                 .stream()
                 .forEach(key -> {
-                    taxon = record.get(classificationJson.getString(key)).trim(); 
+                    taxon = record.get(classificationJson.getString(key)).trim();
                     if (!StringUtils.isBlank(taxon)) {
                         if (isScientificNameSet) {
-                            classificationList.add(taxon); 
-                        } else { 
+                            classificationList.add(taxon);
+                        } else {
 //                            addAttValue(attBuilder, scientificNameKey, taxon);
 //                            addAttValue(attBuilder, taxonRankKey, key); 
                             isScientificNameSet = true;
-                        } 
+                        }
+                    }
+                    addAttValue(attBuilder, key, taxon);
+                });
+        Collections.reverse(classificationList);
+        addAttValue(attBuilder, higherClassificationKey,
+                classificationList.stream().collect(Collectors.joining(slash)));
+    }
+
+    public void addClassificationForPaleoCollection(JsonObjectBuilder attBuilder,
+            JsonObject classificationJson, CSVRecord record) {
+        isScientificNameSet = false;
+        classificationList = new ArrayList();
+        classificationJson.keySet()
+                .stream()
+                .forEach(key -> {
+                    taxon = record.get(classificationJson.getString(key)).trim();
+                    if (!StringUtils.isBlank(taxon)) {
+                        if (isScientificNameSet) {
+                            classificationList.add(taxon);
+                        } else {
+                            addAttValue(attBuilder, scientificNameKey, taxon);
+                            addAttValue(attBuilder, taxonRankKey, key);
+                            isScientificNameSet = true;
+                        }
                     }
                     addAttValue(attBuilder, key, taxon);
                 });
@@ -253,7 +290,7 @@ public class JsonHelper {
 
     public void addClassification(JsonObjectBuilder attBuilder,
             List<String> classificationKeys, CSVRecord record) {
-         
+
         isScientificNameSet = false;
         classificationList = new ArrayList();
         classificationKeys.stream()
@@ -265,11 +302,11 @@ public class JsonHelper {
                             addAttValue(attBuilder, key, taxon);
                         } else {
                             addAttValue(attBuilder, scientificNameKey, taxon);
-                            if(key.equals(scientificNameKey) || key.equals(currentDetermination)) {
+                            if (key.equals(scientificNameKey) || key.equals(currentDetermination)) {
                                 addAttValue(attBuilder, taxonRankKey, speciesRank);
                             } else {
                                 addAttValue(attBuilder, taxonRankKey, key);
-                            } 
+                            }
                             isScientificNameSet = true;
                         }
                     }
@@ -347,6 +384,7 @@ public class JsonHelper {
             synonymAuthorSb.append(synonym);
             synonymAuthorSb.append(emptySpace);
             synonymAuthorSb.append(synonymAuthor);
+            
             synomysArrayBuilder.add(synonym);
             synomyAuthorsArrayBuilder.add(synonymAuthorSb.toString().trim());
         }
@@ -357,24 +395,37 @@ public class JsonHelper {
         dateSb = new StringBuilder();
         dateSb.append(year);
         dateSb.append(dash);
-        if(month.length() == 1) {
+        if (month.length() == 1) {
             dateSb.append(zero);
         }
         dateSb.append(month);
         dateSb.append(dash);
-        if(day.length() == 1) {
+        if (day.length() == 1) {
             dateSb.append(zero);
         }
         dateSb.append(day);
         return dateSb.toString().trim();
     }
 
+    private String verbatimEventDate(String year, String month, String day) { 
+        dateSb = new StringBuilder();
+        dateSb.append(year);
+        dateSb.append(dash); 
+        dateSb.append(month); 
+        if(StringUtils.isBlank(day)) {
+            dateSb.append(dash); 
+            dateSb.append(day); 
+        }
+        return dateSb.toString().trim();
+    }
+
+        
     public void addEventDate(JsonObjectBuilder attBuilder, String date) {
         log.info("addEventDate : {}", date);
 
         if (!StringUtils.isBlank(date)) {
-            eventDate = Util.getInstance().stringToLocalDate(date); 
-            if (eventDate != null) { 
+            eventDate = Util.getInstance().stringToLocalDate(date);
+            if (eventDate != null) {
                 attBuilder.add(verbatimEventDateKey, eventDate.toString());
             } else {
                 if (date.contains(slash)) {
@@ -382,8 +433,8 @@ public class JsonHelper {
                 } else {
                     dateArray = date.split(dash);
                 }
- 
-                if (dateArray[0].length() == 4) { 
+
+                if (dateArray[0].length() == 4) {
                     switch (dateArray.length) {
                         case 1:
                             eventDate = Util.getInstance().stringToLocalDate(buildDate(dateArray[0], zeroOne, zeroOne));
@@ -400,42 +451,43 @@ public class JsonHelper {
                     }
                 }
             }
-            attBuilder.add(verbatimEventDateKey, date); 
+            attBuilder.add(verbatimEventDateKey, date);
             if (eventDate != null) {
                 attBuilder.add(eventDateKey, eventDate.toString());
                 attBuilder.add(startDayOfYearKey, eventDate.getDayOfYear());
-            }
-            log.info("eventDate 1 : {}", eventDate);
+            } 
         }
     }
 
-    private void addEventDate(JsonObjectBuilder attBuilder, String year, String month, String day) {
-        eventDate = Util.getInstance().fixDate(year, month, day);
 
+    private void addEventDate(JsonObjectBuilder attBuilder, String year, String month, String day) {
+  
+        if (!StringUtils.isBlank(year) && year.length() == 4) {
+            if (StringUtils.isAllBlank(day, month)) {
+                attBuilder.add(verbatimEventDateKey, year);
+                eventDate = Util.getInstance().stringToLocalDate(buildDate(year, zeroOne, zeroOne));
+            } else if (StringUtils.isBlank(day)) {
+                attBuilder.add(verbatimEventDateKey, verbatimEventDate(year, month, null));
+                eventDate = Util.getInstance().stringToLocalDate(buildDate(year, month, zeroOne));
+            } else {
+                attBuilder.add(verbatimEventDateKey, verbatimEventDate(year, month, day));
+                eventDate = Util.getInstance().stringToLocalDate(buildDate(year, month, day));
+            }
+        }
+        
         if (eventDate != null) {
             attBuilder.add(eventDateKey, eventDate.toString());
             attBuilder.add(startDayOfYearKey, eventDate.getDayOfYear());
-
-            if (StringUtils.isBlank(month)) {
-                attBuilder.add(verbatimEventDateKey, year);
-            } else {
-                if (StringUtils.isBlank(day)) {
-                    yearMonth = Year.parse(year, yDtf)
-                            .atMonth(Util.getInstance().stringToInt(month));
-                    attBuilder.add(verbatimEventDateKey, yearMonth.toString());
-                } else {
-                    attBuilder.add(verbatimEventDateKey, eventDate.toString());
-                }
-            }
-        }
+        } 
     }
 
     public void addEventDate(JsonObjectBuilder attBuilder, JsonObject eventDateJson, CSVRecord record) {
 
-        year = record.get(eventDateJson.getString(yearKey));
-        month = record.get(eventDateJson.getString(monthKey));
-        day = record.get(eventDateJson.getString(dayKey));
+        year = record.get(eventDateJson.getString(yearKey)).trim();
+        month = record.get(eventDateJson.getString(monthKey)).trim();
+        day = record.get(eventDateJson.getString(dayKey)).trim();
 
+        log.info("addEventDate : {} -- {}", year, month + " -- " + day);
         if (!StringUtils.isBlank(year)) {
             addEventDate(attBuilder, year, month, day);
         }
@@ -517,6 +569,11 @@ public class JsonHelper {
         attBuilder.add(pointKey, pointArrayBuilder);
     }
 
+    public void addExsiccat(JsonObjectBuilder attBuilder, String exsiccat) {
+        addAttValue(attBuilder, exsiccatKey, exsiccat);
+    }
+    
+    
     private String getDoubleFormat(int i) {
         switch (i) {
             case 1:
@@ -528,7 +585,7 @@ public class JsonHelper {
         }
     }
 
-    private void addAttValue(JsonObjectBuilder attBuilder, String key, String value) {
+    public void addAttValue(JsonObjectBuilder attBuilder, String key, String value) {
         if (!StringUtils.isBlank(value)) {
             attBuilder.add(key, value);
         }

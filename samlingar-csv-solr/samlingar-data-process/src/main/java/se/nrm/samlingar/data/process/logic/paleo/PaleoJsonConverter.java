@@ -23,7 +23,7 @@ import se.nrm.samlingar.data.process.logic.json.JsonHelper;
 @Slf4j
 public class PaleoJsonConverter implements Serializable {
 
-    private final int batchSize = 2000;
+    private final int batchSize = 6000;
 
     private String catalogedDate;
     private String catalogNumber;
@@ -44,7 +44,7 @@ public class PaleoJsonConverter implements Serializable {
     private String longitude;
 
     private List<JsonArray> list;
-    private List<String> classificationKeys;
+//    private List<String> classificationKeys;
 
     private JsonObjectBuilder attBuilder;
     private JsonArrayBuilder arrayBuilder;
@@ -69,11 +69,11 @@ public class PaleoJsonConverter implements Serializable {
         synonymJson = JsonHelper.getInstance().getSynonymJson(collectionJson);
         classificationJson = JsonHelper.getInstance().getClassificationJson(collectionJson);
 
-        classificationKeys = new ArrayList();
-        classificationJson.keySet()
-                .stream().forEach(key -> {
-                    classificationKeys.add(classificationJson.getString(key));
-                });
+//        classificationKeys = new ArrayList();
+//        classificationJson.keySet()
+//                .stream().forEach(key -> {
+//                    classificationKeys.add(classificationJson.getString(key));
+//                });
 
         eventDateJson = JsonHelper.getInstance().getEventDateJson(collectionJson);
         coordinatesJson = JsonHelper.getInstance().getCoordinatesJson(collectionJson);
@@ -116,7 +116,7 @@ public class PaleoJsonConverter implements Serializable {
 
                     JsonHelper.getInstance().addCatalogDate(attBuilder, catalogedDate);
 
-                    JsonHelper.getInstance().addClassification(attBuilder, classificationKeys, record);
+                    JsonHelper.getInstance().addClassificationForPaleoCollection(attBuilder, classificationJson, record);
 
                     JsonHelper.getInstance().addImages(attBuilder,
                             record.get(JsonHelper.getInstance()
@@ -155,6 +155,7 @@ public class PaleoJsonConverter implements Serializable {
         arrayBuilder.add(attBuilder);
 
         list.add(arrayBuilder.build());
+        log.info("count : {}", counter.get());
         return list;
     }
 

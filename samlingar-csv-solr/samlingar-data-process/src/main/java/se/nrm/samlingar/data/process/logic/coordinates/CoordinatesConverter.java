@@ -16,6 +16,7 @@ import se.nrm.samlingar.data.process.logic.util.Util;
 public class CoordinatesConverter implements Serializable {
   
     private final String dFormat = "^-?\\d{1,3}$";                                            // 56
+    private final String dFormat1 = "^-?\\d+°$";                                            // 43º
     private final String doubleFormatRegex1 = "^\\d{1,3},\\d+$";                            // 76,773404
     private final String doubleFormatRegex2 = "^-?\\d{1,3}\\,\\d+$";                        // -76,773404
     private final String doubleFormatRegex3 = "^\\d{1,3}.\\d+$";                            // 76.773404
@@ -71,7 +72,7 @@ public class CoordinatesConverter implements Serializable {
     private double dblMinuts;
  
 
-    private final String northEast = "NEns";
+    private final String northEast = "NEne";
     private final String nesw = "NESWnesw";
 
     private final String emptyString = "";
@@ -106,6 +107,8 @@ public class CoordinatesConverter implements Serializable {
             } else if (latOrLong.matches(doubleFormatRegex3) || latOrLong.matches(doubleFormatRegex4)
                     || latOrLong.matches(dFormat)) {
                 return Util.getInstance().stringToDouble(latOrLong);
+            } else if(latOrLong.matches(dFormat1)) {
+                return Util.getInstance().stringToDouble(StringUtils.substringBefore(latOrLong, degreeSign));
             }
 
             isNorthEast = StringUtils.containsAny(latOrLong, northEast);

@@ -26,23 +26,15 @@ import se.nrm.samlingar.data.process.logic.json.JsonHelper;
 public class ZooJsonConverter implements Serializable {
 
     private final int batchSize = 6000;
-    private final String birdCollection = "Bird";
-    private final String mammalCollection = "Mammals";
-
-    private String catalogedDate;
+    private final String birdCollection = "Bird"; 
+ 
     private String catalogNumber;
-    private String collectionName;
-    private String synonym;
-    private String synonymAuthor;
+    private String collectionName; 
 
-    private JsonObject mappingJson;
-    private JsonObject synonymJson;
-    private JsonObject classificationJson;
-    private JsonObject eventDateJson;
+    private JsonObject mappingJson; 
+    private JsonObject classificationJson; 
     private JsonObject coordinatesJson;
-
-    private final String synonymKey = "synonyms";
-    private final String synonymAuthorKey = "synonymAuthor";
+ 
  
     private String csvEventDateKey;
     private String csvCatalogedDate;
@@ -58,13 +50,8 @@ public class ZooJsonConverter implements Serializable {
 
     private JsonObjectBuilder attBuilder;
     private JsonArrayBuilder arrayBuilder;
-
-    private JsonArrayBuilder synomysArrayBuilder;
-    private JsonArrayBuilder synomyAuthorsArrayBuilder;
-
-    private boolean isStringCoordinates;
-    private boolean hasCatalogedDate;
-    private boolean isBirdOrMammalCollection;
+  
+    private boolean isStringCoordinates; 
     
         
     @Inject
@@ -104,9 +91,7 @@ public class ZooJsonConverter implements Serializable {
         
         csvCatalogedDate = JsonHelper.getInstance().getCatalogedDateCsvKey(json); 
         csvTypeStatusKey = JsonHelper.getInstance().getTypeStatusCsvKey(json);
-        
-        isBirdOrMammalCollection = isBirdCollection() ? true : isMammalCollection();
-        
+          
         AtomicInteger counter = new AtomicInteger(0);
 
         records.stream()
@@ -212,10 +197,7 @@ public class ZooJsonConverter implements Serializable {
     private boolean isBirdCollection() {
         return collectionName.equals(birdCollection);
     }
-
-    private boolean isMammalCollection() {
-        return collectionName.equals(mammalCollection);
-    }
+ 
 //            s != null && !s.trim().isEmpty();
 //    private final Predicate<CSVRecord> isValid = record
 //            -> isBirdCollection()

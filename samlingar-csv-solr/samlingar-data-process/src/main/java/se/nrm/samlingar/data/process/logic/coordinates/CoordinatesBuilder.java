@@ -18,7 +18,8 @@ public class CoordinatesBuilder implements Serializable {
 
     private final int numberOfCharacters = 5; 
     private final String emptySpace = " ";
-     
+    private final String slash = "/"; 
+    
     private String geoHash; 
     private double dblLat;
     private double dblLong; 
@@ -29,15 +30,39 @@ public class CoordinatesBuilder implements Serializable {
     
     @Inject 
     private CoordinatesConverter convert;
-
+    @Inject
+    private BotCoordinatesConvert botConvert;
+    
     public CoordinatesBuilder() {
 
     }
+    
+    public void buildBotCoordinates(JsonObjectBuilder attBuilder, String coordinates) {
+        log.info("buildBotCoordinates : {}", coordinates);
+        if(!StringUtils.isBlank(coordinates)) {
+            latLngArray = coordinates.split(slash);
+         
+            strLatitude = latLngArray[0].trim();
+            strLongitude = latLngArray[1].trim();
+            try {
+                dblLat = botConvert.convert(strLatitude);
+                dblLong = botConvert.convert(strLongitude);
+                log.info("latitude and longigude: {} -- {}", dblLat, dblLong);
+
+                addGeoData(attBuilder, dblLat, dblLong);
+            } catch (SamlingarException ex) {
+                log.error("SamlingarException: builderCoordinates : {}", ex.getErrorMessage());
+            } catch (Exception ex) {
+                log.error("builderCoordinates : {}", ex.getMessage());
+            }
+        }
+    }
 
     public void build(JsonObjectBuilder attBuilder, String coordinates) {
+        log.info("CoordinatesBuilder build : {}", coordinates);
         if(!StringUtils.isBlank(coordinates)) {
             latLngArray = coordinates.split(emptySpace);
-
+         
             strLatitude = latLngArray[0].trim();
             strLongitude = latLngArray[1].trim();
             build(attBuilder, strLatitude, strLongitude);

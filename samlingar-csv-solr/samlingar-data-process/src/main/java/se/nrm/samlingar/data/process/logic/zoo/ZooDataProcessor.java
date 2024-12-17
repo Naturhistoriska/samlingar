@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import javax.inject.Inject;
 import javax.json.JsonArray;
-import javax.json.JsonObject;
+import javax.json.JsonObject; 
 import lombok.extern.slf4j.Slf4j; 
 import org.apache.commons.csv.CSVRecord;
 import se.nrm.samlingar.data.process.logic.files.CSVFileProcessor; 
@@ -21,6 +21,8 @@ import se.nrm.samlingar.data.process.logic.zoo.images.ImageDataProcessor;
  */
 @Slf4j
 public class ZooDataProcessor implements Serializable {
+    
+    private final String datasetKey = "dataset";
     
     private String fileName;
     private char delimiter;
@@ -50,7 +52,7 @@ public class ZooDataProcessor implements Serializable {
         
     }
     
-    public void process(String filePath, JsonArray array, String imageMappingFilePath, 
+    public void process(String filePath, JsonArray array, JsonArray imageArray, 
             String imageFilePath, boolean delete) {
         try {
             if (array != null) {
@@ -79,7 +81,7 @@ public class ZooDataProcessor implements Serializable {
 
                                 imageMap = null;                 
                                 if(json.getBoolean(CommonString.getInstance().getAddImagesKey())) { 
-                                    imageRecords = getImageCsvRecord(imageMappingFilePath, imageFilePath);
+                                    imageRecords = getImageCsvRecord(imageArray, imageFilePath);
                                     imageMap = imageProcessor
                                             .run(JsonHelper.getInstance().getMappingJson(imageJson),
                                                     imageRecords); 
@@ -103,11 +105,20 @@ public class ZooDataProcessor implements Serializable {
         } 
     }  
     
-    private List<CSVRecord> getImageCsvRecord(String imageMappingFilePath, String imageFilePath) {
+    
+    private JsonObject getImageMappingJson(JsonArray imageArray) {
+        log.info("getImageMappingJson : {}" ); 
 
-        imageJson = imageProcessor.getImageMappingJson(imageMappingFilePath, collectionId);
-        log.info("imageJson... : {}", imageJson);
-        
+        return imageArray.getValuesAs(JsonObject.class)
+                .stream()
+                .filter(a -> a.getString(datasetKey).equals(collectionId))
+                .findFirst()
+                .get();
+    }
+    
+    private List<CSVRecord> getImageCsvRecord(JsonArray imageArray, String imageFilePath) {
+  
+        imageJson = getImageMappingJson(imageArray);
         delimiter = JsonHelper.getInstance().getDelimiter(imageJson, 
                 CommonString.getInstance().getSeparatorKey());
          
