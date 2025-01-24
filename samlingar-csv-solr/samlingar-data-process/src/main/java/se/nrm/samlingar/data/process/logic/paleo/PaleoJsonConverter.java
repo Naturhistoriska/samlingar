@@ -15,6 +15,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.data.process.logic.coordinates.CoordinatesBuilder;
 import se.nrm.samlingar.data.process.logic.json.JsonHelper;
+import se.nrm.samlingar.data.process.logic.util.CommonString;
 
 /**
  *
@@ -53,6 +54,7 @@ public class PaleoJsonConverter implements Serializable {
     private JsonArrayBuilder synomyAuthorsArrayBuilder;
 
     private boolean isAddSynomys;
+    private boolean addImages;
 
     @Inject
     private CoordinatesBuilder coordinatesBuilder;
@@ -68,17 +70,13 @@ public class PaleoJsonConverter implements Serializable {
         mappingJson = JsonHelper.getInstance().getMappingJson(collectionJson);
         synonymJson = JsonHelper.getInstance().getSynonymJson(collectionJson);
         classificationJson = JsonHelper.getInstance().getClassificationJson(collectionJson);
-
-//        classificationKeys = new ArrayList();
-//        classificationJson.keySet()
-//                .stream().forEach(key -> {
-//                    classificationKeys.add(classificationJson.getString(key));
-//                });
-
+ 
         eventDateJson = JsonHelper.getInstance().getEventDateJson(collectionJson);
         coordinatesJson = JsonHelper.getInstance().getCoordinatesJson(collectionJson);
 
         isAddSynomys = false;
+        addImages = collectionJson.getBoolean(CommonString.getInstance().getAddImagesKey());
+  
         AtomicInteger counter = new AtomicInteger(0);
         records.stream().forEach(record -> {
             try {
@@ -118,9 +116,11 @@ public class PaleoJsonConverter implements Serializable {
 
                     JsonHelper.getInstance().addClassificationForPaleoCollection(attBuilder, classificationJson, record);
 
-                    JsonHelper.getInstance().addImages(attBuilder,
+                    if(addImages) {
+                        JsonHelper.getInstance().addImages(attBuilder,
                             record.get(JsonHelper.getInstance()
                                     .getAssociatedMediaCsvKey(collectionJson)));
+                    } 
 
                     JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
                     JsonHelper.getInstance().addTypeStatus(attBuilder, 

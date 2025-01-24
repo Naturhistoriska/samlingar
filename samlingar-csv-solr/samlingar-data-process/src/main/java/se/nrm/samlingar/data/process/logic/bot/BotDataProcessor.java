@@ -26,6 +26,7 @@ public class BotDataProcessor implements Serializable {
 
     private final String mosses = "mosses";
     private final String vascularPlants = "vascularPlants";
+
     private final String fungi = "fungi";
     private final String kboDateset = "kbo";
     private final String fboDateset = "fbo";
@@ -41,6 +42,8 @@ public class BotDataProcessor implements Serializable {
     private String nameCsvFilePath;
     private String determinationCsvFilePath;
     private String exsiccateCsvFilePath;
+    
+    private String taxonCsvFilePath;
 
     private char delimiter;
     private String encoding;
@@ -60,6 +63,8 @@ public class BotDataProcessor implements Serializable {
     private List<CSVRecord> exsiccateRecords;
     private List<CSVRecord> imageRecords;
 
+    private List<CSVRecord> taxonRecords;
+    
     private JsonObject imageJson;
 
     private JsonObject mappingJson;
@@ -79,7 +84,7 @@ public class BotDataProcessor implements Serializable {
 
     @Inject
     private ImageData imageData;
-    
+
     @Inject
     private BotJsonConverter converter;
 
@@ -138,20 +143,29 @@ public class BotDataProcessor implements Serializable {
                                 catalogRecords = fileProcessor.read(catalogCsvFilePath, delimiter, encoding);
                                 nameMap = extractor.extractName(nameRecords, catalogRecords);
 
+                                log.info("done.....");
+
                                 exsiccateRecords = fileProcessor.read(exsiccateCsvFilePath, delimiter, encoding);
                                 exisccateMap = extractor.extractExsiccate(exsiccateRecords);
 
                                 records = fileProcessor.read(mainCsvFilePath, delimiter, encoding);
                                 log.info("records size : {}", records.size());
 
-                                list = converter.convert(records, nameMap, exisccateMap, determinationMap,
-                                        imageMap, collectionName, idPrefix, json);
+                                if (fileName.equals(fungi)) {
+                                    log.info("fungi...");
+                                    taxonRecords = fileProcessor.read(taxonCsvFilePath, delimiter, encoding);
+                                    log.info("taxonRecords : {}", taxonRecords.size());
+                                } else {
 
-                                list.stream()
-                                        .forEach(l -> {
-                                            status = solr.postToSolr(l.toString().trim());
-                                            log.info("status : {}", status);
-                                        });
+                                    list = converter.convert(records, nameMap, exisccateMap, determinationMap,
+                                            imageMap, collectionName, idPrefix, json);
+
+                                    list.stream()
+                                            .forEach(l -> {
+                                                status = solr.postToSolr(l.toString().trim());
+                                                log.info("status : {}", status);
+                                            });
+                                }
                             }
 
 //                            if (fileName.equals(vascularPlants)) {
@@ -255,6 +269,7 @@ public class BotDataProcessor implements Serializable {
                 nameCsvFilePath = properties.getFungiNameCsvFilePath();
                 determinationCsvFilePath = properties.getFungiBestCsvFilePath();
                 exsiccateCsvFilePath = properties.getFungiExsickatCsvFilePath();
+                taxonCsvFilePath = properties.getFungiTaxonCsvFilePath();
                 break;
             case mosses:
                 mainCsvFilePath = properties.getMossesMainCsvFilePath();

@@ -40,7 +40,7 @@ public class DeterminationData implements Serializable {
     
     public Map<String, List<Determination>> extractData(
                 List<CSVRecord> determinationRecords, JsonObject json) {
-        log.info("extractDeterminationData");
+        log.info("extractDeterminationData : {}", json);
         determinationMap = new LinkedHashMap(); 
         currentDetermination = null;
         

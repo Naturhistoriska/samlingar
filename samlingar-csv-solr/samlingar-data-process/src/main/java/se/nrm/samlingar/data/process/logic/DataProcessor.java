@@ -55,7 +55,7 @@ public class DataProcessor implements Serializable  {
             array = fileHander.readMappingJsonFile(getMappingFilePath(collection)); 
             csvFilePath = getCsvFilePath(collection);
             deleteData = delete(); 
-            imageArray = jsonFileHander.readMappingJsonFile(propeties.getImageMappingFilePath());
+            imageArray = jsonFileHander.readMappingJsonFile(getImageMappingFilePath());
             
             switch (collection) {
             case zooCollection:  
@@ -93,6 +93,10 @@ public class DataProcessor implements Serializable  {
      */
     private String getCsvFilePath(String collection) {
        return propeties.getCsvFile(collection);
+    }
+    
+    private String getImageMappingFilePath() {
+        return propeties.getImageMappingFilePath();
     }
     
     /**

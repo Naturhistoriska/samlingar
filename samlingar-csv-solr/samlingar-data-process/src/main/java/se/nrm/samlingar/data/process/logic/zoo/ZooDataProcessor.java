@@ -62,7 +62,6 @@ public class ZooDataProcessor implements Serializable {
                             fileName = JsonHelper.getInstance().getJsonValue(
                                     json, CommonString.getInstance().getFileNameKey());
                             
-                            
                             delimiter = JsonHelper.getInstance().getDelimiter(
                                     json, CommonString.getInstance().getSeparatorKey());
                             encoding = JsonHelper.getInstance().getJsonValue(
@@ -70,11 +69,11 @@ public class ZooDataProcessor implements Serializable {
                             log.info("encoding... {} -- {}", encoding, fileName);
   
                             records = fileProcessor.read(filePath, fileName, delimiter, encoding);
-                            log.info("records size : {}", records.size());
                              
                             collectionId = JsonHelper.getInstance().getIdPrefix(json);
                              
                             if (records != null) {
+                                log.info("records size : {}", records.size());
                                 if (delete) {
                                     solr.deleteCollection(collectionId);
                                 }

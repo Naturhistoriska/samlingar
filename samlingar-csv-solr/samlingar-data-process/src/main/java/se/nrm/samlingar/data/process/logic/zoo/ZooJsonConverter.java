@@ -34,8 +34,9 @@ public class ZooJsonConverter implements Serializable {
     private JsonObject mappingJson; 
     private JsonObject classificationJson; 
     private JsonObject coordinatesJson;
- 
- 
+    private JsonObject eventDateJson;
+    private JsonObject eventEndDateJson;
+  
     private String csvEventDateKey;
     private String csvCatalogedDate;
     private String csvCoordinatesKey;
@@ -46,13 +47,14 @@ public class ZooJsonConverter implements Serializable {
     private String longitude;
 
     private List<JsonArray> list;
-    private List<String> classificationKeys;
+//    private List<String> classificationKeys;
 
     private JsonObjectBuilder attBuilder;
     private JsonArrayBuilder arrayBuilder;
   
     private boolean isStringCoordinates; 
-    
+    private boolean isStringEventdate;
+    private boolean hasSynonyms; 
         
     @Inject
     private CoordinatesBuilder coordinatesBuilder;
@@ -73,13 +75,23 @@ public class ZooJsonConverter implements Serializable {
         log.info("mappingJosn : {}", mappingJson);
 
         classificationJson = JsonHelper.getInstance().getClassificationJson(json);
-        classificationKeys = new ArrayList();
-        if (classificationJson != null) {
-            classificationJson.keySet()
-                    .stream().forEach(key -> {
-                        classificationKeys.add(classificationJson.getString(key));
-                    });
-        }
+//        classificationKeys = new ArrayList();
+//        if (classificationJson != null) {
+//            classificationJson.keySet()
+//                    .stream().forEach(key -> {
+//                        classificationKeys.add(classificationJson.getString(key));
+//                    });
+//        }
+        isStringEventdate = JsonHelper.getInstance().isStringEventDate(json);
+        log.info("isStringEventdate : {}", isStringEventdate);
+        if (isStringEventdate) { 
+            csvEventDateKey = JsonHelper.getInstance().getEventDateCsvKey(json); 
+        } else {
+            eventDateJson = JsonHelper.getInstance().getEventDateJson(json);
+            log.info("eventDateJson : {}", eventDateJson);
+        } 
+        
+        eventEndDateJson = JsonHelper.getInstance().getEventEndDateJson(json); 
 
         isStringCoordinates = JsonHelper.getInstance().isStringCoordinates(json);
         if (isStringCoordinates) {
@@ -91,6 +103,8 @@ public class ZooJsonConverter implements Serializable {
         
         csvCatalogedDate = JsonHelper.getInstance().getCatalogedDateCsvKey(json); 
         csvTypeStatusKey = JsonHelper.getInstance().getTypeStatusCsvKey(json);
+        
+        hasSynonyms = JsonHelper.getInstance().hasSynonyms(json); 
           
         AtomicInteger counter = new AtomicInteger(0);
 
@@ -146,17 +160,24 @@ public class ZooJsonConverter implements Serializable {
                                     .getInstance().getLongitudeCsvKey(coordinatesJson)).trim();
                             coordinatesBuilder.build(attBuilder, latitude, longitude);
                         }
-//                        log.info("add coordinates: {}", coordinatesJson);
-
-                        csvEventDateKey = JsonHelper.getInstance().getEventDateCsvKey(json);
-                        if (csvEventDateKey != null) {
+                        log.info("coordinates added...");
+                        
+                        if (isStringEventdate) {
                             JsonHelper.getInstance().addEventDate(attBuilder, record.get(csvEventDateKey));
+                        } else {
+                            JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
                         }
-//                        log.info("add eventDate " );
+                        log.info("eventDate added...");
+                        
+                        if(eventEndDateJson != null) {
+                            JsonHelper.getInstance().addEventEndDate(attBuilder, eventEndDateJson, record);
+                        }
                         
                         if (csvCatalogedDate != null) {
                             JsonHelper.getInstance().addCatalogDate(attBuilder, record.get(csvCatalogedDate));
                         }
+//                        log.info("catalogedDate added...");
+                        
 //                        log.info("add cataloged date " );
 //                        if (hasDeterminedDate) {
 //                            JsonHelper.getInstance().addDeterminedDate(attBuilder,
@@ -167,9 +188,16 @@ public class ZooJsonConverter implements Serializable {
                             JsonHelper.getInstance().addTypeStatus(attBuilder, 
                                     record.get(csvTypeStatusKey)); 
                         } 
-//                        log.info("add typestatus " );
+//                        log.info("typestatus added...");
+ 
+                        if(hasSynonyms) {
+                            JsonHelper.getInstance().addSynonyms(attBuilder, json, record);
+                        }
+                          
                         JsonHelper.getInstance().addCountry(attBuilder, json, record); 
-//                        log.info("add coutry " );
+                        log.info("add coutry " );
+                        
+                        
                         arrayBuilder.add(attBuilder);
 
                         if (counter.get() % batchSize == 0) {
@@ -186,8 +214,8 @@ public class ZooJsonConverter implements Serializable {
     }
 
     
-    private final Predicate<CSVRecord> isValid1 = record
-            ->  StringUtils.isBlank(record.get(csvCatalogNumberKey));
+//    private final Predicate<CSVRecord> isValid1 = record
+//            ->  StringUtils.isBlank(record.get(csvCatalogNumberKey));
     
     
     private final Predicate<CSVRecord> isValid = record

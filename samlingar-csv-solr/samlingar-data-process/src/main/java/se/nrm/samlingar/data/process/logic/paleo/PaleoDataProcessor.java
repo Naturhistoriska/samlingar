@@ -58,11 +58,11 @@ public class PaleoDataProcessor implements Serializable {
                             encoding = JsonHelper.getInstance().getJsonValue(
                                     collectionJson, CommonString.getInstance().getEncodingKey());
                             log.info("encoding... {}", encoding);
-                            
-                            
+                             
                             records = fileProcessor.read(filePath, fileName, delimiter, encoding);
-                            log.info("records size : {}", records.size());
+                            
                             if (records != null) {
+                                log.info("records size : {}", records.size());
                                 if (delete) {
                                     solr.deleteCollection(collectionId);
                                 }
@@ -75,7 +75,6 @@ public class PaleoDataProcessor implements Serializable {
                                             log.info("status : {}", status);
                                         });
                             }
-                             
                         });
 
             }

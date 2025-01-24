@@ -30,6 +30,7 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
         tags = {
             @Tag(name = "samlingar-service", description = "samlingar api")
         })
+@Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class SamlingarService {
 

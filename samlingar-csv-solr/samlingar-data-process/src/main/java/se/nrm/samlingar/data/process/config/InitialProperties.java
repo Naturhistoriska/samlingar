@@ -30,6 +30,7 @@ public class InitialProperties implements Serializable {
     private String fungiNameCsvPath;
     private String fungiCatalogCsvPath;
     private String fungiExsickatCsvPath;
+    private String fungiTaxonCsvPath;
 
     private String mossesCsvFilePath;
     private String mossesMainCsvPath;
@@ -90,6 +91,7 @@ public class InitialProperties implements Serializable {
             @ConfigurationValue("swarm.csv.file.paths.bot.fungi.name") String fungiNameCsvPath,
             @ConfigurationValue("swarm.csv.file.paths.bot.fungi.exsickat") String fungiExsickatCsvPath,
             @ConfigurationValue("swarm.csv.file.paths.bot.fungi.catalog") String fungiCatalogCsvPath,
+            @ConfigurationValue("swarm.csv.file.paths.bot.fungi.taxon") String fungiTaxonCsvPath,
             @ConfigurationValue("swarm.csv.file.paths.bot.mosses") String mossesCsvFilePath,
             @ConfigurationValue("swarm.csv.file.paths.bot.mosses.main") String mossesMainCsvPath,
             @ConfigurationValue("swarm.csv.file.paths.bot.mosses.best") String mossesBestCsvPath,
@@ -132,6 +134,7 @@ public class InitialProperties implements Serializable {
         this.fungiExsickatCsvPath = fungiExsickatCsvPath;
         this.fungiMainCsvPath = fungiMainCsvPath;
         this.fungiNameCsvPath = fungiNameCsvPath;
+        this.fungiTaxonCsvPath = fungiTaxonCsvPath;
         this.mossesBestCsvPath = mossesBestCsvPath;
         this.mossesCatalogCsvPath = mossesCatalogCsvPath;
         this.mossesCsvFilePath = mossesCsvFilePath;
@@ -224,6 +227,14 @@ public class InitialProperties implements Serializable {
             throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
         }
         return fungiNameCsvPath;
+    }
+    
+    public String getFungiTaxonCsvFilePath() {
+        if (fungiTaxonCsvPath == null) {
+            log.error("fungiTaxonCsvPath is null");
+            throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
+        }
+        return fungiTaxonCsvPath;
     }
 
     public String getMossesCsvFilePath() {

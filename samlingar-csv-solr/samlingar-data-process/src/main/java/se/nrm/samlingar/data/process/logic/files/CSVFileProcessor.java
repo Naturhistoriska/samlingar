@@ -25,23 +25,7 @@ public class CSVFileProcessor implements Serializable {
     public CSVFileProcessor() {
 
     }
-
-    public Iterable<CSVRecord> read1(String filePath, String fileName, char delimiter, String encoding) {
-
-        Reader in;
-        try {
-            in = new FileReader(Util.getInstance().buildCsvFilePath(filePath, fileName));
-            return CSVFormat.RFC4180.builder()
-                    .setDelimiter(delimiter)
-                    .build().parse(in);
-        } catch (FileNotFoundException ex) {
-            log.error(ex.getMessage());
-        } catch (IOException ex) {
-            log.error(ex.getMessage());
-        }
-        return null;
-    }
-
+ 
     public List<CSVRecord> read(String filePath, String fileName, char delimiter, String encoding) {
         File file = new File(Util.getInstance().buildCsvFilePath(filePath, fileName));
         if (file.exists()) {
@@ -52,6 +36,26 @@ public class CSVFileProcessor implements Serializable {
         }
         return null;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     public List<CSVRecord> read(String filePath, char delimiter, String encoding) {
         log.info("read : {}", filePath);
@@ -71,13 +75,13 @@ public class CSVFileProcessor implements Serializable {
         InputStream in;
         Reader reader = null;
         try {
-            in = new FileInputStream(file);
-            log.info("here...");
-            if (encoding == null) {
-                reader = new InputStreamReader(in);
-            } else {
-                reader = new InputStreamReader(in, encoding);
-            }
+            in = new FileInputStream(file); 
+            reader = encoding == null ? new InputStreamReader(in) : new InputStreamReader(in, encoding); 
+//            if (encoding == null) {
+//                reader = new InputStreamReader(in);
+//            } else {
+//                reader = new InputStreamReader(in, encoding);
+//            }
 
             return getCsvFormat(delimiter)
                     .parse(reader).getRecords();
