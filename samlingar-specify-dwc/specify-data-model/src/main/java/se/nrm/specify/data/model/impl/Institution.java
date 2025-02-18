@@ -3,12 +3,9 @@ package se.nrm.specify.data.model.impl;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.Entity; 
+import javax.persistence.Id; 
+import javax.persistence.Lob; 
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -74,9 +71,9 @@ public class Institution extends BaseEntity {
   @Column(name = "Remarks")
   private String remarks;
 
-  @JoinColumn(name = "StorageTreeDefID", referencedColumnName = "StorageTreeDefID")
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Storagetreedef storageTreeDef;
+//  @JoinColumn(name = "StorageTreeDefID", referencedColumnName = "StorageTreeDefID")
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  private Storagetreedef storageTreeDef;
 
   public Institution() {
   }
@@ -180,13 +177,13 @@ public class Institution extends BaseEntity {
     this.remarks = remarks;
   }
 
-  public Storagetreedef getStorageTreeDef() {
-    return storageTreeDef;
-  }
-
-  public void setStorageTreeDef(Storagetreedef storageTreeDef) {
-    this.storageTreeDef = storageTreeDef;
-  }
+//  public Storagetreedef getStorageTreeDef() {
+//    return storageTreeDef;
+//  }
+//
+//  public void setStorageTreeDef(Storagetreedef storageTreeDef) {
+//    this.storageTreeDef = storageTreeDef;
+//  }
 
   @Override
   public int hashCode() {

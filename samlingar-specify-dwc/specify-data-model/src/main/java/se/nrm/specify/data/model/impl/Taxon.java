@@ -1,6 +1,6 @@
 package se.nrm.specify.data.model.impl;
 
-import java.util.Date;
+import java.util.Date; 
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -15,7 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.Transient; 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import se.nrm.specify.data.model.BaseEntity;
@@ -25,7 +25,7 @@ import se.nrm.specify.data.model.BaseEntity;
  * @author idali
  */
 @Entity
-@Table(name = "taxon")
+@Table(name = "taxon") 
 @NamedQueries({
     @NamedQuery(name = "Taxon.findAll", query = "SELECT t FROM Taxon t"),
     @NamedQuery(name = "Taxon.findByTaxonID", query = "SELECT t FROM Taxon t WHERE t.taxonID = :taxonID")})
@@ -61,7 +61,7 @@ public class Taxon extends BaseEntity {
     @Basic(optional = false)
     @NotNull
     @Column(name = "RankID")
-    private int rank;
+    private int rankID;
 
     @JoinColumn(name = "AcceptedID", referencedColumnName = "TaxonID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -78,10 +78,11 @@ public class Taxon extends BaseEntity {
 //    @JoinColumn(name = "TaxonTreeDefID", referencedColumnName = "TaxonTreeDefID")
 //    @ManyToOne(optional = false, fetch = FetchType.LAZY)
 //    private Taxontreedef taxonTreeDef;
-    @OneToMany(mappedBy = "taxon", fetch = FetchType.LAZY)
-    private Set<Commonnametx> commonnametxs;
 
-    @OneToMany(mappedBy = "acceptedID", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "taxon", fetch = FetchType.LAZY)
+    private Set<Commonnametx> commonnametxList;
+
+    @OneToMany(mappedBy = "acceptedID", fetch = FetchType.LAZY) 
     private Set<Taxon> synomys;
 
     @Transient
@@ -96,11 +97,11 @@ public class Taxon extends BaseEntity {
         this.taxonID = taxonID;
     }
 
-    public Taxon(Integer taxonID, Date timestampCreated, String name, int rank) {
+    public Taxon(Integer taxonID, Date timestampCreated, String name, int rankID) {
         this.taxonID = taxonID;
         this.timestampCreated = timestampCreated;
         this.name = name;
-        this.rank = rank;
+        this.rankID = rankID;
     }
 
     public Integer getTaxonID() {
@@ -161,12 +162,12 @@ public class Taxon extends BaseEntity {
         this.name = name;
     }
 
-    public int getRank() {
-        return rank;
+    public int getRankID() {
+        return rankID;
     }
 
-    public void setRankID(int rank) {
-        this.rank = rank;
+    public void setRankID(int rankID) {
+        this.rankID = rankID;
     }
 
     public Taxon getAcceptedID() {
@@ -177,13 +178,13 @@ public class Taxon extends BaseEntity {
         this.acceptedID = acceptedID;
     }
 
-    public Taxontreedefitem getTaxonTreeDefItem() {
-        return taxonTreeDefItem;
-    }
-
-    public void setTaxonTreeDefItem(Taxontreedefitem taxonTreeDefItem) {
-        this.taxonTreeDefItem = taxonTreeDefItem;
-    }
+//    public Taxontreedefitem getTaxonTreeDefItem() {
+//        return taxonTreeDefItem;
+//    }
+//
+//    public void setTaxonTreeDefItem(Taxontreedefitem taxonTreeDefItem) {
+//        this.taxonTreeDefItem = taxonTreeDefItem;
+//    }
 
     public Taxon getParent() {
         return parent;
@@ -200,6 +201,7 @@ public class Taxon extends BaseEntity {
 //    public void setTaxonTreeDef(Taxontreedef taxonTreeDef) {
 //        this.taxonTreeDef = taxonTreeDef;
 //    }
+
     public Set<Taxon> getSynomys() {
         return synomys;
     }
@@ -208,210 +210,77 @@ public class Taxon extends BaseEntity {
         this.synomys = synomys;
     }
 
-    public Set<Commonnametx> getCommonnametxs() {
-        return commonnametxs;
+    public Set<Commonnametx> getCommonnametxList() {
+        return commonnametxList;
     }
 
-    public void setCommonnametxs(Set<Commonnametx> commonnametxs) {
-        this.commonnametxs = commonnametxs;
+    public void setCommonnametxList(Set<Commonnametx> commonnametxList) {
+        this.commonnametxList = commonnametxList;
     }
 
-    public String getSubspecies() {
-        if (rank == 230) {
-            return name;
-        }
-        if (rank > 230) {
-            Taxon newParent = parent;
-            while (newParent.getRank() > 230) {
-                newParent = newParent.getParent();
-            }
-            if (newParent.getRank() == 230) {
-                return newParent.getName();
-            }
-        }
-        return null;
+    public Taxontreedefitem getTaxonTreeDefItem() {
+        return taxonTreeDefItem;
     }
+
+    public void setTaxonTreeDefItem(Taxontreedefitem taxonTreeDefItem) {
+        this.taxonTreeDefItem = taxonTreeDefItem;
+    }
+    
+    
 
     public String getSpecies() {
-        if (rank == 220) {
-            return name;
+        if (rankID == 220) {
+            return fullName;
         }
-        if (rank > 220) {
+        if (rankID > 220) {
             Taxon newParent = parent;
-            while (newParent.getRank() > 220) {
+            while (newParent.getRankID() > 220) {
                 newParent = newParent.getParent();
             }
-            if (newParent.getRank() == 220) {
-                return newParent.getName();
-            }
-        }
-        return null;
-    }
-
-    public String getSubgenus() {
-        if (rank == 190) {
-            return name;
-        }
-        if (rank > 190) {
-            Taxon newParent = parent;
-            while (newParent.getRank() > 190) {
-                newParent = newParent.getParent();
-            }
-            if (newParent.getRank() == 190) {
-                return newParent.getName();
+            if (newParent.getRankID() == 220) {
+                return newParent.getFullName();
             }
         }
         return null;
     }
 
     public String getGenus() {
-        if (rank == 180) {
-            return name;
+        if (rankID == 180) {
+            return fullName;
         }
-        if (rank > 180) {
+        if (rankID > 180) {
             Taxon newParent = parent;
-            while (newParent.getRank() > 180) {
+            while (newParent.getRankID() > 180) {
                 newParent = newParent.getParent();
             }
-            if (newParent.getRank() == 180) {
-                return newParent.getName();
+            if (newParent.getRankID() == 180) {
+                return newParent.getFullName();
             }
         }
         return null;
     }
 
     public String getFamily() {
-        if (rank == 140) {
-            return name;
+        if (rankID == 140) {
+            return fullName;
         }
-        if (rank > 140) {
+        if (rankID > 140) {
             Taxon newParent = parent;
-            while (newParent.getRank() > 140) {
+            while (newParent.getRankID() > 140) {
                 newParent = newParent.getParent();
             }
-            if (newParent.getRank() == 140) {
-                return newParent.getName();
+            if (newParent.getRankID() == 140) {
+                return newParent.getFullName();
             }
         }
         return null;
     }
 
-    public String getOrder() {
-        if (rank == 100) {
-            return name;
-        }
-        if (rank > 100) {
-            Taxon newParent = parent;
-            while (newParent.getRank() > 100) {
-                newParent = newParent.getParent();
-            }
-            if (newParent.getRank() == 100) {
-                return newParent.getName();
-            }
-        }
-        return null;
-    }
-
-    public String getClazz() {
-        if (rank == 60) {
-            return name;
-        }
-        if (rank > 60) {
-            Taxon newParent = parent;
-            while (newParent.getRank() > 60) {
-                newParent = newParent.getParent();
-            }
-            if (newParent.getRank() == 60) {
-                return newParent.getName();
-            }
-        }
-        return null;
-    }
-
-    public String getPhylum() {
-        if (rank == 30) {
-            return name;
-        }
-        if (rank > 30) {
-            Taxon newParent = parent;
-            while (newParent.getRank() > 30) {
-                newParent = newParent.getParent();
-            }
-            if (newParent.getRank() == 30) {
-                return newParent.getName();
-            }
-        }
-        return null;
-    }
-
-    public String getKingdom() {
-        if (rank == 10) {
-            return name;
-        }
-        if (rank > 10) {
-            Taxon newParent = parent;
-            while (newParent.getRank() > 10) {
-                newParent = newParent.getParent();
-            }
-            if (newParent.getRank() == 10) {
-                return newParent.getName();
-            }
-        }
-        return null;
-    }
-
-//    public String getSpecies() {
-//        if (rankID == 220) {
-//            return fullName;
-//        }
-//        if (rankID > 220) {
-//            Taxon newParent = parent;
-//            while (newParent.getRankID() > 220) {
-//                newParent = newParent.getParent();
-//            }
-//            if (newParent.getRankID() == 220) {
-//                return newParent.getFullName();
-//            }
-//        }
-//        return null;
-//    }
-//
-//    public String getGenus() {
-//        if (rankID == 180) {
-//            return fullName;
-//        }
-//        if (rankID > 180) {
-//            Taxon newParent = parent;
-//            while (newParent.getRankID() > 180) {
-//                newParent = newParent.getParent();
-//            }
-//            if (newParent.getRankID() == 180) {
-//                return newParent.getFullName();
-//            }
-//        }
-//        return null;
-//    }
-//
-//    public String getFamily() {
-//        if (rankID == 140) {
-//            return fullName;
-//        }
-//        if (rankID > 140) {
-//            Taxon newParent = parent;
-//            while (newParent.getRankID() > 140) {
-//                newParent = newParent.getParent();
-//            }
-//            if (newParent.getRankID() == 140) {
-//                return newParent.getFullName();
-//            }
-//        }
-//        return null;
-//    }
     public String getHighClassification() {
         sb = new StringBuilder();
-        if (rank > 0) {
+        if (rankID > 0) {
             Taxon newParent = parent;
-            while (newParent.getRank() > 0) {
+            while (newParent.getRankID() > 0) {
                 if (sb.length() > 0) {
                     sb.insert(0, slash);
                 }

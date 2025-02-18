@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import se.nrm.specify.data.model.impl.Agent;
 
 /**
  *
@@ -16,7 +18,10 @@ public class Util {
 
     private static Util instance = null;
     private StringBuilder mappingFilePathSB;
-    private final String underScore = "_";
+    private final String underScore = "_";  
+    private final String emptySpace = " ";
+    
+    
     private final String defaultKey = "default";
     private final String nrmIndex = "nrm_index";
     private final String gnmIndex = "gnm_index";
@@ -29,6 +34,8 @@ public class Util {
     private final String internalServerError = "Internal Server Error";
 
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    
+    private StringBuilder agentSb;
 
     public static Util getInstance() {
         synchronized (Util.class) {
@@ -97,6 +104,32 @@ public class Util {
             return ((String) value).trim();
         }
     }
+    
+        
+//    public String buildAgentName(Agent agent) {
+//        
+//        agent.getFullName();
+//        agentSb = new StringBuilder();
+//        if (!StringUtils.isBlank(agent.getFirstName()) ) {
+//            agentSb.append(agent.getFirstName());
+//            if(!StringUtils.isBlank(agent.getMiddleInitial()) {
+//                
+//            }
+//            agentSb.append(emptySpace);
+//        }
+//        if (!StringUtils.isBlank(agent.getMiddleInitial())) {
+//            agentSb.append(agent.getMiddleInitial());
+//            agentSb.append(emptySpace);
+//        }
+//        if (!StringUtils.isBlank(agent.getLastName())) {
+//            agentSb.append(agent.getLastName());
+//        }
+//        return agentSb.toString().trim();
+//    }
+//    
+//    public String buildCollectorsName(Agent agent) { 
+//        return buildAgentName(agent);
+//    }
 
 //  400 Bad Request — Client sent an invalid request — such as lacking required request body or parameter
 //401 Unauthorized — Client failed to authenticate with the server

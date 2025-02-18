@@ -2,7 +2,6 @@ package se.nrm.specify.data.model.impl;
  
 import java.math.BigDecimal;
 import java.util.Date; 
-import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +14,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery; 
-import javax.persistence.OneToMany;
 import javax.persistence.Table; 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size; 
@@ -98,12 +96,6 @@ public class Locality extends BaseEntity {
     @JoinColumn(name = "GeographyID", referencedColumnName = "GeographyID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Geography geography;
-    
-    @OneToMany(mappedBy = "locality")
-    private Set<Localitydetail> localitydetails;
-    
-    @OneToMany(mappedBy = "locality")
-    private Set<Geocoorddetail> geocoorddetails;
       
     public Locality() {
     }
@@ -263,24 +255,6 @@ public class Locality extends BaseEntity {
     public void setGeography(Geography geography) {
         this.geography = geography;
     }
-
-    public Set<Localitydetail> getLocalitydetails() {
-        return localitydetails;
-    }
-
-    public void setLocalitydetails(Set<Localitydetail> localitydetails) {
-        this.localitydetails = localitydetails;
-    }
-
-    public Set<Geocoorddetail> getGeocoorddetails() {
-        return geocoorddetails;
-    }
-
-    public void setGeocoorddetails(Set<Geocoorddetail> geocoorddetails) {
-        this.geocoorddetails = geocoorddetails;
-    }
-    
-    
  
     @Override
     public int hashCode() {

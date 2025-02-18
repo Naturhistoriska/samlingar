@@ -1,6 +1,7 @@
 package se.nrm.specify.data.model.impl;
  
-import java.util.Date;  
+import java.util.Date; 
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Basic; 
 import javax.persistence.Column;
@@ -89,11 +90,7 @@ public class Collectingevent extends BaseEntity {
     private Locality locality;
      
     @OneToMany(mappedBy = "collectingEvent", fetch = FetchType.LAZY)
-    private Set<Collector> collectors;
-    
-    @JoinColumn(name = "CollectingEventAttributeID", referencedColumnName = "CollectingEventAttributeID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Collectingeventattribute collectingEventAttribute;
+    private Set<Collector> collectorList;
 
     public Collectingevent() {
     }
@@ -229,24 +226,13 @@ public class Collectingevent extends BaseEntity {
         this.locality = locality;
     }
   
-    public Set<Collector> getCollectors() {
-        return collectors;
+    public Set<Collector> getCollectorList() {
+        return collectorList;
     }
 
-    public void setCollectors(Set<Collector> collectors) {
-        this.collectors = collectors;
+    public void setCollectorList(Set<Collector> collectorList) {
+        this.collectorList = collectorList;
     }
-
-    public Collectingeventattribute getCollectingEventAttribute() {
-        return collectingEventAttribute;
-    }
-
-    public void setCollectingEventAttribute(Collectingeventattribute collectingEventAttribute) {
-        this.collectingEventAttribute = collectingEventAttribute;
-    }
-    
-    
-    
 
     @Override
     public int hashCode() {

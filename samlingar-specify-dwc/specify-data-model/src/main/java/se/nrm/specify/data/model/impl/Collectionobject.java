@@ -1,6 +1,7 @@
 package se.nrm.specify.data.model.impl;
  
-import java.util.Date; 
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -33,8 +34,10 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Collectionobject.findAll", query = "SELECT c FROM Collectionobject c"),
     @NamedQuery(name = "Collectionobject.findByCollectionObjectID", query = "SELECT c FROM Collectionobject c WHERE c.collectionObjectID in :ids"), 
     @NamedQuery(name = "Collectionobject.findAllIds",
-          query = "SELECT c.collectionObjectID FROM Collectionobject c where c.collection.code = :code ORDER BY c.collectionObjectID"),
+            query = "SELECT c.collectionObjectID FROM Collectionobject c where c.collectionMemberID = :collectionMemberID ORDER BY c.collectionObjectID"),
     @NamedQuery(name = "Collectionobject.findByCollectionMemberID", query = "SELECT c FROM Collectionobject c WHERE c.collectionMemberID = :collectionMemberID"),
+    @NamedQuery(name = "Collectionobject.findAllIdsByCollectionCode",
+            query = "SELECT c.collectionObjectID FROM Collectionobject c where c.collection.code = :code ORDER BY c.collectionObjectID"),
     @NamedQuery(name = "Collectionobject.findByCollectionMemberIDAndIds", 
             query = "SELECT c FROM Collectionobject c WHERE c.collectionMemberID = :collectionMemberID AND c.collectionObjectID in :ids ORDER BY c.collectionObjectID")})
 public class Collectionobject extends BaseEntity {
@@ -54,6 +57,10 @@ public class Collectionobject extends BaseEntity {
     @Column(name = "CatalogNumber")
     private String catalogNumber;
     
+     
+//    @Column(name = "CountAmt")
+//    private int countAmt;
+
     @Column(name = "CatalogedDate")
     @Temporal(TemporalType.DATE)
     private Date catalogedDate;
@@ -128,13 +135,13 @@ public class Collectionobject extends BaseEntity {
     private Collectionobjectattribute collectionObjectAttribute;
      
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "collectionObject", fetch = FetchType.LAZY) 
-    private Set<Determination> determinations;
+    private Set<Determination> determinationList;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "collectionObject", fetch = FetchType.LAZY)
-    private Set<Preparation> preparations;
+    private Set<Preparation> preparationList;
      
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "collectionObject", fetch = FetchType.LAZY)
-    private Set<Collectionobjectattachment> collectionobjectattachments;
+    private Set<Collectionobjectattachment> collectionobjectattachmentList;
      
     public Collectionobject() {
     }
@@ -198,7 +205,15 @@ public class Collectionobject extends BaseEntity {
     public void setCatalogedDatePrecision(Short catalogedDatePrecision) {
         this.catalogedDatePrecision = catalogedDatePrecision;
     }
-
+ 
+//    public int getCountAmt() {
+//        return countAmt;
+//    }
+//
+//    public void setCountAmt(int countAmt) {
+//        this.countAmt = countAmt;
+//    }
+    
     public Boolean getDeaccessioned() {
         return deaccessioned;
     }
@@ -320,28 +335,28 @@ public class Collectionobject extends BaseEntity {
         this.collectionObjectAttribute = collectionObjectAttribute;
     }
  
-    public Set<Determination> getDeterminations() {
-        return determinations;
+    public Set<Determination> getDeterminationList() {
+        return determinationList;
     }
 
-    public void setDeterminations(Set<Determination> determinations) {
-        this.determinations = determinations;
+    public void setDeterminationList(Set<Determination> determinationList) {
+        this.determinationList = determinationList;
     }
  
-    public Set<Preparation> getPreparations() {
-        return preparations;
+    public Set<Preparation> getPreparationList() {
+        return preparationList;
     }
 
-    public void setPreparationList(Set<Preparation> preparations) {
-        this.preparations = preparations;
+    public void setPreparationList(Set<Preparation> preparationList) {
+        this.preparationList = preparationList;
     }
  
-    public Set<Collectionobjectattachment> getCollectionobjectattachments() {
-        return collectionobjectattachments;
+    public Set<Collectionobjectattachment> getCollectionobjectattachmentList() {
+        return collectionobjectattachmentList;
     }
 
-    public void setCollectionobjectattachments(Set<Collectionobjectattachment> collectionobjectattachments) {
-        this.collectionobjectattachments = collectionobjectattachments;
+    public void setCollectionobjectattachmentList(Set<Collectionobjectattachment> collectionobjectattachmentList) {
+        this.collectionobjectattachmentList = collectionobjectattachmentList;
     }
  
     @Override

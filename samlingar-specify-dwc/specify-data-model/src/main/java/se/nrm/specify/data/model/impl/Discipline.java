@@ -2,11 +2,10 @@ package se.nrm.specify.data.model.impl;
  
 import java.util.Date; 
 import javax.persistence.Basic; 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity; 
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id; 
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -39,11 +38,6 @@ public class Discipline extends BaseEntity {
     @Size(max = 64)
     @Column(name = "Name")
     private String name;
-    
-    @JoinColumn(name = "DivisionID", referencedColumnName = "UserGroupScopeId")
-    @ManyToOne(optional = false, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    private Division division;
-     
           
 //    @JoinColumn(name = "GeographyTreeDefID", referencedColumnName = "GeographyTreeDefID")
 //    @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -115,16 +109,6 @@ public class Discipline extends BaseEntity {
 //    public void setTaxonTreeDef(Taxontreedef taxonTreeDef) {
 //        this.taxonTreeDef = taxonTreeDef;
 //    }
-
-    public Division getDivision() {
-        return division;
-    }
-
-    public void setDivision(Division division) {
-        this.division = division;
-    }
-    
-    
   
     @Override
     public int hashCode() {

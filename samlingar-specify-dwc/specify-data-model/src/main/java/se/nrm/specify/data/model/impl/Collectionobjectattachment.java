@@ -56,7 +56,7 @@ public class Collectionobjectattachment extends BaseEntity {
     private Attachment attachment;
     
     @JoinColumn(name = "CollectionObjectID", referencedColumnName = "CollectionObjectID")
-    @ManyToOne(optional = false,  fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Collectionobject collectionObject;
 
     public Collectionobjectattachment() {

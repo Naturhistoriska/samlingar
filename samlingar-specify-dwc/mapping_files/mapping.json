@@ -2,14 +2,17 @@
     "default": {
       "modified": "timestampModified",
       "catalogNumber": "catalogNumber",
+      "catalogedDate": "catalogedDate",
       "individualCount": "countAmt",
       "occurrenceRemarks": "remarks",
-      "otherCatalogNumbers": "altCatalogNumber",
-      "fieldNumber": "fieldNumber",
       "guid": "guid",
+      "accession": {
+        "accessionNumber": "accessionNumber",
+        "accessionRemarks": "remarks"
+      },
       "collection": {
         "collectionCode": "code",
-        "datasetName": "description",
+        "collectionName": "collectionName",
         "basisOfRecord": "collectionType",
         "discipline": {
           "division": {
@@ -24,18 +27,14 @@
       },
       "collectionObjectAttribute": {
         "sex": "text1",
-        "lifeStage": "text4",
-        "reproductiveCondition": "text3"
+        "lifeStage": "text4"
       },
       "collectingEvent": {
         "eventDate": "startDate",
         "eventTime": "startTime",
-        "startDayOfYear": "StartDayOfYear",
-        "endDayOfYear": "EndDayOfYear",
-        "eventTime": "startTime",
         "verbatimEventDate": "verbatimDate",
+        "fieldNumber": "stationFieldNumber",
         "eventRemarks": "remarks",
-        "verbatimLocality": "verbatimLocality",
         "collectingEventAttribute": {
           "minimumDepthInMeters": "text1",
           "maximumDepthInMeters": "text2",
@@ -43,14 +42,13 @@
         },
         "collectors": {
           "agent": {
-            "recordedBy": "FullName"
+            "recordedBy": "fullName"
           }
         },
         "locality": {
           "locality": "localityName",
           "minimumElevationInMeters": "minElevation",
           "maximumElevationInMeters": "maxElevation",
-          "verbatimElevation": "verbatimElevation",
           "locationRemarks": "remarks",
           "decimalLatitude": "latitude1",
           "decimalLongitude": "longitude1",
@@ -67,21 +65,10 @@
             "waterBody": "waterBody",
             "islandGroup": "islandGroup",
             "island": "island"
-          },
-          "geocoorddetails": {
-            "georeferencedDate": "geoRefDetDate",
-            "georeferenceProtocol": "protocol",
-            "georeferenceSources": "source",
-            "georeferenceVerificationStatus": "geoRefVerificationStatus",
-            "georeferenceRemarks": "geoRefRemarks",
-            "agent": {
-              "georeferencedBy": "FullName"
-            }
           }
         }
       },
       "determinations": {
-        "identificationQualifier": "qualifier",
         "typeStatus": "typeStatusName",
         "dateIdentified": "determinedDate",
         "identificationRemarks": "remarks",

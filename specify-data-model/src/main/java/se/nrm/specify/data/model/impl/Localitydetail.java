@@ -8,8 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
+import javax.persistence.JoinColumn; 
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -36,39 +35,7 @@ public class Localitydetail extends BaseEntity {
   @Basic(optional = false)
   @Column(name = "LocalityDetailID")
   private Integer localityDetailID;
-
-  @Lob
-  @Size(max = 65535)
-  @Column(name = "GML")
-  private String gml;
-
-  @Size(max = 64)
-  @Column(name = "NationalParkName")
-  private String nationalParkName;
-
-  @Size(max = 50)
-  @Column(name = "RangeDesc")
-  private String rangeDesc;
-
-  @Size(max = 50)
-  @Column(name = "RangeDirection")
-  private String rangeDirection;
-
-  @Size(max = 50)
-  @Column(name = "Township")
-  private String township;
-
-  @Size(max = 50)
-  @Column(name = "TownshipDirection")
-  private String townshipDirection;
-
-  @Size(max = 32)
-  @Column(name = "PaleoLat")
-  private String paleoLat;
-
-  @Size(max = 32)
-  @Column(name = "PaleoLng")
-  private String paleoLng;
+    
   
   @Size(max = 64)
   @Column(name = "WaterBody")
@@ -115,71 +82,7 @@ public class Localitydetail extends BaseEntity {
   public void setLocalityDetailID(Integer localityDetailID) {
     this.localityDetailID = localityDetailID;
   }
-
-  public String getGml() {
-    return gml;
-  }
-
-  public void setGml(String gml) {
-    this.gml = gml;
-  }
-
-  public String getNationalParkName() {
-    return nationalParkName;
-  }
-
-  public void setNationalParkName(String nationalParkName) {
-    this.nationalParkName = nationalParkName;
-  }
-
-  public String getRangeDesc() {
-    return rangeDesc;
-  }
-
-  public void setRangeDesc(String rangeDesc) {
-    this.rangeDesc = rangeDesc;
-  }
-
-  public String getRangeDirection() {
-    return rangeDirection;
-  }
-
-  public void setRangeDirection(String rangeDirection) {
-    this.rangeDirection = rangeDirection;
-  }
-
-  public String getTownship() {
-    return township;
-  }
-
-  public void setTownship(String township) {
-    this.township = township;
-  }
-
-  public String getTownshipDirection() {
-    return townshipDirection;
-  }
-
-  public void setTownshipDirection(String townshipDirection) {
-    this.townshipDirection = townshipDirection;
-  }
-
-  public String getPaleoLat() {
-    return paleoLat;
-  }
-
-  public void setPaleoLat(String paleoLat) {
-    this.paleoLat = paleoLat;
-  }
-
-  public String getPaleoLng() {
-    return paleoLng;
-  }
-
-  public void setPaleoLng(String paleoLng) {
-    this.paleoLng = paleoLng;
-  }
-   
+ 
   public String getWaterBody() {
     return waterBody;
   }

@@ -6,9 +6,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import se.nrm.specify.data.exceptions.DinaException;
-import se.nrm.specify.data.exceptions.ErrorMsg;
+import lombok.extern.slf4j.Slf4j; 
 import se.nrm.specify.data.model.EntityBean;
 
 /**
@@ -95,8 +93,9 @@ public class ReflectionHelper {
         } catch (NoSuchFieldException e) {
             Class superClass = clazz.getSuperclass();
             if (superClass == null) {
-                throw new DinaException(ErrorMsg.getInstance()
-                        .getFieldNotExist(clazz.getSimpleName(), fieldName), 400);
+//                throw new DinaException(ErrorMsg.getInstance()
+//                        .getFieldNotExist(clazz.getSimpleName(), fieldName), 400);
+                return false;
             } else {
                 return isCollection(superClass, fieldName);
             }
@@ -116,8 +115,9 @@ public class ReflectionHelper {
         } catch (NoSuchFieldException e) {
             Class superClass = clazz.getSuperclass();
             if (superClass == null) {
-                throw new DinaException(ErrorMsg.getInstance()
-                        .getFieldNotExist(clazz.getSimpleName(), fieldName), 400);
+//                throw new DinaException(ErrorMsg.getInstance()
+//                        .getFieldNotExist(clazz.getSimpleName(), fieldName), 400);
+                return false;
             } else {
                 return isList(superClass, fieldName);
             }

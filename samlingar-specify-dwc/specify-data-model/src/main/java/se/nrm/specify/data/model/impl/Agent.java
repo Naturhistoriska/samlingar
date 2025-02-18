@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery; 
 import javax.persistence.Table; 
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;  
 import se.nrm.specify.data.model.BaseEntity;
@@ -74,6 +75,13 @@ public class Agent extends BaseEntity {
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "agentID", fetch = FetchType.LAZY)
 //    private List<Collector> collectorList;
        
+    @Transient
+    private StringBuilder fullNameSb;
+       
+    @Transient
+    private final String emptySpace = " ";
+    
+    
     public Agent() {
     }
 
@@ -155,6 +163,25 @@ public class Agent extends BaseEntity {
  
     public String getTitle() {
         return title;
+    }
+    
+    public String getFullName() {
+        fullNameSb = new StringBuilder();
+        
+        if(firstName != null) {
+            fullNameSb.append(firstName);
+            if(middleInitial != null) {
+                fullNameSb.append(emptySpace);
+                fullNameSb.append(middleInitial);
+                if(lastName != null) {
+                    fullNameSb.append(emptySpace);
+                    fullNameSb.append(lastName);
+                }
+            } 
+        } else if(lastName != null)  {  
+            return lastName; 
+        }
+        return fullNameSb.toString().trim();
     }
   
 //    public Division getDivision() {
