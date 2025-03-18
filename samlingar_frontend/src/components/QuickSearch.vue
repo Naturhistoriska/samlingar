@@ -75,22 +75,25 @@ export default {
     },
 
     apiAutoComplete(event) {
-      let searchText = event.query
-      if (!this.itemSelected) {
-        searchText += '*'
-      }
+      console.log('apiAutoComplete', event.query)
 
-      searchText = searchText.replace(/^./, searchText[0].toUpperCase()) // Capitalize first letter
-      console.log('searchText', searchText)
+      let searchText = event.query
+
+      // let fuzzySearch = !this.itemSelected
+
+      // if (!this.itemSelected) {
+      //   searchText += '*'
+      // }
+
+      // searchText = searchText.replace(/^./, searchText[0].toUpperCase()) // Capitalize first letter
 
       service
-        .apiAutoCompleteSearch(searchText, 0, 10)
+        .apiAutoCompleteSearch(searchText)
         .then((response) => {
-          const facets = response.facets.txFullName
+          const facets = response.facets.scientificName
           if (facets) {
             this.items = facets.buckets.map((a) => a.val)
           }
-          // this.items = response.response.map((a) => a.txFullName)
         })
         .catch()
         .finally(() => {})
@@ -98,16 +101,17 @@ export default {
 
     apiSearch() {
       let searchText = this.search
+      const fuzzySearch = !this.itemSelected
 
-      searchText = searchText.replace(/^./, searchText[0].toUpperCase())
-      if (this.itemSelected) {
-        searchText = '%2BtxFullName:"' + searchText + '"'
-      } else {
-        searchText = '%2B(txFullName:' + searchText + '*' + ' txFullName:"' + searchText + '")'
-      }
-      console.log('what..2..', searchText)
+      // searchText = searchText.replace(/^./, searchText[0].toUpperCase())
+      // if (this.itemSelected) {
+      //   searchText = '%2BtxFullName:"' + searchText + '"'
+      // } else {
+      //   searchText = '%2B(txFullName:' + searchText + '*' + ' txFullName:"' + searchText + '")'
+      // }
+      // console.log('what..2..', searchText)
       service
-        .apiSimpleSearch(searchText, 0, 10)
+        .apiQuickSearch(searchText, fuzzySearch, 0, 10)
         .then((response) => {
           const total = response.response.numFound
           const results = response.response.docs

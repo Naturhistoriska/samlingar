@@ -58,8 +58,64 @@ onBeforeRouteLeave((to, from) => {
 onMounted(() => {
   console.log('home mounted')
   fetchInitdata()
-  // fetchStatisticData()
 })
+
+function fetchInitdata() {
+  service
+    .apiInitdata()
+    .then((response) => {
+      const facets = response.facets
+
+      const totalCount = facets.count
+      store.commit('setTotalCount', totalCount)
+
+      setSearchCommentFacet(facets)
+      setChartData(facets)
+
+      const zooGroup = import.meta.env.VITE_ZOO_GROUP
+      const geoGroup = import.meta.env.VITE_GEO_GROUP
+      const paleaGroup = import.meta.env.VITE_PALEA_GROUP
+      const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
+
+      let zooCount = 0
+      let paleaCount = 0
+      let botanyCount = 0
+      let geoCount = 0
+      const collections = facets.collectionCode.buckets
+
+      for (let i = 0; i < collections.length; i++) {
+        const collection = collections[i]
+        const collectionId = collection.val
+
+        const count = collection.count
+        if (zooGroup.includes(collectionId)) {
+          zooCount += count
+        } else if (paleaGroup.includes(collectionId)) {
+          paleaCount += count
+        } else if (geoGroup.includes(collectionId)) {
+          geoCount += count
+        } else if (botanyGroup.includes(collectionId)) {
+          botanyCount += collection.count
+        }
+      }
+
+      store.commit('setBotanyCollectionTotal', botanyCount)
+      store.commit('setGeoCollectionTotal', geoCount)
+      store.commit('setPaleaCollectionTotal', paleaCount)
+      store.commit('setZooCollectionTotal', zooCount)
+
+      store.commit('setFilterImage', false)
+      store.commit('setFilterCoordinates', false)
+      store.commit('setFilterInSweden', false)
+      store.commit('setFilterType', false)
+
+      store.commit('setSelectedCollection', null)
+      store.commit('setSelectedType', null)
+      store.commit('setSelectedFamily', null)
+    })
+    .catch()
+    .finally(() => {})
+}
 
 const isAdvanceSearch = computed(() => {
   console.log('router namme', router.currentRoute.value.name)
@@ -205,63 +261,6 @@ function setChartData(facets) {
   // }
   // currentYearMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
   // store.commit('setMonthData', currentYearMonthData)
-}
-
-function fetchInitdata() {
-  service
-    .apiInitdata()
-    .then((response) => {
-      const facets = response.facets
-
-      const totalCount = facets.count
-      store.commit('setTotalCount', totalCount)
-
-      setSearchCommentFacet(facets)
-      setChartData(facets)
-
-      const zooGroup = import.meta.env.VITE_ZOO_GROUP
-      const geoGroup = import.meta.env.VITE_GEO_GROUP
-      const paleaGroup = import.meta.env.VITE_PALEA_GROUP
-      const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
-
-      let zooCount = 0
-      let paleaCount = 0
-      let botanyCount = 0
-      let geoCount = 0
-      const collections = facets.collectionId.buckets
-
-      for (let i = 0; i < collections.length; i++) {
-        const collection = collections[i]
-        const collectionId = collection.val
-
-        const count = collection.count
-        if (zooGroup.includes(collectionId)) {
-          zooCount += count
-        } else if (paleaGroup.includes(collectionId)) {
-          paleaCount += count
-        } else if (geoGroup.includes(collectionId)) {
-          geoCount += count
-        } else if (botanyGroup.includes(collectionId)) {
-          botanyCount += collection.count
-        }
-      }
-
-      store.commit('setBotanyCollectionTotal', botanyCount)
-      store.commit('setGeoCollectionTotal', geoCount)
-      store.commit('setPaleaCollectionTotal', paleaCount)
-      store.commit('setZooCollectionTotal', zooCount)
-
-      store.commit('setFilterImage', false)
-      store.commit('setFilterCoordinates', false)
-      store.commit('setFilterInSweden', false)
-      store.commit('setFilterType', false)
-
-      store.commit('setSelectedCollection', null)
-      store.commit('setSelectedType', null)
-      store.commit('setSelectedFamily', null)
-    })
-    .catch()
-    .finally(() => {})
 }
 
 // function setCollectionsChartData(collectionId, chartData) {
@@ -474,20 +473,18 @@ function processSearchData(response, value) {
 }
 
 function setSearchCommentFacet(facets) {
-  const imageFacet = facets.image.buckets
+  const imageFacet = facets.hasImage.buckets
   const imageCount = imageFacet.length > 0 ? imageFacet[0].count : 0
   store.commit('setImageCount', imageCount)
 
-  const isTypeFacet = facets.isType.buckets
-  const isTypeCount = isTypeFacet.length > 0 ? isTypeFacet[0].count : 0
-  store.commit('setIsTypeCount', isTypeCount)
+  const typeStatus = facets.typeStatus.allBuckets.count
+  store.commit('setIsTypeCount', typeStatus)
 
   const inSwedenFacet = facets.inSweden.buckets
   const inSwedenCount = inSwedenFacet.length > 0 ? inSwedenFacet[0].count : 0
   store.commit('setInSwedenCount', inSwedenCount)
 
-  const mapFacet = facets.map.buckets
-  const mapCount = mapFacet.length > 0 ? mapFacet[0].count : 0
+  const mapCount = facets.map.allBuckets.count
   store.commit('setHasCoordinatesCount', mapCount)
 }
 

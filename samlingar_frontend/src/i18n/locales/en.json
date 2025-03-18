@@ -34,6 +34,78 @@
     "yes": "YES"
   },
   "collectionName": {
+    "he": {
+      "name": "Amphibians and reptiles",
+      "code": "he"
+    },
+    "av": {
+      "name": "Bird",
+      "code": "av"
+    },
+    "pi": {
+      "name": "Fish",
+      "code": "pi"
+    },
+    "ev": {
+      "name": "Invertebrate main collection",
+      "code": "ev"
+    },
+    "et": {
+      "name": "Invertebrate type collection",
+      "code": "et"
+    },
+    "ma": {
+      "name": "Mammals",
+      "code": "ma"
+    },
+    "NHRS": {
+      "name": "NRM Entomology Collection Objects",
+      "code": "NHRS"
+    },
+    "SMTP_INV": {
+      "name": "Swedish Malaise Trap Project (SMTP) Collection Obj",
+      "code": "SMTP_INV"
+    },
+    "SMTP_SPPLST": {
+      "name": "Swedish Malaise Trap Project (SMTP) Species Lists",
+      "code": "SMTP_SPPLST"
+    },
+    "pb": {
+      "name": "Paleobotany",
+      "code": "pb"
+    },
+    "pz": {
+      "name": "Paleozoology",
+      "code": "pz"
+    },
+    "algae": {
+      "name": "Algae",
+      "code": "algae"
+    },
+    "mosses": {
+      "name": "Mosses",
+      "code": "mosses"
+    },
+    "fungi": {
+      "name": "Fungi/Lichens",
+      "code": "fungi"
+    },
+    "vp": {
+      "name": "Vascular Plants",
+      "code": "vp"
+    },
+    "NRMMIN": {
+      "name": "NRM Mineralogy",
+      "code": "NRMMIN"
+    },
+    "NRMLIG": {
+      "name": "NRM Isotope Geology",
+      "code": "NRMLIG"
+    },
+    "NRMNOD": {
+      "name": "NRM Nodules",
+      "code": "NRMNOD"
+    },
     "Amphibians and reptiles": "Amphibians and reptiles",
     "Bird": "Bird",
     "Fish": "Fish",

@@ -55,7 +55,8 @@ function onSearch() {
 
   let searchText = '*:*'
   if (value.value) {
-    searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
+    searchText = value.value
+    // searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
   }
 
   store.commit('setSearchText', searchText)

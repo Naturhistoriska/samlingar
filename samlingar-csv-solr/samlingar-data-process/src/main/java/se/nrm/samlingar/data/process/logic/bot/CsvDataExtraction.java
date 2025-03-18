@@ -43,7 +43,7 @@ public class CsvDataExtraction implements Serializable {
     private String family;
     private String catalogNameId;
     
-       private String scientificName;
+    private String scientificName;
     private String kindom;
     private String phylum;
     private String order; 
@@ -101,6 +101,7 @@ public class CsvDataExtraction implements Serializable {
         family = null;
         catalogId = null;
         nameId = null;
+        scientificName = null;
 
         catalogRecords.stream()
                 .forEach(catalogRecord -> {
@@ -131,9 +132,11 @@ public class CsvDataExtraction implements Serializable {
                                         synonymSb.append(author);
                                         synonymsVo = new Synonyms(name, synonymSb.toString().trim());
                                         synonymsList.add(synonymsVo);
+                                    } else {
+                                        scientificName = name;
                                     }
                                 });
-                        map.put(catalogId, new NameSynonyms(name, genus, author, family, synonymsList));
+                        map.put(catalogId, new NameSynonyms(scientificName, genus, author, family, synonymsList));
 
                     } 
                 });

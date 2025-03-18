@@ -1,28 +1,21 @@
 package se.nrm.samlingar.api.logic;
 
-import ch.hsr.geohash.GeoHash;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import ch.hsr.geohash.GeoHash; 
+import java.io.IOException; 
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.List;
+import java.io.StringWriter; 
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.ws.rs.core.StreamingOutput;
+import javax.json.JsonReader; 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.csv.CSVPrinter; 
 import se.nrm.samlingar.api.solr.services.SolrService;
+import se.nrm.samlingar.api.utils.SolrSearchHelper;
 
 /**
  *
@@ -82,27 +75,79 @@ public class SamlingarLogic {
     private final String commonNameField = "commonName";
     private final String preprationField = "prepration";
     
+    // Search field key
+    private final String scientificNameKey = "scientificName:";
+    
     private int total;
 
     private GeoHash geohash;
 
     private JsonObjectBuilder attBuilder;
     private JsonArrayBuilder arrayBuilder;
-
+    
+    
     public String getInitalData() {
-        log.info("getStaticData");
+        log.info("getInitalData");
         return service.getInitalData();
     }
-
-    public String simpleSearch(String text, int start, int numPerPage, 
-            String sort ) {
+     
+    public String getChartData(String collection) {
+        return service.getChartData(collection);
+    } 
+    
+    public String autoCompleteSearch(String text) {
+        text = SolrSearchHelper.getInstance().buildSearchText(text, scientificNameKey, true);
+      
+        return service.autoCompleteSearch(text);
+    }
+ 
+    public String simpleSearch(String text, boolean fuzzySearch, 
+            int start, int numPerPage, String sort ) {
         log.info("simpleSearch : {}", text);
+        
+        text = SolrSearchHelper.getInstance().buildSearchText(text, scientificNameKey, fuzzySearch);
         return service.simpleSearch(start, numPerPage, text, sort);
     }
 
-    public String autoCompleteSearch(String text) {
-        return service.autoCompleteSearch(text);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        
+    public String getStatisticData() {
+        return service.getStatisticData();
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
 
     public String filterSerch(int start, int numPerPage, String text,
             String collection, String collections, String typeStatus, 
@@ -361,11 +406,5 @@ public class SamlingarLogic {
 //        File file = new DefaultStreamedContent(stream, mimetype, "downloadFile.csv");  
     }
     
-    public String getChartData(String collection) {
-        return service.getChartData(collection);
-    }
-    
-    public String getStatisticData() {
-        return service.getStatisticData();
-    }
+
 }

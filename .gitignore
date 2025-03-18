@@ -15,6 +15,7 @@ solr/solr8/logs/*
 *.properties
 
 project-initdata_local.yml
+project-initdata_ent.yml
 
 notes
 /samlingar-specify-dwc/specify-data-model/target/

@@ -5,7 +5,7 @@
       <Accordion multiple class="p-accordion-header-variant-a" v-model:value="active">
         <AccordionPanel v-for="tab in tabs" :key="tab" :value="tab" style="font-size: 12px">
           <AccordionHeader style="background: transparent" @click="onTabClick(tab)">
-            {{ $t('collectionName.' + tab) }}
+            {{ $t('collectionName.' + tab + '.name') }}
           </AccordionHeader>
           <AccordionContent style="background: transparent" :unstyled="true">
             <CollectionMonthChart v-bind:collection="tab" v-bind:chart="getMonthData(tab)" />
@@ -82,42 +82,43 @@ const tabs = computed(() => {
 
 function getMonthData(tab) {
   const { dataGroup } = props
+  console.log('dataGroup', dataGroup)
   if (dataGroup === 'startPage.palaeCollection') {
-    return tab === 'Paleozoology' ? pzMonth.value : pbMonth.value
+    return tab === 'pz' ? pzMonth.value : pbMonth.value
   } else if (dataGroup === 'startPage.botanicalCollection') {
-    if (tab === 'Algae') {
+    if (tab === 'algae') {
       return algaeMonth.value
-    } else if (tab === 'Fungi/Lichens') {
+    } else if (tab === 'fungi') {
       return fungiMonth.value
-    } else if (tab === 'Mosses') {
+    } else if (tab === 'mosses') {
       return mossesMonth.value
     } else {
       return vpMonth.value
     }
   } else if (dataGroup === 'startPage.geoCollection') {
-    if (tab === 'NRM Isotope Geology') {
+    if (tab === 'NRMLIG') {
       return isotopeMonth.value
-    } else if (tab === 'NRM Mineralogy') {
+    } else if (tab === 'NRMMIN') {
       return mineralMonth.value
     } else {
       return noduleMonth.value
     }
   } else if (dataGroup === 'startPage.zooCollection') {
-    if (tab === 'Amphibians and reptiles') {
+    if (tab === 'he') {
       return herpMonth.value
-    } else if (tab === 'Bird') {
+    } else if (tab === 'av') {
       return birdMonth.value
-    } else if (tab === 'Fish') {
+    } else if (tab === 'pi') {
       return fishMonth.value
-    } else if (tab === 'Invertebrate main collection') {
+    } else if (tab === 'ev') {
       return evMonth.value
-    } else if (tab === 'Invertebrate type collection') {
+    } else if (tab === 'et') {
       return etMonth.value
-    } else if (tab === 'Mammals') {
+    } else if (tab === 'ma') {
       return mammalMonth.value
-    } else if (tab === 'NRM Entomology Collection Objects') {
+    } else if (tab === 'NHRS') {
       return entomologyMonth.value
-    } else if (tab === 'Swedish Malaise Trap Project (SMTP) Collection Obj') {
+    } else if (tab === 'SMTP_INV') {
       return smtpObjectMonth.value
     } else {
       return smtpListMonth.value
@@ -128,41 +129,41 @@ function getMonthData(tab) {
 function getYearData(tab) {
   const { dataGroup } = props
   if (dataGroup === 'startPage.palaeCollection') {
-    return tab === 'Paleozoology' ? pzYear.value : pbYear.value
+    return tab === 'pz' ? pzYear.value : pbYear.value
   } else if (dataGroup === 'startPage.botanicalCollection') {
-    if (tab === 'Algae') {
+    if (tab === 'algae') {
       return algaeYear.value
-    } else if (tab === 'Fungi/Lichens') {
+    } else if (tab === 'fungi') {
       return fungiYear.value
-    } else if (tab === 'Mosses') {
+    } else if (tab === 'mosses') {
       return mossesYear.value
     } else {
       return vpYear.value
     }
   } else if (dataGroup === 'startPage.geoCollection') {
-    if (tab === 'NRM Isotope Geology') {
+    if (tab === 'NRMLIG') {
       return isotopeYear.value
-    } else if (tab === 'NRM Mineralogy') {
+    } else if (tab === 'NRMMIN') {
       return mineralYear.value
     } else {
       return noduleYear.value
     }
   } else if (dataGroup === 'startPage.zooCollection') {
-    if (tab === 'Amphibians and reptiles') {
+    if (tab === 'he') {
       return herpYear.value
-    } else if (tab === 'Bird') {
+    } else if (tab === 'av') {
       return birdYear.value
-    } else if (tab === 'Fish') {
+    } else if (tab === 'pi') {
       return fishYear.value
-    } else if (tab === 'Invertebrate main collection') {
+    } else if (tab === 'ev') {
       return evYear.value
-    } else if (tab === 'Invertebrate type collection') {
+    } else if (tab === 'et') {
       return etYear.value
-    } else if (tab === 'Mammals') {
+    } else if (tab === 'ma') {
       return mammalYear.value
-    } else if (tab === 'NRM Entomology Collection Objects') {
+    } else if (tab === 'NHRS') {
       return entomologYear.value
-    } else if (tab === 'Swedish Malaise Trap Project (SMTP) Collection Obj') {
+    } else if (tab === 'SMTP_INV') {
       return smtpObjectYear.value
     } else {
       return smtpListYear.value
@@ -171,6 +172,7 @@ function getYearData(tab) {
 }
 
 function onTabClick(tab) {
+  console.log('tab : {}', tab)
   if (active.value.includes(tab)) {
     service
       .apiCollectionsChartData(tab)
@@ -178,10 +180,14 @@ function onTabClick(tab) {
         const facets = response.facets
 
         const totalCount = facets.count
-        const collection = facets.collectionId.buckets
+        const collectionFacet = facets.collectionCode
+        console.log('collectionFacet', collectionFacet)
+        let collection
+        if (collectionFacet !== undefined) {
+          collection = facets.collectionCode.buckets
+        }
         const monthChartData = buildMonthChartData(collection)
         const yearChartData = buildMYearChartData(totalCount, collection)
-
         setData(tab, monthChartData, yearChartData)
       })
       .catch()
@@ -191,9 +197,12 @@ function onTabClick(tab) {
 
 function buildMYearChartData(totalCount, years) {
   const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
+  console.log('sum', sum)
 
   let cumulatedTotal = totalCount - sum
+  console.log('cumulatedTotal', cumulatedTotal)
   years.map((year) => {
+    console.log('year', year)
     const count = year.count
     cumulatedTotal += count
     year.count = cumulatedTotal
@@ -252,42 +261,42 @@ function buildMonthChartData(collection) {
 
 function setData(tab, month, year) {
   switch (tab) {
-    case 'Amphibians and reptiles':
+    case 'he':
       herpMonth.value = month
       herpYear.value = year
-    case 'Bird':
+    case 'av':
       birdMonth.value = month
       birdYear.value = year
-    case 'Fish':
+    case 'pi':
       fishMonth.value = month
       fishYear.value = year
-    case 'Invertebrate main collection':
+    case 'ev':
       evMonth.value = month
       evYear.value = year
-    case 'Invertebrate type collection':
+    case 'et':
       etMonth.value = month
       etYear.value = year
-    case 'Mammals':
+    case 'ma':
       mammalMonth.value = month
       mammalYear.value = year
-    case 'NRM Entomology Collection Objects':
+    case 'NHRS':
       entomologyMonth.value = month
       entomologYear.value = year
-    case 'Swedish Malaise Trap Project (SMTP) Collection Obj':
+    case 'SMTP_INV':
       smtpObjectMonth.value = month
       smtpObjectYear.value = year
-    case 'Swedish Malaise Trap Project (SMTP) Species Lists':
+    case 'SMTP_SPPLST':
       smtpListMonth.value = month
       smtpListYear.value = year
-    case 'Paleozoology':
+    case 'pz':
       pzMonth.value = month
       pzYear.value = year
       break
-    case 'Paleobotany':
+    case 'pb':
       pbMonth.value = month
       pbYear.value = year
       break
-    case 'Algae':
+    case 'algae':
       algaeMonth.value = month
       algaeYear.value = year
       break
@@ -295,24 +304,23 @@ function setData(tab, month, year) {
       fungiMonth.value = month
       fungiYear.value = year
       break
-    case 'Mosses':
+    case 'mosses':
       mossesMonth.value = month
       mossesYear.value = year
       break
-    case 'Vascular Plants':
+    case 'vp':
       vpMonth.value = month
       vpYear.value = year
       break
-
-    case 'NRM Isotope Geology':
+    case 'NRMLIG':
       isotopeMonth.value = month
       isotopeYear.value = year
       break
-    case 'NRM Mineralogy':
+    case 'NRMMIN':
       mineralMonth.value = month
       mineralYear.value = year
       break
-    case 'NRM Nodules':
+    case 'NRMNOD':
       noduleMonth.value = month
       noduleYear.value = year
       break

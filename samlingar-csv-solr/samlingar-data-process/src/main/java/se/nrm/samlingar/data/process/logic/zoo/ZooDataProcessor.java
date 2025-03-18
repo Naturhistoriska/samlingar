@@ -106,7 +106,7 @@ public class ZooDataProcessor implements Serializable {
     
     
     private JsonObject getImageMappingJson(JsonArray imageArray) {
-        log.info("getImageMappingJson : {}" ); 
+        log.info("getImageMappingJson" ); 
 
         return imageArray.getValuesAs(JsonObject.class)
                 .stream()

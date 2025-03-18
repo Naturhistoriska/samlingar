@@ -239,7 +239,7 @@ public class JsonHelper {
         return JsonValue.ValueType.STRING.equals(json.get(coordinatesKey).getValueType());
     }
     
-    public boolean isStringEventDate(JsonObject json) {
+    public boolean isStringEventDate(JsonObject json) { 
         return JsonValue.ValueType.STRING.equals(json.get(eventDateKey).getValueType());
     }
     
@@ -595,6 +595,8 @@ public class JsonHelper {
     }
 
     public void addLatAndLong(JsonObjectBuilder attBuilder, double latitude, double longitude) {
+        log.info("addLatAndLong : {} -- {}", latitude, longitude);
+         
         attBuilder.add(latitudeKey, latitude);
         attBuilder.add(longitudeKey, longitude);
     }
@@ -674,4 +676,6 @@ public class JsonHelper {
             attBuilder.add(key, value);
         }
     }
+    
+   
 }

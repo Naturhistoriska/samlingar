@@ -38,25 +38,30 @@ public class SamlingarService {
 
     @Inject
     private SamlingarLogic logic;
-
+    
     @GET
-    @Path("/search")
-    @ApiOperation(value = "Search",
+    @Path("/initialData")
+    @ApiOperation(value = "Statistic",
             notes = "Return search results in json",
             response = String.class
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response search(@QueryParam("text") String text,
-            @QueryParam("start") int start, @QueryParam("numPerPage") int numPerPage,
-            @QueryParam("sort") String sort) {
-        log.info("search {} -- {}", text, start + " -- " + numPerPage);
-
-        if (text == null || text.isEmpty()) {
-            text = wildCard;
-        }
-        return Response.ok(logic.simpleSearch(text, start, numPerPage, sort)).build();
+    public Response getInitalData() {
+        log.info("getInitalData");
+        return Response.ok(logic.getInitalData()).build();
     }
-
+     
+    @GET
+    @Path("chart/")
+    @ApiOperation(value = "ChartData",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getChartData(@QueryParam("collection") String collection) {
+        return Response.ok(logic.getChartData(collection)).build();
+    }
+    
     @GET
     @Path("/autocomplete")
     @ApiOperation(value = "autocomplete",
@@ -68,6 +73,80 @@ public class SamlingarService {
         log.info("autoCompleteSearch: {} ", text);
         return Response.ok(logic.autoCompleteSearch(text)).build();
     }
+    
+    @GET
+    @Path("/search")
+    @ApiOperation(value = "Search",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response search(@QueryParam("text") String text,
+            @QueryParam("fuzzySearch") boolean fuzzySearch,
+            @QueryParam("start") int start, 
+            @QueryParam("numPerPage") int numPerPage,
+            @QueryParam("sort") String sort) {
+        log.info("search {} -- {}", text, start + " -- " + numPerPage);
+
+        if (text == null || text.isEmpty()) {
+            text = wildCard;
+        }
+        return Response.ok(logic.simpleSearch(text, fuzzySearch,
+                start, numPerPage, sort)).build();
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    @GET
+    @Path("/statistic")
+    @ApiOperation(value = "Statistic",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response statisticSearch() {
+        log.info("statisticSearch: {}, {}");
+
+        return Response.ok(logic.getStatisticData()).build();
+    }
+    
+    
+    
+    
+    
+    
+
+   
+
+
 
     @GET
     @Path("/filter")
@@ -137,35 +216,13 @@ public class SamlingarService {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public Response typestatusSearch() {
-        log.info("statisticSearch: {}, {}");
+        log.info("typestatusSearch: {}, {}");
         return Response.ok(logic.getTypeStatus()).build();
     }
 
-    @GET
-    @Path("/initialData")
-    @ApiOperation(value = "Statistic",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getInitalData() {
-        log.info("getInitalData: {}, {}");
-        return Response.ok(logic.getInitalData())
-                .build();
-    }
 
-    @GET
-    @Path("/statistic")
-    @ApiOperation(value = "Statistic",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response statisticSearch() {
-        log.info("statisticSearch: {}, {}");
 
-        return Response.ok(logic.getStatisticData()).build();
-    }
+
 
     @GET
     @Path("/download")
@@ -185,16 +242,6 @@ public class SamlingarService {
                 .download(text, collection, typeStatus, family, numRows)).build();
     }
 
-    @GET
-    @Path("chart/")
-    @ApiOperation(value = "ChartData",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getChartData(@QueryParam("collection") String collection) {
-        return Response.ok(logic.getChartData(collection)).build();
-    }
 
     @Path("file/")
     @GET

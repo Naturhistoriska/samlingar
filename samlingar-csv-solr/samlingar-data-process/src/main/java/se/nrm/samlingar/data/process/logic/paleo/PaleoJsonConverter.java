@@ -160,9 +160,12 @@ public class PaleoJsonConverter implements Serializable {
     }
 
     private void addSynonyms(CSVRecord record, JsonObject synonymJson) {
+        log.info("addSynonyms : {}", synonymJson);
 
         synonym = record.get(JsonHelper.getInstance().getSynonymCsvKey(synonymJson));
-
+        
+        
+        log.info("synonym : {}", synonym);
         if (!StringUtils.isBlank(synonym)) {
 //            log.info("addSynonyms : {}", synonym);
             synonymAuthor = record.get(JsonHelper.getInstance().getSynonymAuthorCsvKey(synonymJson));

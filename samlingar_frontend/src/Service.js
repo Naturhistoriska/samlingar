@@ -19,19 +19,39 @@ export default class Service {
     return response.data
   }
 
+  async apiCollectionsChartData(collection) {
+    let url = `${samlingApi}/chart?collection="${collection}"`
+    const response = await axios.get(url)
+    return response.data
+  }
+
   async apiAutoCompleteSearch(searchText) {
+
     const url = `${samlingApi}/autocomplete?text=${searchText}`
 
     const response = await axios.get(url)
     return response.data
   }
 
-  async apiSimpleSearch(searchText, start, rows) {
-    const url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+  async apiQuickSearch(searchText, fuzzySearch, start, rows) {
+
+    searchText = searchText.replace(/&/g, '%26')
+
+    const url = `${samlingApi}/search?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiSimpleSearch(searchText, fuzzySearch, start, rows) {
+    const url = `${samlingApi}/search?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
 
     const response = await axios.get(url)
     return response.data
   }
+
+  /////
+
+  //////
 
   async apiSimpleFilterSearch(hasCoordinates, hasImages, isType, isInSweden) {
     let url = `${samlingApi}/filter?text=*:*&sort=catalogedDate desc`
@@ -208,14 +228,6 @@ export default class Service {
     const response = await axios.get(url)
     return response.data
   }
-
-  async apiCollectionsChartData(collection) {
-    let url = `${samlingApi}/chart?collection="${collection}"`
-    const response = await axios.get(url)
-    return response.data
-  }
-
-
 
   //
   //

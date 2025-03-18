@@ -27,6 +27,9 @@ public class ZooJsonConverter implements Serializable {
 
     private final int batchSize = 6000;
     private final String birdCollection = "Bird"; 
+    
+    private final String eventDateKey = "eventDate";
+    private final String eventEndDateKey = "eventEndDate";
  
     private String catalogNumber;
     private String collectionName; 
@@ -82,16 +85,22 @@ public class ZooJsonConverter implements Serializable {
 //                        classificationKeys.add(classificationJson.getString(key));
 //                    });
 //        }
-        isStringEventdate = JsonHelper.getInstance().isStringEventDate(json);
-        log.info("isStringEventdate : {}", isStringEventdate);
-        if (isStringEventdate) { 
-            csvEventDateKey = JsonHelper.getInstance().getEventDateCsvKey(json); 
-        } else {
-            eventDateJson = JsonHelper.getInstance().getEventDateJson(json);
-            log.info("eventDateJson : {}", eventDateJson);
-        } 
+
+        if (json.containsKey(eventDateKey)) {
+            isStringEventdate = JsonHelper.getInstance().isStringEventDate(json);
+            log.info("isStringEventdate : {}", isStringEventdate);
+            if (isStringEventdate) {
+                csvEventDateKey = JsonHelper.getInstance().getEventDateCsvKey(json);
+            } else {
+                eventDateJson = JsonHelper.getInstance().getEventDateJson(json); 
+                log.info("eventDateJson : {}", eventDateJson);
+            }
+        }
+
+        if(json.containsKey(eventEndDateKey)) {
+            eventEndDateJson = JsonHelper.getInstance().getEventEndDateJson(json); 
+        }
         
-        eventEndDateJson = JsonHelper.getInstance().getEventEndDateJson(json); 
 
         isStringCoordinates = JsonHelper.getInstance().isStringCoordinates(json);
         if (isStringCoordinates) {
@@ -151,7 +160,7 @@ public class ZooJsonConverter implements Serializable {
 //                        }
 //                        log.info("add classification: {}", classificationKeys);
                          
-                        if (isStringCoordinates) { 
+                        if (isStringCoordinates) {
                             coordinatesBuilder.build(attBuilder, record.get(csvCoordinatesKey));
                         } else {
                             latitude = record.get(JsonHelper.getInstance()
@@ -161,14 +170,17 @@ public class ZooJsonConverter implements Serializable {
                             coordinatesBuilder.build(attBuilder, latitude, longitude);
                         }
                         log.info("coordinates added...");
-                        
-                        if (isStringEventdate) {
-                            JsonHelper.getInstance().addEventDate(attBuilder, record.get(csvEventDateKey));
-                        } else {
-                            JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
+
+                        if (json.containsKey(eventDateKey)) {
+                            if (isStringEventdate) {
+                                JsonHelper.getInstance().addEventDate(attBuilder, record.get(csvEventDateKey));
+                            } else {
+                                JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
+                            }
+                            log.info("eventDate added...");
                         }
-                        log.info("eventDate added...");
-                        
+
+
                         if(eventEndDateJson != null) {
                             JsonHelper.getInstance().addEventEndDate(attBuilder, eventEndDateJson, record);
                         }

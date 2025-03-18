@@ -92,8 +92,7 @@ public class BotDataProcessor implements Serializable {
 
     }
 
-    public void process(InitialProperties properties, JsonArray array,
-            JsonArray imageArray, boolean delete) {
+    public void process(InitialProperties properties, JsonArray array, JsonArray imageArray, boolean delete) {
         log.info("process");
 
         try {

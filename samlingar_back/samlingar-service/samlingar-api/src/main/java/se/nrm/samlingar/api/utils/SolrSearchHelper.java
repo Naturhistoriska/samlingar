@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -19,13 +20,20 @@ public class SolrSearchHelper {
     private final String toDate = " TO *]";
     private final String squareEnd = "]";
 
+    private final String emptySpace = " ";
+    private final String star = "*";
+    private final String quotationMark = "\"";
+
     private StringBuilder dateRangeSb;
     private YearMonth yearMonth;
     private int yearOfToday;
     private int lastTenYear;
     private int nextYear;
 
+    private StringBuilder fuzzySeachTextSb;
+
     private LocalDateTime startDate;
+    private String[] searchText;
 
     private static SolrSearchHelper instance = null;
 
@@ -36,6 +44,71 @@ public class SolrSearchHelper {
             }
         }
         return instance;
+    }
+
+    public String buildSearchText(String text, String key, boolean fuzzySearch) {
+
+        fuzzySeachTextSb = new StringBuilder();
+        if (fuzzySearch) {
+            if (text.contains(emptySpace)) {
+                searchText = text.split(emptySpace);
+                for (String value : searchText) {  
+                    fuzzySeachTextSb.append(key);
+                    fuzzySeachTextSb.append(star);
+                    fuzzySeachTextSb.append(text);
+                    fuzzySeachTextSb.append(star);
+                    fuzzySeachTextSb.append(emptySpace);
+                } 
+            } else {
+                fuzzySeachTextSb.append(key);
+                fuzzySeachTextSb.append(text); 
+                fuzzySeachTextSb.append(emptySpace);
+
+                fuzzySeachTextSb.append(key);
+                fuzzySeachTextSb.append(star);
+                fuzzySeachTextSb.append(text);
+                fuzzySeachTextSb.append(star);
+                fuzzySeachTextSb.append(emptySpace);
+
+                fuzzySeachTextSb.append(key);
+                fuzzySeachTextSb.append(StringUtils.capitalize(text));
+                fuzzySeachTextSb.append(star);
+            }
+        } else {
+            fuzzySeachTextSb.append(key);
+            fuzzySeachTextSb.append(quotationMark);
+            fuzzySeachTextSb.append(text);
+            fuzzySeachTextSb.append(quotationMark);
+        }
+
+//        fuzzySeachTextSb = new StringBuilder();
+//        if (text.contains(emptySpace)) {
+//            searchText = text.split(emptySpace);
+//            for (String value : searchText) {
+//                fuzzySeachTextSb.append(key);
+//                fuzzySeachTextSb.append(value);
+//                fuzzySeachTextSb.append(emptySpace);
+//            }
+//        } else {
+//            fuzzySeachTextSb.append(key);
+//            fuzzySeachTextSb.append(text);
+//
+//            if (fuzzySearch) {
+//                fuzzySeachTextSb.append(emptySpace);
+//
+//                fuzzySeachTextSb.append(key);
+//                fuzzySeachTextSb.append(star);
+//                fuzzySeachTextSb.append(text);
+//                fuzzySeachTextSb.append(star);
+//                fuzzySeachTextSb.append(emptySpace);
+//
+//                fuzzySeachTextSb.append(key);
+//                fuzzySeachTextSb.append(StringUtils.capitalize(text));
+//                fuzzySeachTextSb.append(star);
+//            }
+//            
+//        }
+        return fuzzySeachTextSb.toString().trim();
     }
 
     public String buildTwelveMonthDateRange() {
@@ -52,7 +125,5 @@ public class SolrSearchHelper {
         log.info("date range : {}", dateRangeSb.toString());
         return dateRangeSb.toString().trim();
     }
-    
-   
 
 }

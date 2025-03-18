@@ -94,7 +94,10 @@ public class CoordinatesBuilder implements Serializable {
         JsonHelper.getInstance().addCoordinates(attBuilder, latitude, longitude); 
         JsonHelper.getInstance().addGeoHash(attBuilder, geoHash);  
         JsonHelper.getInstance().addPoint(attBuilder, latitude, longitude); 
+        
+        log.info("point added....");
         JsonHelper.getInstance().addLatAndLong(attBuilder, latitude, longitude); 
+        log.info("latAndLong added....");
     }
 
     private String createGeoHash(double latitude, double longitude) throws Exception {
