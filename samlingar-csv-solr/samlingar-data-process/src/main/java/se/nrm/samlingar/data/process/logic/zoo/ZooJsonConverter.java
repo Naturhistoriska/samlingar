@@ -30,6 +30,7 @@ public class ZooJsonConverter implements Serializable {
     
     private final String eventDateKey = "eventDate";
     private final String eventEndDateKey = "eventEndDate";
+    
  
     private String catalogNumber;
     private String collectionName; 
@@ -45,6 +46,7 @@ public class ZooJsonConverter implements Serializable {
     private String csvCoordinatesKey;
     private String csvTypeStatusKey;
     private String csvCatalogNumberKey;
+    private String csvDateIdentifiedKey;
 
     private String latitude;
     private String longitude;
@@ -112,6 +114,8 @@ public class ZooJsonConverter implements Serializable {
         
         csvCatalogedDate = JsonHelper.getInstance().getCatalogedDateCsvKey(json); 
         csvTypeStatusKey = JsonHelper.getInstance().getTypeStatusCsvKey(json);
+        
+        csvDateIdentifiedKey = JsonHelper.getInstance().getDateIdentifiedCsvKey(json);
         
         hasSynonyms = JsonHelper.getInstance().hasSynonyms(json); 
           
@@ -185,9 +189,13 @@ public class ZooJsonConverter implements Serializable {
                             JsonHelper.getInstance().addEventEndDate(attBuilder, eventEndDateJson, record);
                         }
                         
-                        if (csvCatalogedDate != null) {
+                        if(csvCatalogedDate != null) {
                             JsonHelper.getInstance().addCatalogDate(attBuilder, record.get(csvCatalogedDate));
                         }
+                        
+                        if(csvDateIdentifiedKey != null) {
+                            JsonHelper.getInstance().addDateIdentified(attBuilder, record.get(csvDateIdentifiedKey));
+                        } 
 //                        log.info("catalogedDate added...");
                         
 //                        log.info("add cataloged date " );

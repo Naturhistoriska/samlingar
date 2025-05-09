@@ -67,6 +67,7 @@ public class JsonHelper {
     private final String pointKey = "point"; 
     private final String countryKey = "country";
     private final String exsiccatKey = "exsiccat";
+    private final String dateIdentifiedKey = "dateIdentified";
 
     private final String fileNameKey = "fileName";
 
@@ -132,6 +133,9 @@ public class JsonHelper {
     private StringBuilder coordinatesSb;
     
     private LocalDate eventEndDate;
+    
+    private LocalDate dateIdentified;
+    private String identifiedYear;
 
     private boolean isScientificNameSet;
 
@@ -276,6 +280,10 @@ public class JsonHelper {
     public String getTypeStatusCsvKey(JsonObject json) {
         return json.containsKey(typeStatusKey) ? json.getString(typeStatusKey) : null;
     }
+    
+    public String getDateIdentifiedCsvKey(JsonObject json) {
+        return json.containsKey(dateIdentifiedKey) ? json.getString(dateIdentifiedKey) : null;
+    }
 
     public void addClassification(JsonObjectBuilder attBuilder,
             JsonObject classificationJson, CSVRecord record) {
@@ -388,6 +396,15 @@ public class JsonHelper {
             attBuilder.add(catalogedMonthKey, catalogedDate.getMonth().name());
             attBuilder.add(catalogedYearKey, catalogedDate.getYear());
         }
+    }
+    
+    public void addDateIdentified(JsonObjectBuilder attBuilder, String date) {
+        log.info("addDateIdentified : {}", date);
+        dateIdentified = Util.getInstance().stringToLocalDate(date);
+        log.info("dateIdentified : {}", catalogedDate);
+        if (catalogedDate != null) {
+            attBuilder.add(dateIdentifiedKey, catalogedDate.toString()); 
+        }  
     }
 
     public void addCollectionCode(JsonObjectBuilder attBuilder, String idPrefix) {
@@ -518,7 +535,7 @@ public class JsonHelper {
 
 
     private void addEventDate(JsonObjectBuilder attBuilder, String year, String month, String day) {
-   
+        log.info("addEventDate : {} -- {}", year, month + " -- " + day);
         if (!StringUtils.isBlank(year) && year.length() == 4) {
             if (StringUtils.isAllBlank(day, month)) {
                 attBuilder.add(verbatimEventDateKey, year);
@@ -530,6 +547,7 @@ public class JsonHelper {
                 attBuilder.add(verbatimEventDateKey, verbatimEventDate(year, month, day));
                 eventDate = Util.getInstance().stringToLocalDate(buildDate(year, month, day));
             }
+            log.info("eventdata : {}", eventDate);
             addAttValue(attBuilder, yearKey, year);
             addAttValue(attBuilder, monthKey, month);
             addAttValue(attBuilder, dayKey, day);

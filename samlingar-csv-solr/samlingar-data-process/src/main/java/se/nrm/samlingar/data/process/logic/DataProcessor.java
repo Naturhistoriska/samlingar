@@ -27,7 +27,7 @@ public class DataProcessor implements Serializable  {
     private String collection;
     private String csvFilePath; 
     private boolean deleteData;
-    private String imageMappingFile;
+//    private String imageMappingFile;
     private JsonArray imageArray; 
     
     @Inject
