@@ -24,8 +24,9 @@ public class Solr {
     private final String utf8 = "UTF-8";
     private final String applicationJson = "application/json";
     
-    private final String deleteStringStart = "{'delete': {'query': 'filter(collectionCode:(";
+    private final String deleteStringStart = "{'delete': {'query': 'filter(id:(";
     private final String deleteStringEnd = "))'}}";
+    private final String star = "*";
     
 //    private final String authErrorMsg = "Incorrect username and password";
     
@@ -68,6 +69,7 @@ public class Solr {
         sb = new StringBuilder();
         sb.append(deleteStringStart);
         sb.append(collectionId);
+        sb.append(star);
         sb.append(deleteStringEnd); 
         
         log.info("delete query : {}", sb.toString());
