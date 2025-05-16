@@ -53,9 +53,9 @@ public class JsonHelper {
     private final String dayKey = "day";
     private final String monthKey = "month";
     private final String yearKey = "year";
-    private final String endYearKey = "endyear";
-    private final String endMonthKey = "endmonth";
-    private final String endDayKey = "endday";
+    private final String endYearKey = "endYear";
+    private final String endMonthKey = "endMonth";
+    private final String endDayKey = "endDay";
     
     private final String coordinatesKey = "coordinates"; 
     private final String latitudeKey = "decimalLatitude";
@@ -561,6 +561,7 @@ public class JsonHelper {
 
     public void addEventDate(JsonObjectBuilder attBuilder, JsonObject eventDateJson, CSVRecord record) {
         log.info("addEventDate: {}, {}", eventDateJson, record);
+        
         year = record.get(eventDateJson.getString(yearKey));  
         month = record.get(eventDateJson.getString(monthKey));  
         day = record.get(eventDateJson.getString(dayKey)); 
@@ -572,11 +573,11 @@ public class JsonHelper {
     }
      
     public void addEventEndDate(JsonObjectBuilder attBuilder, JsonObject eventEndDateJson, CSVRecord record) {
-        log.info("addEventEndDate : {} -- {}", eventEndDateJson, record);
-        endYear = record.get(eventEndDateJson.getString(endYearKey));  
-        endMonth = record.get(eventEndDateJson.getString(endMonthKey));
-        endDay = record.get(eventEndDateJson.getString(endDayKey));  
+        log.info("addEventEndDate 1111 : {} -- {}", eventEndDateJson, record);
         
+        endYear = record.get(eventEndDateJson.getString(endYearKey));   
+        endMonth = record.get(eventEndDateJson.getString(endMonthKey)); 
+        endDay = record.get(eventEndDateJson.getString(endDayKey));   
         if (!StringUtils.isBlank(endYear)) {
             addEventEndDate(attBuilder, endYear, endMonth, endDay);
         }

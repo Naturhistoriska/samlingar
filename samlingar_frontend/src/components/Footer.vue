@@ -28,7 +28,7 @@ export default {
 .contactlink {
   cursor: pointer;
   text-decoration: none;
-  color: #fff;
+  /* color: #fff; */
 }
 /* a {
   cursor: pointer;

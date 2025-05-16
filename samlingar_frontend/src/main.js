@@ -15,6 +15,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 
 import { createApp } from 'vue'
 
+
 import i18n from './i18n'
 
 import PrimeVue from 'primevue/config'
@@ -53,9 +54,12 @@ import Paginator from 'primevue/paginator'
 import ProgressSpinner from 'primevue/progressspinner'
 import RadioButton from 'primevue/radiobutton'
 import Select from 'primevue/select'
+import Skeleton from 'primevue/skeleton'
 import Tab from 'primevue/tab'
 import Tabs from 'primevue/tabs'
 import TabList from 'primevue/tablist'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
 import TieredMenu from 'primevue/tieredmenu'
 
 
@@ -64,7 +68,11 @@ import TieredMenu from 'primevue/tieredmenu'
 //   // something vue-i18n options here ...
 // })
 
-const app = createApp(App)
+const app = createApp(App, {
+  onFreeTextSearch() {
+    console.log('expand................')
+  }
+})
 app.use(router)
 app.use(store)
 app.use(i18n)
@@ -109,10 +117,15 @@ app.component('Paginator', Paginator)
 app.component('ProgressSpinner', ProgressSpinner)
 app.component('RadioButton', RadioButton)
 app.component('Select', Select)
+app.component('Skeleton', Skeleton)
 app.component('Tab', Tab)
 app.component('Tabs', Tabs)
 app.component('TabList', TabList)
+app.component('TabPanels', TabPanels)
+app.component('TabPanel', TabPanel)
+
 app.component('TieredMenu', TieredMenu)
+
 
 app.component('downloadExcel', JsonExcel)
 

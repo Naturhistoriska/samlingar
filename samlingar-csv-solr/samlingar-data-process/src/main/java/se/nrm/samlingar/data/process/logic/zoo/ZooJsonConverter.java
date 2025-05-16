@@ -87,7 +87,7 @@ public class ZooJsonConverter implements Serializable {
 //                        classificationKeys.add(classificationJson.getString(key));
 //                    });
 //        }
-
+ 
         if (json.containsKey(eventDateKey)) {
             isStringEventdate = JsonHelper.getInstance().isStringEventDate(json);
             log.info("isStringEventdate : {}", isStringEventdate);

@@ -69,9 +69,11 @@
     "delete": "Radera",
     "edit": "Redigera",
     "en": "English",
+    "help": "Help",
     "languageSetting": "Språkinställning",
     "no": "NEJ",
     "ok": "Ok",
+    "reset": "Reset",
     "save": "Spara",
     "selectLanguage": "Välj språk",
     "sv": "Svenska",
@@ -103,10 +105,11 @@
     "sv": "Svenska"
   },
   "nav": {
-    "home": "Hem",
-    "collections": "Samlingar",
     "about": "Om",
-    "contactUs": "Kontakta oss"
+    "collections": "Samlingar",
+    "contactUs": "Kontakta oss",
+    "home": "Hem",
+    "search": "Sök"
   },
   "results": {
     "backToResultListView": "Tillbaka till resultatlistan",
@@ -132,6 +135,11 @@
     "typeStatus": "Typ-status",
     "vernacularName": "Vernacular name"
   },
+  "records": {
+    "labels": "Labels",
+    "list": "List",
+    "media": "Media"
+  },
   "search": {
     "advanceSearch": "Avancerad sökning",
     "backToResultsList": "Tillbaka till resultatlistan",
@@ -149,6 +157,8 @@
     "providScientificName": "Provided scientific name",
     "scientificName": "Scientific name",
     "search": "Sök",
+    "searchAllFields": "Search all fields",
+    "searchFilter": "Search Filter",
     "searchCatalogNumber": "Katalognummer",
     "searchByCollection": "Search by collection",
     "searchCollections": "Species group",

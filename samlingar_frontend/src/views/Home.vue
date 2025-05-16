@@ -56,9 +56,37 @@ onBeforeRouteLeave((to, from) => {
 })
 
 onMounted(() => {
-  console.log('home mounted')
   fetchInitdata()
 })
+
+function handleSimpleSearch() {
+  router.push('/search')
+  // service
+  //   .apiFreeTextSearch(searchText, true, start, numRows)
+  //   .then((response) => {
+  //     processSearchData(response)
+  //   })
+  //   .catch()
+  //   .finally(() => {
+  //     router.push('/search')
+  //   })
+}
+
+function handleSimpleSearch1() {
+  const searchText = store.getters['searchText']
+  const start = 0
+  const numRows = 10
+
+  service
+    .apiSimpleSearch(searchText, true, start, numRows)
+    .then((response) => {
+      processSearchData(response)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/search')
+    })
+}
 
 function fetchInitdata() {
   service
@@ -323,22 +351,6 @@ function setChartData(facets) {
 //       break
 //   }
 // }
-
-function handleSimpleSearch() {
-  const searchText = store.getters['searchText']
-  const start = 0
-  const numRows = 10
-
-  service
-    .apiSimpleSearch(searchText, start, numRows)
-    .then((response) => {
-      processSearchData(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
 
 function handleFilterWithCoordinates() {
   store.commit('setFilterCoordinates', true)

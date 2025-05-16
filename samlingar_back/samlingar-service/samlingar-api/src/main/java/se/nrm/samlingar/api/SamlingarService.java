@@ -75,6 +75,27 @@ public class SamlingarService {
     }
     
     @GET
+    @Path("/freeTextSearch")
+    @ApiOperation(value = "freeTextSearch",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response freeTextSearch(@QueryParam("text") String text,
+            @QueryParam("fuzzySearch") boolean fuzzySearch,
+            @QueryParam("start") int start, 
+            @QueryParam("numPerPage") int numPerPage,
+            @QueryParam("sort") String sort) {
+        log.info("freeTextSearch {} -- {}", text, start + " -- " + numPerPage);
+
+        if (text == null || text.isEmpty()) {
+            text = wildCard;
+        }
+        return Response.ok(logic.freeTextSearch(text, start, numPerPage, sort)).build();
+    }
+    
+    
+    @GET
     @Path("/search")
     @ApiOperation(value = "Search",
             notes = "Return search results in json",

@@ -25,9 +25,11 @@
     "delete": "Delete",
     "edit": "Edit",
     "en": "English",
+    "help": "Help",
     "languageSetting": "Language setting",
     "no": "NO",
     "ok": "Ok",
+    "reset": "Reset",
     "save": "Save",
     "selectLanguage": "Select language",
     "sv": "Svenska",
@@ -175,10 +177,16 @@
     "sv": "Swedish"
   },
   "nav": {
-    "home": "Home",
-    "collections": "Collections",
     "about": "About",
-    "contactUs": "Contact us"
+    "collections": "Collections",
+    "contactUs": "Contact us",
+    "home": "Home",
+    "search": "Search"
+  },
+  "records": {
+    "labels": "Labels",
+    "list": "List",
+    "media": "Media"
   },
   "results": {
     "backToResultListView": "Back to result list view",
@@ -221,6 +229,8 @@
     "providScientificName": "Provided scientific name",
     "scientificName": "Scientific name",
     "search": "Search",
+    "searchAllFields": "Search all fields",
+    "searchFilter": "Search Filter",
     "searchByCollection": "Search by collection",
     "searchCatalogNumber": "Search catalogue number",
     "searchCollections": "Species group",

@@ -13,6 +13,13 @@ const fiedList =
 const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
 export default class Service {
+  async apiFreeTextSearch(searchText, start, rows) {
+
+    const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+    const response = await axios.get(url)
+    return response.data
+  }
+
   async apiInitdata() {
     const url = `${samlingApi}/initialData`
     const response = await axios.get(url)
@@ -26,7 +33,6 @@ export default class Service {
   }
 
   async apiAutoCompleteSearch(searchText) {
-
     const url = `${samlingApi}/autocomplete?text=${searchText}`
 
     const response = await axios.get(url)
@@ -34,7 +40,6 @@ export default class Service {
   }
 
   async apiQuickSearch(searchText, fuzzySearch, start, rows) {
-
     searchText = searchText.replace(/&/g, '%26')
 
     const url = `${samlingApi}/search?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`

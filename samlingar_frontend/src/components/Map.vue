@@ -49,7 +49,7 @@ onMounted(() => {
     // addSingleMarker()
     addSamlingarSinglemMarker()
   } else {
-    isLoading.value = true
+    // isLoading.value = true
     // addSamlingarMarks()
     // drawPolygon()
     // addClusterMarkers()

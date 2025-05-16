@@ -130,7 +130,7 @@ function searchWithType() {
 }
 
 .p-button-text {
-  color: #fff !important;
+  /* color: #fff !important; */
   text-decoration: underline;
 }
 .divLink {

@@ -1,6 +1,6 @@
 <template>
   <Card>
-    <template #title>Search filter</template>
+    <template #title>{{ $t('search.searchFilter') }}</template>
     <template #content>
       <div v-if="displayClearLink">
         <Button link @click="clearFilter">
@@ -412,7 +412,7 @@ function removeImageFilter() {
 </script>
 <style scoped>
 .p-button-text {
-  color: #fff !important;
+  /* color: #fff !important; */
   text-decoration: underline;
   font-size: 1rem;
 }

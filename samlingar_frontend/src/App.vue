@@ -16,34 +16,34 @@ import Navigation from './components/Navigation.vue'
 </script>
 
 <style>
-.p-inputtext {
+/* .p-inputtext {
   background: #000 !important;
   color: #fff !important;
-}
-.p-fieldset {
+} */
+/* .p-fieldset {
   color: #fff !important;
-}
+} */
 .p-fieldset-legend {
   background: none !important;
 }
 .p-select {
   background: #000 !important;
-  color: #fff !important;
+  /* color: #fff !important; */
 }
-.p-select-label {
+/* .p-select-label {
   color: #fff !important;
-}
+} */
 .p-card {
-  color: #fff !important;
+  /* color: #fff !important; */
   background: transparent !important;
 }
 .p-menu {
-  color: #fff !important;
+  /* color: #fff !important; */
   background: transparent !important;
 }
 
 .p-button-link {
-  color: #fff !important;
+  /* color: #fff !important; */
   background: transparent !important;
   text-decoration: underline;
 }
@@ -59,7 +59,7 @@ import Navigation from './components/Navigation.vue'
 .main-container {
   max-width: 100%;
   margin: 0 auto;
-  padding: 5.5rem 6rem 3rem;
+  padding: 5.5rem 4rem 3rem;
   min-height: 400px;
 }
 </style>

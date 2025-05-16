@@ -86,6 +86,41 @@ public class SamlingarLogic {
     private JsonArrayBuilder arrayBuilder;
     
     
+     
+    public String freeTextSearch(String text, int start, int numPerPage, String sort ) {
+        log.info("simpleSearch : {}", text);
+         
+        return service.freeTextSearch(start, numPerPage, text, sort);
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public String getInitalData() {
         log.info("getInitalData");
         return service.getInitalData();

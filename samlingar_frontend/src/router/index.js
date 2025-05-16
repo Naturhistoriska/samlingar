@@ -5,6 +5,7 @@ import Contact from '../views/Contact.vue'
 import Home from '../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
 import Results from '../views/Results.vue'
+import SearchView from '../views/SearchView.vue'
 import ResultDetail from '../components/ResultDetail.vue'
 import SearchFilter from '../components/SearchFilter.vue'
 import MapView from '../components/Map.vue'
@@ -78,6 +79,11 @@ const routes = [
   //   name: 'Result',
   //   component: Results
   // },
+  {
+    path: '/search',
+    name: 'Search',
+    component: SearchView
+  },
   {
     path: '/about',
     name: 'About',

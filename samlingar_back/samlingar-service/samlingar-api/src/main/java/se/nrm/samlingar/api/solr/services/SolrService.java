@@ -32,6 +32,8 @@ public class SolrService implements Serializable {
 
     private String username;
     private String password;
+    
+    private final String catchAllField = "catchall:";
 
     private final String jsonKey = "json";
     private final String responseKey = "response";
@@ -173,6 +175,14 @@ public class SolrService implements Serializable {
         
     }
 
+ 
+    
+    
+    
+    
+    
+    
+    
     @PostConstruct
     public void init() {
         log.info("init from search...");
@@ -187,6 +197,51 @@ public class SolrService implements Serializable {
         nextYear = yearOfToday + 1;
         lastTenYear = yearOfToday - 10;  
     }
+    
+    public String freeTextSearch(int start, int numPerPage, String text, String sort) {
+        log.info("freeTextSearch ..... : {} -- {} ", start + " -- " + numPerPage, text);
+ 
+        text = text == null ? wildSearch : catchAllField + text;
+        
+        log.info("freeTextSearch search text : {}", text);
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .setOffset(start)
+                .setLimit(numPerPage);
+
+        if (!StringUtils.isBlank(sort)) {
+            jsonRequest.setSort(sort);
+        }
+ 
+        jsonRequest.setBasicAuthCredentials(username, password);
+
+        String jsonResponse;
+        try {
+            response = jsonRequest.process(client);
+
+            rawJsonResponseParser = new NoOpResponseParser();
+            rawJsonResponseParser.setWriterType(jsonKey);
+            jsonRequest.setResponseParser(rawJsonResponseParser);
+
+            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
+//            log.info("simplesearch what... {}", jsonResponse);
+
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        return jsonResponse;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     public String getInitalData() { 
         final RangeFacetMap rangeFacet = new RangeFacetMap(

@@ -7,13 +7,16 @@
             <Tab value="0" to="/" as="router-link" @click="onClick" class="navbg">
               <i class="pi pi-home navbg"></i> {{ $t('nav.home') }}
             </Tab>
-            <Tab value="1" to="/collections" as="router-link" class="navbg">
+            <Tab value="1" to="/search" as="router-link" class="navbg">
+              {{ $t('nav.search') }}
+            </Tab>
+            <Tab value="2" to="/collections" as="router-link" class="navbg">
               {{ $t('nav.collections') }}
             </Tab>
-            <Tab value="2" to="/about" as="router-link" class="navbg">
+            <Tab value="3" to="/about" as="router-link" class="navbg">
               {{ $t('nav.about') }}
             </Tab>
-            <Tab value="3" to="/contact" as="router-link" class="navbg">
+            <Tab value="4" to="/contact" as="router-link" class="navbg">
               {{ $t('nav.contactUs') }}
             </Tab>
           </TabList>
@@ -45,14 +48,17 @@ watch(
       case 'Home':
         value.value = '0'
         break
-      case 'Collections':
+      case 'Search':
         value.value = '1'
         break
-      case 'About':
+      case 'Collections':
         value.value = '2'
         break
-      case 'Contact':
+      case 'About':
         value.value = '3'
+        break
+      case 'Contact':
+        value.value = '4'
         break
       default:
         value.value = '0'

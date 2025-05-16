@@ -55,7 +55,7 @@ public class SolrSearchHelper {
                 for (String value : searchText) {  
                     fuzzySeachTextSb.append(key);
                     fuzzySeachTextSb.append(star);
-                    fuzzySeachTextSb.append(text);
+                    fuzzySeachTextSb.append(value);
                     fuzzySeachTextSb.append(star);
                     fuzzySeachTextSb.append(emptySpace);
                 } 
