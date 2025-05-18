@@ -40,6 +40,8 @@ public class SolrService implements Serializable {
     private final String wildSearch = "*:*";
     private final String star = "*";
     private final String emptySpace = " ";
+    private final String imageFilter = "hasImage:*";
+    private final String mapFilter = "verbatimCoordinates:*";
 
     private final String authorField = "author";
     private final String catalogNumberField = "catalogNumber";
@@ -198,16 +200,25 @@ public class SolrService implements Serializable {
         lastTenYear = yearOfToday - 10;  
     }
     
-    public String freeTextSearch(int start, int numPerPage, String text, String sort) {
+    public String freeTextSearch(int start, boolean hasImages, boolean hasCoordinates,
+            int numPerPage, String text, String sort) {
         log.info("freeTextSearch ..... : {} -- {} ", start + " -- " + numPerPage, text);
  
         text = text == null ? wildSearch : catchAllField + text;
         
         log.info("freeTextSearch search text : {}", text);
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)
+                .setQuery(text) 
                 .setOffset(start)
                 .setLimit(numPerPage);
+        
+        if (hasImages) {
+            jsonRequest.withFilter(imageFilter);
+        }
+
+        if (hasCoordinates) {
+            jsonRequest.withFilter(mapFilter);
+        }
 
         if (!StringUtils.isBlank(sort)) {
             jsonRequest.setSort(sort);

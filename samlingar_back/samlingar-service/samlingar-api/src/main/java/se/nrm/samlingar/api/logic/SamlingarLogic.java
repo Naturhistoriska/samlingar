@@ -87,10 +87,11 @@ public class SamlingarLogic {
     
     
      
-    public String freeTextSearch(String text, int start, int numPerPage, String sort ) {
+    public String freeTextSearch(String text, boolean hasImage, boolean hasCoordinates,
+            int start, int numPerPage, String sort ) {
         log.info("simpleSearch : {}", text);
          
-        return service.freeTextSearch(start, numPerPage, text, sort);
+        return service.freeTextSearch(start, hasImage, hasCoordinates, numPerPage, text, sort);
     }
 
     

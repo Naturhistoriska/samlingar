@@ -39,6 +39,62 @@ public class SamlingarService {
     @Inject
     private SamlingarLogic logic;
     
+    
+        
+    @GET
+    @Path("/freeTextSearch")
+    @ApiOperation(value = "freeTextSearch",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response freeTextSearch(@QueryParam("text") String text,
+                @QueryParam("hasCoordinates") boolean hasCoordinates,
+                @QueryParam("hasImage") boolean hasImage,
+                @QueryParam("start") int start, 
+                @QueryParam("numPerPage") int numPerPage,
+                @QueryParam("sort") String sort) {
+        log.info("freeTextSearch {} -- {}", text, start + " -- " + numPerPage);
+        
+        log.info("freeTextSearch  has image and map {} -- {}", hasImage, hasCoordinates);
+
+        if (text == null || text.isEmpty()) {
+            text = wildCard;
+        } 
+        
+        return Response.ok(logic.freeTextSearch(text, hasImage, 
+                hasCoordinates, start, numPerPage, sort)).build();
+    }
+    
+   
+    
+    
+    
+    
+    
+    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    
+    
+    
+    
+    
+    
+    
     @GET
     @Path("/initialData")
     @ApiOperation(value = "Statistic",
@@ -73,27 +129,7 @@ public class SamlingarService {
         log.info("autoCompleteSearch: {} ", text);
         return Response.ok(logic.autoCompleteSearch(text)).build();
     }
-    
-    @GET
-    @Path("/freeTextSearch")
-    @ApiOperation(value = "freeTextSearch",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response freeTextSearch(@QueryParam("text") String text,
-            @QueryParam("fuzzySearch") boolean fuzzySearch,
-            @QueryParam("start") int start, 
-            @QueryParam("numPerPage") int numPerPage,
-            @QueryParam("sort") String sort) {
-        log.info("freeTextSearch {} -- {}", text, start + " -- " + numPerPage);
 
-        if (text == null || text.isEmpty()) {
-            text = wildCard;
-        }
-        return Response.ok(logic.freeTextSearch(text, start, numPerPage, sort)).build();
-    }
-    
     
     @GET
     @Path("/search")
