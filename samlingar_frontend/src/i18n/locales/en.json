@@ -3,6 +3,9 @@
     "header": "Here you can search for the Museum of Natural history’s collections",
     "header2": "The collections you can search for are: "
   },
+  "btnLabel": {
+    "columns": "Columns"
+  },
   "chart": {
     "JANUARY": "JANUARY",
     "FEBRUARY": "FEBRUARY",
@@ -163,7 +166,8 @@
   },
   "exportData": {
     "download": "Download",
-    "export": "Export data [Click to prepare data for download (max: 50000 records)]"
+    "export": "Export data [Click to prepare data for download (max: 50000 records)]",
+    "exportDatatable": "Export"
   },
   "footer": {
     "nrm": "Swedish Museum of Natural History",
@@ -247,6 +251,7 @@
     "typeStatus": "Typestatus",
     "year": "Year"
   },
+
   "startPage": {
     "allSpecimens": "All specimens",
     "botanicalCollection": "Botanical and mycological collections",

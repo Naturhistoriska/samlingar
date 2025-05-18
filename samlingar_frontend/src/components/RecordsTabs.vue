@@ -22,7 +22,6 @@
 </template>
 <script setup>
 import RecordLabels from './RecordLabels.vue'
-import RecordList from './RecordList.vue'
 import RecordTable from './RecordTable.vue'
 import RecordMedia from './RecordMedia.vue'
 

@@ -21,22 +21,13 @@ const emits = defineEmits(['freeTextSearch'])
 
 const value = ref()
 
-// function onChange() {
-//   console.log('onChange....', value.value)
-// }
-
 onMounted(() => {
   value.value = store.getters['searchText']
 })
 
 function onSearch() {
-  let searchText = '*'
-  if (value.value) {
-    searchText = value.value
-  }
-  console.log('onSearch', searchText)
+  const searchText = value.value ? value.value : '*'
   store.commit('setSearchText', searchText)
-  emits('freeTextSearch', searchText, 0, 10)
 }
 </script>
 <style scoped></style>

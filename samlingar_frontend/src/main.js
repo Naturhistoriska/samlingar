@@ -42,6 +42,7 @@ import Card from 'primevue/card'
 import Checkbox from 'primevue/checkbox'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
+import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
 import IconField from 'primevue/iconfield'
 import Image from 'primevue/image'
@@ -61,6 +62,7 @@ import TabList from 'primevue/tablist'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import TieredMenu from 'primevue/tieredmenu'
+import Toolbar from 'primevue/toolbar'
 
 
 
@@ -105,6 +107,7 @@ app.component('Card', Card)
 app.component('Checkbox', Checkbox)
 app.component('Column', Column)
 app.component('DataTable', DataTable)
+app.component('Dialog', Dialog)
 app.component('Divider', Divider)
 app.component('IconField', IconField)
 app.component('Image', Image)
@@ -125,7 +128,7 @@ app.component('TabPanels', TabPanels)
 app.component('TabPanel', TabPanel)
 
 app.component('TieredMenu', TieredMenu)
-
+app.component('Toolbar', Toolbar)
 
 app.component('downloadExcel', JsonExcel)
 

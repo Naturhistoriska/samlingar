@@ -3,6 +3,9 @@
     "header": "Här kan du söka efter alla föremål från Naturhistoriska riksmuseet som är registrerade",
     "header2": "Du kan söka efter föremål från följande samlingar"
   },
+  "btnLabel": {
+    "columns": "Columns"
+  },
   "chart": {
     "JANUARY": "jan",
     "FEBRUARY": "feb",
@@ -91,7 +94,8 @@
   },
   "exportData": {
     "download": "Ladda ner data",
-    "export": "Export data [Click to prepare data for download (max: 50000 records)]"
+    "export": "Export data [Click to prepare data for download (max: 50000 records)]",
+    "exportDatatable": "Export"
   },
   "footer": {
     "nrm": "Naturhistoriska riksmuseet",

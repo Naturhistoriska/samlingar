@@ -13,12 +13,44 @@ const fiedList =
 const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
 export default class Service {
-  async apiFreeTextSearch(searchText, start, rows) {
 
+  async apiFreeTextSearch(searchText, start, rows) {
     const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
     const response = await axios.get(url)
     return response.data
   }
+
+  async apiSearch(
+    searchText,
+    hasImages,
+    hasCoordinates,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/freeTextSearch?text=${searchText}`
+
+    if (hasCoordinates) {
+      url += '&hasCoordinates=true'
+    }
+
+    if (hasImages) {
+      url += '&hasImage=true'
+    }
+
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   async apiInitdata() {
     const url = `${samlingApi}/initialData`

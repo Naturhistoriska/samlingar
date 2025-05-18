@@ -2,7 +2,7 @@
   <div>
     <div class="grid">
       <div class="col-4" no-gutters>
-        <search-records @freeTextSearch="handleFreeTextSearch" />
+        <search-records @free-text-search="handleFreeTextSearch" @search="handleSearch" />
       </div>
       <div class="col-8" no-gutters>
         <Map />
@@ -25,6 +25,26 @@ import Map from '../components/Map.vue'
 const store = useStore()
 
 const service = new Service()
+
+function handleSearch(hasImage, hasMap, start, numPerPage) {
+  console.log('handleSearch', hasImage, hasMap)
+  let searchText = store.getters['searchText']
+  searchText = searchText ? searchText : '*'
+  service
+    .apiSearch(searchText, hasImage, hasMap, start, numPerPage)
+    .then((response) => {
+      const total = response.response.numFound
+      const results = response.response.docs
+
+      store.commit('setResults', results)
+      store.commit('setTotalRecords', total)
+
+      console.log('total:', total)
+      console.log('results:', results)
+    })
+    .catch()
+    .finally(() => {})
+}
 
 function handleFreeTextSearch(value, start, numPerPage) {
   console.log('handleFreeTextSearch...', value, start, numPerPage)
