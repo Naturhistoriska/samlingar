@@ -303,7 +303,7 @@ public class JsonHelper {
                         } else {
 //                            addAttValue(attBuilder, scientificNameKey, taxon);
 //                            addAttValue(attBuilder, taxonRankKey, key); 
-                            addAttValue(attBuilder, scientificNameKey, taxon);
+//                            addAttValue(attBuilder, scientificNameKey, taxon);
                             addAttValue(attBuilder, taxonRankKey, key);
                             isScientificNameSet = true;
                         }
