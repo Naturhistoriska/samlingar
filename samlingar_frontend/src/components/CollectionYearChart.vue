@@ -46,14 +46,14 @@ const chartOptions = computed(() => {
     plugins: {
       legend: {
         labels: {
-          color: 'white'
+          color: 'black'
         }
       }
     },
     scales: {
       x: {
         ticks: {
-          color: 'white',
+          color: 'black',
           font: {
             weight: 500
           }
@@ -65,7 +65,7 @@ const chartOptions = computed(() => {
       },
       y: {
         ticks: {
-          color: '#fff'
+          color: 'black'
         },
         grid: {
           color: '#888'

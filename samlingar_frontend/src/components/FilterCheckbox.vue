@@ -13,14 +13,14 @@
     </div>
     <div class="flex items-center gap-2">
       <Checkbox
-        v-model="map"
-        inputId="map"
-        name="image"
+        v-model="coordinates"
+        inputId="coordinates"
+        name="coordinates"
         binary
         size="small"
         @click="coordinatesClicked"
       />
-      <label for="map" class="text-sm">Have coordinages</label>
+      <label for="image" class="text-sm">Have coordinates</label>
     </div>
   </div>
 </template>
@@ -30,7 +30,7 @@ import { ref } from 'vue'
 const emits = defineEmits(['search'])
 
 const image = ref(false)
-const map = ref(false)
+const coordinates = ref(false)
 
 function coordinatesClicked() {
   console.log('coordinatesClicked', image.value, map.value)

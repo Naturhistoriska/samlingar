@@ -22,19 +22,18 @@
         <div class="col-12" no-gutters>
           <search-all @freeTextSearch="handleFreeTextSearch" style="padding-bottom: 5px" />
         </div>
+        <filter-checkbox @search="handleSearch" />
         <Panel :header="$t('labels.scientificName')" toggleable>
           <scientific-name @search="handleSearch" />
         </Panel>
       </div>
-
-      <!-- <filter-checkbox @search="handleSearch" /> -->
     </template>
   </Card>
 </template>
 <script setup>
 import SearchAll from './SearchAll.vue'
 import ScientificName from './ScientificName.vue'
-import FilterCheckbox from './ScientificName.vue'
+import FilterCheckbox from './FilterCheckbox.vue'
 
 const emits = defineEmits(['freeTextSearch', 'search'])
 
