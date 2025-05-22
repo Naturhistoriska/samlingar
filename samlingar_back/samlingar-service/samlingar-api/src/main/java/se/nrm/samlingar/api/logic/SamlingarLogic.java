@@ -85,7 +85,13 @@ public class SamlingarLogic {
     private JsonObjectBuilder attBuilder;
     private JsonArrayBuilder arrayBuilder;
     
+        
     
+    public String getInitalData() {
+        log.info("getInitalData");
+        return service.getInitalData();
+    }
+     
      
     public String freeTextSearch(String text, boolean hasImage, boolean hasCoordinates,
             boolean isType, boolean isInSweden, String collections,
@@ -104,51 +110,55 @@ public class SamlingarLogic {
         return service.autoCompleteSearch(text);
     }
     
-        public String scientificNameSearch(String text, boolean fuzzySearch, 
+    public String scientificNameSearch(String text, boolean fuzzySearch, 
             int start, int numPerPage, String sort ) {
         log.info("simpleSearch : {}", text);
         
         text = SolrSearchHelper.getInstance().buildSearchText(text, scientificNameKey, fuzzySearch);
         return service.scientificNameSearch(start, numPerPage, text, sort);
     }
-
     
-    
-    
-    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    public String getInitalData() {
-        log.info("getInitalData");
-        return service.getInitalData();
-    }
      
     public String getChartData(String collection) {
         return service.getChartData(collection);
     } 
+
+    
+    public String search(String text, String scientificName, boolean fuzzySearch,
+            boolean hasImages, boolean hasCoordinates,
+            boolean isType, boolean isInSweden, String collections,
+            int start, int numPerPage, String sort ) {
+        log.info("search : {}", text);
+         
+        scientificName = SolrSearchHelper.getInstance().buildSearchText(
+                scientificName, scientificNameKey, fuzzySearch);
+         
+        return service.search(text, scientificName, hasImages, hasCoordinates, 
+                isType, isInSweden, collections, start, numPerPage, sort);
+    }
+    
+    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
  
     public String simpleSearch(String text, boolean fuzzySearch, 

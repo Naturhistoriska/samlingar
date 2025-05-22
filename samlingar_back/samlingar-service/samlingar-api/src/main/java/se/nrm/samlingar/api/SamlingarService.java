@@ -38,7 +38,18 @@ public class SamlingarService {
 
     @Inject
     private SamlingarLogic logic;
-    
+      
+    @GET
+    @Path("/initialData")
+    @ApiOperation(value = "Statistic",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getInitalData() {
+        log.info("getInitalData");
+        return Response.ok(logic.getInitalData()).build();
+    }
     
         
     @GET
@@ -102,43 +113,6 @@ public class SamlingarService {
         return Response.ok(logic.scientificNameSearch(text, fuzzySearch,
                 start, numPerPage, sort)).build();
     }
-    
-    
-    
-    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
-    
-    
-    
-    
-    
-    @GET
-    @Path("/initialData")
-    @ApiOperation(value = "Statistic",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getInitalData() {
-        log.info("getInitalData");
-        return Response.ok(logic.getInitalData()).build();
-    }
      
     @GET
     @Path("chart/")
@@ -150,53 +124,101 @@ public class SamlingarService {
     public Response getChartData(@QueryParam("collection") String collection) {
         return Response.ok(logic.getChartData(collection)).build();
     }
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     @GET
-    @Path("/search")
-    @ApiOperation(value = "Search",
+    @Path("search/")
+    @ApiOperation(value = "search",
             notes = "Return search results in json",
             response = String.class
     )
     @Produces(MediaType.APPLICATION_JSON)
     public Response search(@QueryParam("text") String text,
+            @QueryParam("scientificName") String scientificName,
             @QueryParam("fuzzySearch") boolean fuzzySearch,
-            @QueryParam("start") int start, 
+            @QueryParam("hasCoordinates") boolean hasCoordinates,
+            @QueryParam("hasImage") boolean hasImage,
+            @QueryParam("isType") boolean isType,
+            @QueryParam("isInSweden") boolean isInSweden,
+            @QueryParam("collections") String collections,
+            @QueryParam("start") int start,
             @QueryParam("numPerPage") int numPerPage,
             @QueryParam("sort") String sort) {
-        log.info("search {} -- {}", text, start + " -- " + numPerPage);
-
-        if (text == null || text.isEmpty()) {
-            text = wildCard;
-        }
-        return Response.ok(logic.simpleSearch(text, fuzzySearch,
+        
+         
+        return Response.ok(logic.search(text, scientificName, fuzzySearch,
+                hasImage, hasCoordinates, isType, isInSweden, collections, 
                 start, numPerPage, sort)).build();
     }
+
+
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
     
+    
+    
+    
+    
+
+     
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+//    @GET
+//    @Path("/search")
+//    @ApiOperation(value = "Search",
+//            notes = "Return search results in json",
+//            response = String.class
+//    )
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response search(@QueryParam("text") String text,
+//            @QueryParam("fuzzySearch") boolean fuzzySearch,
+//            @QueryParam("start") int start, 
+//            @QueryParam("numPerPage") int numPerPage,
+//            @QueryParam("sort") String sort) {
+//        log.info("search {} -- {}", text, start + " -- " + numPerPage);
+//
+//        if (text == null || text.isEmpty()) {
+//            text = wildCard;
+//        }
+//        return Response.ok(logic.simpleSearch(text, fuzzySearch,
+//                start, numPerPage, sort)).build();
+//    }
+//    
     
     
     

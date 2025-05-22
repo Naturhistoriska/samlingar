@@ -14,6 +14,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.impl.NoOpResponseParser;
 import org.apache.solr.client.solrj.request.QueryRequest;
+import org.apache.solr.client.solrj.request.json.HeatmapFacetMap;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.RangeFacetMap;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
@@ -100,6 +101,7 @@ public class SolrService implements Serializable {
     private final String point001FacetKey = "point-0.01";
     private final String point0001FacetKey = "point-0.001";
      
+    private final String geoFacetKey = "geo";
     
     private final String scientificNameFacetKey = "scientificName";
     
@@ -237,25 +239,50 @@ public class SolrService implements Serializable {
         return response.jsonStr();
     }
     
+    public String getChartData(String collectionCode) {
+        log.info("getChartData : {}", collectionCode);
+     
+        final RangeFacetMap rangeFacet = new RangeFacetMap(
+                catalogedYearFacetKey, lastTenYear, nextYear, 1); 
+        rangeFacet.withSubFacet(catalogedMonthFacetKey, catalogedMonthFacet);
+
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(collectionCodeKey + collectionCode)
+                .returnFields(collectionNameField)
+                .withFacet(collectionCodeFacetKey, rangeFacet);
+
+        jsonRequest.setBasicAuthCredentials(username, password);
+        try {
+            response = jsonRequest.process(client);
+
+//            log.info("json: {}", response.jsonStr());
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+        return response.jsonStr();
+    }
+    
     public String freeTextSearch(int start, boolean hasImages, boolean hasCoordinates,
             boolean isType, boolean isInSweden, String collections,
             int numPerPage, String text, String sort) {
         log.info("freeTextSearch ..... : {} -- {} ", collections + " -- " + numPerPage, text);
  
         text = text == null ? wildSearch : catchAllField + text;
+         
+//        final TermsFacetMap geoHashFacet = new TermsFacetMap(point01FacetKey)
+//                .setLimit(40000);
         
-//        final TermsFacetMap geoFacet = new TermsFacetMap(pointFacetKey)
-//                .setLimit(20000)
-//                .setTermPrefix(pointPreFix);
-        final TermsFacetMap geoHashFacet = new TermsFacetMap(point01FacetKey)
-                .setLimit(20000);
+        final HeatmapFacetMap heatMap = new HeatmapFacetMap(geoFacetKey)
+                .setGridLevel(4)
+                ;
         
         log.info("freeTextSearch search text : {}", text);
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)  
                 .setOffset(start)
                 .setLimit(numPerPage)
-                 .withFacet(geohashFacetKey, geoHashFacet);
+                .withFacet(geohashFacetKey, heatMap);
         
         if (hasImages) {
             jsonRequest.withFilter(imageFilter);
@@ -303,6 +330,67 @@ public class SolrService implements Serializable {
         return jsonResponse;
     }
     
+    public String search(String text, String scientificName, 
+            boolean hasImages, boolean hasCoordinates,
+            boolean isType, boolean isInSweden, String collections,
+            int start, int numPerPage, String sort ) {
+         
+         
+        text = scientificName != null ? scientificName : catchAllField + text;
+         
+        log.info("search text : {}", text);
+        
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)  
+                .setOffset(start)
+                .setLimit(numPerPage);
+         
+        if (hasImages) {
+            jsonRequest.withFilter(imageFilter);
+        }
+
+        if (hasCoordinates) {
+            jsonRequest.withFilter(mapFilter);
+        }
+        
+        if (isType) {
+            jsonRequest.withFilter(typeFilter);
+        }
+        
+        if (isInSweden) {
+            jsonRequest.withFilter(isInSwedenFilter);
+        }
+        
+        if (collections != null) {
+            jsonRequest.withFilter(collectionCodeKey + collections);
+        }
+
+
+        if (!StringUtils.isBlank(sort)) {
+            jsonRequest.setSort(sort);
+        }
+ 
+        jsonRequest.setBasicAuthCredentials(username, password);
+
+        String jsonResponse;
+        try {
+            response = jsonRequest.process(client);
+
+            rawJsonResponseParser = new NoOpResponseParser();
+            rawJsonResponseParser.setWriterType(jsonKey);
+            jsonRequest.setResponseParser(rawJsonResponseParser);
+
+            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
+//            log.info("simplesearch what... {}", jsonResponse);
+
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+        return jsonResponse; 
+    }
+    
+     
     public String autoCompleteSearch(String text) {
         log.info("autoCompleteSearch: {} -- {}", text);
         final TermsFacetMap scientificNameFacet = new TermsFacetMap(scientificNameFacetKey);
@@ -364,54 +452,42 @@ public class SolrService implements Serializable {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-     
-    public String getChartData(String collectionCode) {
-        log.info("getChartData : {}", collectionCode);
-     
-        final RangeFacetMap rangeFacet = new RangeFacetMap(
-                catalogedYearFacetKey, lastTenYear, nextYear, 1); 
-        rangeFacet.withSubFacet(catalogedMonthFacetKey, catalogedMonthFacet);
-
+    public String getMapData(String text, int start, int numPerPage) {
+        
+        final HeatmapFacetMap heatMap = new HeatmapFacetMap(geoFacetKey);
+           
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(collectionCodeKey + collectionCode)
-                .returnFields(collectionNameField)
-                .withFacet(collectionCodeFacetKey, rangeFacet);
+                .setQuery(text)
+                .setOffset(start)
+                .setLimit(numPerPage);
 
-        jsonRequest.setBasicAuthCredentials(username, password);
-        try {
-            response = jsonRequest.process(client);
-
-            log.info("json: {}", response.jsonStr());
-        } catch (SolrServerException | IOException ex) {
-            log.error(ex.getMessage());
-            return null;
-        }
-        return response.jsonStr();
+        
+        return null;
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     
+
 
      
     
