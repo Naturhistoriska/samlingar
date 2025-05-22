@@ -43,7 +43,7 @@ function handleFreeTextSearch(value) {
 }
 
 function handleSearch(hasImage, hasCoordinates) {
-  emits('search', hasImage, hasCoordinates, 0, 10)
+  emits('search', hasImage, hasCoordinates, 0, 50)
 }
 </script>
 <style scoped>

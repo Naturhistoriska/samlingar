@@ -6,6 +6,7 @@ export default createStore({
     filterImage: false,
     filterInSweden: false,
     filterType: false,
+    isFuzzySearch: false,
     scientificName: null,
     searchText: null,
 
@@ -90,6 +91,9 @@ export default createStore({
     },
     filterCoordinates(state) {
       return state.filterCoordinates
+    },
+    isFuzzySearch(state) {
+      return state.isFuzzySearch
     },
     scientificName(state) {
       return state.scientificName
@@ -299,6 +303,11 @@ export default createStore({
   },
 
   mutations: {
+    setFilterCoordinates: (state, payload) => (state.filterCoordinates = payload),
+    setFilterImage: (state, payload) => (state.filterImage = payload),
+    setFilterInSweden: (state, payload) => (state.filterInSweden = payload),
+    setFilterType: (state, payload) => (state.filterType = payload),
+    setIsFuzzySearch: (state, payload) => (state.isFuzzySearch = payload),
     setScientificName: (state, payload) => (state.scientificName = payload),
     setSearchText: (state, payload) => (state.searchText = payload),
 
@@ -333,10 +342,7 @@ export default createStore({
     setExportData: (state, payload) => (state.exportData = payload),
     setImageCount: (state, payload) => (state.imageCount = payload),
     setFamily: (state, payload) => (state.family = payload),
-    setFilterImage: (state, payload) => (state.filterImage = payload),
-    setFilterType: (state, payload) => (state.filterType = payload),
-    setFilterInSweden: (state, payload) => (state.filterInSweden = payload),
-    setFilterCoordinates: (state, payload) => (state.filterCoordinates = payload),
+
     setGenus: (state, payload) => (state.genus = payload),
     setGeoData: (state, payload) => (state.geoData = payload),
     setGeoCollectionTotal: (state, payload) => (state.geoCollectionTotal = payload),

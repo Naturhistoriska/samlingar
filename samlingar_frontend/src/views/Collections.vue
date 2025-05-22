@@ -1,7 +1,7 @@
 <template>
   <Card>
     <template #title>
-      <h2>Statistic Data</h2>
+      <h2>{{ $t('statisticData.statisticData') }}</h2>
     </template>
     <template #content>
       <CollectionStatisticChart

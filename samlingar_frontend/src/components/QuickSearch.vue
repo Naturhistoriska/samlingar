@@ -42,7 +42,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['setResults', 'setScientificName', 'setTotalRecords']),
+    ...mapMutations(['setIsFuzzySearch', 'setResults', 'setScientificName', 'setTotalRecords']),
 
     onChange() {
       this.itemSelected = false
@@ -86,6 +86,7 @@ export default {
           this.setResults(results)
           this.setTotalRecords(total)
           this.setScientificName(searchText)
+          this.setIsFuzzySearch(fuzzySearch)
         })
         .catch()
         .finally(() => {

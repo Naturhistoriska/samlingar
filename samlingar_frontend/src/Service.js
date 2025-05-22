@@ -65,6 +65,44 @@ export default class Service {
     return response.data
   }
 
+  async apiSearch(
+    searchText,
+    scientificName,
+    isFuzzySearch,
+    hasImages,
+    hasCoordinates,
+    isType,
+    isInSweden,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/search?text=${searchText}`
+
+    if (scientificName) {
+      scientificName = scientificName.replace(/&/g, '%26')
+      url += `&scientificName=${scientificName}&fuzzySearch=${isFuzzySearch}`
+    }
+
+    if (hasCoordinates) {
+      url += '&hasCoordinates=true'
+    }
+    if (hasImages) {
+      url += '&hasImage=true'
+    }
+    if (isType) {
+      url += '&isType=true'
+    }
+    if (isInSweden) {
+      url += '&isInSweden=true'
+    }
+
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
   async apiCollectionGroupSearch(searchText, collections, start, numPerPage) {
     const url = `${samlingApi}/freeTextSearch?text=${searchText}&collections=${collections}&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
 

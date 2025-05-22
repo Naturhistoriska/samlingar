@@ -74,12 +74,12 @@ function handleFreeTextSearch(value, start, numPerPage) {
       const results = response.response.docs
       const total = response.response.numFound
 
-      if (total > 0) {
-        const facets = response.facets
+      // if (total > 0) {
+      //   const facets = response.facets
 
-        const geoFacet = facets.geohash.buckets
-        console.log('geo', geoFacet, geoFacet.length)
-      }
+      //   const geoFacet = facets.geohash.buckets
+      //   console.log('geo', geoFacet, geoFacet.length)
+      // }
 
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)

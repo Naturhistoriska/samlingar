@@ -9,7 +9,7 @@
         size="small"
         @click="imageClicked"
       />
-      <label for="image" class="text-sm">Have images</label>
+      <label for="image" class="text-sm">{{ $t('search.haveImages') }}</label>
     </div>
     <div class="flex items-center gap-2">
       <Checkbox
@@ -20,7 +20,7 @@
         size="small"
         @click="coordinatesClicked"
       />
-      <label for="image" class="text-sm">Have coordinates</label>
+      <label for="image" class="text-sm">{{ $t('search.haveCoordinates') }}</label>
     </div>
   </div>
 </template>
@@ -42,16 +42,17 @@ onMounted(() => {
 
 function coordinatesClicked() {
   console.log('coordinatesClicked', image.value, map.value)
+  const searchMap = !coordinates.value
 
-  const searchMap = !map.value
+  store.commit('setFilterCoordinates', searchMap)
   emits('search', image.value, searchMap)
 }
 
 function imageClicked() {
   console.log('imageClicked', image.value)
-
   const searchImage = !image.value
 
-  emits('search', searchImage, map.value)
+  store.commit('setFilterImage', searchImage)
+  emits('search', searchImage, coordinates.value)
 }
 </script>

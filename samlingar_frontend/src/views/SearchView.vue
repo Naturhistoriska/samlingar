@@ -20,7 +20,7 @@ import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
 import Service from '../Service'
 import SearchRecords from '../components/SearchRecords.vue'
 import Records from '../components/Records.vue'
-import Map from '../components/Map.vue'
+import Map from '../components/MyMap.vue'
 
 const store = useStore()
 
@@ -45,8 +45,24 @@ function handleSearch(hasImage, hasMap, start, numPerPage) {
   console.log('handleSearch', hasImage, hasMap)
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
+
+  const scientificName = store.getters['scientificName']
+  const isFuzzy = store.getters['isFuzzySearch']
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
+
   service
-    .apiSearch(searchText, hasImage, hasMap, start, numPerPage)
+    .apiSearch(
+      searchText,
+      scientificName,
+      isFuzzy,
+      hasImage,
+      hasMap,
+      isType,
+      isInSweden,
+      start,
+      numPerPage
+    )
     .then((response) => {
       const total = response.response.numFound
       const results = response.response.docs
