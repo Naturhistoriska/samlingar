@@ -81,33 +81,6 @@ public class SolrSearchHelper {
             fuzzySeachTextSb.append(quotationMark);
         }
 
-//        fuzzySeachTextSb = new StringBuilder();
-//        if (text.contains(emptySpace)) {
-//            searchText = text.split(emptySpace);
-//            for (String value : searchText) {
-//                fuzzySeachTextSb.append(key);
-//                fuzzySeachTextSb.append(value);
-//                fuzzySeachTextSb.append(emptySpace);
-//            }
-//        } else {
-//            fuzzySeachTextSb.append(key);
-//            fuzzySeachTextSb.append(text);
-//
-//            if (fuzzySearch) {
-//                fuzzySeachTextSb.append(emptySpace);
-//
-//                fuzzySeachTextSb.append(key);
-//                fuzzySeachTextSb.append(star);
-//                fuzzySeachTextSb.append(text);
-//                fuzzySeachTextSb.append(star);
-//                fuzzySeachTextSb.append(emptySpace);
-//
-//                fuzzySeachTextSb.append(key);
-//                fuzzySeachTextSb.append(StringUtils.capitalize(text));
-//                fuzzySeachTextSb.append(star);
-//            }
-//            
-//        }
         return fuzzySeachTextSb.toString().trim();
     }
 

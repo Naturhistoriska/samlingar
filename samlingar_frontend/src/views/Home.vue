@@ -1,10 +1,9 @@
 <template>
   <div>
     <div class="grid">
-      <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleSimpleSearch" />
+      <!-- <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleSimpleSearch" /> -->
       <start-page
-        v-else
-        @simpleSearch="handleSimpleSearch"
+        @freeTextSearch="handleFreeTextSearch"
         @filterWithCoordinates="handleFilterWithCoordinates"
         @filterWithImages="handleFilterWithImages"
         @filterWithInSweden="handleFilterWIthInSweden"
@@ -13,19 +12,25 @@
         @searchZooCollections="handleSearchZooCollections"
         @searchPaleaCollections="handleSearchPaleaCollections"
         @searchGeCololections="handleSearchGeCololectionss"
+        v-bind:loading="loading"
+        v-bind:filterSearchLoading="filterSearchLoading"
       />
     </div>
-    <div class="grid" v-if="!isAdvanceSearch" style="margin-top: 10px">
+
+    <div class="grid" style="margin-top: 10px">
       <StatisticCharts />
     </div>
   </div>
 </template>
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
 import StartPage from '../components/StartPage.vue'
-import AdvanceSearch from '../components/AdvanceSearch.vue'
+// import AdvanceSearch from '../components/AdvanceSearch.vue'
 import StatisticCharts from '../components/StatisticCharts.vue'
+
+// import Geohash from 'latlon-geohash'
+// import Map from '../components/Map.vue'
 
 import { useI18n } from 'vue-i18n'
 
@@ -59,6 +64,118 @@ onMounted(() => {
   fetchInitdata()
 })
 
+let loading = ref(false)
+let filterSearchLoading = ref(false)
+const collectionSearchLoading = ref(false)
+
+function handleFreeTextSearch(value, start, numPerPage) {
+  loading.value = true
+
+  service
+    .apiFreeTextSearch(value, start, numPerPage)
+    .then((response) => {
+      const results = response.response.docs
+      const total = response.response.numFound
+
+      if (total > 0) {
+        const facets = response.facets
+
+        const geoFacet = facets.geohash.buckets
+        console.log('geo', geoFacet, geoFacet.length)
+      }
+
+      store.commit('setResults', results)
+      store.commit('setTotalRecords', total)
+
+      setTimeout(() => {
+        loading.value = false
+      }, 2000)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/search')
+    })
+}
+
+function handleFilterWithCoordinates() {
+  store.commit('setFilterCoordinates', true)
+  filterSearch(true, false, false, false)
+}
+
+function handleFilterWIthInSweden() {
+  store.commit('setFilterInSweden', true)
+  filterSearch(false, false, false, true)
+}
+
+function handleFilterWithImages() {
+  store.commit('setFilterImage', true)
+  filterSearch(false, true, false, false)
+}
+
+function handleFilterWithType() {
+  store.commit('setFilterType', true)
+  filterSearch(false, false, true, false)
+}
+
+function filterSearch(hasCoordinates, hasImages, isType, isInSweden) {
+  filterSearchLoading.value = true
+  const searchText = '*'
+  store.commit('setSearchText', searchText)
+  service
+    .apiFreeTextSearchWithFilter(searchText, hasCoordinates, hasImages, isType, isInSweden, 0, 50)
+    .then((response) => {
+      const results = response.response.docs
+      const total = response.response.numFound
+
+      store.commit('setResults', results)
+      store.commit('setTotalRecords', total)
+      setTimeout(() => {
+        filterSearchLoading.value = false
+      }, 2000)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/search')
+    })
+}
+
+function handleSearchBotanyCollections() {
+  const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
+
+  store.commit('setCollectionGroup', botanyGroup)
+  searchCollectionGroup(botanyGroup)
+}
+
+function searchCollectionGroup(value) {
+  collectionSearchLoading.value = true
+  const searchText = '*'
+  store.commit('setSearchText', '*')
+  service
+    .apiCollectionGroupSearch(searchText, value, 0, 50)
+    .then((response) => {
+      const results = response.response.docs
+      const total = response.response.numFound
+
+      store.commit('setResults', results)
+      store.commit('setTotalRecords', total)
+
+      setTimeout(() => {
+        collectionSearchLoading.value = false
+      }, 2000)
+    })
+    .catch()
+    .finally(() => {
+      router.push('/search')
+    })
+}
+
+//
+//
+//
+//
+//
+//
+
 function handleSimpleSearch() {
   router.push('/search')
   // service
@@ -70,22 +187,6 @@ function handleSimpleSearch() {
   //   .finally(() => {
   //     router.push('/search')
   //   })
-}
-
-function handleSimpleSearch1() {
-  const searchText = store.getters['searchText']
-  const start = 0
-  const numRows = 10
-
-  service
-    .apiSimpleSearch(searchText, true, start, numRows)
-    .then((response) => {
-      processSearchData(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/search')
-    })
 }
 
 function fetchInitdata() {
@@ -352,46 +453,6 @@ function setChartData(facets) {
 //   }
 // }
 
-function handleFilterWithCoordinates() {
-  store.commit('setFilterCoordinates', true)
-  filterSearch(true, false, false, false)
-}
-
-function handleFilterWithImages() {
-  store.commit('setFilterImage', true)
-  filterSearch(false, true, false, false)
-}
-
-function handleFilterWIthInSweden() {
-  store.commit('setFilterInSweden', true)
-  filterSearch(false, false, false, true)
-}
-
-function handleFilterWithType() {
-  store.commit('setFilterType', true)
-  filterSearch(false, false, true, false)
-}
-
-function filterSearch(hasCoordinates, hasImages, isType, isInSweden) {
-  store.commit('setSearchText', '*:*')
-  service
-    .apiSimpleFilterSearch(hasCoordinates, hasImages, isType, isInSweden)
-    .then((response) => {
-      processSearchData(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
-}
-
-function handleSearchBotanyCollections() {
-  const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
-  store.commit('setSearchText', '*:*')
-  store.commit('setCollectionGroup', botanyGroup)
-  searchCollectionGroup(botanyGroup)
-}
-
 function handleSearchPaleaCollections() {
   const paleaGroup = import.meta.env.VITE_PALEA_GROUP
   store.commit('setSearchText', '*:*')
@@ -411,18 +472,6 @@ function handleSearchZooCollections() {
   store.commit('setSearchText', '*:*')
   store.commit('setCollectionGroup', zooGroup)
   searchCollectionGroup(zooGroup)
-}
-
-function searchCollectionGroup(value) {
-  service
-    .apiCollectionGroupSearch(value)
-    .then((response) => {
-      processSearchData(response)
-    })
-    .catch()
-    .finally(() => {
-      router.push('/records')
-    })
 }
 
 function processSearchData(response, value) {

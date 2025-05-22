@@ -1,17 +1,18 @@
 <template>
   <div class="grid">
     <div>
-      Free text search
-      <small style="font-size: 11px">[{{ $t('search.freeTextSearch') }}]</small>
+      {{ $t('search.freeTextSearch') }}
+      <small style="font-size: 11px">[{{ $t('search.searchAll') }}]</small>
     </div>
     <div class="flex flex-col gap-2" style="width: 100%">
       <div class="flex-col gap-2 searchInput">
-        <InputGroup>
+        <input-with-icon @doAction="handleFreeTextSearch" />
+        <!-- <InputGroup>
           <InputText
             id="simpleSearchInput1"
             v-model="value"
             @keydown.enter="onSearch"
-            :placeholder="$t('search.freeTextSearch')"
+            :placeholder="$t('search.searchAll')"
             aria-describedby="simpleSearchInput-help"
             class="w-full"
           />
@@ -21,13 +22,13 @@
             :loading="loading"
             @click="onSearch"
           />
-        </InputGroup>
+        </InputGroup> -->
 
-        <div class="advanceLink">
-          <Button variant="link" @click="onAdvanceSearchLinkClick">
-            <small id="simpleSearchInput-help">{{ $t('search.advanceSearch') }} </small>
-          </Button>
-        </div>
+        <!-- <div class="advanceLink"> -->
+        <!-- <Button variant="link" @click="onAdvanceSearchLinkClick"> -->
+        <!-- <small id="simpleSearchInput-help">{{ $t('search.advanceSearch') }} </small> -->
+        <!-- </Button> -->
+        <!-- </div> -->
       </div>
     </div>
   </div>
@@ -37,7 +38,9 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-const emits = defineEmits(['simpleSearch'])
+import InputWithIcon from './baseComponents/InputWithIcon.vue'
+
+const emits = defineEmits(['freeTextSearch'])
 
 const store = useStore()
 const router = useRouter()
@@ -45,27 +48,34 @@ const router = useRouter()
 const loading = ref(false)
 const value = ref()
 
-function onAdvanceSearchLinkClick() {
-  store.commit('setIsAdvanceSearch', true)
-  router.push('/advanceSearch')
+const placehold = ref()
+
+function handleFreeTextSearch() {
+  console.log('handleFreeTextSearch')
+  emits('freeTextSearch')
 }
 
-function onSearch() {
-  loading.value = true
+// function onAdvanceSearchLinkClick() {
+//   store.commit('setIsAdvanceSearch', true)
+//   router.push('/advanceSearch')
+// }
 
-  let searchText = '*:*'
-  if (value.value) {
-    searchText = value.value
-    // searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
-  }
+// function onSearch() {
+//   loading.value = true
 
-  store.commit('setSearchText', searchText)
-  emits('simpleSearch')
+//   let searchText = '*:*'
+//   if (value.value) {
+//     searchText = value.value
+//     // searchText = '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
+//   }
 
-  setTimeout(() => {
-    loading.value = false
-  }, 2000)
-}
+//   store.commit('setSearchText', searchText)
+//   emits('simpleSearch')
+
+//   setTimeout(() => {
+//     loading.value = false
+//   }, 2000)
+// }
 </script>
 <style scoped>
 .searchInput {

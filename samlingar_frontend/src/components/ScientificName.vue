@@ -1,35 +1,34 @@
 <template>
   <div class="grid" id="scientificNameDiv">
-    <div class="col-8">
-      <div class="flex flex-col gap-2 selectGroup">
-        <label class="searchLabel" for="searchScientificName">
-          {{ $t('search.scientificName') }}
-        </label>
-        <InputGroup>
-          <InputText
-            id="searchScientificName"
-            v-model="scientificName"
-            @input="onInputScientificName"
-            @blur="onBlur"
-            @mouseout="onMouseout"
-            :placeholder="$t('search.searchScientificName')"
-            class="w-11 md:w-56"
-          />
-          <Button icon="pi pi-times" v-if="showClearScentificName" @click="clearScientificName" />
-        </InputGroup>
-      </div>
+    <div class="col-12" no-gutters>
+      <InputGroup>
+        <InputText
+          id="searchScientificName"
+          v-model="scientificName"
+          @input="onInputScientificName"
+          :placeholder="$t('search.searchScientificName')"
+          size="small"
+          class="w-full"
+        />
+        <Button icon="pi pi-times" v-if="showClearScentificName" @click="clearScientificName" />
+      </InputGroup>
     </div>
-    <div class="col-4">
-      <div class="flex flex flex-wrap justify-center gap-3" style="padding-top: 6px">
-        <div class="flex items-center vertical-align-middle">
+
+    <div class="col-12">
+      <div class="flex flex flex-wrap gap-3" style="margin-top: -9px">
+        <div class="flex items-center">
           <RadioButton
             v-model="taxonOptions"
             inputId="taxonOption1"
             name="option1"
             value="exact"
+            size="small"
             class="mt-1"
+            @value-change="change"
           />
-          <label for="taxonOption1" class="ml-2">{{ $t('search.exact') }}</label>
+          <label for="taxonOption1" class="ml-2">
+            <small>{{ $t('search.exact') }}</small>
+          </label>
         </div>
         <div class="flex items-center">
           <RadioButton
@@ -38,8 +37,12 @@
             name="option2"
             value="contains"
             class="mt-1"
+            size="small"
+            @value-change="change"
           />
-          <label for="taxonOption2" class="ml-2">{{ $t('search.contains') }}</label>
+          <label for="taxonOption2" class="ml-2">
+            <small>{{ $t('search.contains') }}</small>
+          </label>
         </div>
         <div class="flex items-center">
           <RadioButton
@@ -47,16 +50,20 @@
             inputId="taxonOption3"
             name="option3"
             value="startsWith"
+            size="small"
             class="mt-1"
+            @value-change="change"
           />
-          <label for="taxonOption3" class="ml-2">{{ $t('search.startsWith') }}</label>
+          <label for="taxonOption3" class="ml-2">
+            <small>{{ $t('search.startsWith') }}</small>
+          </label>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 const store = useStore()
 
@@ -64,13 +71,22 @@ let scientificName = ref()
 let taxonOptions = ref()
 let showClearScentificName = ref(false)
 
+const emits = defineEmits(['freeTextSearch', 'search'])
+
 watch(
   () => store.getters['scientificName'],
   (newValue, oldValue) => {
-    console.log('new value:', oldValue, newValue)
     scientificName.value = newValue
   }
 )
+
+onMounted(() => {
+  scientificName.value = store.getters['scientificName']
+})
+
+function change() {
+  console.log('taxonOptions1', taxonOptions.value, taxonOptions)
+}
 
 function onInputScientificName() {
   showClearScentificName = scientificName.value
@@ -78,24 +94,6 @@ function onInputScientificName() {
   if (scientificName !== undefined && scientificName.value) {
     store.commit('setScientificName', scientificName.value)
   }
-
-  // '%2B(text:' + value.value + '*' + ' text:"' + value.value + '")'
-  // if (scientificName.value) {
-  //   const option = taxonOptions.value
-  //   let searchTaxon
-  //   if (option === 'exact') {
-  //     searchTaxon = `%2Btx:"${scientificName.value}"`
-  //   } else if (option === 'startsWith') {
-  //     searchTaxon = `%2B(tx:${scientificName.value}* tx:${scientificName.value})`
-  //   } else {
-  //     searchTaxon = `%2B(tx:*${scientificName.value}* tx:"${scientificName.value}")`
-  //   }
-  //   if (searchTaxon) {
-  //     store.commit('setScientificName', searchTaxon)
-  //   }
-  // } else {
-  //   store.commit('setScientificName', null)
-  // }
 }
 
 function clearScientificName() {
@@ -109,10 +107,10 @@ function clearScientificName() {
   max-width: 770px;
   padding-bottom: 1rem;
 }
-.searchLabel {
+/* .searchLabel {
   padding-right: 2rem;
   padding-top: 0.3rem;
   text-align: right;
   min-width: 150px;
-}
+} */
 </style>

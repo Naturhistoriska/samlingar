@@ -52,6 +52,7 @@ import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import Menu from 'primevue/menu'
 import Paginator from 'primevue/paginator'
+import Panel from 'primevue/panel'
 import ProgressSpinner from 'primevue/progressspinner'
 import RadioButton from 'primevue/radiobutton'
 import Select from 'primevue/select'
@@ -84,6 +85,14 @@ app.use(moment)
 
 app.use(PrimeVue, {
   theme: {
+    pt: {
+      panel: {
+        header: {
+          class: 'bg-primary',
+          color: '#FF6E40'
+        }
+      }
+    },
     preset: Aura,
     options: {
       prefix: 'p',
@@ -117,6 +126,7 @@ app.component('InputText', InputText)
 app.component('FloatLabel', FloatLabel)
 app.component('Menu', Menu)
 app.component('Paginator', Paginator)
+app.component('Panel', Panel)
 app.component('ProgressSpinner', ProgressSpinner)
 app.component('RadioButton', RadioButton)
 app.component('Select', Select)

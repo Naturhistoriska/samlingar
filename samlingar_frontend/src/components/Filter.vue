@@ -1,10 +1,5 @@
 <template>
   <div class="grid">
-    <div class="grid">
-      <div class="col-12" no-gutters style="padding-top: 2em; padding-right: 2em; font-size: 16px">
-        <p class="m-0">{{ $t('startPage.text') }}</p>
-      </div>
-    </div>
     <div class="grid" style="min-width: 100%">
       <div class="col-12 w-full" no-gutters style="padding-top: 50px">
         <p class="m-0" style="font-weight: bold; font-size: 18px">
@@ -13,72 +8,67 @@
       </div>
     </div>
 
-    <div class="grid divLink" @click="searchAll">
-      <div class="col-6" no-gutters style="float: left; text-align: left">
-        <Button text :label="$t('startPage.allSpecimens')" />
-      </div>
-      <div class="col-6" style="float: left; text-align: left">
-        <Button text>
-          {{ totalCount }}
-        </Button>
-      </div>
-    </div>
-    <div class="grid divLink" @click="searchAllCoordinates">
-      <div class="col-6" no-gutters style="float: left; text-align: left">
-        <Button text :label="$t('startPage.specimensWithCoordinates')" />
-      </div>
-      <div class="col-6">
-        <Button text>
-          {{ coordinatesCount }}
-        </Button>
-      </div>
-    </div>
-    <div class="grid divLink" @click="searchInSweden">
-      <div class="col-6" no-gutters style="float: left; text-align: left">
-        <Button text :label="$t('startPage.specimensFromSweden')" />
-      </div>
-      <div class="col-6">
-        <Button text>
-          {{ inSwedenCount }}
-        </Button>
-      </div>
-    </div>
-    <div class="grid divLink" @click="searchWithImage">
-      <div class="col-6" no-gutters style="float: left; text-align: left">
-        <Button text :label="$t('startPage.specimensWithImages')" />
-      </div>
-      <div class="col-6">
-        <Button text>
-          {{ imageCount }}
-        </Button>
-      </div>
-    </div>
-    <div class="grid divLink" @click="searchWithType">
-      <div class="col-6" no-gutters style="float: left; text-align: left">
-        <Button text :label="$t('startPage.specimensWithType')" />
-      </div>
-      <div class="col-6">
-        <Button text>
-          {{ isTypeCount }}
-        </Button>
-      </div>
-    </div>
+    <filt-link
+      v-bind:text="allSpecimensText"
+      v-bind:total="totalCount"
+      v-bind:loading="loading"
+      @doSearch="handleFreeTextSearch"
+    />
+
+    <filt-link
+      v-bind:text="coordinatesText"
+      v-bind:total="coordinatesCount"
+      v-bind:loading="filterSearchLoading"
+      @doSearch="handleCoordinatesSearch"
+    />
+
+    <filt-link
+      v-bind:text="inSwedenText"
+      v-bind:total="inSwedenCount"
+      v-bind:loading="filterSearchLoading"
+      @doSearch="handleInSwedenSearch"
+    />
+
+    <filt-link
+      v-bind:text="hasImageText"
+      v-bind:total="imageCount"
+      v-bind:loading="filterSearchLoading"
+      @doSearch="handleHasImageSearch"
+    />
+
+    <filt-link
+      v-bind:text="isTypeText"
+      v-bind:total="isTypeCount"
+      v-bind:loading="filterSearchLoading"
+      @doSearch="handleIsTypeSearch"
+    />
   </div>
 </template>
 <script setup>
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
+import FiltLink from './baseComponents/FiltLink.vue'
 
-// const emits = defineEmits(['advanceSearch', 'searchWithFilter', 'simpleSearch'])
+const { t } = useI18n()
+
 const emits = defineEmits([
+  'freeTextSearch',
   'filterWithCoordinates',
   'filterWithImages',
   'filterWithInSweden',
-  'filterWithInType',
-  'simpleSearch'
+  'filterWithInType'
 ])
 
 const store = useStore()
+
+const props = defineProps(['loading', 'filterSearchLoading'])
+
+const allSpecimensText = ref('startPage.allSpecimens')
+const coordinatesText = ref('startPage.specimensWithCoordinates')
+const inSwedenText = ref('startPage.specimensFromSweden')
+const hasImageText = ref('startPage.specimensWithImages')
+const isTypeText = ref('startPage.specimensWithType')
 
 const coordinatesCount = computed(() => {
   return store.getters['hasCoordinatesCount']
@@ -100,24 +90,25 @@ const inSwedenCount = computed(() => {
   return store.getters['inSwedenCount']
 })
 
-function searchAll() {
-  store.commit('setSearchText', '*:*')
-  emits('simpleSearch')
+function handleFreeTextSearch() {
+  const searchText = '*'
+  store.commit('setSearchText', searchText)
+  emits('freeTextSearch', searchText)
 }
 
-function searchAllCoordinates() {
+function handleCoordinatesSearch() {
   emits('filterWithCoordinates')
 }
 
-function searchInSweden() {
+function handleInSwedenSearch() {
   emits('filterWithInSweden')
 }
 
-function searchWithImage() {
+function handleHasImageSearch() {
   emits('filterWithImages')
 }
 
-function searchWithType() {
+function handleIsTypeSearch() {
   emits('filterWithInType')
 }
 </script>

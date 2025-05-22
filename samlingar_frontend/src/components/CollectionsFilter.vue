@@ -1,56 +1,45 @@
 <template>
   <div class="grid" no-gutters>
-    <div class="grid collectionDivLink" @click="searchBotCollection">
-      <div class="col-4">
-        <Image src="/paucidentatus.jpg" alt="Image" width="180" />
-      </div>
-      <div class="col-8 collectionTextLink">
-        <div class="grid">
-          <Button link>
-            <small>{{ $t('startPage.botanicalCollection') }}</small>
-          </Button>
-        </div>
-      </div>
-    </div>
-    <div class="grid collectionDivLink" @click="searchZooCollection">
-      <div class="col-4">
-        <Image src="/Zoologiska.jpg" alt="Image" width="180" />
-      </div>
-      <div class="col-8 collectionTextLink">
-        <div class="grid">
-          <Button link>
-            <small>{{ $t('startPage.zooCollection') }} </small>
-          </Button>
-        </div>
-      </div>
-    </div>
-    <div class="grid collectionDivLink" @click="searchPalaeCollection">
-      <div class="col-4">
-        <Image src="/Angelinoceras.jpg" alt="Image" width="180" />
-      </div>
-      <div class="col-8 collectionTextLink">
-        <div class="grid">
-          <Button link>
-            <small>{{ $t('startPage.palaeCollection') }} </small>
-          </Button>
-        </div>
-      </div>
-    </div>
-    <div class="grid collectionDivLink" @click="searchGeoCollection">
-      <div class="col-4">
-        <Image src="/Bergkristall.jpg" alt="Image" width="180" />
-      </div>
-      <div class="col-8 collectionTextLink">
-        <div class="grid">
-          <Button link>
-            <small>{{ $t('startPage.geoCollection') }} </small>
-          </Button>
-        </div>
-      </div>
-    </div>
+    <image-filt-link
+      v-bind:text="botanicalCollection"
+      v-bind:imageSource="botImageSource"
+      @searchCollection="handleBotCollectionSearch"
+    />
+    <image-filt-link
+      v-bind:text="zooCollection"
+      v-bind:imageSource="zooImageSource"
+      @searchCollection="handleZooCollectionSearch"
+    />
+
+    <image-filt-link
+      v-bind:text="paleoCollection"
+      v-bind:imageSource="paleoImageSource"
+      @searchCollection="handlePaleoCollectionSearch"
+    />
+
+    <image-filt-link
+      v-bind:text="geoCollection"
+      v-bind:imageSource="geoImageSource"
+      @searchCollection="handleGeoCollectionSearch"
+    />
   </div>
 </template>
 <script setup>
+import ImageFiltLink from './baseComponents/ImageFiltLink.vue'
+import { computed, ref } from 'vue'
+
+const botanicalCollection = ref('startPage.botanicalCollection')
+const botImageSource = ref('/paucidentatus.jpg')
+
+const zooCollection = ref('startPage.zooCollection')
+const zooImageSource = ref('/Zoologiska.jpg')
+
+const paleoCollection = ref('startPage.palaeCollection')
+const paleoImageSource = ref('/Angelinoceras.jpg')
+
+const geoCollection = ref('startPage.geoCollection')
+const geoImageSource = ref('/Bergkristall.jpg')
+
 const emits = defineEmits([
   'searchBotanyCollections',
   'searchZooCollections',
@@ -58,17 +47,17 @@ const emits = defineEmits([
   'searchGeoCollections'
 ])
 
-function searchBotCollection() {
+function handleBotCollectionSearch() {
   emits('searchBotanyCollections')
 }
 
-function searchZooCollection() {
+function handleZooCollectionSearch() {
   emits('searchZooCollections')
 }
-function searchPalaeCollection() {
+function handlePaleoCollectionSearch() {
   emits('searchPaleaCollections')
 }
-function searchGeoCollection() {
+function handleGeoCollectionSearch() {
   emits('searchGeoCollections')
 }
 </script>

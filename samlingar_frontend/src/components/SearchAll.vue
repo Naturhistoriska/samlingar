@@ -6,6 +6,7 @@
         v-model="value"
         @keydown.enter="onSearch"
         :placeholder="$t('search.searchAllFields')"
+        size="small"
         class="w-full"
       />
     </InputGroup>
@@ -22,12 +23,14 @@ const emits = defineEmits(['freeTextSearch'])
 const value = ref()
 
 onMounted(() => {
-  value.value = store.getters['searchText']
+  const freeText = store.getters['searchText']
+  value.value = freeText == '*' ? null : freeText
 })
 
 function onSearch() {
   const searchText = value.value ? value.value : '*'
   store.commit('setSearchText', searchText)
+  emits('freeTextSearch', searchText)
 }
 </script>
 <style scoped></style>

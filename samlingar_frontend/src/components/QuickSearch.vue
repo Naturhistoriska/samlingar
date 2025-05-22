@@ -42,50 +42,24 @@ export default {
   },
 
   methods: {
-    ...mapMutations([
-      'setCollections',
-      'setFamily',
-      'setFilterCoordinates',
-      'setFilterImage',
-      'setFilterInSweden',
-      'setFilterType',
-      'setGenus',
-      'setHasCoordinatesCount',
-      'setImageCount',
-      'setInSwedenCount',
-      'setResetPaging',
-      'setResults',
-      'setSearchText',
-      'setShowDetail',
-      'setShowResults',
-      'setTotalRecords',
-      'setIsTypeCount',
-      'setTypeStatus'
-    ]),
+    ...mapMutations(['setResults', 'setScientificName', 'setTotalRecords']),
 
     onChange() {
       this.itemSelected = false
     },
+
     onItemSelect() {
       console.log('onItemSelect')
       this.itemSelected = true
     },
+
     onPressEnter() {
       this.apiSearch()
     },
 
     apiAutoComplete(event) {
       console.log('apiAutoComplete', event.query)
-
       let searchText = event.query
-
-      // let fuzzySearch = !this.itemSelected
-
-      // if (!this.itemSelected) {
-      //   searchText += '*'
-      // }
-
-      // searchText = searchText.replace(/^./, searchText[0].toUpperCase()) // Capitalize first letter
 
       service
         .apiAutoCompleteSearch(searchText)
@@ -103,69 +77,90 @@ export default {
       let searchText = this.search
       const fuzzySearch = !this.itemSelected
 
-      // searchText = searchText.replace(/^./, searchText[0].toUpperCase())
-      // if (this.itemSelected) {
-      //   searchText = '%2BtxFullName:"' + searchText + '"'
-      // } else {
-      //   searchText = '%2B(txFullName:' + searchText + '*' + ' txFullName:"' + searchText + '")'
-      // }
-      // console.log('what..2..', searchText)
       service
-        .apiQuickSearch(searchText, fuzzySearch, 0, 10)
+        .apiQuickSearch(searchText, fuzzySearch, 0, 50)
         .then((response) => {
           const total = response.response.numFound
           const results = response.response.docs
 
-          if (total > 0) {
-            const facets = response.facets
-
-            this.setCommentFacet(facets)
-
-            const familyFacet = facets.family
-            if (familyFacet !== undefined) {
-              const family = familyFacet.buckets
-              console.log('family length', family.length)
-              family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-              this.setFamily(family)
-            } else {
-              this.setFamily([])
-            }
-            const genusFacet = facets.genus
-            if (genusFacet !== undefined) {
-              const genus = genusFacet.buckets
-              console.log('genus length', genus.length)
-              genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-              this.setGenus(genus)
-            } else {
-              this.setGenus([])
-            }
-
-            const collections = facets.collectionName.buckets
-            this.setCollections(collections)
-
-            const typeStatus = facets.typeStatus.buckets
-            console.log('typeStatus length', typeStatus.length)
-
-            this.setTypeStatus(typeStatus)
-          }
           this.setResults(results)
           this.setTotalRecords(total)
-          this.setSearchText(searchText)
-
-          this.setShowDetail(false)
-          this.setShowResults(true)
-          this.setResetPaging(true)
-          this.setFilterCoordinates(false)
-          this.setFilterImage(false)
-          this.setFilterInSweden(false)
-          this.setFilterType(false)
+          this.setScientificName(searchText)
         })
         .catch()
         .finally(() => {
-          this.search = null
-          this.$router.push('/records')
+          this.search = undefined
+          this.$router.push('/search')
         })
     },
+
+    // apiSearch() {
+    //   let searchText = this.search
+    //   const fuzzySearch = !this.itemSelected
+
+    //   // searchText = searchText.replace(/^./, searchText[0].toUpperCase())
+    //   // if (this.itemSelected) {
+    //   //   searchText = '%2BtxFullName:"' + searchText + '"'
+    //   // } else {
+    //   //   searchText = '%2B(txFullName:' + searchText + '*' + ' txFullName:"' + searchText + '")'
+    //   // }
+    //   // console.log('what..2..', searchText)
+    //   service
+    //     .apiQuickSearch(searchText, fuzzySearch, 0, 10)
+    //     .then((response) => {
+    //       const total = response.response.numFound
+    //       const results = response.response.docs
+
+    //       if (total > 0) {
+    //         const facets = response.facets
+
+    //         this.setCommentFacet(facets)
+
+    //         const familyFacet = facets.family
+    //         if (familyFacet !== undefined) {
+    //           const family = familyFacet.buckets
+    //           console.log('family length', family.length)
+    //           family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+    //           this.setFamily(family)
+    //         } else {
+    //           this.setFamily([])
+    //         }
+    //         const genusFacet = facets.genus
+    //         if (genusFacet !== undefined) {
+    //           const genus = genusFacet.buckets
+    //           console.log('genus length', genus.length)
+    //           genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
+    //           this.setGenus(genus)
+    //         } else {
+    //           this.setGenus([])
+    //         }
+
+    //         const collections = facets.collectionName.buckets
+    //         this.setCollections(collections)
+
+    //         const typeStatus = facets.typeStatus.buckets
+    //         console.log('typeStatus length', typeStatus.length)
+
+    //         this.setTypeStatus(typeStatus)
+    //       }
+    //       this.setResults(results)
+    //       this.setTotalRecords(total)
+    //       this.setSearchText(searchText)
+
+    //       this.setShowDetail(false)
+    //       this.setShowResults(true)
+    //       this.setResetPaging(true)
+    //       this.setFilterCoordinates(false)
+    //       this.setFilterImage(false)
+    //       this.setFilterInSweden(false)
+    //       this.setFilterType(false)
+    //     })
+    //     .catch()
+    //     .finally(() => {
+    //       this.search = null
+    //       this.$router.push('/records')
+    //     })
+    // },
 
     setCommentFacet(facets) {
       const imageFacet = facets.image.buckets
@@ -265,9 +260,17 @@ export default {
   }
 }
 </script>
+
 <style scoped>
+.p-floatlabel label {
+  color: #c0bdbd !important;
+}
 .p-button-text {
-  /* color: #fff !important; */
+  color: #fff !important;
+  background: var(--p-emerald-500) !important;
+  border-start-end-radius: var(--p-inputgroup-addon-border-radius) !important;
+  border-end-end-radius: var(--p-inputgroup-addon-border-radius) !important;
+  border: 1px solid var(--p-button-primary-border-color) !important;
   text-decoration: none !important;
 }
 .p-button-text:hover {

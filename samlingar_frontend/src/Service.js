@@ -13,17 +13,33 @@ const fiedList =
 const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
 export default class Service {
-
   async apiFreeTextSearch(searchText, start, rows) {
     const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
     const response = await axios.get(url)
     return response.data
   }
 
-  async apiSearch(
+  async apiAutoCompleteSearch(searchText) {
+    const url = `${samlingApi}/autocomplete?text=${searchText}`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiQuickSearch(searchText, fuzzySearch, start, rows) {
+    searchText = searchText.replace(/&/g, '%26')
+
+    const url = `${samlingApi}/scientificname?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiFreeTextSearchWithFilter(
     searchText,
-    hasImages,
     hasCoordinates,
+    hasImages,
+    isType,
+    isInSweden,
     start,
     numPerPage
   ) {
@@ -32,15 +48,27 @@ export default class Service {
     if (hasCoordinates) {
       url += '&hasCoordinates=true'
     }
-
     if (hasImages) {
       url += '&hasImage=true'
+    }
+    if (isType) {
+      url += '&isType=true'
+    }
+    if (isInSweden) {
+      url += '&isInSweden=true'
     }
 
     url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
 
     const response = await axios.get(url)
 
+    return response.data
+  }
+
+  async apiCollectionGroupSearch(searchText, collections, start, numPerPage) {
+    const url = `${samlingApi}/freeTextSearch?text=${searchText}&collections=${collections}&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+
+    const response = await axios.get(url)
     return response.data
   }
 
@@ -60,21 +88,6 @@ export default class Service {
 
   async apiCollectionsChartData(collection) {
     let url = `${samlingApi}/chart?collection="${collection}"`
-    const response = await axios.get(url)
-    return response.data
-  }
-
-  async apiAutoCompleteSearch(searchText) {
-    const url = `${samlingApi}/autocomplete?text=${searchText}`
-
-    const response = await axios.get(url)
-    return response.data
-  }
-
-  async apiQuickSearch(searchText, fuzzySearch, start, rows) {
-    searchText = searchText.replace(/&/g, '%26')
-
-    const url = `${samlingApi}/search?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
     const response = await axios.get(url)
     return response.data
   }
@@ -105,13 +118,6 @@ export default class Service {
       url += '&inSweden=inSweden:*'
     }
     url += `&start=${0}&numPerPage=${10}&sort=catalogedDate desc`
-
-    const response = await axios.get(url)
-    return response.data
-  }
-
-  async apiCollectionGroupSearch(collections) {
-    const url = `${samlingApi}/filter?text=*:*&collections=${collections}&start=${0}&numPerPage=${10}&sort=catalogedDate desc`
 
     const response = await axios.get(url)
     return response.data

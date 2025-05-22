@@ -176,6 +176,9 @@
   "home": {
     "header": "Welcome to the search portal for natural history collections inThe Swedish Museum of Natural History"
   },
+  "labels": {
+    "scientificName": "Scientific Name"
+  },
   "locale": {
     "en": "English",
     "sv": "Swedish"
@@ -229,10 +232,11 @@
     "endDate": "End date [YYYY-MM-DD]",
     "endDateLabel": "End date",
     "exact": "Exact",
-    "freeTextSearch": "Search collections (species, genus, family, collectors, location, etc.)",
+    "freeTextSearch": "Free text search",
     "providScientificName": "Provided scientific name",
     "scientificName": "Scientific name",
     "search": "Search",
+    "searchAll": "Search collections (species, genus, family, collectors, location, etc.)",
     "searchAllFields": "Search all fields",
     "searchFilter": "Search Filter",
     "searchByCollection": "Search by collection",
@@ -258,7 +262,7 @@
     "commonSearch": "Common searches",
     "geoCollection": "Geological collection",
     "monthChartLabel": "Registered specimens last 12 months",
-    "palaeCollection": "Palaeontological collection",
+    "palaeCollection": "Paleontological collection",
     "specimensWithCoordinates": "Specimens with coordinates",
     "specimensFromSweden": "Specimens collected in Sweden",
     "specimensWithImages": "Specimens with images",

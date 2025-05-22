@@ -2,11 +2,9 @@
   <div>
     <div class="grid">
       <div class="col-4" no-gutters>
-        <search-records @free-text-search="handleFreeTextSearch" @search="handleSearch" />
+        <search-records @search="handleSearch" />
       </div>
-      <div class="col-8" no-gutters>
-        <Map />
-      </div>
+      <div class="col-8" no-gutters><Map /></div>
     </div>
     <div class="grid">
       <div class="col-12" no-gutters>
@@ -16,7 +14,9 @@
   </div>
 </template>
 <script setup>
+// import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
 import Service from '../Service'
 import SearchRecords from '../components/SearchRecords.vue'
 import Records from '../components/Records.vue'
@@ -25,6 +25,21 @@ import Map from '../components/Map.vue'
 const store = useStore()
 
 const service = new Service()
+
+// onMounted(async () => {
+
+//   console.log('onMounted')
+//   const value = store.getters['searchText']
+//   console.log('value....', value)
+// })
+
+onBeforeRouteLeave((to, from) => {
+  console.log('onBeforeRouteLeave', to, from)
+  const { name } = to
+  if (name === 'Home') {
+    // store.commit('setShowResults', false)
+  }
+})
 
 function handleSearch(hasImage, hasMap, start, numPerPage) {
   console.log('handleSearch', hasImage, hasMap)

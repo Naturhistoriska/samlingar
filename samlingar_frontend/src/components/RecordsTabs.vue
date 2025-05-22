@@ -8,7 +8,7 @@
       </TabList>
       <TabPanels>
         <TabPanel value="0">
-          <RecordTable />
+          <RecordTable @search="handleSearch" />
         </TabPanel>
         <TabPanel value="1">
           <RecordLabels />
@@ -26,6 +26,10 @@ import RecordTable from './RecordTable.vue'
 import RecordMedia from './RecordMedia.vue'
 
 const emits = defineEmits(['freeTextSearch'])
+
+function handleSearch() {
+  console.log('handleSearch')
+}
 
 function handleFreeTextSearch(searchText, start, numPerPage) {
   console.log('handleFreeTextSearch', searchText, start, numPerPage)

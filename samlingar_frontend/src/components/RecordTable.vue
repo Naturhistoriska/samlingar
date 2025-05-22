@@ -62,6 +62,8 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
+
 import { useStore } from 'vuex'
 
 import Service from '../Service'
@@ -69,14 +71,24 @@ const service = new Service()
 
 const store = useStore()
 
-onMounted(async () => {
-  console.log('onMounted')
+const emits = defineEmits(['search'])
 
-  count.value = 100
-  fetchData(0, 100)
-})
+// onBeforeRouteUpdate((to, from) => {
+//   console.log('onBeforeRouteUpdate', to, from)
+//   const { name } = to
+//   if (name === 'Home') {
+//     // store.commit('setShowResults', false)
+//   }
+// })
 
-let count = ref(0)
+// onMounted(async () => {
+// console.log('onMounted')
+
+// count.value = 100
+// fetchData(0, 100)
+// })
+
+let count = ref(30)
 let records = ref(Array.from({ length: 100000 }))
 const lazyLoading = ref(false)
 const loadLazyTimeout = ref()
@@ -93,13 +105,20 @@ let columns = ref([
   { field: 'catalogNumber', header: 'CatalogNumber' }
 ])
 
-watch(
-  () => store.getters['searchText'],
-  (newValue, oldValue) => {
-    console.log('watch')
+// watch(
+//   () => store.getters['searchText'],
+//   (newValue, oldValue) => {
+//     console.log('watch')
 
-    count.value = 100
-    fetchData(0, 100)
+//     count.value = 100
+//     fetchData(0, 100)
+//   }
+// )
+
+watch(
+  () => store.getters['results'],
+  (newValue, oldValue) => {
+    records.value = store.getters['results']
   }
 )
 
@@ -113,6 +132,11 @@ const loadRecoudsLazy = (event) => {
   console.log('event', event)
   console.log('count.value', count.value)
 
+  const results = store.getters['results']
+  console.log('results', results)
+
+  records.value = results
+
   !lazyLoading.value && (lazyLoading.value = true)
 
   if (loadLazyTimeout.value) {
@@ -123,9 +147,11 @@ const loadRecoudsLazy = (event) => {
     () => {
       let { first, last } = event
       console.log(first, last, totalCount.value)
-      if (last >= 100 && totalCount.value > 100) {
-        fetchData(count.value, 100)
-        count.value += 100
+
+      if (last >= count.value && totalCount.value > count.value) {
+        emits('search')
+        // fetchData(count.value, 100)
+        count.value += 30
       }
       lazyLoading.value = false
     },

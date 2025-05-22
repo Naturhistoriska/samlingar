@@ -42,6 +42,8 @@ public class SolrService implements Serializable {
     private final String emptySpace = " ";
     private final String imageFilter = "hasImage:*";
     private final String mapFilter = "verbatimCoordinates:*";
+    private final String typeFilter = "typeStatus:*";
+    private final String isInSwedenFilter = "country:Sweden";
 
     private final String authorField = "author";
     private final String catalogNumberField = "catalogNumber";
@@ -93,6 +95,11 @@ public class SolrService implements Serializable {
     private final String familyFacetKey = "family";
     private final String genusFacetKey = "genus";
     private final String geohashFacetKey = "geohash";
+    private final String point1FacetKey = "point-1";
+    private final String point01FacetKey = "point-0.1";
+    private final String point001FacetKey = "point-0.01";
+    private final String point0001FacetKey = "point-0.001";
+     
     
     private final String scientificNameFacetKey = "scientificName";
     
@@ -128,6 +135,7 @@ public class SolrService implements Serializable {
     private final int autoCompleteNumRowsReturn = 100;
     private final int defaultNumPerPage = 10;
     private final String geohashPreFix = "4_";
+    private final String pointPreFix = "0_";
 
     private final int collectionFacetLimit = 100;
     private final int catalogedMonthLimit = 12;
@@ -201,16 +209,24 @@ public class SolrService implements Serializable {
     }
     
     public String freeTextSearch(int start, boolean hasImages, boolean hasCoordinates,
+            boolean isType, boolean isInSweden, String collections,
             int numPerPage, String text, String sort) {
-        log.info("freeTextSearch ..... : {} -- {} ", start + " -- " + numPerPage, text);
+        log.info("freeTextSearch ..... : {} -- {} ", collections + " -- " + numPerPage, text);
  
         text = text == null ? wildSearch : catchAllField + text;
         
+//        final TermsFacetMap geoFacet = new TermsFacetMap(pointFacetKey)
+//                .setLimit(20000)
+//                .setTermPrefix(pointPreFix);
+        final TermsFacetMap geoHashFacet = new TermsFacetMap(point01FacetKey)
+                .setLimit(20000);
+        
         log.info("freeTextSearch search text : {}", text);
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text) 
+                .setQuery(text)  
                 .setOffset(start)
-                .setLimit(numPerPage);
+                .setLimit(numPerPage)
+                 .withFacet(geohashFacetKey, geoHashFacet);
         
         if (hasImages) {
             jsonRequest.withFilter(imageFilter);
@@ -219,6 +235,19 @@ public class SolrService implements Serializable {
         if (hasCoordinates) {
             jsonRequest.withFilter(mapFilter);
         }
+        
+        if (isType) {
+            jsonRequest.withFilter(typeFilter);
+        }
+        
+        if (isInSweden) {
+            jsonRequest.withFilter(isInSwedenFilter);
+        }
+        
+        if (collections != null) {
+            jsonRequest.withFilter(collectionCodeKey + collections);
+        }
+
 
         if (!StringUtils.isBlank(sort)) {
             jsonRequest.setSort(sort);
@@ -244,6 +273,80 @@ public class SolrService implements Serializable {
 
         return jsonResponse;
     }
+    
+    public String autoCompleteSearch(String text) {
+        log.info("autoCompleteSearch: {} -- {}", text);
+        final TermsFacetMap scientificNameFacet = new TermsFacetMap(scientificNameFacetKey);
+         
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .returnFields(scientificNameField)
+                .withFacet(scientificNameFacetKey, scientificNameFacet)
+                .setLimit(50);
+
+        jsonRequest.setBasicAuthCredentials(username, password); 
+        try {
+            response = jsonRequest.process(client);
+
+//            log.info("json: {}", response.jsonStr()); 
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        return response.jsonStr();
+    }
+    
+    
+    public String scientificNameSearch(int start, int numPerPage, String text,
+            String sort) {
+        log.info("scientificNameSearch ..... : {} -- {} ", start + " -- " + numPerPage, text);
+   
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .setOffset(start)
+                .setLimit(numPerPage);
+
+        if (!StringUtils.isBlank(sort)) {
+            jsonRequest.setSort(sort);
+        }
+ 
+        jsonRequest.setBasicAuthCredentials(username, password);
+
+        String jsonResponse;
+        try {
+            response = jsonRequest.process(client);
+
+            rawJsonResponseParser = new NoOpResponseParser();
+            rawJsonResponseParser.setWriterType(jsonKey);
+            jsonRequest.setResponseParser(rawJsonResponseParser);
+
+            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
+//            log.info("simplesearch what... {}", jsonResponse);
+
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        return jsonResponse;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -309,28 +412,6 @@ public class SolrService implements Serializable {
     
 
      
-    public String autoCompleteSearch(String text) {
-        log.info("autoCompleteSearch: {} -- {}", text);
-        final TermsFacetMap scientificNameFacet = new TermsFacetMap(scientificNameFacetKey);
-         
-        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)
-                .returnFields(scientificNameField)
-                .withFacet(scientificNameFacetKey, scientificNameFacet)
-                .setLimit(50);
-
-        jsonRequest.setBasicAuthCredentials(username, password); 
-        try {
-            response = jsonRequest.process(client);
-
-//            log.info("json: {}", response.jsonStr()); 
-        } catch (SolrServerException | IOException ex) {
-            log.error(ex.getMessage());
-            return null;
-        }
-
-        return response.jsonStr();
-    }
     
     /**
      * Search all the records without any filters, sorted by cataloged date

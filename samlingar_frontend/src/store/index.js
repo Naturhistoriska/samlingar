@@ -2,6 +2,9 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    scientificName: null,
+    searchText: null,
+
     botanyCollectionTotal: 0,
     catalogNumber: null,
     chartDataAlgae: [],
@@ -52,8 +55,7 @@ export default createStore({
     resetPaging: false,
     paleaCollectionTotal: 0,
     results: [],
-    scientificName: null,
-    searchText: null,
+
     selectedCollection: null,
     selectedDataset: null,
     selectedFamily: null,
@@ -76,6 +78,13 @@ export default createStore({
   },
 
   getters: {
+    scientificName(state) {
+      return state.scientificName
+    },
+    searchText(state) {
+      return state.searchText
+    },
+
     botanyCollectionTotal(state) {
       return state.botanyCollectionTotal
     },
@@ -230,12 +239,7 @@ export default createStore({
     results(state) {
       return state.results
     },
-    scientificName(state) {
-      return state.scientificName
-    },
-    searchText(state) {
-      return state.searchText
-    },
+
     selectedCollection(state) {
       return state.selectedCollection
     },
@@ -293,6 +297,12 @@ export default createStore({
   },
 
   mutations: {
+    setScientificName: (state, payload) => (state.scientificName = payload),
+    setSearchText: (state, payload) => (state.searchText = payload),
+
+
+
+
     setBotanyCollectionTotal: (state, payload) => (state.botanyCollectionTotal = payload),
     setCatalogNumber: (state, payload) => (state.catalogNumber = payload),
     setClasss: (state, payload) => (state.classs = payload),
@@ -346,8 +356,7 @@ export default createStore({
     setPaleaCollectionTotal: (state, payload) => (state.paleaCollectionTotal = payload),
     setResetPaging: (state, payload) => (state.resetPaging = payload),
     setResults: (state, payload) => (state.results = payload),
-    setScientificName: (state, payload) => (state.scientificName = payload),
-    setSearchText: (state, payload) => (state.searchText = payload),
+
     setSelectedCollection: (state, payload) => (state.selectedCollection = payload),
     setSelectedDataset: (state, payload) => (state.selectedDataset = payload),
     setSelectedFamily: (state, payload) => (state.selectedFamily = payload),

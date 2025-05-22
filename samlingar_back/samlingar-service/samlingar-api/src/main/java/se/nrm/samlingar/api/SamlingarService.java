@@ -51,7 +51,10 @@ public class SamlingarService {
     public Response freeTextSearch(@QueryParam("text") String text,
                 @QueryParam("hasCoordinates") boolean hasCoordinates,
                 @QueryParam("hasImage") boolean hasImage,
-                @QueryParam("start") int start, 
+                @QueryParam("isType") boolean isType,
+                @QueryParam("isInSweden") boolean isInSweden,
+                @QueryParam("collections") String collections, 
+                @QueryParam("start") int start,  
                 @QueryParam("numPerPage") int numPerPage,
                 @QueryParam("sort") String sort) {
         log.info("freeTextSearch {} -- {}", text, start + " -- " + numPerPage);
@@ -63,12 +66,42 @@ public class SamlingarService {
         } 
         
         return Response.ok(logic.freeTextSearch(text, hasImage, 
-                hasCoordinates, start, numPerPage, sort)).build();
+                hasCoordinates, isType, isInSweden, collections, 
+                start, numPerPage, sort)).build();
     }
-    
-   
-    
-    
+      
+    @GET
+    @Path("/autocomplete")
+    @ApiOperation(value = "autocomplete",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response autoCompleteSearch(@QueryParam("text") String text) {
+        log.info("autoCompleteSearch: {} ", text);
+        return Response.ok(logic.autoCompleteSearch(text)).build();
+    } 
+        
+    @GET
+    @Path("/scientificname")
+    @ApiOperation(value = "scientificname",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response scientificname(@QueryParam("text") String text,
+            @QueryParam("fuzzySearch") boolean fuzzySearch,
+            @QueryParam("start") int start, 
+            @QueryParam("numPerPage") int numPerPage,
+            @QueryParam("sort") String sort) {
+        log.info("scientificname  {} -- {}", text, fuzzySearch + " -- " + sort);
+
+        if (text == null || text.isEmpty()) {
+            text = wildCard;
+        }
+        return Response.ok(logic.scientificNameSearch(text, fuzzySearch,
+                start, numPerPage, sort)).build();
+    }
     
     
     
@@ -117,19 +150,31 @@ public class SamlingarService {
     public Response getChartData(@QueryParam("collection") String collection) {
         return Response.ok(logic.getChartData(collection)).build();
     }
-    
-    @GET
-    @Path("/autocomplete")
-    @ApiOperation(value = "autocomplete",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response autoCompleteSearch(@QueryParam("text") String text) {
-        log.info("autoCompleteSearch: {} ", text);
-        return Response.ok(logic.autoCompleteSearch(text)).build();
-    }
 
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     @GET
     @Path("/search")
@@ -151,30 +196,6 @@ public class SamlingarService {
         return Response.ok(logic.simpleSearch(text, fuzzySearch,
                 start, numPerPage, sort)).build();
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     

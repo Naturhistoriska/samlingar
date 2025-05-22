@@ -72,7 +72,7 @@ export default {
   max-width: 50px;
 }
 .p-button-text {
-  color: #fff !important;
+  /* color: #fff !important; */
   background: transparent !important;
   text-decoration: none;
 }

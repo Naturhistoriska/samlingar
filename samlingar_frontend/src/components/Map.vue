@@ -18,6 +18,8 @@ import { useStore } from 'vuex'
 import moment from 'moment'
 import Geohash from 'latlon-geohash'
 
+// import Geohash from 'https://cdn.jsdelivr.net/npm/latlon-geohash@2.0.0'
+
 // import 'leaflet/dist/leaflet.css'
 // import 'leaflet.markercluster'
 
@@ -56,7 +58,26 @@ onMounted(() => {
   }
 })
 
+watch(
+  () => store.getters['results'],
+  () => {
+    console.log('results changed')
+    initialMap.value.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        layer.remove()
+      } else if (layer instanceof L.Circle) {
+        layer.remove()
+      } else {
+        layer.remove()
+      }
+    })
+    resetMap()
+    addClusterMarkers()
+  }
+)
+
 function initMap() {
+  console.log('initmap')
   initialMap.value = L.map('map', {
     zoomControl: true,
     zoomAnimation: false

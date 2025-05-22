@@ -88,25 +88,44 @@ public class SamlingarLogic {
     
      
     public String freeTextSearch(String text, boolean hasImage, boolean hasCoordinates,
+            boolean isType, boolean isInSweden, String collections,
             int start, int numPerPage, String sort ) {
         log.info("simpleSearch : {}", text);
          
-        return service.freeTextSearch(start, hasImage, hasCoordinates, numPerPage, text, sort);
+        return service.freeTextSearch(start, hasImage, hasCoordinates, 
+                isType, isInSweden, collections, numPerPage, text, sort);
+    }
+
+        
+    public String autoCompleteSearch(String text) {
+        text = SolrSearchHelper.getInstance()
+                .buildSearchText(text, scientificNameKey, true);
+      
+        return service.autoCompleteSearch(text);
+    }
+    
+        public String scientificNameSearch(String text, boolean fuzzySearch, 
+            int start, int numPerPage, String sort ) {
+        log.info("simpleSearch : {}", text);
+        
+        text = SolrSearchHelper.getInstance().buildSearchText(text, scientificNameKey, fuzzySearch);
+        return service.scientificNameSearch(start, numPerPage, text, sort);
     }
 
     
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
     
     
     
@@ -130,12 +149,7 @@ public class SamlingarLogic {
     public String getChartData(String collection) {
         return service.getChartData(collection);
     } 
-    
-    public String autoCompleteSearch(String text) {
-        text = SolrSearchHelper.getInstance().buildSearchText(text, scientificNameKey, true);
-      
-        return service.autoCompleteSearch(text);
-    }
+
  
     public String simpleSearch(String text, boolean fuzzySearch, 
             int start, int numPerPage, String sort ) {
