@@ -2,6 +2,10 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    filterCoordinates: false,
+    filterImage: false,
+    filterInSweden: false,
+    filterType: false,
     scientificName: null,
     searchText: null,
 
@@ -33,10 +37,7 @@ export default createStore({
     endDate: null,
     exportData: [],
     family: [],
-    filterImage: false,
-    filterType: false,
-    filterInSweden: false,
-    filterCoordinates: false,
+
     genus: [],
     geoData: [],
     geoCollectionTotal: 0,
@@ -78,6 +79,18 @@ export default createStore({
   },
 
   getters: {
+    filterImage(state) {
+      return state.filterImage
+    },
+    filterType(state) {
+      return state.filterType
+    },
+    filterInSweden(state) {
+      return state.filterInSweden
+    },
+    filterCoordinates(state) {
+      return state.filterCoordinates
+    },
     scientificName(state) {
       return state.scientificName
     },
@@ -170,18 +183,7 @@ export default createStore({
     family(state) {
       return state.family
     },
-    filterImage(state) {
-      return state.filterImage
-    },
-    filterType(state) {
-      return state.filterType
-    },
-    filterInSweden(state) {
-      return state.filterInSweden
-    },
-    filterCoordinates(state) {
-      return state.filterCoordinates
-    },
+
     genus(state) {
       return state.genus
     },
@@ -299,9 +301,6 @@ export default createStore({
   mutations: {
     setScientificName: (state, payload) => (state.scientificName = payload),
     setSearchText: (state, payload) => (state.searchText = payload),
-
-
-
 
     setBotanyCollectionTotal: (state, payload) => (state.botanyCollectionTotal = payload),
     setCatalogNumber: (state, payload) => (state.catalogNumber = payload),

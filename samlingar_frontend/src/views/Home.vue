@@ -25,12 +25,10 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import StartPage from '../components/StartPage.vue'
 // import AdvanceSearch from '../components/AdvanceSearch.vue'
 import StatisticCharts from '../components/StatisticCharts.vue'
-
-// import Geohash from 'latlon-geohash'
-// import Map from '../components/Map.vue'
 
 import { useI18n } from 'vue-i18n'
 
@@ -39,7 +37,6 @@ import moment from 'moment'
 import Service from '../Service'
 const service = new Service()
 
-import { useStore } from 'vuex'
 const store = useStore()
 
 const router = useRouter()
@@ -169,26 +166,6 @@ function searchCollectionGroup(value) {
     })
 }
 
-//
-//
-//
-//
-//
-//
-
-function handleSimpleSearch() {
-  router.push('/search')
-  // service
-  //   .apiFreeTextSearch(searchText, true, start, numRows)
-  //   .then((response) => {
-  //     processSearchData(response)
-  //   })
-  //   .catch()
-  //   .finally(() => {
-  //     router.push('/search')
-  //   })
-}
-
 function fetchInitdata() {
   service
     .apiInitdata()
@@ -201,77 +178,57 @@ function fetchInitdata() {
       setSearchCommentFacet(facets)
       setChartData(facets)
 
-      const zooGroup = import.meta.env.VITE_ZOO_GROUP
-      const geoGroup = import.meta.env.VITE_GEO_GROUP
-      const paleaGroup = import.meta.env.VITE_PALEA_GROUP
-      const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
-
-      let zooCount = 0
-      let paleaCount = 0
-      let botanyCount = 0
-      let geoCount = 0
-      const collections = facets.collectionCode.buckets
-
-      for (let i = 0; i < collections.length; i++) {
-        const collection = collections[i]
-        const collectionId = collection.val
-
-        const count = collection.count
-        if (zooGroup.includes(collectionId)) {
-          zooCount += count
-        } else if (paleaGroup.includes(collectionId)) {
-          paleaCount += count
-        } else if (geoGroup.includes(collectionId)) {
-          geoCount += count
-        } else if (botanyGroup.includes(collectionId)) {
-          botanyCount += collection.count
-        }
-      }
-
-      store.commit('setBotanyCollectionTotal', botanyCount)
-      store.commit('setGeoCollectionTotal', geoCount)
-      store.commit('setPaleaCollectionTotal', paleaCount)
-      store.commit('setZooCollectionTotal', zooCount)
-
       store.commit('setFilterImage', false)
       store.commit('setFilterCoordinates', false)
       store.commit('setFilterInSweden', false)
       store.commit('setFilterType', false)
 
-      store.commit('setSelectedCollection', null)
-      store.commit('setSelectedType', null)
-      store.commit('setSelectedFamily', null)
+      // const zooGroup = import.meta.env.VITE_ZOO_GROUP
+      // const geoGroup = import.meta.env.VITE_GEO_GROUP
+      // const paleaGroup = import.meta.env.VITE_PALEA_GROUP
+      // const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
+
+      // let zooCount = 0
+      // let paleaCount = 0
+      // let botanyCount = 0
+      // let geoCount = 0
+      // const collections = facets.collectionCode.buckets
+
+      // for (let i = 0; i < collections.length; i++) {
+      //   const collection = collections[i]
+      //   const collectionId = collection.val
+
+      //   const count = collection.count
+      //   if (zooGroup.includes(collectionId)) {
+      //     zooCount += count
+      //   } else if (paleaGroup.includes(collectionId)) {
+      //     paleaCount += count
+      //   } else if (geoGroup.includes(collectionId)) {
+      //     geoCount += count
+      //   } else if (botanyGroup.includes(collectionId)) {
+      //     botanyCount += collection.count
+      //   }
+      // }
+
+      // store.commit('setBotanyCollectionTotal', botanyCount)
+      // store.commit('setGeoCollectionTotal', geoCount)
+      // store.commit('setPaleaCollectionTotal', paleaCount)
+      // store.commit('setZooCollectionTotal', zooCount)
+
+      // store.commit('setSelectedCollection', null)
+      // store.commit('setSelectedType', null)
+      // store.commit('setSelectedFamily', null)
     })
     .catch()
     .finally(() => {})
 }
 
-const isAdvanceSearch = computed(() => {
-  console.log('router namme', router.currentRoute.value.name)
+function setChartData(facets) {
+  const total = facets.count
+  const years = facets.catalogedYear.buckets
 
-  const currentRouteName = router.currentRoute.value.name
-  const isAdvance = currentRouteName === 'AdvanceSearch'
-  if (isAdvance) {
-    store.commit('setIsAdvanceSearch', true)
-  } else {
-    store.commit('setIsAdvanceSearch', false)
-  }
-  return isAdvance
-})
-
-function setYearChartData(total, years) {
-  // cumulatedTotal from last ten years
-  const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
-
-  // cumulatedTotal before last ten years
-  let cumulatedTotal = total - sum
-  // Setup cumulatedTotal for last ten years
-  years.map((year) => {
-    const count = year.count
-    cumulatedTotal += count
-    year.count = cumulatedTotal
-  })
-  store.commit('setYearData', years)
+  buildMonthChartData(years)
+  setYearChartData(total, years)
 }
 
 function buildMonthChartData(years) {
@@ -303,8 +260,6 @@ function buildMonthChartData(years) {
     const filterMonth = moment().month(i).format('MMMM').toUpperCase()
 
     if (i <= currentMonth) {
-      // let monName = moment().month(i).format('MMMM').toUpperCase()
-      // monthLabel = t('chart.' + `${monName}`) + ' ' + currentYear
       monthLabel = moment().month(i).format('MMMM YYYY').toUpperCase()
     } else {
       monthLabel = filterMonth + ' ' + lastYear
@@ -325,72 +280,66 @@ function buildMonthChartData(years) {
   store.commit('setMonthData', newMonthData)
 }
 
-function setChartData(facets) {
-  const total = facets.count
-  const years = facets.catalogedYear.buckets
-
-  buildMonthChartData(years)
-  setYearChartData(total, years)
-
+function setYearChartData(total, years) {
   // cumulatedTotal from last ten years
-  // const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
+  const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
 
   // cumulatedTotal before last ten years
-  // let cumulatedTotal = total - sum
-
+  let cumulatedTotal = total - sum
   // Setup cumulatedTotal for last ten years
-  // years.map((year) => {
-  //   const count = year.count
-  //   cumulatedTotal += count
-  //   year.count = cumulatedTotal
-  // })
-
-  // const currentYear = moment().year()
-  // const lastYear = currentYear - 1
-
-  // const currentMonth = moment().month()
-
-  // const currentYearData = years.filter((year) => year.val === currentYear)
-  // const lastYearData = years.filter((year) => year.val === lastYear)
-
-  // let monthLabel
-  // let currentYearMonthData
-  // if (currentYearData[0].count > 0) {
-  //   currentYearMonthData = currentYearData[0].catalogedMonth.buckets
-  //   currentYearMonthData.map((m) => {
-  //     m.val = m.val + '-' + currentYear
-  //   })
-  //   let length = currentYearMonthData.length
-  //   if (length < 12) {
-  //     let filterMonth = currentMonth + 1
-  //     if (lastYearData[0].count > 0) {
-  //       const lastYearMonthData = lastYearData[0].catalogedMonth.buckets
-  //       while (length < 12) {
-  //         const filterMonthStr = moment().month(filterMonth).format('MMMM').toUpperCase()
-  //         const data = lastYearMonthData.filter((month) => month.val === filterMonthStr)
-  //         currentYearMonthData.unshift({ val: data[0].val + '-' + lastYear, count: data[0].count })
-  //         length = currentYearMonthData.length
-  //         filterMonth++
-  //       }
-  //     } else {
-  //       while (length < 12) {
-  //         const filterMonthStr = moment().month(filterMonth).format('MMMM').toUpperCase()
-  //         currentYearMonthData.unshift({ val: filterMonthStr + '-' + lastYear, count: 0 })
-  //         length = currentYearMonthData.length
-  //         filterMonth++
-  //       }
-  //     }
-  //   }
-  // } else {
-  //   currentYearMonthData = new Array()
-  //   for (let i = 11; i >= 0; i--) {
-  //     monthLabel = moment().subtract(i, 'months').format('MMMM-YYYY')
-  //     currentYearMonthData.push({ val: monthLabel, count: 0 })
-  //   }
-  // }
-  // currentYearMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
-  // store.commit('setMonthData', currentYearMonthData)
+  years.map((year) => {
+    const count = year.count
+    cumulatedTotal += count
+    year.count = cumulatedTotal
+  })
+  store.commit('setYearData', years)
 }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+//
+//
+//
+//
+//
+//
+
+function handleSimpleSearch() {
+  router.push('/search')
+  // service
+  //   .apiFreeTextSearch(searchText, true, start, numRows)
+  //   .then((response) => {
+  //     processSearchData(response)
+  //   })
+  //   .catch()
+  //   .finally(() => {
+  //     router.push('/search')
+  //   })
+}
+
+const isAdvanceSearch = computed(() => {
+  console.log('router namme', router.currentRoute.value.name)
+
+  const currentRouteName = router.currentRoute.value.name
+  const isAdvance = currentRouteName === 'AdvanceSearch'
+  if (isAdvance) {
+    store.commit('setIsAdvanceSearch', true)
+  } else {
+    store.commit('setIsAdvanceSearch', false)
+  }
+  return isAdvance
+})
 
 // function setCollectionsChartData(collectionId, chartData) {
 //   switch (collectionId) {

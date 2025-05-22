@@ -208,6 +208,35 @@ public class SolrService implements Serializable {
         lastTenYear = yearOfToday - 10;  
     }
     
+    public String getInitalData() { 
+        final RangeFacetMap rangeFacet = new RangeFacetMap(
+                catalogedYearFacetKey, lastTenYear, nextYear, 1);
+        rangeFacet.withSubFacet(catalogedMonthFacetKey, catalogedMonthFacet);
+     
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(collectionCodeQuery) 
+                .returnFields(collectionNameFacetKey)
+                .withFacet(imageFacetKey, imageFacet) 
+                .withFacet(mapFacetKey, mapFacet) 
+                .withFacet(inSwedenFacetKey, inSwedenFacet) 
+                .withFacet(typeStatusFacetKey, typeFacet) 
+//                .withFacet(collectionCodeFacetKey, collectionFacet)
+                .withFacet(catalogedYearFacetKey, rangeFacet);
+//                .setSort("index asc");
+
+        jsonRequest.setBasicAuthCredentials(username, password);
+        try {
+            response = jsonRequest.process(client);
+
+//            log.info("json: {}", response.jsonStr()); 
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        return response.jsonStr();
+    }
+    
     public String freeTextSearch(int start, boolean hasImages, boolean hasCoordinates,
             boolean isType, boolean isInSweden, String collections,
             int numPerPage, String text, String sort) {
@@ -357,34 +386,7 @@ public class SolrService implements Serializable {
     
     
     
-    public String getInitalData() { 
-        final RangeFacetMap rangeFacet = new RangeFacetMap(
-                catalogedYearFacetKey, lastTenYear, nextYear, 1);
-        rangeFacet.withSubFacet(catalogedMonthFacetKey, catalogedMonthFacet);
-     
-        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(collectionCodeQuery) 
-                .returnFields(collectionNameFacetKey)
-                .withFacet(imageFacetKey, imageFacet) 
-                .withFacet(mapFacetKey, mapFacet) 
-                .withFacet(inSwedenFacetKey, inSwedenFacet) 
-                .withFacet(typeStatusFacetKey, typeFacet) 
-                .withFacet(collectionCodeFacetKey, collectionFacet)
-                .withFacet(catalogedYearFacetKey, rangeFacet);
-//                .setSort("index asc");
-
-        jsonRequest.setBasicAuthCredentials(username, password);
-        try {
-            response = jsonRequest.process(client);
-
-//            log.info("json: {}", response.jsonStr()); 
-        } catch (SolrServerException | IOException ex) {
-            log.error(ex.getMessage());
-            return null;
-        }
-
-        return response.jsonStr();
-    }
+    
      
     public String getChartData(String collectionCode) {
         log.info("getChartData : {}", collectionCode);
