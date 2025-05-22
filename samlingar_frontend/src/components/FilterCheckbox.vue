@@ -25,18 +25,25 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
 
 const emits = defineEmits(['search'])
 
-const image = ref(false)
-const coordinates = ref(false)
+let image = ref(false)
+let coordinates = ref(false)
+
+onMounted(() => {
+  image.value = store.getters['filterImage']
+  coordinates.value = store.getters['filterCoordinates']
+})
 
 function coordinatesClicked() {
   console.log('coordinatesClicked', image.value, map.value)
 
   const searchMap = !map.value
-
   emits('search', image.value, searchMap)
 }
 
