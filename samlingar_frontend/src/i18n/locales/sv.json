@@ -21,6 +21,78 @@
     "DECEMBER": "dec"
   },
   "collectionName": {
+    "HE": {
+      "name": "Grod och kräldjur",
+      "code": "HE"
+    },
+    "AV": {
+      "name": "Fågel",
+      "code": "AV"
+    },
+    "PI": {
+      "name": "Fisk",
+      "code": "PI"
+    },
+    "ev": {
+      "name": "Evertebrater",
+      "code": "ev"
+    },
+    "et": {
+      "name": "Evertebrater typsamling",
+      "code": "et"
+    },
+    "MA": {
+      "name": "Däggdjur",
+      "code": "MA"
+    },
+    "NHRS": {
+      "name": "Entomologisk",
+      "code": "NHRS"
+    },
+    "SMTP_INV": {
+      "name": "Swedish Malaise Trap Project (SMTP) Collection Obj",
+      "code": "SMTP_INV"
+    },
+    "SMTP_SPPLST": {
+      "name": "Swedish Malaise Trap Project (SMTP) Species Lists",
+      "code": "SMTP_SPPLST"
+    },
+    "pb": {
+      "name": "Paleobotanisk",
+      "code": "pb"
+    },
+    "pz": {
+      "name": "Paleozoologisk",
+      "code": "pz"
+    },
+    "algae": {
+      "name": "Alger",
+      "code": "algae"
+    },
+    "mosses": {
+      "name": "Mossor",
+      "code": "mosses"
+    },
+    "fungi": {
+      "name": "Svampar/Lavar",
+      "code": "fungi"
+    },
+    "vp": {
+      "name": "Kärlväxter",
+      "code": "vp"
+    },
+    "NRMMIN": {
+      "name": "Mineralogisk",
+      "code": "NRMMIN"
+    },
+    "NRMLIG": {
+      "name": "Isotopgeologi",
+      "code": "NRMLIG"
+    },
+    "NRMNOD": {
+      "name": "Noduler",
+      "code": "NRMNOD"
+    },
     "Amphibians and reptiles": "Grod- och kräldjur",
     "Bird": "Fågel",
     "Fish": "Fisk",
@@ -161,7 +233,8 @@
     "endDateLabel": "Slutdatum",
     "exact": "Exakt",
     "freeTextSearch": "Free text search",
-
+    "haveCoordinates": "Have coordinates",
+    "haveImages": "Have images",
     "providScientificName": "Provided scientific name",
     "scientificName": "Scientific name",
     "search": "Sök",
@@ -183,6 +256,9 @@
     "synonym": "Synonym",
     "typeStatus": "Typestatus",
     "year": "År"
+  },
+  "statisticData": {
+    "statisticData": "Statistic Data"
   },
   "startPage": {
     "allSpecimens": "All specimens",

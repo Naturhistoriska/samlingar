@@ -39,17 +39,17 @@
     "yes": "YES"
   },
   "collectionName": {
-    "he": {
+    "HE": {
       "name": "Amphibians and reptiles",
-      "code": "he"
+      "code": "HE"
     },
-    "av": {
+    "AV": {
       "name": "Bird",
-      "code": "av"
+      "code": "AV"
     },
-    "pi": {
+    "PI": {
       "name": "Fish",
-      "code": "pi"
+      "code": "PI"
     },
     "ev": {
       "name": "Invertebrate main collection",
@@ -59,9 +59,9 @@
       "name": "Invertebrate type collection",
       "code": "et"
     },
-    "ma": {
+    "MA": {
       "name": "Mammals",
-      "code": "ma"
+      "code": "MA"
     },
     "NHRS": {
       "name": "NRM Entomology Collection Objects",
@@ -233,6 +233,8 @@
     "endDateLabel": "End date",
     "exact": "Exact",
     "freeTextSearch": "Free text search",
+    "haveCoordinates": "Have coordinates",
+    "haveImages": "Have images",
     "providScientificName": "Provided scientific name",
     "scientificName": "Scientific name",
     "search": "Search",
@@ -255,7 +257,9 @@
     "typeStatus": "Typestatus",
     "year": "Year"
   },
-
+  "statisticData": {
+    "statisticData": "Statistic Data"
+  },
   "startPage": {
     "allSpecimens": "All specimens",
     "botanicalCollection": "Botanical and mycological collections",

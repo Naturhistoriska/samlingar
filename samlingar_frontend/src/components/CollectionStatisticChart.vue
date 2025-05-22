@@ -8,8 +8,14 @@
             {{ $t('collectionName.' + tab + '.name') }}
           </AccordionHeader>
           <AccordionContent style="background: transparent" :unstyled="true">
-            <CollectionMonthChart v-bind:collection="tab" v-bind:chart="getMonthData(tab)" />
-            <CollectionYearChart v-bind:chart="getYearData(tab)" style="margin-top: 2rem" />
+            <div class="grid">
+              <div class="col-6" no-gutters>
+                <CollectionMonthChart v-bind:collection="tab" v-bind:chart="getMonthData(tab)" />
+              </div>
+              <div class="col-6" no-gutters>
+                <CollectionYearChart v-bind:chart="getYearData(tab)" />
+              </div>
+            </div>
           </AccordionContent>
         </AccordionPanel>
       </Accordion>
@@ -81,6 +87,7 @@ const tabs = computed(() => {
 })
 
 function getMonthData(tab) {
+  console.log('tab', tab)
   const { dataGroup } = props
   console.log('dataGroup', dataGroup)
   if (dataGroup === 'startPage.palaeCollection') {
@@ -104,17 +111,17 @@ function getMonthData(tab) {
       return noduleMonth.value
     }
   } else if (dataGroup === 'startPage.zooCollection') {
-    if (tab === 'he') {
+    if (tab === 'HE') {
       return herpMonth.value
-    } else if (tab === 'av') {
+    } else if (tab === 'AV') {
       return birdMonth.value
-    } else if (tab === 'pi') {
+    } else if (tab === 'PI') {
       return fishMonth.value
     } else if (tab === 'ev') {
       return evMonth.value
     } else if (tab === 'et') {
       return etMonth.value
-    } else if (tab === 'ma') {
+    } else if (tab === 'MA') {
       return mammalMonth.value
     } else if (tab === 'NHRS') {
       return entomologyMonth.value
@@ -149,17 +156,18 @@ function getYearData(tab) {
       return noduleYear.value
     }
   } else if (dataGroup === 'startPage.zooCollection') {
-    if (tab === 'he') {
+    if (tab === 'HE') {
+      console.log('tab he...')
       return herpYear.value
-    } else if (tab === 'av') {
+    } else if (tab === 'AV') {
       return birdYear.value
-    } else if (tab === 'pi') {
+    } else if (tab === 'PI') {
       return fishYear.value
     } else if (tab === 'ev') {
       return evYear.value
     } else if (tab === 'et') {
       return etYear.value
-    } else if (tab === 'ma') {
+    } else if (tab === 'MA') {
       return mammalYear.value
     } else if (tab === 'NHRS') {
       return entomologYear.value
@@ -261,13 +269,13 @@ function buildMonthChartData(collection) {
 
 function setData(tab, month, year) {
   switch (tab) {
-    case 'he':
+    case 'HE':
       herpMonth.value = month
       herpYear.value = year
-    case 'av':
+    case 'AV':
       birdMonth.value = month
       birdYear.value = year
-    case 'pi':
+    case 'PI':
       fishMonth.value = month
       fishYear.value = year
     case 'ev':
@@ -276,7 +284,7 @@ function setData(tab, month, year) {
     case 'et':
       etMonth.value = month
       etYear.value = year
-    case 'ma':
+    case 'MA':
       mammalMonth.value = month
       mammalYear.value = year
     case 'NHRS':
