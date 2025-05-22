@@ -1,29 +1,23 @@
 version: '3.7'
 
-services:
 
+services:
   solr:
-    image: solr:8.1
+    image: dina/solr:v0.3
     container_name: solr
+    restart: always
     environment:
-      - SOLR_HEAP=4g
-      # - SOLR_HEAP=1g
-      - VIRTUAL_HOST=local-solr.nrm.se
-      - VIRTUAL_PORT=8983
+      SOLR_JAVA_MEM: -Xms2g -Xmx2g
+      LOG4J_PROPS: /var/solr/log4j.properties
     ports:
       - 18983:8983
     volumes:
-      - ./solr8/lib/jts-core-1.15.0.jar:/opt/solr-8.1.1/server/solr-webapp/webapp/WEB-INF/lib/jts-core-1.15.0.jar
+      - ./log4j.properties:/var/solr/log4j.properties
       - ./solr8/mycores:/var/solr/data
     entrypoint:
       - docker-entrypoint.sh
       - solr-precreate
-      - nrm_index
-    # networks:
-    #   - default
-
-
-
+      - samlingar
 
 volumes:
   data:

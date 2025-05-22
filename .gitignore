@@ -1,8 +1,11 @@
 
-solr/solr8/mycores/nrm_index/data
+solr/solr8/mycores/samlingar/data
 solr/solr8/mycores/security.json
+solr/solr8/mycores/security_without_auth.json
 
-solr/solr8/logs/*
+
+solr/solr8/logs/
+solr/solr8/original_file
 
 
 

@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Solr managed schema - automatically generated - DO NOT EDIT -->
+<schema name="nrm" version="1.2">
+  <uniqueKey>id</uniqueKey>
+  <fieldType name="alphaOnlySort" class="solr.TextField" omitNorms="true" sortMissingLast="true">
+    <analyzer>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.TrimFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-z])" replace="all" replacement=""/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="auto_name_exact" class="solr.TextField">
+    <analyzer type="index">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.TrimFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.TrimFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="auto_text" class="solr.TextField">
+    <analyzer type="index">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.NGramFilterFactory" maxGramSize="30" minGramSize="3"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="auto_text_edge" class="solr.TextField">
+    <analyzer type="index">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.EdgeNGramFilterFactory" maxGramSize="30" minGramSize="3"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="binary" class="solr.BinaryField"/>
+  <fieldType name="boolean" class="solr.BoolField" omitNorms="true" sortMissingLast="true"/>
+  <fieldType name="concat_name" class="solr.TextField">
+    <analyzer type="index">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.TrimFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([^a-zA-Z])" replace="all" replacement=""/>
+      <filter class="solr.NGramFilterFactory" maxGramSize="30" minGramSize="3"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="date" class="solr.DatePointField" omitNorms="true" positionIncrementGap="0"/>
+  <fieldType name="double" class="solr.DoublePointField" omitNorms="true"/>
+  <fieldType name="float" class="solr.FloatPointField" omitNorms="true" positionIncrementGap="0"/>
+  <fieldType name="ignored" class="solr.StrField" indexed="false" stored="false" multiValued="true"/>
+  <fieldType name="int" class="solr.IntPointField" omitNorms="true" positionIncrementGap="0"/>
+  <fieldType name="location" class="solr.LatLonPointSpatialField" docValues="true"/>
+  <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType" maxDistErr="0.001" spatialContextFactory="JTS" validationRule="repairBuffer0" distErrPct="0.025" distanceUnits="kilometers" autoIndex="true"/>
+  <fieldType name="long" class="solr.LongPointField" omitNorms="true" positionIncrementGap="0"/>
+  <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="name_complete" class="solr.TextField">
+    <analyzer type="index">
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.TrimFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replace="all" replacement=""/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.TrimFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([().])" replace="all" replacement=""/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="payloads" class="solr.TextField" indexed="true" stored="false">
+    <analyzer>
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      <filter class="solr.DelimitedPayloadTokenFilterFactory" encoder="float"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="phonetic" class="solr.TextField" indexed="true" stored="false">
+    <analyzer>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.DoubleMetaphoneFilterFactory" inject="false"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="string" class="solr.StrField" omitNorms="true" sortMissingLast="true"/>
+  <fieldType name="tdate" class="solr.DatePointField" omitNorms="true" positionIncrementGap="0"/>
+  <fieldType name="tdouble" class="solr.DoublePointField" omitNorms="true" positionIncrementGap="0"/>
+  <fieldType name="text" class="solr.TextField" positionIncrementGap="100">
+    <analyzer type="index">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="textTight" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      <filter class="solr.WordDelimiterFilterFactory" catenateNumbers="1" generateNumberParts="0" generateWordParts="0" catenateAll="0" catenateWords="1"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="text_suggest" class="solr.TextField" positionIncrementGap="100">
+    <analyzer type="index">
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.WordDelimiterFilterFactory" catenateNumbers="1" generateNumberParts="1" splitOnCaseChange="1" generateWordParts="1" splitOnNumerics="1" preserveOriginal="1" catenateAll="1" catenateWords="1"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replace="all" replacement=" "/>
+    </analyzer>
+    <analyzer type="query">
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.WordDelimiterFilterFactory" catenateNumbers="0" generateNumberParts="0" splitOnCaseChange="0" generateWordParts="0" splitOnNumerics="0" catenateAll="0" catenateWords="0"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replace="all" replacement=" "/>
+    </analyzer>
+  </fieldType>
+  <!-- Swedish -->
+<!--   <fieldType name="text_sv" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter name="stop" ignoreCase="true" words="lang/stopwords_sv.txt" format="snowball" />
+      <filter name="snowballPorter" language="Swedish"/>
+    </analyzer>
+  </fieldType>-->
+  <fieldType class="solr.TextField" name="textSuggest" positionIncrementGap="100">
+    <analyzer>
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="text_suggest_edge" class="solr.TextField">
+    <analyzer type="index">
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([\.,;:-_])" replace="all" replacement=" "/>
+      <filter class="solr.EdgeNGramFilterFactory" maxGramSize="30" minGramSize="1"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replace="all" replacement=""/>
+    </analyzer>
+    <analyzer type="query">
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([\.,;:-_])" replace="all" replacement=" "/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replace="all" replacement=""/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="^(.{30})(.*)?" replace="all" replacement="$1"/>
+    </analyzer>
+  </fieldType>
+  <fieldType name="text_suggest_ngram" class="solr.TextField">
+    <analyzer type="index">
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.WordDelimiterFilterFactory" catenateNumbers="0" generateNumberParts="1" splitOnCaseChange="1" generateWordParts="1" catenateAll="0" catenateWords="0"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.EdgeNGramFilterFactory" maxGramSize="20" minGramSize="1"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replace="all" replacement=""/>
+    </analyzer>
+    <analyzer type="query">
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.WordDelimiterFilterFactory" catenateNumbers="0" generateNumberParts="0" splitOnCaseChange="0" generateWordParts="0" catenateAll="0" catenateWords="0"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="([^\w\d\*æøåÆØÅ ])" replace="all" replacement=""/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="^(.{20})(.*)?" replace="all" replacement="$1"/>
+    </analyzer>
+  </fieldType>
+
+  <!-- A general text field that has reasonable, generic
+         cross-language defaults: it tokenizes with StandardTokenizer,
+         removes stop words from case-insensitive "stopwords.txt"
+         (empty by default), and down cases.  At query time only, it
+         also applies synonyms.
+  -->
+  <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" >
+    <analyzer type="index">
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <!-- <tokenizer class="solr.StandardTokenizerFactory"/> -->
+      <!-- <tokenizer class="solr.WhitespaceTokenizerFactory"/> -->
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <!-- <tokenizer name="standard"/> -->
+      <!-- <filter name="stop" ignoreCase="true" words="stopwords.txt" /> -->
+      <!-- in this example, we will only use synonyms at query time
+      <filter name="synonymGraph" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
+      <filter name="flattenGraph"/>
+      -->
+      <!-- <filter name="lowercase"/> -->
+    </analyzer>
+    <analyzer type="query">
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <!-- <tokenizer name="standard"/>
+      <filter name="stop" ignoreCase="true" words="stopwords.txt" />
+      <filter name="synonymGraph" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+      <filter name="lowercase"/> -->
+    </analyzer>
+  </fieldType>
+  <fieldType name="tfloat" class="solr.FloatPointField" omitNorms="true" positionIncrementGap="0"/>
+  <fieldType name="tint" class="solr.IntPointField" omitNorms="true" positionIncrementGap="0"/>
+  <fieldType name="tlong" class="solr.LongPointField" omitNorms="true" positionIncrementGap="0"/>
+  <field name="_version_" type="long" multiValued="false" indexed="true" stored="true"/>
+  <field name="id" type="string" indexed="true" required="true" stored="true"/>
+  <field name="guid" type="string" indexed="false" stored="true"/>
+
+  <field name="accessionNumber" type="string" indexed="true" stored="true"/>
+  <field name="accessionRemarks" type="string"  multiValued="true" indexed="false" stored="true"/>
+  <field name="accessRights" type="string" indexed="false" stored="true"/>
+  <field name="additionalDetermination" type="string" multiValued="true" indexed="false" stored="true"/>
+  <field name="associatedMedia" type="string" multiValued="true" indexed="false" stored="true"/>
+  <field name="associeradeMineral" type="string" multiValued="true" indexed="true" stored="true"/>
+
+  <field name="basisOfRecord" type="string" indexed="false" stored="true"/>
+
+  <field name="catalogedDate" type="tdate" indexed="true" stored="true"/>
+  <field name="catalogedMonth" type="string" indexed="true" stored="true"/>
+  <field name="catalogedYear" type="int" indexed="true" stored="true"/>
+  <field name="catalogNumber" type="string" indexed="true" stored="true"/>
+  <field name="clazz" type="string" indexed="true" stored="true"/>
+  <field name="continent" type="string" indexed="true" stored="true"/>
+  <field name="country" type="string" indexed="true" stored="true"/>
+  <field name="county" type="string" indexed="true" stored="true"/>
+  <field name="collectionName" type="string" indexed="true" stored="true"/>
+  <field name="collectionCode" type="string" indexed="true" stored="true"/>
+  <field name="collector" type="string" indexed="true" multiValued="true"  stored="true"/>
+  <field name="createdDate" type="tdate" indexed="true" stored="false"/>
+  <field name="currentDetermination" type="string" indexed="true" stored="true"/>
+  <field name="coordinateUncertaintyInMeters" type="string" indexed="false" stored="true"/>
+
+
+  <field name="decimalLatitude" type="double" indexed="true" stored="true"/>
+  <field name="decimalLongitude" type="double"  indexed="true" stored="true"/>
+  <field name="dateIdentified" type="tdate" indexed="false" stored="true"/>
+  <field name="district" type="string" indexed="false" stored="true"/>
+
+  <field name="element" type="string" indexed="true" stored="true"/>
+  <field name="endDayOfYear" type="string" indexed="false" stored="true"/>
+  <field name="endday" type="string" indexed="false" stored="true"/>
+  <field name="endmonth" type="string" indexed="false" stored="true"/>
+  <field name="endyear" type="string" indexed="false" stored="true"/>
+  <field name="environment" type="text_general" indexed="false" stored="true"/>
+  <field name="exsiccat" type="string" indexed="false" stored="true"/>
+  <field name="exsiccatNumber" type="string" indexed="false" stored="true"/>
+  <field name="earliestAgeOrLowestStage" type="string" indexed="false" stored="true"/>
+  <field name="earliestEpochOrLowestSeries" type="string" indexed="false" stored="true"/>
+  <field name="earliestPeriodOrLowestSystem" type="string" indexed="false" stored="true"/>
+  <field name="expeditionName" type="string" indexed="true" stored="true"/>
+
+  <field name="eventDate" type="tdate" indexed="true" stored="true"/>
+  <field name="eventTime" type="string" indexed="false" stored="true"/>
+  <field name="eventRemarks" type="string" indexed="false" stored="true"/>
+
+
+
+  <field name="family" type="string" indexed="true" stored="true"/>
+
+  <field name="fieldNumber" type="string" indexed="true" stored="true"/>
+
+  <field name="genus" type="string" indexed="true" stored="true"/>
+  <field name="genericName" type="string" indexed="false" stored="true"/>
+  <field name="geo" type="location_rpt" indexed="true" stored="true" multiValued="true"  />
+  <!-- <field name="geohash" type="string" multiValued="true" indexed="true" required="false" stored="true"/>
+  <field name="geopoint" type="location" indexed="true" stored="true"/>
+  <field name="geodeticDatum" type="string" indexed="false" stored="true"/>
+ -->
+
+  <field name="habitat" type="string" indexed="false" stored="true"/>
+  <field name="hasImage" type="boolean" indexed="true" stored="false"/>
+  <field name="herbarium" type="string" indexed="false" stored="true"/>
+  <field name="higherClassification" type="string" indexed="false" stored="true"/>
+  <field name="higherGeography" type="string" indexed="false" stored="true"/>
+
+
+  <field name="identifiedBy" type="string" indexed="true" stored="true"/>
+  <field name="identifiedYear" type="string" indexed="false" stored="true"/>
+  <field name="identificationQualifier" type="string" indexed="false" stored="true"/>
+  <field name="identificationRemarks" type="string" indexed="false" stored="true"/>
+  <field name="individualCount" type="string" indexed="false" stored="true"/>
+  <field name="infraspecificEpithet" type="string" indexed="true" stored="true"/>
+  <field name="institutionCode" type="string" indexed="false" stored="true"/>
+  <field name="institutionID" type="string" indexed="false" stored="true"/>
+  <field name="island" type="string" indexed="true" stored="true"/>
+  <field name="islandGroup" type="string" indexed="true" stored="true"/>
+
+  <field name="kingdom" type="string" indexed="false" stored="true"/>
+
+
+  <field name="latestAgeOrHighestStage" type="string" indexed="false" stored="true"/>
+  <field name="latestEpochOrHighestSeries" type="string" indexed="false" stored="true"/>
+  <field name="latestPeriodOrHighestSystem" type="string" indexed="false" stored="true"/>
+  <field name="lakeBasin" type="string" indexed="false" stored="true"/>
+  <field name="lifeStage" type="string" indexed="true" stored="true"/>
+  <field name="license" type="string" indexed="false" stored="true"/>
+  <field name="lithostratigraphicTerms" type="string" indexed="true" stored="true"/>
+  <field name="locality" type="string" indexed="true" stored="true"/>
+  <field name="locationRemarks" type="string" indexed="false" stored="true"/>
+  <field name="location" type="location" indexed="true" stored="true" multiValued="false" />
+
+
+
+  <field name="minimumDepthInMeters" type="string" indexed="true" stored="true"/>
+  <field name="maximumDepthInMeters" type="string" indexed="false" stored="true"/>
+  <field name="minimumElevationInMeters" type="string" indexed="false" stored="true"/>
+  <field name="maximumElevationInMeters" type="string" indexed="false" stored="true"/>
+  <field name="modified" type="tdate" indexed="false" stored="true"/>
+
+
+
+  <field name="oceanOrSea" type="string" indexed="false" stored="true"/>
+  <field name="originalnameBasionym" type="string" indexed="true" stored="true"/>
+  <field name="occurrenceRemarks" type="string" indexed="false" stored="true"/>
+  <field name="occurrenceAttributeRemarks" type="string" indexed="false" stored="true"/>
+  <field name="order" type="string" indexed="false" stored="true"/>
+  <field name="organismQuantity" type="string" indexed="false" stored="true"/>
+  <field name="originalNameUsage" type="string" indexed="false" stored="true"/>
+
+
+
+  <field name="palaeontologicalPreservation" type="string" indexed="true" stored="true"/>
+  <field name="phylum" type="string" indexed="true" stored="true"/>
+  <field name="preparations" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="prepCount" type="string" multiValued="true" indexed="false" stored="true"/>
+  <field name="preservation" type="string" indexed="true" stored="true"/>
+  <field name="preservedSpecimen" type="string" indexed="false" stored="true"/>
+  <field name="previousIdentifications" type="string"  multiValued="true" indexed="false" stored="true"/>
+
+  <!-- <field name="point" type="string" multiValued="true" indexed="true" stored="true"/> -->
+  <field name="point-1" type="string" indexed="true" stored="true"/>
+  <field name="point-0.1" type="string" indexed="true" stored="true"/>
+  <field name="point-0.01" type="string" indexed="true" stored="true"/>
+  <field name="point-0.001" type="string" indexed="true" stored="true"/>
+
+
+  <field name="recordedBy" type="string"  indexed="true" stored="true"/>
+  <field name="recordNumber" type="string" indexed="true" stored="true"/>
+  <field name="riverDrainage" type="string" indexed="false" stored="true"/>
+  <field name="reproductiveCondition" type="string" indexed="false" stored="true"/>
+
+  <field name="scientificName" type="string" indexed="true" stored="true"/>
+  <field name="scientificNameAuthorship" type="string" indexed="false" stored="true"/>
+  <field name="se" type="string"  indexed="false" stored="true"/>
+  <field name="serie" type="string" indexed="true" stored="true"/>
+  <field name="sex" type="string" indexed="true" stored="true"/>
+  <field name="species" type="string" indexed="true" stored="true"/>
+  <field name="specificEpithet" type="string" indexed="true" stored="true"/>
+
+
+  <field name="storage" type="string" multiValued="true" indexed="true" stored="true"/>
+  <field name="startDayOfYear" type="string" indexed="false" stored="true"/>
+  <field name="day" type="string" indexed="false" stored="true"/>
+  <field name="month" type="string" indexed="false" stored="true"/>
+  <field name="year" type="string" indexed="true" stored="true"/>
+  <field name="stateProvince" type="string" indexed="true" stored="true"/>
+  <field name="subgenus" type="string" indexed="true" stored="true"/>
+  <field name="synonyms" type="string" multiValued="true" indexed="true" stored="true"/>
+  <field name="synonymAuthor" type="string" multiValued="true" indexed="false" stored="true"/>
+
+
+  <field name="taxonRank" type="string" indexed="true" stored="true"/>
+  <field name="taxonRemarks" type="string" indexed="false" stored="true"/>
+  <field name="typeStatus" type="string" indexed="true" stored="true"/>
+
+  <field name="verbatimCoordinates" type="string" indexed="true" stored="true"/>
+  <field name="vernacularName" type="string" indexed="true" multiValued="true" stored="true"/>
+  <field name="verbatimEventDate" type="string" indexed="false" stored="true"/>
+  <field name="verbatimLocality" type="string" indexed="false" stored="true"/>
+  <field name="verbatimLatitude" type="string" indexed="false" stored="true"/>
+  <field name="verbatimLongitude" type="string" indexed="false" stored="true"/>
+
+  <field name="waterBody" type="string" indexed="false" stored="true"/>
+
+  <field name="catchall" type="text_general" stored="false" indexed="true" multiValued="true" />
+
+  <field name="text" type="lowercase" multiValued="true" indexed="true" stored="false"/>
+  <dynamicField name="*" type="ignored"/>
+  <dynamicField name="*_text" type="auto_text" indexed="true" stored="true"/>
+  <dynamicField name="*_text_edge" type="auto_text_edge" indexed="true" stored="true"/>
+
+  <copyField source="*" dest="catchall"/>
+
+  <!-- <copyField source="catalogNumber" dest="text"/>
+  <copyField source="country" dest="text"/>
+  <copyField source="locality" dest="text"/>
+  <copyField source="synonyms" dest="text"/>
+  <copyField source="scientificName" dest="text"/>
+  <copyField source="se" dest="text"/>
+  <copyField source="vernacularName" dest="text"/> -->
+</schema>
