@@ -72,8 +72,9 @@ public class EntityToJson implements Serializable {
     private final String familyKey = "family";
     private final String fieldNumberKey = "fieldNumber";
     
-    private final String geohashKey = "geohash";
-    private final String geopointKey = "geopoint";
+//    private final String geohashKey = "geohash";
+//    private final String geopointKey = "geopoint";
+    private final String geoKey = "geo";
     private final String genusKey = "genus";
     
     private final String higherClassificationKey = "higherClassification";
@@ -92,7 +93,11 @@ public class EntityToJson implements Serializable {
     private final String occurrenceAttributeRemarksKey  = "occurrenceAttributeRemarks";
     private final String occurrenceRemarksKey = "occurrenceRemarks";
     
-    private final String pointKey = "point"; 
+//    private final String pointKey = "point"; 
+    private final String point1Key = "point-1"; 
+    private final String point01Key = "point-0.1"; 
+    private final String point001Key = "point-0.01"; 
+    private final String point0001Key = "point-0.001"; 
     private final String preparationsKey = "preparations";
     private final String prepartionCountKey = "prepCount";
     
@@ -572,11 +577,11 @@ public class EntityToJson implements Serializable {
     private void addGeoData(JsonObjectBuilder attBuilder, double latitude, double longitude) throws Exception {
         log.info("addGeoData : {} -- {}", latitude, longitude);
          
-        geoHash = createGeoHash(latitude, longitude); 
+//        geoHash = createGeoHash(latitude, longitude); 
 //         
         addCoordinates(attBuilder, latitude, longitude);
         
-        addGeoHash(attBuilder);
+//        addGeoHash(attBuilder);
         addPoint(attBuilder, latitude, longitude);  
     }
     
@@ -587,39 +592,69 @@ public class EntityToJson implements Serializable {
         coordinatesSb.append(comma);
         coordinatesSb.append(longitude);
         attBuilder.add(verbatimCoordinatesKey, coordinatesSb.toString().trim());
-        attBuilder.add(geopointKey, coordinatesSb.toString().trim());
+        attBuilder.add(geoKey, coordinatesSb.toString().trim());
+    }
+    
+    private void addPoint(JsonObjectBuilder attBuilder, int i, String key,
+            double latitude, double longtude) {
+        format = getDoubleFormat(i);
+        formattedLat = String.format(format, latitude);
+        formattedLong = String.format(format, longtude);
+
+        pointSb = new StringBuilder();
+        pointSb.append(formattedLat);
+        pointSb.append(comma);
+        pointSb.append(formattedLong);
+        attBuilder.add(key, pointSb.toString());
     }
     
     private void addPoint(JsonObjectBuilder attBuilder, double latitude, double longtude) {
         log.info("addPoint : {} -- {}", latitude, longtude);
-
+        
+        
         pointArrayBuilder = Json.createArrayBuilder();
 
         intLat = (int) latitude;
         intLong = (int) longtude;
 
-        pointSb = new StringBuilder();
-        pointSb.append(0);
-        pointSb.append(underScore);
+        pointSb = new StringBuilder(); 
         pointSb.append(intLat);
         pointSb.append(comma);
         pointSb.append(intLong);
-        pointArrayBuilder.add(pointSb.toString().trim());
+        attBuilder.add(point1Key, pointSb.toString());
+        
 
-        for (int i = 1; i < 4; i++) {
-            format = getDoubleFormat(i);
-            formattedLat = String.format(format, latitude);
-            formattedLong = String.format(format, longtude);
-
-            pointSb = new StringBuilder();
-            pointSb.append(i);
-            pointSb.append(underScore);
-            pointSb.append(formattedLat);
-            pointSb.append(comma);
-            pointSb.append(formattedLong);
-            pointArrayBuilder.add(pointSb.toString().trim());
-        }
-        attBuilder.add(pointKey, pointArrayBuilder);
+        addPoint(attBuilder, 1, point01Key, latitude, longtude);
+        addPoint(attBuilder, 2, point001Key, latitude, longtude);
+        addPoint(attBuilder, 3, point0001Key, latitude, longtude);
+//
+//        pointArrayBuilder = Json.createArrayBuilder();
+//
+//        intLat = (int) latitude;
+//        intLong = (int) longtude;
+//
+//        pointSb = new StringBuilder();
+//        pointSb.append(0);
+//        pointSb.append(underScore);
+//        pointSb.append(intLat);
+//        pointSb.append(comma);
+//        pointSb.append(intLong);
+//        pointArrayBuilder.add(pointSb.toString().trim());
+//
+//        for (int i = 1; i < 4; i++) {
+//            format = getDoubleFormat(i);
+//            formattedLat = String.format(format, latitude);
+//            formattedLong = String.format(format, longtude);
+//
+//            pointSb = new StringBuilder();
+//            pointSb.append(i);
+//            pointSb.append(underScore);
+//            pointSb.append(formattedLat);
+//            pointSb.append(comma);
+//            pointSb.append(formattedLong);
+//            pointArrayBuilder.add(pointSb.toString().trim());
+//        }
+//        attBuilder.add(pointKey, pointArrayBuilder);
     }
     
         
@@ -634,21 +669,21 @@ public class EntityToJson implements Serializable {
         }
     }
     
-    private void addGeoHash(JsonObjectBuilder attBuilder) {
-        georHashArrayBuilder = Json.createArrayBuilder();
-        for (int i = 2; i <= 5; i++) {
-            geoHashSb = new StringBuilder();
-            geoHashSb.append(i);
-            geoHashSb.append(underScore);
-            geoHashSb.append(geoHash.substring(0, i));
-            georHashArrayBuilder.add(geoHashSb.toString().trim());
-        }
-        attBuilder.add(geohashKey, georHashArrayBuilder);
-    }
+//    private void addGeoHash(JsonObjectBuilder attBuilder) {
+//        georHashArrayBuilder = Json.createArrayBuilder();
+//        for (int i = 2; i <= 5; i++) {
+//            geoHashSb = new StringBuilder();
+//            geoHashSb.append(i);
+//            geoHashSb.append(underScore);
+//            geoHashSb.append(geoHash.substring(0, i));
+//            georHashArrayBuilder.add(geoHashSb.toString().trim());
+//        }
+//        attBuilder.add(geohashKey, georHashArrayBuilder);
+//    }
 
-    private String createGeoHash(double latitude, double longitude) throws Exception {
-        return GeoHash.withCharacterPrecision(latitude, longitude, numberOfCharacters).toBase32();
-    } 
+//    private String createGeoHash(double latitude, double longitude) throws Exception {
+//        return GeoHash.withCharacterPrecision(latitude, longitude, numberOfCharacters).toBase32();
+//    } 
     
     private void addLocality(JsonObjectBuilder attBuilder, Locality locality) {
 //        log.info("aaddLocality");

@@ -104,12 +104,14 @@ public class ZooJsonConverter implements Serializable {
         }
         
 
-        isStringCoordinates = JsonHelper.getInstance().isStringCoordinates(json);
-        if (isStringCoordinates) {
-            csvCoordinatesKey = JsonHelper.getInstance().getCoordinatesCsvKey(json);
-        } else {
-            coordinatesJson = JsonHelper.getInstance().getCoordinatesJson(json);
-        } 
+//        isStringCoordinates = JsonHelper.getInstance().isStringCoordinates(json);
+//        if (isStringCoordinates) {
+//            csvCoordinatesKey = JsonHelper.getInstance().getCoordinatesCsvKey(json);
+//        } else {
+//            coordinatesJson = JsonHelper.getInstance().getCoordinatesJson(json);
+//        } 
+        coordinatesJson = JsonHelper.getInstance().getCoordinatesJson(json);
+
         csvCatalogNumberKey = JsonHelper.getInstance().getCatalogNumberCsvKey(json);
         
         csvCatalogedDate = JsonHelper.getInstance().getCatalogedDateCsvKey(json); 
@@ -164,9 +166,17 @@ public class ZooJsonConverter implements Serializable {
 //                        }
 //                        log.info("add classification: {}", classificationKeys);
                          
-                        if (isStringCoordinates) {
-                            coordinatesBuilder.build(attBuilder, record.get(csvCoordinatesKey));
-                        } else {
+//                        if (isStringCoordinates) {
+//                            coordinatesBuilder.build(attBuilder, record.get(csvCoordinatesKey));
+//                        } else {
+//                            latitude = record.get(JsonHelper.getInstance()
+//                                    .getLatitudeCsvKey(coordinatesJson)).trim();
+//                            longitude = record.get(JsonHelper
+//                                    .getInstance().getLongitudeCsvKey(coordinatesJson)).trim();
+//                            coordinatesBuilder.build(attBuilder, latitude, longitude);
+//                        }
+
+                        if(coordinatesJson != null) {
                             latitude = record.get(JsonHelper.getInstance()
                                     .getLatitudeCsvKey(coordinatesJson)).trim();
                             longitude = record.get(JsonHelper
@@ -176,11 +186,12 @@ public class ZooJsonConverter implements Serializable {
                         log.info("coordinates added...");
 
                         if (json.containsKey(eventDateKey)) {
-                            if (isStringEventdate) {
-                                JsonHelper.getInstance().addEventDate(attBuilder, record.get(csvEventDateKey));
-                            } else {
-                                JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
-                            }
+//                            if (isStringEventdate) {
+//                                JsonHelper.getInstance().addEventDate(attBuilder, record.get(csvEventDateKey));
+//                            } else {
+//                                JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
+//                            }
+                            JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
                             log.info("eventDate added...");
                         }
 

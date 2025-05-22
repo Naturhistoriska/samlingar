@@ -61,13 +61,21 @@ public class JsonHelper {
     private final String latitudeKey = "decimalLatitude";
     private final String longitudeKey = "decimalLongitude";
     private final String verbatimEventDateKey = "verbatimEventDate";
-    private final String geohashKey = "geohash";
-    private final String geopointKey = "geopoint";
+//    private final String geohashKey = "geohash";
+//    private final String geopointKey = "geopoint";
+    
+    private final String geoKey = "geo";
     private final String verbatimCoordinatesKey = "verbatimCoordinates";
-    private final String pointKey = "point"; 
+    
     private final String countryKey = "country";
     private final String exsiccatKey = "exsiccat";
     private final String dateIdentifiedKey = "dateIdentified";
+    
+//    private final String pointKey = "point"; 
+    private final String point1Key = "point-1"; 
+    private final String point01Key = "point-0.1"; 
+    private final String point001Key = "point-0.01"; 
+    private final String point0001Key = "point-0.001"; 
 
     private final String fileNameKey = "fileName";
 
@@ -627,19 +635,33 @@ public class JsonHelper {
         coordinatesSb.append(comma);
         coordinatesSb.append(longitude);
         attBuilder.add(verbatimCoordinatesKey, coordinatesSb.toString().trim());
-        attBuilder.add(geopointKey, coordinatesSb.toString().trim());
+        attBuilder.add(geoKey, coordinatesSb.toString().trim());
+//        attBuilder.add(geopointKey, coordinatesSb.toString().trim());
     }
 
     public void addGeoHash(JsonObjectBuilder attBuilder, String geoHash) {
-        georHashArrayBuilder = Json.createArrayBuilder();
-        for (int i = 2; i <= 5; i++) {
-            geoHashSb = new StringBuilder();
-            geoHashSb.append(i);
-            geoHashSb.append(underScore);
-            geoHashSb.append(geoHash.substring(0, i));
-            georHashArrayBuilder.add(geoHashSb.toString().trim());
-        }
-        attBuilder.add(geohashKey, georHashArrayBuilder);
+//        georHashArrayBuilder = Json.createArrayBuilder();
+//        for (int i = 2; i <= 5; i++) {
+//            geoHashSb = new StringBuilder();
+//            geoHashSb.append(i);
+//            geoHashSb.append(underScore);
+//            geoHashSb.append(geoHash.substring(0, i));
+//            georHashArrayBuilder.add(geoHashSb.toString().trim());
+//        }
+//        attBuilder.add(geohashKey, georHashArrayBuilder);
+    }
+    
+    private void addPoint(JsonObjectBuilder attBuilder, int i, String key,
+            double latitude, double longtude) {
+        format = getDoubleFormat(i);
+        formattedLat = String.format(format, latitude);
+        formattedLong = String.format(format, longtude);
+
+        pointSb = new StringBuilder();
+        pointSb.append(formattedLat);
+        pointSb.append(comma);
+        pointSb.append(formattedLong);
+        attBuilder.add(key, pointSb.toString());
     }
 
     public void addPoint(JsonObjectBuilder attBuilder, double latitude, double longtude) {
@@ -650,29 +672,54 @@ public class JsonHelper {
         intLat = (int) latitude;
         intLong = (int) longtude;
 
-        pointSb = new StringBuilder();
-        pointSb.append(0);
-        pointSb.append(underScore);
+        pointSb = new StringBuilder(); 
         pointSb.append(intLat);
         pointSb.append(comma);
         pointSb.append(intLong);
-        pointArrayBuilder.add(pointSb.toString().trim());
+        attBuilder.add(point1Key, pointSb.toString());
+        
 
-        for (int i = 1; i < 4; i++) {
-            format = getDoubleFormat(i);
-            formattedLat = String.format(format, latitude);
-            formattedLong = String.format(format, longtude);
-
-            pointSb = new StringBuilder();
-            pointSb.append(i);
-            pointSb.append(underScore);
-            pointSb.append(formattedLat);
-            pointSb.append(comma);
-            pointSb.append(formattedLong);
-            pointArrayBuilder.add(pointSb.toString().trim());
-        }
-        attBuilder.add(pointKey, pointArrayBuilder);
+        addPoint(attBuilder, 1, point01Key, latitude, longtude);
+        addPoint(attBuilder, 2, point001Key, latitude, longtude);
+        addPoint(attBuilder, 3, point0001Key, latitude, longtude);
+        
+//        format = getDoubleFormat(2);
+//        formattedLat = String.format(format, latitude);
+//        formattedLong = String.format(format, longtude);
+//
+//        pointSb = new StringBuilder();
+//        pointSb.append(formattedLat);
+//        pointSb.append(comma);
+//        pointSb.append(formattedLong);
+//        attBuilder.add(point001Key, pointSb.toString());
+//        
+//        format = getDoubleFormat(3);
+//        formattedLat = String.format(format, latitude);
+//        formattedLong = String.format(format, longtude);
+//
+//        pointSb = new StringBuilder();
+//        pointSb.append(formattedLat);
+//        pointSb.append(comma);
+//        pointSb.append(formattedLong);
+//        attBuilder.add(point0001Key, pointSb.toString());
+         
+//        for (int i = 1; i < 4; i++) {
+//            format = getDoubleFormat(i);
+//            formattedLat = String.format(format, latitude);
+//            formattedLong = String.format(format, longtude);
+//
+//            pointSb = new StringBuilder(); 
+//            pointSb.append(formattedLat);
+//            pointSb.append(comma);
+//            pointSb.append(formattedLong);
+//            attBuilder.add(point1Key, pointSb.toString());
+//            
+//            pointArrayBuilder.add(pointSb.toString().trim());
+//        }
+//        attBuilder.add(pointKey, pointArrayBuilder);
     }
+    
+ 
 
     public void addExsiccat(JsonObjectBuilder attBuilder, String exsiccat) {
         addAttValue(attBuilder, exsiccatKey, exsiccat);

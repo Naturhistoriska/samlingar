@@ -135,7 +135,7 @@ public class PaleoJsonConverter implements Serializable {
                     longitude = record.get(JsonHelper
                             .getInstance().getLongitudeCsvKey(coordinatesJson)).trim();
 
-                    coordinatesBuilder.build(attBuilder, latitude, longitude);
+                    coordinatesBuilder.buildPaleoCoordinates(attBuilder, latitude, longitude);
                     addSynonyms(record, synonymJson);
                 } else {
                     if (isAddSynomys) {

@@ -45,8 +45,8 @@ public class CoordinatesBuilder implements Serializable {
             strLatitude = latLngArray[0].trim();
             strLongitude = latLngArray[1].trim();
             try {
-                dblLat = botConvert.convert(strLatitude);
-                dblLong = botConvert.convert(strLongitude);
+                dblLat = botConvert.convert(strLatitude, true);
+                dblLong = botConvert.convert(strLongitude, false);
                 log.info("latitude and longigude: {} -- {}", dblLat, dblLong);
 
                 addGeoData(attBuilder, dblLat, dblLong);
@@ -73,6 +73,22 @@ public class CoordinatesBuilder implements Serializable {
         log.info("build: {} -- {}", latitude, longitude);
         
         try { 
+            dblLat = convert.convertLat(latitude);
+            dblLong = convert.convertLon(longitude);
+            log.info("latitude and longigude: {} -- {}", dblLat, dblLong);
+             
+            addGeoData(attBuilder, dblLat, dblLong); 
+        } catch(SamlingarException ex) { 
+//            log.error("SamlingarException: builderCoordinates : {}", ex.getErrorMessage());
+        } catch (Exception ex) {
+            log.error("builderCoordinates : {}", ex.getMessage());
+        }
+    }
+    
+    public void buildPaleoCoordinates(JsonObjectBuilder attBuilder, String latitude, String longitude) {
+        log.info("build: {} -- {}", latitude, longitude);
+        
+        try { 
             dblLat = convert.convert(latitude);
             dblLong = convert.convert(longitude);
             log.info("latitude and longigude: {} -- {}", dblLat, dblLong);
@@ -89,10 +105,10 @@ public class CoordinatesBuilder implements Serializable {
             double longitude) throws Exception {
 //        log.info("addGeoData : {} -- {}", latitude, longitude);
          
-        geoHash = createGeoHash(latitude, longitude); 
+//        geoHash = createGeoHash(latitude, longitude); 
 //         
         JsonHelper.getInstance().addCoordinates(attBuilder, latitude, longitude); 
-        JsonHelper.getInstance().addGeoHash(attBuilder, geoHash);  
+//        JsonHelper.getInstance().addGeoHash(attBuilder, geoHash);  
         JsonHelper.getInstance().addPoint(attBuilder, latitude, longitude); 
         
         log.info("point added....");
@@ -100,7 +116,7 @@ public class CoordinatesBuilder implements Serializable {
         log.info("latAndLong added....");
     }
 
-    private String createGeoHash(double latitude, double longitude) throws Exception {
-        return GeoHash.withCharacterPrecision(latitude, longitude, numberOfCharacters).toBase32();
-    } 
+//    private String createGeoHash(double latitude, double longitude) throws Exception {
+//        return GeoHash.withCharacterPrecision(latitude, longitude, numberOfCharacters).toBase32();
+//    } 
 }

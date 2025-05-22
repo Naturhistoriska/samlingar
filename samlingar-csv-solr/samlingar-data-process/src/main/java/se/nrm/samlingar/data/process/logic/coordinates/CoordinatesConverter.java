@@ -53,6 +53,26 @@ public class CoordinatesConverter implements Serializable {
     private final String regex7 = "^-?\\d{1,3}\\.\\d+°$";                                   //  -51.70° 
     
     
+    private final String latRex1  = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$";      // 76.773404 -76.773404
+//    private final String latRex2  = "^[-+]?([1-8]?\\d(\\,\\d+)?|90(\\.0+)?)$";      // 76,773404 -76.773404
+    private final String latRex2 =  "^[-+]?([1-8]?\\d{1,2}?|90(\\.0+)?)$";
+    private final String latRex3  = "^[-+]?([1-8]?\\d(\\,\\d+)?|90(\\.0+)?)$";      // 76,773404 -76.773404
+    
+    private final String rex1 = "^[-+]?\\d{1,3}\\.\\d+°$";   
+    
+    
+    
+    private final String lonRex1 = "^-?((1[0-7]\\d)|(\\d{1,2}))(\\.\\d+)?$|^-?180(\\.0+)?$";
+    private final String lonRex2 = "^-?((1[0-7]\\d)|(\\d{1,2}))?$|^-?180(\\.0+)?$";
+    private final String lonRex3 = "^-?((1[0-7]\\d)|(\\d{1,2}))(\\,\\d+)?$|^-?180(\\.0+)?$";
+    
+    
+    
+    
+//    private final String lonRex1 =  "^[-+]?([1-8]?\\d(\\.\\d+)?|180(\\.0+)?)$";
+//    private final String lonRex2 =  "^[-+]?([1-8]?\\d{1,3}?|180(\\.0+)?)$";
+    
+     
     // pfossil.csv
     // W240°24'50"
     
@@ -89,12 +109,86 @@ public class CoordinatesConverter implements Serializable {
     private final String dot = ".";
     
     private final double dblZero = 0.0;
+    
+    private double dblLat;
+    private double dblLon;
 
     public CoordinatesConverter() {
 
     }
+    
+    public double convertLat(String lat) {
+        log.info("convertLat: {}", lat);
+        
+        if (StringUtils.isBlank(lat)) {
+            throw new SamlingarException(ErrorMsg.getInstance().getNoCoordinatesErrorMsg());
+        }
+        
+        try {
+            if (lat.matches(latRex1) || lat.matches(latRex2)) {
+                return Util.getInstance().stringToDouble(lat); 
+            } else if(lat.matches(latRex3)) {
+                return Util.getInstance().stringToDouble(
+                        StringUtils.replace(lat, comma, dot));
+            } else if(lat.matches(rex1)) {
+                // 63.43
+                dblLat = Util.getInstance().stringToDouble(StringUtils.substringBefore(lat, degreeSign));
+                if(dblLat >= -90.0 && dblLat <= 90.0) {
+                    return dblLat;
+                } else {
+                    log.error("what...{}", lat);
+                    throw new SamlingarException(ErrorMsg.getInstance().getInvalidCoordinatesErrorMsg() + lat);
+                } 
+            } else {
+                log.error("what...{}", lat);
+                throw new SamlingarException(ErrorMsg.getInstance().getInvalidCoordinatesErrorMsg() + lat);
+            }
+           
+            
+        } catch (NumberFormatException e) {
+            log.error("NumberFormatException: {} ", e.getMessage());
+            throw new SamlingarException(e.getMessage());
+        }  
+    }
+    
+    public double convertLon(String lon) {
+        log.info("convertLon: {}", lon);
+        
+        if (StringUtils.isBlank(lon)) {
+            throw new SamlingarException(ErrorMsg.getInstance().getNoCoordinatesErrorMsg());
+        }
+        
+        try {
+            if (lon.matches(lonRex1) || lon.matches(lonRex2)) {
+                return Util.getInstance().stringToDouble(lon); 
+            } else if(lon.matches(lonRex3)) { 
+                return Util.getInstance().stringToDouble(
+                        StringUtils.replace(lon, comma, dot));
+            }  else if(lon.matches(rex1)) {
+                dblLon = Util.getInstance().stringToDouble(StringUtils.substringBefore(lon, degreeSign));
+                if(dblLat >= -180.0 && dblLat <= 180.0) {
+                    return dblLat;
+                } else {
+                    log.error("what...{}", lon);
+                    throw new SamlingarException(ErrorMsg.getInstance().getInvalidCoordinatesErrorMsg() + lon);
+                } 
+            } else {
+                log.error("what...{}", lon);
+                throw new SamlingarException(ErrorMsg.getInstance().getInvalidCoordinatesErrorMsg() + lon);
+            }
+           
+            
+        } catch (NumberFormatException e) {
+            log.error("NumberFormatException: {} ", e.getMessage());
+            throw new SamlingarException(e.getMessage());
+        }  
+    }
+    
+    
+    
+    
 
-    public double convert(String latOrLong) {
+    public double convert(String latOrLong ) {
         log.info("convert: {}", latOrLong);
         if (StringUtils.isBlank(latOrLong)) {
             throw new SamlingarException(ErrorMsg.getInstance().getNoCoordinatesErrorMsg());
@@ -102,10 +196,13 @@ public class CoordinatesConverter implements Serializable {
 
         try {
             if (latOrLong.matches(doubleFormatRegex1) || latOrLong.matches(doubleFormatRegex2)) {
+                 
                 return Util.getInstance().stringToDouble(
                         StringUtils.replace(latOrLong, comma, dot));
             } else if (latOrLong.matches(doubleFormatRegex3) || latOrLong.matches(doubleFormatRegex4)
                     || latOrLong.matches(dFormat)) {
+                
+                
                 return Util.getInstance().stringToDouble(latOrLong);
             } else if(latOrLong.matches(dFormat1)) {
                 return Util.getInstance().stringToDouble(StringUtils.substringBefore(latOrLong, degreeSign));
