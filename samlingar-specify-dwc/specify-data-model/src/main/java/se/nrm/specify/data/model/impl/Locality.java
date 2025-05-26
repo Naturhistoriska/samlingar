@@ -1,8 +1,11 @@
 package se.nrm.specify.data.model.impl;
  
-import java.math.BigDecimal;
+import java.math.BigDecimal; 
+import java.util.Collection;
 import java.util.Date; 
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,10 +17,14 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery; 
-import javax.persistence.Table; 
+import javax.persistence.OneToMany;
+import javax.persistence.Table;  
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size; 
-import se.nrm.specify.data.model.BaseEntity;
+import javax.xml.bind.annotation.XmlTransient;
+import se.nrm.specify.data.model.BaseEntity; 
 
 /**
  *
@@ -29,13 +36,30 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Locality.findAll", query = "SELECT l FROM Locality l"),
     @NamedQuery(name = "Locality.findByLocalityID", query = "SELECT l FROM Locality l WHERE l.localityID = :localityID")})
 public class Locality extends BaseEntity {
- 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "LocalityID")
-    private Integer localityID;
-       
+
+      
+    
+    @Size(max = 50)
+    @Column(name = "Datum")
+    private String datum;
+    
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "ElevationAccuracy")
+    private Double elevationAccuracy;
+    
+    @Size(max = 50)
+    @Column(name = "ElevationMethod")
+    private String elevationMethod;
+     
+    @Lob()
+    @Size(max = 65535)
+    @Column(name = "GML")
+    private String gml;
+    
+    @Size(max = 128)
+    @Column(name = "GUID")
+    private String guid;
+    
     @Size(max = 50)
     @Column(name = "Lat1Text")
     private String lat1Text;
@@ -43,15 +67,17 @@ public class Locality extends BaseEntity {
     @Size(max = 50)
     @Column(name = "Lat2Text")
     private String lat2Text;
-     
-    @Column(name = "Latitude1")
-    private BigDecimal latitude1;
     
-    @Column(name = "Latitude2")
-    private BigDecimal latitude2;
+    @Size(max = 50)
+    @Column(name = "LatLongMethod")
+    private String latLongMethod;
+    
+    @Size(max = 50)
+    @Column(name = "LatLongType")
+    private String latLongType;
     
     @Basic(optional = false)
-    @NotNull
+    @NotNull()
     @Size(min = 1, max = 255)
     @Column(name = "LocalityName")
     private String localityName;
@@ -64,22 +90,21 @@ public class Locality extends BaseEntity {
     @Column(name = "Long2Text")
     private String long2Text;
     
-    @Column(name = "Longitude1")
-    private BigDecimal longitude1;
-    
-    @Column(name = "Longitude2")
-    private BigDecimal longitude2;
-    
-    @Column(name = "MaxElevation")
-    private Double maxElevation;
-    
-    @Column(name = "MinElevation")
-    private Double minElevation;
-    
     @Size(max = 255)
     @Column(name = "NamedPlace")
     private String namedPlace;
+       
+    @Size(max = 50)
+    @Column(name = "OriginalElevationUnit")
+    private String originalElevationUnit;
       
+    @Column(name = "OriginalLatLongUnit")
+    private Integer originalLatLongUnit;
+    
+    @Size(max = 120)
+    @Column(name = "RelationToNamedPlace")
+    private String relationToNamedPlace;
+    
     @Lob
     @Size(max = 65535)
     @Column(name = "Remarks")
@@ -88,10 +113,34 @@ public class Locality extends BaseEntity {
     @Size(max = 32)
     @Column(name = "ShortName")
     private String shortName;
+          
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "LocalityID")
+    private Integer localityID;
+    
+    @Column(name = "LatLongAccuracy")
+    private Double latLongAccuracy;
         
-//    @JoinColumn(name = "DisciplineID", referencedColumnName = "UserGroupScopeId")
-//    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-//    private Discipline discipline;
+//    @OneToMany(mappedBy = "localityID")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "localityID", fetch = FetchType.LAZY) 
+    private Set<Localitydetail> localitydetail1Collection;
+
+    @Column(name = "Latitude1")
+    private BigDecimal latitude1;
+     
+    
+    @Column(name = "Longitude1")
+    private BigDecimal longitude1;
+     
+    
+    @Column(name = "MaxElevation")
+    private Double maxElevation;
+    
+    @Column(name = "MinElevation")
+    private Double minElevation;
+     
       
     @JoinColumn(name = "GeographyID", referencedColumnName = "GeographyID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -128,21 +177,6 @@ public class Locality extends BaseEntity {
         return localityID;
     }
      
-    public String getLat1Text() {
-        return lat1Text;
-    }
-
-    public void setLat1Text(String lat1Text) {
-        this.lat1Text = lat1Text;
-    }
-
-    public String getLat2Text() {
-        return lat2Text;
-    }
-
-    public void setLat2Text(String lat2Text) {
-        this.lat2Text = lat2Text;
-    }
  
     public BigDecimal getLatitude1() {
         return latitude1;
@@ -152,38 +186,7 @@ public class Locality extends BaseEntity {
         this.latitude1 = latitude1;
     }
 
-    public BigDecimal getLatitude2() {
-        return latitude2;
-    }
-
-    public void setLatitude2(BigDecimal latitude2) {
-        this.latitude2 = latitude2;
-    }
-
-    public String getLocalityName() {
-        return localityName;
-    }
-
-    public void setLocalityName(String localityName) {
-        this.localityName = localityName;
-    }
-
-    public String getLong1Text() {
-        return long1Text;
-    }
-
-    public void setLong1Text(String long1Text) {
-        this.long1Text = long1Text;
-    }
-
-    public String getLong2Text() {
-        return long2Text;
-    }
-
-    public void setLong2Text(String long2Text) {
-        this.long2Text = long2Text;
-    }
-
+ 
     public BigDecimal getLongitude1() {
         return longitude1;
     }
@@ -191,15 +194,7 @@ public class Locality extends BaseEntity {
     public void setLongitude1(BigDecimal longitude1) {
         this.longitude1 = longitude1;
     }
-
-    public BigDecimal getLongitude2() {
-        return longitude2;
-    }
-
-    public void setLongitude2(BigDecimal longitude2) {
-        this.longitude2 = longitude2;
-    }
-
+ 
     public Double getMaxElevation() {
         return maxElevation;
     }
@@ -216,29 +211,6 @@ public class Locality extends BaseEntity {
         this.minElevation = minElevation;
     }
 
-    public String getNamedPlace() {
-        return namedPlace;
-    }
-
-    public void setNamedPlace(String namedPlace) {
-        this.namedPlace = namedPlace;
-    }
- 
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
  
 //    public Discipline getDiscipline() {
 //        return discipline;
@@ -277,5 +249,165 @@ public class Locality extends BaseEntity {
     public String toString() {
         return "se.nrm.specify.data.model.impl.Locality[ localityID=" + localityID + " ]";
     }
+    public Double getLatLongAccuracy() {
+        return latLongAccuracy;
+    }
+    public void setLatLongAccuracy(Double latLongAccuracy) {
+        this.latLongAccuracy = latLongAccuracy;
+    }
+    @XmlTransient
+    public Set<Localitydetail> getLocalitydetail1Collection() {
+        return localitydetail1Collection;
+    }
+    public void setLocalitydetail1Collection(Set<Localitydetail> localitydetail1Collection) {
+        this.localitydetail1Collection = localitydetail1Collection;
+    }
+
+   
+    public String getDatum() {
+        return datum;
+    }
+
+    public void setDatum(String datum) {
+        this.datum = datum;
+    }
+ 
+    public Double getElevationAccuracy() {
+        return elevationAccuracy;
+    }
+
+    public void setElevationAccuracy(Double elevationAccuracy) {
+        this.elevationAccuracy = elevationAccuracy;
+    }
+
+    public String getElevationMethod() {
+        return elevationMethod;
+    }
+
+    public void setElevationMethod(String elevationMethod) {
+        this.elevationMethod = elevationMethod;
+    }
+
+    public String getGml() {
+        return gml;
+    }
+
+    public void setGml(String gml) {
+        this.gml = gml;
+    }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
+    public String getLat1Text() {
+        return lat1Text;
+    }
+
+    public void setLat1Text(String lat1Text) {
+        this.lat1Text = lat1Text;
+    }
+
+    public String getLat2Text() {
+        return lat2Text;
+    }
+
+    public void setLat2Text(String lat2Text) {
+        this.lat2Text = lat2Text;
+    }
+
+    public String getLatLongMethod() {
+        return latLongMethod;
+    }
+
+    public void setLatLongMethod(String latLongMethod) {
+        this.latLongMethod = latLongMethod;
+    }
+
+    public String getLatLongType() {
+        return latLongType;
+    }
+
+    public void setLatLongType(String latLongType) {
+        this.latLongType = latLongType;
+    }
+
+ 
+    public String getLocalityName() {
+        return localityName;
+    }
+
+    public void setLocalityName(String localityName) {
+        this.localityName = localityName;
+    }
+
+    public String getLong1Text() {
+        return long1Text;
+    }
+
+    public void setLong1Text(String long1Text) {
+        this.long1Text = long1Text;
+    }
+
+    public String getLong2Text() {
+        return long2Text;
+    }
+
+    public void setLong2Text(String long2Text) {
+        this.long2Text = long2Text;
+    }
+
+    public String getNamedPlace() {
+        return namedPlace;
+    }
+
+    public void setNamedPlace(String namedPlace) {
+        this.namedPlace = namedPlace;
+    }
+
+    public String getOriginalElevationUnit() {
+        return originalElevationUnit;
+    }
+
+    public void setOriginalElevationUnit(String originalElevationUnit) {
+        this.originalElevationUnit = originalElevationUnit;
+    }
+
+    public Integer getOriginalLatLongUnit() {
+        return originalLatLongUnit;
+    }
+
+    public void setOriginalLatLongUnit(Integer originalLatLongUnit) {
+        this.originalLatLongUnit = originalLatLongUnit;
+    }
+
+    public String getRelationToNamedPlace() {
+        return relationToNamedPlace;
+    }
+
+    public void setRelationToNamedPlace(String relationToNamedPlace) {
+        this.relationToNamedPlace = relationToNamedPlace;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+ 
     
 }

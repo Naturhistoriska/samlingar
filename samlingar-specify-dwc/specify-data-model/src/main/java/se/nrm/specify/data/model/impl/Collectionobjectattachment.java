@@ -24,7 +24,7 @@ import se.nrm.specify.data.model.BaseEntity;
  * @author idali
  */
 @Entity
-@Table(name = "collectionobjectattachment") 
+@Table(name = "collectionobjectattachment")  
 @NamedQueries({
     @NamedQuery(name = "Collectionobjectattachment.findAll", query = "SELECT c FROM Collectionobjectattachment c"),
     @NamedQuery(name = "Collectionobjectattachment.findByCollectionObjectAttachmentID", query = "SELECT c FROM Collectionobjectattachment c WHERE c.collectionObjectAttachmentID = :collectionObjectAttachmentID")})

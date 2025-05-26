@@ -1,7 +1,7 @@
 package se.nrm.specify.data.model.impl;
- 
+  
 import java.util.Date;
-import javax.persistence.Basic;
+import javax.persistence.Basic; 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,13 +9,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.NamedQuery; 
+import javax.persistence.Table; 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import se.nrm.specify.data.model.BaseEntity;
+import javax.validation.constraints.Size; 
+import se.nrm.specify.data.model.BaseEntity; 
 
 /**
  *
@@ -28,6 +29,27 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Taxontreedefitem.findByTaxonTreeDefItemID",
             query = "SELECT t FROM Taxontreedefitem t WHERE t.taxonTreeDefItemID = :taxonTreeDefItemID")})
 public class Taxontreedefitem extends BaseEntity {
+  
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 64)
+    @Column(name = "Name")
+    private String name;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "RankID")
+    private int rankID;
+    
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "Remarks")
+    private String remarks;
+     
+    @Size(max = 64)
+    @Column(name = "Title")
+    private String title;
+     
 
     private static final long serialVersionUID = 1L;
 
@@ -37,13 +59,6 @@ public class Taxontreedefitem extends BaseEntity {
     @Column(name = "TaxonTreeDefItemID")
     private Integer taxonTreeDefItemID;
 
-    @Size(max = 32)
-    @Column(name = "FormatToken")
-    private String formatToken;
-
-    @Size(max = 32)
-    @Column(name = "FullNameSeparator")
-    private String fullNameSeparator;
 
     @Column(name = "IsEnforced")
     private Boolean isEnforced;
@@ -51,20 +66,6 @@ public class Taxontreedefitem extends BaseEntity {
     @Column(name = "IsInFullName")
     private Boolean isInFullName;
 
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 64)
-    @Column(name = "Name")
-    private String name;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "RankID")
-    private int rankID;
-
-    @Size(max = 64)
-    @Column(name = "Title")
-    private String title;
 
     @JoinColumn(name = "ParentItemID", referencedColumnName = "TaxonTreeDefItemID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -106,21 +107,6 @@ public class Taxontreedefitem extends BaseEntity {
         this.taxonTreeDefItemID = taxonTreeDefItemID;
     }
 
-    public String getFormatToken() {
-        return formatToken;
-    }
-
-    public void setFormatToken(String formatToken) {
-        this.formatToken = formatToken;
-    }
-
-    public String getFullNameSeparator() {
-        return fullNameSeparator;
-    }
-
-    public void setFullNameSeparator(String fullNameSeparator) {
-        this.fullNameSeparator = fullNameSeparator;
-    }
 
     public Boolean getIsEnforced() {
         return isEnforced;
@@ -138,29 +124,6 @@ public class Taxontreedefitem extends BaseEntity {
         this.isInFullName = isInFullName;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getRankID() {
-        return rankID;
-    }
-
-    public void setRankID(int rankID) {
-        this.rankID = rankID;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public Taxontreedefitem getParentItem() {
         return parentItem;
@@ -199,4 +162,37 @@ public class Taxontreedefitem extends BaseEntity {
     public String toString() {
         return "se.nrm.dina.datamodel.Taxontreedefitem[ taxonTreeDefItemID=" + taxonTreeDefItemID + " ]";
     }
+ 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getRankID() {
+        return rankID;
+    }
+
+    public void setRankID(int rankID) {
+        this.rankID = rankID;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+ 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+ 
 }

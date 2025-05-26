@@ -1,7 +1,7 @@
 package se.nrm.specify.data.model.impl;
  
-import java.util.Date; 
-import java.util.List;
+//import java.util.Collection;
+import java.util.Date;  
 import java.util.Set;
 import javax.persistence.Basic; 
 import javax.persistence.Column;
@@ -18,9 +18,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType; 
+import javax.persistence.TemporalType;  
 import javax.validation.constraints.Size;  
-import se.nrm.specify.data.model.BaseEntity;
+//import javax.xml.bind.annotation.XmlTransient;
+import se.nrm.specify.data.model.BaseEntity; 
 
 /**
  *
@@ -33,7 +34,41 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Collectingevent.findByCollectingEventID", query = "SELECT c FROM Collectingevent c WHERE c.collectingEventID = :collectingEventID"),  
     @NamedQuery(name = "Collectingevent.findByStationFieldNumber", query = "SELECT c FROM Collectingevent c WHERE c.stationFieldNumber = :stationFieldNumber") })
 public class Collectingevent extends BaseEntity {
+
  
+    @Size(max = 50)
+    @Column(name = "EndDateVerbatim")
+    private String endDateVerbatim;
+    
+    @Size(max = 50)
+    @Column(name = "Method")
+    private String method;
+    
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "Remarks")
+    private String remarks;
+    
+    @Size(max = 50)
+    @Column(name = "StartDateVerbatim")
+    private String startDateVerbatim;
+    
+    @Size(max = 50)
+    @Column(name = "StationFieldNumber")
+    private String stationFieldNumber;
+    
+    @Size(max = 50)
+    @Column(name = "VerbatimDate")
+    private String verbatimDate;
+     
+    @Size(max = 128)
+    @Column(name = "GUID")
+    private String guid;
+            
+//    @OneToMany(mappedBy = "collectingEventID")
+//    private Collection<Collectionobject> collectionobjectCollection;
+    
+     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -47,21 +82,10 @@ public class Collectingevent extends BaseEntity {
     @Column(name = "EndDatePrecision")
     private Short endDatePrecision;
     
-    @Size(max = 50)
-    @Column(name = "EndDateVerbatim")
-    private String endDateVerbatim;
     
     @Column(name = "EndTime")
     private Short endTime;
     
-    @Size(max = 50)
-    @Column(name = "Method")
-    private String method;
-    
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "Remarks")
-    private String remarks;
     
     @Column(name = "StartDate")
     @Temporal(TemporalType.DATE)
@@ -70,20 +94,10 @@ public class Collectingevent extends BaseEntity {
     @Column(name = "StartDatePrecision")
     private Short startDatePrecision;
     
-    @Size(max = 50)
-    @Column(name = "StartDateVerbatim")
-    private String startDateVerbatim;
     
     @Column(name = "StartTime")
     private Short startTime;
     
-    @Size(max = 50)
-    @Column(name = "StationFieldNumber")
-    private String stationFieldNumber;
-    
-    @Size(max = 50)
-    @Column(name = "VerbatimDate")
-    private String verbatimDate;
                
     @JoinColumn(name = "LocalityID", referencedColumnName = "LocalityID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -138,13 +152,6 @@ public class Collectingevent extends BaseEntity {
         this.endDatePrecision = endDatePrecision;
     }
 
-    public String getEndDateVerbatim() {
-        return endDateVerbatim;
-    }
-
-    public void setEndDateVerbatim(String endDateVerbatim) {
-        this.endDateVerbatim = endDateVerbatim;
-    }
 
     public Short getEndTime() {
         return endTime;
@@ -154,21 +161,6 @@ public class Collectingevent extends BaseEntity {
         this.endTime = endTime;
     }
 
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
 
     public Date getStartDate() {
         return startDate;
@@ -186,13 +178,6 @@ public class Collectingevent extends BaseEntity {
         this.startDatePrecision = startDatePrecision;
     }
 
-    public String getStartDateVerbatim() {
-        return startDateVerbatim;
-    }
-
-    public void setStartDateVerbatim(String startDateVerbatim) {
-        this.startDateVerbatim = startDateVerbatim;
-    }
 
     public Short getStartTime() {
         return startTime;
@@ -202,21 +187,6 @@ public class Collectingevent extends BaseEntity {
         this.startTime = startTime;
     }
 
-    public String getStationFieldNumber() {
-        return stationFieldNumber;
-    }
-
-    public void setStationFieldNumber(String stationFieldNumber) {
-        this.stationFieldNumber = stationFieldNumber;
-    }
-
-    public String getVerbatimDate() {
-        return verbatimDate;
-    }
-
-    public void setVerbatimDate(String verbatimDate) {
-        this.verbatimDate = verbatimDate;
-    }
     
     public Locality getLocality() {
         return locality;
@@ -255,5 +225,74 @@ public class Collectingevent extends BaseEntity {
     public String toString() {
         return "se.nrm.specify.data.model.impl.Collectingevent[ collectingEventID=" + collectingEventID + " ]";
     }
-    
+ 
+
+    public String getEndDateVerbatim() {
+        return endDateVerbatim;
+    }
+
+    public void setEndDateVerbatim(String endDateVerbatim) {
+        this.endDateVerbatim = endDateVerbatim;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getStartDateVerbatim() {
+        return startDateVerbatim;
+    }
+
+    public void setStartDateVerbatim(String startDateVerbatim) {
+        this.startDateVerbatim = startDateVerbatim;
+    }
+
+    public String getStationFieldNumber() {
+        return stationFieldNumber;
+    }
+
+    public void setStationFieldNumber(String stationFieldNumber) {
+        this.stationFieldNumber = stationFieldNumber;
+    }
+
+    public String getVerbatimDate() {
+        return verbatimDate;
+    }
+
+    public void setVerbatimDate(String verbatimDate) {
+        this.verbatimDate = verbatimDate;
+    }
+ 
+ 
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
+ 
+
+//    @XmlTransient
+//    public Collection<Collectionobject> getCollectionobjectCollection() {
+//        return collectionobjectCollection;
+//    }
+//
+//    public void setCollectionobjectCollection(Collection<Collectionobject> collectionobjectCollection) {
+//        this.collectionobjectCollection = collectionobjectCollection;
+//    }
+ 
 }

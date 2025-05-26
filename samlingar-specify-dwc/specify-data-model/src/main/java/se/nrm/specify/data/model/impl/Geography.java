@@ -1,5 +1,7 @@
 package se.nrm.specify.data.model.impl;
  
+import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date; 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -13,10 +15,12 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery; 
-import javax.persistence.Table; 
+import javax.persistence.OneToMany;
+import javax.persistence.Table;   
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size; 
-import se.nrm.specify.data.model.BaseEntity;
+import javax.xml.bind.annotation.XmlTransient;
+import se.nrm.specify.data.model.BaseEntity; 
 
 /**
  *
@@ -32,17 +36,7 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Geography.findByIsCurrent", query = "SELECT g FROM Geography g WHERE g.isCurrent = :isCurrent"),
     @NamedQuery(name = "Geography.findByRankID", query = "SELECT g FROM Geography g WHERE g.rankID = :rankID")})
 public class Geography extends BaseEntity {
- 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "GeographyID")
-    private Integer geographyID;
-    
-    @Size(max = 16)
-    @Column(name = "Abbrev")
-    private String abbrev;
- 
+  
     @Size(max = 128)
     @Column(name = "CommonName")
     private String commonName;
@@ -50,17 +44,24 @@ public class Geography extends BaseEntity {
     @Size(max = 500)
     @Column(name = "FullName")
     private String fullName;
+    
+    @Size(max = 24)
+    @Column(name = "GeographyCode")
+    private String geographyCode;
+    
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "GML")
+    private String gml;
+    
+    @Size(max = 128)
+    @Column(name = "GUID")
+    private String guid;
      
-    @Column(name = "IsAccepted")
-    private Boolean isAccepted;
-    
-    @Column(name = "IsCurrent")
-    private Boolean isCurrent;
-    
     @Size(max = 128)
     @Column(name = "Name")
     private String name;
- 
+     
     @Basic(optional = false)
     @NotNull
     @Column(name = "RankID")
@@ -70,22 +71,54 @@ public class Geography extends BaseEntity {
     @Size(max = 65535)
     @Column(name = "Remarks")
     private String remarks;
+    
+    @Size(max = 32)
+    @Column(name = "Text1")
+    private String text1;
+    
+    @Size(max = 32)
+    @Column(name = "Text2")
+    private String text2;
+        
+//    @OneToMany(mappedBy = "acceptedID")
+//    private Collection<Geography> geographyCollection1;
+    
+    @JoinColumn(name = "AcceptedID", referencedColumnName = "GeographyID")
+    @ManyToOne 
+    private Geography acceptedID;
+    
+//    @OneToMany(mappedBy = "geographyID")
+//    private Collection<Locality> localityCollection;
+// 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "GeographyID")
+    private Integer geographyID;
+ 
+    
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "CentroidLat")
+    private BigDecimal centroidLat;
+    
+    @Column(name = "CentroidLon")
+    private BigDecimal centroidLon;
+     
+    
+    
+
+     
+    @Column(name = "IsAccepted")
+    private Boolean isAccepted;
+    
+    @Column(name = "IsCurrent")
+    private Boolean isCurrent;
+    
        
     @JoinColumn(name = "ParentID", referencedColumnName = "GeographyID")
     @ManyToOne(fetch = FetchType.EAGER)
     private Geography parent;
-    
-//    @JoinColumn(name = "GeographyTreeDefID", referencedColumnName = "GeographyTreeDefID")
-//    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-//    private Geographytreedef geographyTreeDef;
-//    
-//    @JoinColumn(name = "GeographyTreeDefItemID", referencedColumnName = "GeographyTreeDefItemID")
-//    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-//    private Geographytreedefitem geographyTreeDefItem;
-//     
-//    @JoinColumn(name = "AcceptedID", referencedColumnName = "GeographyID")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Geography accepted; 
+   
 
     public Geography() {
     }
@@ -118,29 +151,6 @@ public class Geography extends BaseEntity {
     public int getEntityId() {
         return geographyID;
     }
-    public String getAbbrev() {
-        return abbrev;
-    }
-
-    public void setAbbrev(String abbrev) {
-        this.abbrev = abbrev;
-    }
-
-    public String getCommonName() {
-        return commonName;
-    }
-
-    public void setCommonName(String commonName) {
-        this.commonName = commonName;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
   
     public Boolean getIsAccepted() {
         return isAccepted;
@@ -158,29 +168,6 @@ public class Geography extends BaseEntity {
         this.isCurrent = isCurrent;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getRankID() {
-        return rankID;
-    }
-
-    public void setRankID(int rankID) {
-        this.rankID = rankID;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
 
     public Geography getParent() {
         return parent;
@@ -299,5 +286,136 @@ public class Geography extends BaseEntity {
     public String toString() {
         return "se.nrm.specify.data.model.impl.Geography[ geographyID=" + geographyID + " ]";
     }
+
+  
+
+
+    public BigDecimal getCentroidLat() {
+        return centroidLat;
+    }
+
+    public void setCentroidLat(BigDecimal centroidLat) {
+        this.centroidLat = centroidLat;
+    }
+
+    public BigDecimal getCentroidLon() {
+        return centroidLon;
+    }
+
+    public void setCentroidLon(BigDecimal centroidLon) {
+        this.centroidLon = centroidLon;
+    }
+
     
+
+    public String getCommonName() {
+        return commonName;
+    }
+
+    public void setCommonName(String commonName) {
+        this.commonName = commonName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+ 
+    public String getGeographyCode() {
+        return geographyCode;
+    }
+
+    public void setGeographyCode(String geographyCode) {
+        this.geographyCode = geographyCode;
+    }
+
+    public String getGml() {
+        return gml;
+    }
+
+    public void setGml(String gml) {
+        this.gml = gml;
+    }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+ 
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+ 
+
+    public int getRankID() {
+        return rankID;
+    }
+
+    public void setRankID(int rankID) {
+        this.rankID = rankID;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getText1() {
+        return text1;
+    }
+
+    public void setText1(String text1) {
+        this.text1 = text1;
+    }
+
+    public String getText2() {
+        return text2;
+    }
+
+    public void setText2(String text2) {
+        this.text2 = text2;
+    }
+ 
+
+//    @XmlTransient
+//    public Collection<Geography> getGeographyCollection1() {
+//        return geographyCollection1;
+//    }
+//
+//    public void setGeographyCollection1(Collection<Geography> geographyCollection1) {
+//        this.geographyCollection1 = geographyCollection1;
+//    }
+
+    public Geography getAcceptedID() {
+        return acceptedID;
+    }
+
+    public void setAcceptedID(Geography acceptedID) {
+        this.acceptedID = acceptedID;
+    }
+
+//    @XmlTransient
+//    public Collection<Locality> getLocalityCollection() {
+//        return localityCollection;
+//    }
+//
+//    public void setLocalityCollection(Collection<Locality> localityCollection) {
+//        this.localityCollection = localityCollection;
+//    }
+
+ 
 }

@@ -1,6 +1,5 @@
 package se.nrm.specify.data.process.logic.json;
-
-import ch.hsr.geohash.GeoHash;
+ 
 import java.io.Serializable; 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -30,6 +29,7 @@ import se.nrm.specify.data.model.impl.Commonnametx;
 import se.nrm.specify.data.model.impl.Determination;
 import se.nrm.specify.data.model.impl.Geography;
 import se.nrm.specify.data.model.impl.Locality;
+import se.nrm.specify.data.model.impl.Localitydetail;
 import se.nrm.specify.data.model.impl.Morphbankview;
 import se.nrm.specify.data.model.impl.Preparation;
 import se.nrm.specify.data.model.impl.Preptype;
@@ -51,25 +51,35 @@ public class EntityToJson implements Serializable {
     private final String additionalDeterminationKey = "additionalDetermination";
     private final String associatedMediaKey = "associatedMedia";
     
+    
+    
     private final String authorKey = "scientificNameAuthorship";
      
     private final String catalogNumberKey = "catalogNumber"; 
     private final String catalogedDateKey = "catalogedDate";
     private final String catalogedYearKey = "catalogedYear";
     private final String catalogedMonthKey = "catalogedMonth"; 
-    private final String collectorKey = "collector";
+    private final String collectorKey = "recordedBy";
     private final String countryKey = "country";
     private final String countyKey = "county";
     private final String continentKey = "continent";
     private final String createdDateKey = "createdDate";
+    
+    private final String coordinateUncertaintyInMetersKey = "coordinateUncertaintyInMeters";
     
     private final String dateIdentifiedKey = "dateIdentified";
     private final String dayKey = "day";
     
     private final String eventDateKey = "eventDate";
     private final String eventRemarksKey = "eventRemarks";
+    private final String eventTimeKey = "eventTime";
     
     private final String familyKey = "family";
+    private final String orderKey = "order";
+    private final String classKey = "clazz";
+    private final String phylumKey = "phylum";
+    private final String kingdomKey = "kingdom";
+    
     private final String fieldNumberKey = "fieldNumber";
     
 //    private final String geohashKey = "geohash";
@@ -77,19 +87,32 @@ public class EntityToJson implements Serializable {
     private final String geoKey = "geo";
     private final String genusKey = "genus";
     
+    private final String higherGeographyKey = "higherGeography";
+    
     private final String higherClassificationKey = "higherClassification";
     
     private final String identifiedByKey = "identifiedBy";
     
+    private final String individualCountKey = "individualCount";
+    
+    private final String islandKey = "island";
+    
+    private final String islandGroupKey = "islandGroup";
     private final String latitudeKey = "decimalLatitude";
     private final String longitudeKey = "decimalLongitude";
     private final String lifeStageKey = "lifeStage";
     private final String localityKey = "locality";
     private final String hasImageKey = "hasImage";
     
+    private final String minElevationKey = "minimumElevationInMeters";
+    private final String maxElevationKey = "maximumElevationInMeters";
+    
+    private final String geodeticDatumKey = "geodeticDatum";
+    
     private final String modifiedKey = "modified";
     private final String monthKey = "month";
     
+    private final String otherCatalogNumbersKey = "otherCatalogNumbers";
     private final String occurrenceAttributeRemarksKey  = "occurrenceAttributeRemarks";
     private final String occurrenceRemarksKey = "occurrenceRemarks";
     
@@ -101,11 +124,14 @@ public class EntityToJson implements Serializable {
     private final String preparationsKey = "preparations";
     private final String prepartionCountKey = "prepCount";
     
+    private final String previousIdentificationsKey = "previousIdentifications";
+    
     private final String reproductiveConditionKey = "reproductiveCondition";
     
     private final String scientificNameKey = "scientificName";
     private final String serieKey = "serie";
     private final String startDayOfYearKey = "startDayOfYear";
+    private final String endDayOfYearKey = "startDayOfYear";
     private final String stateProvinceKey = "stateProvince";
     private final String seKey = "se";
     private final String sexKey = "sex";
@@ -120,7 +146,9 @@ public class EntityToJson implements Serializable {
     private final String verbatimEventDateKey = "verbatimEventDate";
 
     private final String verbatimCoordinatesKey = "verbatimCoordinates";
-    private final String vernacularNameKey = "vernacularName";
+    private final String vernacularNameKey = "vernacularName"; 
+    
+    private final String waterBodyKey = "waterBody";
     
     private final String yearKey = "year";
     
@@ -139,6 +167,9 @@ public class EntityToJson implements Serializable {
     private final String leftBracket = "[";
     private final String rightBrackets = "]";
     
+    private final String emptyString = "";
+    private final String lastCommaRex = ",$";
+    
     
     private final String sweden = "sweden";
     private final String sverige = "Sverige";
@@ -152,6 +183,8 @@ public class EntityToJson implements Serializable {
     private boolean isCollection;
     private Date eventDate;
     private LocalDate localEventDate;
+    
+    private Date endDate;
     private String strEventDate;
     
     private Date determinedDate;
@@ -208,6 +241,16 @@ public class EntityToJson implements Serializable {
     private String typeStatusName;
     private String typeStatus;
     private boolean isType;
+    
+    private StringBuilder waterbodySb;
+    private StringBuilder isIslandSb;
+    private StringBuilder islandGroupSb;
+    
+    private String waterbody;
+    private String isIsland;
+    private String islandGroup;
+    
+    private String locationRemarksKey = "locationRemarks";
     
     private final String possibleType = "possibletype";
     private final String possibleTypeConvert = "Possible type";
@@ -288,19 +331,32 @@ public class EntityToJson implements Serializable {
     private final Predicate<Attachment> hasImageAttachmentecPredicate
             = attachment -> attachment != null 
                     && attachment.getAttachmentImageAttribute() != null;
+    
+    
  
     public void convertEntityToJson1(JsonObjectBuilder attBuilder, 
             Collectionobject bean, String collectionCode) {
         log.info("catalogNumber : {}", bean.getCatalogNumber());
+        
         addAttValue(attBuilder, catalogNumberKey, bean.getCatalogNumber());
+ 
+        addAttValue(attBuilder, otherCatalogNumbersKey, bean.getAltCatalogNumber());
+ 
          
         addCatalogedDate(attBuilder, (java.sql.Date) bean.getCatalogedDate());
         addAccession(attBuilder, bean.getAccession());
+         
+        addModifiedDate(attBuilder, 
+                Util.getInstance().dateToString(bean.getTimestampModified()));
+         
+        addAttValue(attBuilder, createdDateKey, Util.getInstance().dateToString(bean.getTimestampCreated())); 
+ 
+        addIntegerValue(attBuilder, individualCountKey, bean.getCountAmt()); 
+   
         
-        addModifiedDate(attBuilder, Util.getInstance().dateToString(bean.getTimestampModified()));
         
-        attBuilder.add(createdDateKey,
-                Util.getInstance().dateToString(bean.getTimestampCreated()));
+        addAttValue(attBuilder, occurrenceRemarksKey, bean.getRemarks()); 
+         
         
         collectionObjectAttribute = bean.getCollectionObjectAttribute();
         if(collectionObjectAttribute != null) {
@@ -309,14 +365,17 @@ public class EntityToJson implements Serializable {
             addAttValue(attBuilder, reproductiveConditionKey, collectionObjectAttribute.getText3());
             addAttValue(attBuilder, lifeStageKey, collectionObjectAttribute.getText4());
         }
-         
-        addDeterminations(attBuilder, bean.getDeterminationList());
-         
-        addAttValue(attBuilder, occurrenceRemarksKey, bean.getRemarks()); 
-
+          
+        
+        addCurrentDeterminations(attBuilder, bean.getDeterminationList());
+          
         addCollectingEvent(attBuilder, bean.getCollectingEvent());
-
+        log.info("here.. 7..");
+        
+        
         addPreparations(attBuilder, bean.getPreparationList());
+        
+        
 
         if (collectionCode.equals(entomologyCollectionCode)) {
             addImages(attBuilder, bean);
@@ -324,18 +383,23 @@ public class EntityToJson implements Serializable {
         if (collectionCode.equals(mineralogyCollection)) {
             addAttValue(attBuilder, serieKey, bean.getText1());
         }
+         log.info("here..8..");
         
-        addTaxa(attBuilder, bean.getDeterminationList(),  
+        addAdditionalDetermination(attBuilder, bean.getDeterminationList(),  
                 collectionCode.equals(mineralogyCollection));
+        
+         log.info("here..9..");
+        
     }
     
-    private void addTaxa(JsonObjectBuilder attBuilder, Set<Determination> determinations, boolean isMineral) {
+  
+    
+    private void addAdditionalDetermination(JsonObjectBuilder attBuilder, Set<Determination> determinations, boolean isMineral) {
         taxaArrayBuilder = Json.createArrayBuilder();
         addtionalDetArrayBuilder = Json.createArrayBuilder();
         determinations.stream()
                 .filter(d -> !d.getIsCurrent())
-                .forEach(cd -> {
-                    log.info("here.....");
+                .forEach(cd -> { 
                     taxaSb = new StringBuilder(); 
                     if (isMineral) {
                         preferredTaxon = cd.getPreferredTaxon(); 
@@ -374,19 +438,21 @@ public class EntityToJson implements Serializable {
         if(isMineral) {
             attBuilder.add(associeradeMineralKey, taxaArrayBuilder);
         } else { 
-            attBuilder.add(additionalDeterminationKey, addtionalDetArrayBuilder);
+            log.info("addintional determanations");
+//            attBuilder.add(additionalDeterminationKey, addtionalDetArrayBuilder);
+            attBuilder.add(previousIdentificationsKey, addtionalDetArrayBuilder);
         } 
     }
 
 
 
-    private void addDeterminations(JsonObjectBuilder attBuilder, Set<Determination> determinations) {
+    private void addCurrentDeterminations(JsonObjectBuilder attBuilder, Set<Determination> determinations) {
 
         isType = false;
         currentDetermination = determinations.stream()
                 .filter(d -> d.getIsCurrent())
                 .findFirst().orElse(null);
-
+ 
         if (currentDetermination != null) {
             determiner = currentDetermination.getDeterminer();
             if (determiner != null) {
@@ -402,16 +468,17 @@ public class EntityToJson implements Serializable {
             typeStatusName = currentDetermination.getTypeStatusName();
             if (!StringUtils.isBlank(typeStatusName)) {
                 isType = true;
-                typeStatusName = typeStatusName.equals(possibleType)
+                typeStatusName = typeStatusName.equals(possibleType) 
                         ? possibleTypeConvert : typeStatusName;
-                addAttValue(attBuilder, typeStatusKey, typeStatus); 
+                addAttValue(attBuilder, typeStatusKey, typeStatusName); 
             }
             addTaxon(attBuilder, currentDetermination.getPreferredTaxon(),
                     currentDetermination.getTaxon(), isType );
-        }
-//        addTaxa(attBuilder, determinations);
+        } 
+//        addTaxa(attBuilder, determinations); 
     }
     
+ 
     private void addTaxon(JsonObjectBuilder attBuilder, Taxon preferredTaxon, Taxon taxon, boolean isType) {
 
         currentTaxon = isType ? taxon : preferredTaxon; 
@@ -466,13 +533,18 @@ public class EntityToJson implements Serializable {
         addAttValue(attBuilder, speciesKey, currentTaxon.getSpecies());
         addAttValue(attBuilder, genusKey, currentTaxon.getGenus());
         addAttValue(attBuilder, familyKey, currentTaxon.getFamily());
+        addAttValue(attBuilder, orderKey, currentTaxon.getOrder());
+        addAttValue(attBuilder, classKey, currentTaxon.getClazz());
+        addAttValue(attBuilder, phylumKey, currentTaxon.getPhylum());
+        addAttValue(attBuilder, kingdomKey, currentTaxon.getKingdom());
         addAttValue(attBuilder, higherClassificationKey, currentTaxon.getHighClassification());
     }
 
 
     private void addCommonName(JsonObjectBuilder attBuilder) { 
         commonNameList = currentTaxon.getCommonnametxList();
-        commonNameList.size();
+  
+        log.info("addCommonName {}", commonNameList.size());
         if (commonNameList != null && !commonNameList.isEmpty()) {
             commonNameArrayBuilder = Json.createArrayBuilder();
 
@@ -524,25 +596,40 @@ public class EntityToJson implements Serializable {
     private void addCollectingEvent(JsonObjectBuilder attBuilder, Collectingevent event) {
         if (event != null) {
             log.info("event id : {}", event.getCollectingEventID());
+            
             eventDate = (java.sql.Date) event.getStartDate();
             if (eventDate != null) {
                 strEventDate = Util.getInstance().dateToString(eventDate);
-                localEventDate = eventDate.toLocalDate();
-                attBuilder.add(eventDateKey, strEventDate);
-                attBuilder.add(verbatimEventDateKey, strEventDate);
+                localEventDate = eventDate.toLocalDate(); 
+                
+                attBuilder.add(eventDateKey, strEventDate); 
                 attBuilder.add(startDayOfYearKey, localEventDate.getDayOfYear());
                 attBuilder.add(yearKey, localEventDate.getYear());
                 attBuilder.add(monthKey, localEventDate.getMonthValue());
                 attBuilder.add(dayKey, localEventDate.getDayOfMonth());
             }
             
-            addAttValue(attBuilder, fieldNumberKey, event.getStationFieldNumber());
-            addAttValue(attBuilder, eventRemarksKey, event.getRemarks());
+            endDate = (java.sql.Date) event.getEndDate();
              
-
-            addLocality(attBuilder, event.getLocality()); 
-              
+            if (endDate != null) { 
+                attBuilder.add(endDayOfYearKey, (endDate.toLocalDate()).getDayOfYear()); 
+            }  
+            
+            if(event.getStartTime() != null) {
+                attBuilder.add(eventTimeKey, event.getStartTime());  
+            }
+             
+            addAttValue(attBuilder, fieldNumberKey, event.getStationFieldNumber());
+    
+            addAttValue(attBuilder, eventRemarksKey, event.getRemarks());
+            addAttValue(attBuilder, verbatimEventDateKey, event.getVerbatimDate());
+            log.info("ddfdd");
+            
+            addLocality(attBuilder, event.getLocality());  
+            log.info("addLocalityadded");
+            
             addCollectors(attBuilder, event.getCollectorList());
+            log.info("addCollectors added");
         }
     }
     
@@ -552,7 +639,7 @@ public class EntityToJson implements Serializable {
             if(collectors.size() > 1) {
                 log.info("collectors : {}", collectors.size());
             }
-            log.info("");
+            
             collectorsArrayBuilder = Json.createArrayBuilder();
             collectors.stream()
                     .map(Collector::getAgent) 
@@ -562,26 +649,12 @@ public class EntityToJson implements Serializable {
             attBuilder.add(collectorKey,collectorsArrayBuilder);
         }
     }
-    
-    
-//    private void build(JsonObjectBuilder attBuilder, double latitude, double longitude) {
-//        log.info("build: {} -- {}", latitude, longitude);
-//        try { 
-//            addGeoData(attBuilder, latitude, longitude);
-//        } catch (Exception ex) {
-//            log.error(ex.getMessage());
-//        }
-// 
-//    }
+ 
  
     private void addGeoData(JsonObjectBuilder attBuilder, double latitude, double longitude) throws Exception {
         log.info("addGeoData : {} -- {}", latitude, longitude);
-         
-//        geoHash = createGeoHash(latitude, longitude); 
-//         
-        addCoordinates(attBuilder, latitude, longitude);
-        
-//        addGeoHash(attBuilder);
+          
+        addCoordinates(attBuilder, latitude, longitude); 
         addPoint(attBuilder, latitude, longitude);  
     }
     
@@ -591,7 +664,7 @@ public class EntityToJson implements Serializable {
         coordinatesSb.append(latitude);
         coordinatesSb.append(comma);
         coordinatesSb.append(longitude);
-        attBuilder.add(verbatimCoordinatesKey, coordinatesSb.toString().trim());
+//        attBuilder.add(verbatimCoordinatesKey, coordinatesSb.toString().trim());
         attBuilder.add(geoKey, coordinatesSb.toString().trim());
     }
     
@@ -610,10 +683,7 @@ public class EntityToJson implements Serializable {
     
     private void addPoint(JsonObjectBuilder attBuilder, double latitude, double longtude) {
         log.info("addPoint : {} -- {}", latitude, longtude);
-        
-        
-        pointArrayBuilder = Json.createArrayBuilder();
-
+         
         intLat = (int) latitude;
         intLong = (int) longtude;
 
@@ -622,39 +692,10 @@ public class EntityToJson implements Serializable {
         pointSb.append(comma);
         pointSb.append(intLong);
         attBuilder.add(point1Key, pointSb.toString());
-        
-
+         
         addPoint(attBuilder, 1, point01Key, latitude, longtude);
         addPoint(attBuilder, 2, point001Key, latitude, longtude);
         addPoint(attBuilder, 3, point0001Key, latitude, longtude);
-//
-//        pointArrayBuilder = Json.createArrayBuilder();
-//
-//        intLat = (int) latitude;
-//        intLong = (int) longtude;
-//
-//        pointSb = new StringBuilder();
-//        pointSb.append(0);
-//        pointSb.append(underScore);
-//        pointSb.append(intLat);
-//        pointSb.append(comma);
-//        pointSb.append(intLong);
-//        pointArrayBuilder.add(pointSb.toString().trim());
-//
-//        for (int i = 1; i < 4; i++) {
-//            format = getDoubleFormat(i);
-//            formattedLat = String.format(format, latitude);
-//            formattedLong = String.format(format, longtude);
-//
-//            pointSb = new StringBuilder();
-//            pointSb.append(i);
-//            pointSb.append(underScore);
-//            pointSb.append(formattedLat);
-//            pointSb.append(comma);
-//            pointSb.append(formattedLong);
-//            pointArrayBuilder.add(pointSb.toString().trim());
-//        }
-//        attBuilder.add(pointKey, pointArrayBuilder);
     }
     
         
@@ -668,47 +709,70 @@ public class EntityToJson implements Serializable {
                 return doubleFormat3;
         }
     }
-    
-//    private void addGeoHash(JsonObjectBuilder attBuilder) {
-//        georHashArrayBuilder = Json.createArrayBuilder();
-//        for (int i = 2; i <= 5; i++) {
-//            geoHashSb = new StringBuilder();
-//            geoHashSb.append(i);
-//            geoHashSb.append(underScore);
-//            geoHashSb.append(geoHash.substring(0, i));
-//            georHashArrayBuilder.add(geoHashSb.toString().trim());
-//        }
-//        attBuilder.add(geohashKey, georHashArrayBuilder);
-//    }
-
-//    private String createGeoHash(double latitude, double longitude) throws Exception {
-//        return GeoHash.withCharacterPrecision(latitude, longitude, numberOfCharacters).toBase32();
-//    } 
+ 
     
     private void addLocality(JsonObjectBuilder attBuilder, Locality locality) {
-//        log.info("aaddLocality");
+        log.info("aaddLocality");
         if (locality != null) {
             addAttValue(attBuilder, localityKey, locality.getLocalityName()); 
-
+ 
             latitude = locality.getLatitude1();
-            longitude = locality.getLongitude1();
-            log.info("addLocality : {} -- {}", latitude, longitude);
-            if (latitude != null) { 
+            longitude = locality.getLongitude1(); 
+            
+            if (latitude != null && longitude != null ) { 
                 attBuilder.add(latitudeKey, latitude.doubleValue());
-            }
-            if (longitude != null) {
                 attBuilder.add(longitudeKey, longitude.doubleValue());
-            }
-  
-            if (latitude != null && longitude != null) {
                 try {
                     addGeoData(attBuilder, latitude.doubleValue(), longitude.doubleValue());
-                } catch (Exception ex) {
+                } catch (Exception ex) { 
                     log.error(ex.getMessage());
                 }
-            }
-            addGeography(attBuilder, locality.getGeography());
+            } 
+            
+            addAttValue(attBuilder, geodeticDatumKey, locality.getDatum());  
+               
+            addAttValue(attBuilder, minElevationKey, locality.getMinElevation()); 
+            addAttValue(attBuilder, maxElevationKey, locality.getMaxElevation()); 
+             
+            addAttValue(attBuilder, locationRemarksKey, locality.getRemarks());  
+            addAttValue(attBuilder, coordinateUncertaintyInMetersKey, locality.getLatLongAccuracy()); 
+  
+            addCollectionDetail(attBuilder, locality.getLocalitydetail1Collection());
+          
+            addGeography(attBuilder, locality.getGeography()); 
         }
+    }
+    
+    private void addCollectionDetail(JsonObjectBuilder attBuilder, Set<Localitydetail> localityDetail) {
+        if( localityDetail != null && !localityDetail.isEmpty()) {
+            waterbodySb = new StringBuilder();
+            isIslandSb = new StringBuilder();
+            islandGroupSb = new StringBuilder();
+            
+            localityDetail.stream()
+                    .forEach(detail -> { 
+                        waterbody = detail.getWaterBody();
+                        isIsland = detail.getIsland();
+                        islandGroup = detail.getIslandGroup();
+                        if( waterbody != null) {
+                            waterbodySb.append(waterbody);
+                            waterbodySb.append(comma);
+                        }
+                        
+                        if( isIsland != null) {
+                            isIslandSb.append(isIsland);
+                            isIslandSb.append(comma);
+                        }
+                        
+                        if( islandGroup != null) {
+                            islandGroupSb.append(islandGroup);
+                            islandGroupSb.append(comma);
+                        }  
+                    });
+            addAttValue(attBuilder, waterBodyKey, (waterbodySb.toString()).replaceFirst(lastCommaRex, emptyString)); 
+            addAttValue(attBuilder, islandKey, isIslandSb.toString().replaceFirst(lastCommaRex, emptyString)); 
+            addAttValue(attBuilder, islandGroupKey, isIslandSb.toString().replaceFirst(lastCommaRex, emptyString)); 
+        }  
     }
     
     private void addGeography(JsonObjectBuilder attBuilder, Geography geography) {
@@ -722,7 +786,7 @@ public class EntityToJson implements Serializable {
                     attBuilder.add(seKey, sverige);
                 }
             }
-
+            addAttValue(attBuilder, higherGeographyKey, geography.getFullName());
             addAttValue(attBuilder, stateProvinceKey, geography.getState());
             addAttValue(attBuilder, countyKey, geography.getCounty());
             addAttValue(attBuilder, continentKey, geography.getContinent());
@@ -738,7 +802,7 @@ public class EntityToJson implements Serializable {
         } 
     }
     
-    private void addModifiedDate(JsonObjectBuilder attBuilder, String modifiedDate) { 
+    private void addModifiedDate(JsonObjectBuilder attBuilder, String modifiedDate) {  
         addAttValue(attBuilder, modifiedKey, modifiedDate); 
     }
  
@@ -762,8 +826,20 @@ public class EntityToJson implements Serializable {
         }
     }
     
-    public void addAttValue(JsonObjectBuilder attBuilder, String key, int value) {
-        attBuilder.add(key, value);
+    public void addAttValue(JsonObjectBuilder attBuilder, String key, int value) { 
+        attBuilder.add(key, value); 
+    }
+    
+    public void addAttValue(JsonObjectBuilder attBuilder, String key, Double value) { 
+        if(value != null) {
+            attBuilder.add(key, value); 
+        } 
+    }
+    
+    public void addIntegerValue(JsonObjectBuilder attBuilder, String key, Integer value) { 
+        if(value != null) {
+            attBuilder.add(key, value); 
+        } 
     }
     
 

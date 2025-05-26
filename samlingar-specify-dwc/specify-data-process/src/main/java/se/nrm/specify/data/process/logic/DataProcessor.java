@@ -250,14 +250,15 @@ public class DataProcessor implements Serializable {
     private String buildBaseJpql() {
         sb = new StringBuilder();
         sb.append("SELECT DISTINCT c FROM Collectionobject c ")
-                .append("LEFT JOIN FETCH c.accession ")
+                .append("LEFT JOIN FETCH c.accession ") 
                 .append("LEFT JOIN FETCH c.collectionObjectAttribute ")
                 .append("LEFT JOIN FETCH c.determinationList d ")
                 .append("LEFT JOIN FETCH c.collection ct ")
                 .append("LEFT JOIN FETCH c.collectingEvent ce ")
                 .append("LEFT JOIN FETCH c.preparationList p ")
                 .append("LEFT JOIN FETCH c.collectionobjectattachmentList ca ")
-                .append("LEFT JOIN FETCH ce.locality lc ")
+                .append("LEFT JOIN FETCH ce.locality lc ") 
+                .append("LEFT JOIN FETCH lc.localitydetail1Collection ld ") 
                 .append("LEFT JOIN FETCH ce.collectorList clts ")
                 .append("LEFT JOIN FETCH clts.agent ")
                 .append("LEFT JOIN FETCH lc.geography g ")

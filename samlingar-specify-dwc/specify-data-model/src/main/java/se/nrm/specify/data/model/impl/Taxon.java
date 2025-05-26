@@ -1,5 +1,5 @@
 package se.nrm.specify.data.model.impl;
-
+ 
 import java.util.Date; 
 import java.util.Set;
 import javax.persistence.Basic;
@@ -10,15 +10,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.Table; 
 import javax.persistence.Transient; 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import se.nrm.specify.data.model.BaseEntity;
+import javax.validation.constraints.Size; 
+import se.nrm.specify.data.model.BaseEntity; 
 
 /**
  *
@@ -30,38 +31,50 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Taxon.findAll", query = "SELECT t FROM Taxon t"),
     @NamedQuery(name = "Taxon.findByTaxonID", query = "SELECT t FROM Taxon t WHERE t.taxonID = :taxonID")})
 public class Taxon extends BaseEntity {
+ 
 
+    @Size(max = 128)
+    @Column(name = "Author")
+    private String author;
+      
+    @Size(max = 128)
+    @Column(name = "CommonName")
+    private String commonName;
+       
+    @Size(max = 255)
+    @Column(name = "FullName")
+    private String fullName;
+     
+    @Size(max = 128)
+    @Column(name = "GUID")
+    private String guid;
+      
+     
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 64)
+    @Column(name = "Name")
+    private String name;
+     
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "RankID")
+    private int rankID;
+    
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "Remarks")
+    private String remarks;
+            
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "TaxonID")
     private Integer taxonID;
 
-    @Size(max = 128)
-    @Column(name = "Author")
-    private String author;
-
-    @Size(max = 128)
-    @Column(name = "CommonName")
-    private String commonName;
-
-    @Size(max = 255)
-    @Column(name = "FullName")
-    private String fullName;
-
     @Column(name = "IsAccepted")
     private Boolean isAccepted;
 
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 64)
-    @Column(name = "Name")
-    private String name;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "RankID")
-    private int rankID;
 
     @JoinColumn(name = "AcceptedID", referencedColumnName = "TaxonID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -74,11 +87,7 @@ public class Taxon extends BaseEntity {
     @JoinColumn(name = "ParentID", referencedColumnName = "TaxonID")
     @ManyToOne(fetch = FetchType.EAGER)
     private Taxon parent;
-
-//    @JoinColumn(name = "TaxonTreeDefID", referencedColumnName = "TaxonTreeDefID")
-//    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-//    private Taxontreedef taxonTreeDef;
-
+ 
     @OneToMany(mappedBy = "taxon", fetch = FetchType.LAZY)
     private Set<Commonnametx> commonnametxList;
 
@@ -122,29 +131,6 @@ public class Taxon extends BaseEntity {
         return taxonID;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getCommonName() {
-        return commonName;
-    }
-
-    public void setCommonName(String commonName) {
-        this.commonName = commonName;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
 
     public Boolean getIsAccepted() {
         return isAccepted;
@@ -154,21 +140,6 @@ public class Taxon extends BaseEntity {
         this.isAccepted = isAccepted;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getRankID() {
-        return rankID;
-    }
-
-    public void setRankID(int rankID) {
-        this.rankID = rankID;
-    }
 
     public Taxon getAcceptedID() {
         return acceptedID;
@@ -275,6 +246,70 @@ public class Taxon extends BaseEntity {
         }
         return null;
     }
+    
+    public String getOrder() {
+        if (rankID == 100) {
+            return fullName;
+        }
+        if (rankID > 100) {
+            Taxon newParent = parent;
+            while (newParent.getRankID() > 100) {
+                newParent = newParent.getParent();
+            }
+            if (newParent.getRankID() == 100) {
+                return newParent.getFullName();
+            }
+        }
+        return null;
+    }
+    
+    public String getClazz() {
+        if (rankID == 60) {
+            return fullName;
+        }
+        if (rankID > 60) {
+            Taxon newParent = parent;
+            while (newParent.getRankID() > 60) {
+                newParent = newParent.getParent();
+            }
+            if (newParent.getRankID() == 60) {
+                return newParent.getFullName();
+            }
+        }
+        return null;
+    }
+    
+    public String getPhylum() {
+        if (rankID == 30) {
+            return fullName;
+        }
+        if (rankID > 10) {
+            Taxon newParent = parent;
+            while (newParent.getRankID() > 30) {
+                newParent = newParent.getParent();
+            }
+            if (newParent.getRankID() == 30) {
+                return newParent.getFullName();
+            }
+        }
+        return null;
+    }
+        
+    public String getKingdom() {
+        if (rankID == 10) {
+            return fullName;
+        }
+        if (rankID > 10) {
+            Taxon newParent = parent;
+            while (newParent.getRankID() > 10) {
+                newParent = newParent.getParent();
+            }
+            if (newParent.getRankID() == 10) {
+                return newParent.getFullName();
+            }
+        }
+        return null;
+    }
 
     public String getHighClassification() {
         sb = new StringBuilder();
@@ -312,5 +347,69 @@ public class Taxon extends BaseEntity {
     public String toString() {
         return "se.nrm.specify.data.model.impl.Taxon[ taxonID=" + taxonID + " ]";
     }
+ 
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+ 
+ 
+    public String getCommonName() {
+        return commonName;
+    }
+
+    public void setCommonName(String commonName) {
+        this.commonName = commonName;
+    }
+
+  
+
+ 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+ 
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
+ 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+     
+    public int getRankID() {
+        return rankID;
+    }
+
+    public void setRankID(int rankID) {
+        this.rankID = rankID;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+ 
 
 }

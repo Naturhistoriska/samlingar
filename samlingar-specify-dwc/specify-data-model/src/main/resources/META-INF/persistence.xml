@@ -1,21 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" 
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-    <persistence-unit name="jpaNrmPU" transaction-type="JTA">
-        <jta-data-source>java:jboss/datasources/DinaDS</jta-data-source>
-    
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    
-        <properties>  
-            <!--<property name="hibernate.enable_lazy_load_no_trans">true</property>-->
-            <property name="eclipselink.logging.level.sql" value="FINE"/>
-            <property name="eclipselink.logging.parameters" value="true"/>
-         
-            <property name="eclipselink.persistence-context.close-on-commit" value="true" /> 
-            <property name="eclipselink.persistence-context.flush-mode" value="commit" /> 
-            <property name="eclipselink.persistence-context.persist-on-commit" value="true" />
-            <property name="eclipselink.weaving" value="true"/>
-        </properties>
-    </persistence-unit> 
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="jpaNrmPU" transaction-type="JTA">
+    <jta-data-source>java:jboss/datasources/DinaDS</jta-data-source>
+    <class>se.nrm.specify.data.model.impl.Lithostrattreedef</class>
+    <class>se.nrm.specify.data.model.impl.Lithostrat</class>
+    <class>se.nrm.specify.data.model.impl.Geologictimeperiod</class>
+    <class>se.nrm.specify.data.model.impl.Paleocontext</class>
+    <class>se.nrm.specify.data.model.impl.Taxontreedef</class>
+    <class>se.nrm.specify.data.model.impl.Datatype</class>
+    <class>se.nrm.specify.data.model.impl.Lithostrattreedefitem</class>
+    <class>se.nrm.specify.data.model.impl.Geologictimeperiodtreedef</class>
+    <class>se.nrm.specify.data.model.impl.Geologictimeperiodtreedefitem</class>
+    <class>se.nrm.specify.data.model.newModel.Fieldnotebook</class>
+    <class>se.nrm.specify.data.model.newModel.Lithostrat</class>
+    <class>se.nrm.specify.data.model.newModel.Collectingeventattribute</class>
+    <class>se.nrm.specify.data.model.newModel.Addressofrecord</class>
+    <class>se.nrm.specify.data.model.newModel.Fieldnotebookpageset</class>
+    <class>se.nrm.specify.data.model.newModel.Division</class>
+    <class>se.nrm.specify.data.model.newModel.Lithostrattreedef</class>
+    <class>se.nrm.specify.data.model.newModel.Repositoryagreement</class>
+    <class>se.nrm.specify.data.model.newModel.Geologictimeperiodtreedef</class>
+    <class>se.nrm.specify.data.model.newModel.Address</class>
+    <class>se.nrm.specify.data.model.newModel.Discipline</class>
+    <class>se.nrm.specify.data.model.newModel.Appraisal</class>
+    <class>se.nrm.specify.data.model.newModel.Storagetreedef</class>
+    <class>se.nrm.specify.data.model.newModel.Geographytreedef</class>
+    <class>se.nrm.specify.data.model.newModel.Fieldnotebookpage</class>
+    <class>se.nrm.specify.data.model.newModel.Geologictimeperiod</class>
+    <class>se.nrm.specify.data.model.newModel.Container</class>
+    <class>se.nrm.specify.data.model.newModel.Collectingtripattribute</class>
+    <class>se.nrm.specify.data.model.newModel.Collectingtrip</class>
+    <class>se.nrm.specify.data.model.newModel.Taxonattribute</class>
+    <class>se.nrm.specify.data.model.newModel.Lithostrattreedefitem</class>
+    <class>se.nrm.specify.data.model.newModel.Datatype</class>
+    <class>se.nrm.specify.data.model.newModel.Storagetreedefitem</class>
+    <class>se.nrm.specify.data.model.newModel.Specifyuser</class>
+    <class>se.nrm.specify.data.model.newModel.Taxontreedef</class>
+    <class>se.nrm.specify.data.model.newModel.Paleocontext</class>
+    <class>se.nrm.specify.data.model.newModel.Geologictimeperiodtreedefitem</class>
+    <class>se.nrm.specify.data.model.newModel.Geographytreedefitem</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <!--<property name="hibernate.enable_lazy_load_no_trans">true</property>-->
+      <property name="eclipselink.logging.level.sql" value="FINE"/>
+      <property name="eclipselink.logging.parameters" value="true"/>
+      <property name="eclipselink.persistence-context.close-on-commit" value="true"/>
+      <property name="eclipselink.persistence-context.flush-mode" value="commit"/>
+      <property name="eclipselink.persistence-context.persist-on-commit" value="true"/>
+      <property name="eclipselink.weaving" value="true"/>
+    </properties>
+  </persistence-unit>
 </persistence>

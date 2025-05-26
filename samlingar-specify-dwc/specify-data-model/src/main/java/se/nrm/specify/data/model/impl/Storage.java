@@ -1,5 +1,5 @@
 package se.nrm.specify.data.model.impl;
- 
+  
 import java.util.Date; 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -9,13 +9,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn; 
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery; 
-import javax.persistence.Table; 
+import javax.persistence.NamedQuery;  
+import javax.persistence.Table;  
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size; 
-import se.nrm.specify.data.model.BaseEntity;
+import javax.validation.constraints.Size;  
+import se.nrm.specify.data.model.BaseEntity; 
 
 /**
  *
@@ -28,12 +29,6 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Storage.findByStorageID", query = "SELECT s FROM Storage s WHERE s.storageID = :storageID")})
 public class Storage extends BaseEntity {
  
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "StorageID")
-    private Integer storageID;
-     
     @Size(max = 16)
     @Column(name = "Abbrev")
     private String abbrev;
@@ -41,10 +36,7 @@ public class Storage extends BaseEntity {
     @Size(max = 255)
     @Column(name = "FullName")
     private String fullName;
-    
-    @Column(name = "IsAccepted")
-    private Boolean isAccepted;
-    
+     
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 64)
@@ -55,18 +47,26 @@ public class Storage extends BaseEntity {
     @NotNull
     @Column(name = "RankID")
     private int rankID;
+    
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "Remarks")
+    private String remarks;
+        
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "StorageID")
+    private Integer storageID;
+     
+    
+    @Column(name = "IsAccepted")
+    private Boolean isAccepted;
+    
      
     @JoinColumn(name = "AcceptedID", referencedColumnName = "StorageID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Storage accepted;
-    
-    @JoinColumn(name = "StorageTreeDefItemID", referencedColumnName = "StorageTreeDefItemID")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Storagetreedefitem storageTreeDefItem;
-     
-    @JoinColumn(name = "StorageTreeDefID", referencedColumnName = "StorageTreeDefID")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Storagetreedef storageTreeDef;
      
     @JoinColumn(name = "ParentID", referencedColumnName = "StorageID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -104,21 +104,6 @@ public class Storage extends BaseEntity {
         return storageID;
     }
 
-    public String getAbbrev() {
-        return abbrev;
-    }
-
-    public void setAbbrev(String abbrev) {
-        this.abbrev = abbrev;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
  
     public Boolean getIsAccepted() {
         return isAccepted;
@@ -128,21 +113,6 @@ public class Storage extends BaseEntity {
         this.isAccepted = isAccepted;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-  
-    public int getRankID() {
-        return rankID;
-    }
-
-    public void setRankID(int rankID) {
-        this.rankID = rankID;
-    }
  
     public Storage getAccepted() {
         return accepted;
@@ -152,22 +122,7 @@ public class Storage extends BaseEntity {
         this.accepted = accepted;
     }
 
-    public Storagetreedefitem getStorageTreeDefItem() {
-        return storageTreeDefItem;
-    }
-
-    public void setStorageTreeDefItem(Storagetreedefitem storageTreeDefItem) {
-        this.storageTreeDefItem = storageTreeDefItem;
-    }
- 
-    public Storagetreedef getStorageTreeDef() {
-        return storageTreeDef;
-    }
-
-    public void setStorageTreeDef(Storagetreedef storageTreeDef) {
-        this.storageTreeDef = storageTreeDef;
-    }
- 
+     
     public Storage getParent() {
         return parent;
     }
@@ -197,5 +152,50 @@ public class Storage extends BaseEntity {
     public String toString() {
         return "se.nrm.specify.data.model.impl.Storage[ storageID=" + storageID + " ]";
     }
+ 
+    public String getAbbrev() {
+        return abbrev;
+    }
+
+    public void setAbbrev(String abbrev) {
+        this.abbrev = abbrev;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+ 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+ 
+
+    public int getRankID() {
+        return rankID;
+    }
+
+    public void setRankID(int rankID) {
+        this.rankID = rankID;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+ 
+ 
+    
     
 }
