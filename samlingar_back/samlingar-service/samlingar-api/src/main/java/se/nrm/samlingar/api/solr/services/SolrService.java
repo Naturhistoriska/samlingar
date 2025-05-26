@@ -112,6 +112,7 @@ public class SolrService implements Serializable {
     private final String txFacetKey = "tx";
 
     private final String textKey = "text:";
+    private final String idKey = "id:";
     private final String collectionNameKey = "collectionName:";
     private final String collectionIdKey = "collectionId:";
     private final String collectionCodeKey = "collectionCode:";
@@ -273,16 +274,16 @@ public class SolrService implements Serializable {
 //        final TermsFacetMap geoHashFacet = new TermsFacetMap(point01FacetKey)
 //                .setLimit(40000);
         
-        final HeatmapFacetMap heatMap = new HeatmapFacetMap(geoFacetKey)
-                .setGridLevel(4)
-                ;
-        
+//        final HeatmapFacetMap heatMap = new HeatmapFacetMap(geoFacetKey)
+//                .setGridLevel(2)
+//                ;
+//        
         log.info("freeTextSearch search text : {}", text);
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)  
                 .setOffset(start)
-                .setLimit(numPerPage)
-                .withFacet(geohashFacetKey, heatMap);
+                .setLimit(numPerPage);
+//                .withFacet(geohashFacetKey, heatMap);
         
         if (hasImages) {
             jsonRequest.withFilter(imageFilter);
@@ -388,6 +389,21 @@ public class SolrService implements Serializable {
             return null;
         }
         return jsonResponse; 
+    }
+    
+    public String searchWithId(String id) {
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(idKey + id)    
+                .setLimit(1);
+        jsonRequest.setBasicAuthCredentials(username, password); 
+        try {
+            response = jsonRequest.process(client); 
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        return response.jsonStr(); 
     }
     
      

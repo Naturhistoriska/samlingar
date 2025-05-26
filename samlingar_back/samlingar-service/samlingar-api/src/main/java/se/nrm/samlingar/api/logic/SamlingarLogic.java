@@ -130,11 +130,18 @@ public class SamlingarLogic {
             int start, int numPerPage, String sort ) {
         log.info("search : {}", text);
          
-        scientificName = SolrSearchHelper.getInstance().buildSearchText(
+        if(scientificName != null) {
+            scientificName = SolrSearchHelper.getInstance().buildSearchText(
                 scientificName, scientificNameKey, fuzzySearch);
+        }
          
         return service.search(text, scientificName, hasImages, hasCoordinates, 
                 isType, isInSweden, collections, start, numPerPage, sort);
+    }
+    
+    public String searchWithId(String id) {
+        log.info("searchWithId : {}", id);
+        return service.searchWithId(id);
     }
     
     

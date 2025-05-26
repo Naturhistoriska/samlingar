@@ -115,7 +115,7 @@ public class SamlingarService {
     }
      
     @GET
-    @Path("chart/")
+    @Path("/chart")
     @ApiOperation(value = "ChartData",
             notes = "Return search results in json",
             response = String.class
@@ -126,7 +126,7 @@ public class SamlingarService {
     }
     
     @GET
-    @Path("search/")
+    @Path("/search")
     @ApiOperation(value = "search",
             notes = "Return search results in json",
             response = String.class
@@ -144,10 +144,25 @@ public class SamlingarService {
             @QueryParam("numPerPage") int numPerPage,
             @QueryParam("sort") String sort) {
         
+        log.info("search... {}", scientificName);
+        
          
         return Response.ok(logic.search(text, scientificName, fuzzySearch,
                 hasImage, hasCoordinates, isType, isInSweden, collections, 
                 start, numPerPage, sort)).build();
+    }
+    
+        
+    @GET
+    @Path("/id")
+    @ApiOperation(value = "search",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response idSearch(@QueryParam("id") String id ) { 
+        log.info("idSearch... {}", id); 
+        return Response.ok(logic.searchWithId(id)).build();
     }
 
 
