@@ -38,6 +38,7 @@ function doSearch() {
 .p-button-text {
   text-decoration: underline;
 }
+
 .divLink {
   min-width: 100% !important;
   cursor: pointer !important;

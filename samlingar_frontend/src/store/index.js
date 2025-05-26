@@ -6,9 +6,18 @@ export default createStore({
     filterImage: false,
     filterInSweden: false,
     filterType: false,
-    isFuzzySearch: false,
+    isFuzzySearch: undefined,
     scientificName: null,
     searchText: null,
+    selectedRecord: null,
+    showDetail: false,
+
+    //
+    //
+    //
+    //
+    //
+    //
 
     botanyCollectionTotal: 0,
     catalogNumber: null,
@@ -64,7 +73,7 @@ export default createStore({
     selectedResult: null,
     selectedType: null,
     selectedTypes: [],
-    showDetail: false,
+
     showResults: false,
     speciesGrouup: null,
     startDate: null,
@@ -95,12 +104,29 @@ export default createStore({
     isFuzzySearch(state) {
       return state.isFuzzySearch
     },
-    scientificName(state) {
-      return state.scientificName
-    },
     searchText(state) {
       return state.searchText
     },
+    selectedRecord(state) {
+      return state.selectedRecord
+    },
+    scientificName(state) {
+      return state.scientificName
+    },
+    showDetail(state) {
+      return state.showDetail
+    },
+
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
 
     botanyCollectionTotal(state) {
       return state.botanyCollectionTotal
@@ -264,9 +290,7 @@ export default createStore({
     selectedTypes(state) {
       return state.selectedTypes
     },
-    showDetail(state) {
-      return state.showDetail
-    },
+
     showResults(state) {
       return state.showResults
     },
@@ -310,6 +334,14 @@ export default createStore({
     setIsFuzzySearch: (state, payload) => (state.isFuzzySearch = payload),
     setScientificName: (state, payload) => (state.scientificName = payload),
     setSearchText: (state, payload) => (state.searchText = payload),
+    setSelectedRecord: (state, payload) => (state.selectedRecord = payload),
+    setShowDetail: (state, payload) => (state.showDetail = payload),
+
+    //
+    //
+    //
+    //
+    //
 
     setBotanyCollectionTotal: (state, payload) => (state.botanyCollectionTotal = payload),
     setCatalogNumber: (state, payload) => (state.catalogNumber = payload),
@@ -368,7 +400,7 @@ export default createStore({
     setSelectedResult: (state, payload) => (state.selectedResult = payload),
     setSelectedType: (state, payload) => (state.selectedType = payload),
     setSelectedTypes: (state, payload) => (state.selectedTypes = payload),
-    setShowDetail: (state, payload) => (state.showDetail = payload),
+
     setShowResults: (state, payload) => (state.showResults = payload),
     setSpeciesGroup: (state, payload) => (state.speciesGrouup = payload),
     setStartDate: (state, payload) => (state.startDate = payload),

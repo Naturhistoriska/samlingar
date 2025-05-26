@@ -18,43 +18,43 @@
       <div class="flex flex flex-wrap gap-3" style="margin-top: -9px">
         <div class="flex items-center">
           <RadioButton
-            v-model="taxonOptions"
-            inputId="taxonOption1"
+            v-model="searchOptions"
+            inputId="searchOption1"
             name="option1"
             value="exact"
             size="small"
             class="mt-1"
             @value-change="change"
           />
-          <label for="taxonOption1" class="ml-2">
+          <label for="searchOption1" class="ml-2">
             <small>{{ $t('search.exact') }}</small>
           </label>
         </div>
         <div class="flex items-center">
           <RadioButton
-            v-model="taxonOptions"
-            inputId="taxonOption2"
+            v-model="searchOptions"
+            inputId="searchOptions2"
             name="option2"
             value="contains"
             class="mt-1"
             size="small"
             @value-change="change"
           />
-          <label for="taxonOption2" class="ml-2">
+          <label for="searchOptions2" class="ml-2">
             <small>{{ $t('search.contains') }}</small>
           </label>
         </div>
         <div class="flex items-center">
           <RadioButton
-            v-model="taxonOptions"
-            inputId="taxonOption3"
+            v-model="searchOptions"
+            inputId="searchOptions3"
             name="option3"
             value="startsWith"
             size="small"
             class="mt-1"
             @value-change="change"
           />
-          <label for="taxonOption3" class="ml-2">
+          <label for="searchOptions3" class="ml-2">
             <small>{{ $t('search.startsWith') }}</small>
           </label>
         </div>
@@ -68,7 +68,7 @@ import { useStore } from 'vuex'
 const store = useStore()
 
 let scientificName = ref()
-let taxonOptions = ref()
+let searchOptions = ref()
 let showClearScentificName = ref(false)
 
 const emits = defineEmits(['freeTextSearch', 'search'])
@@ -77,15 +77,24 @@ watch(
   () => store.getters['scientificName'],
   (newValue, oldValue) => {
     scientificName.value = newValue
+    setSearchOption()
   }
 )
 
 onMounted(() => {
   scientificName.value = store.getters['scientificName']
+  setSearchOption()
 })
 
+function setSearchOption() {
+  if (scientificName.value) {
+    searchOptions.value = store.getters['isFuzzySearch'] ? 'contains' : 'exact'
+    showClearScentificName = true
+  }
+}
+
 function change() {
-  console.log('taxonOptions1', taxonOptions.value, taxonOptions)
+  console.log('searchOptions', searchOptions.value, searchOptions)
 }
 
 function onInputScientificName() {
@@ -99,7 +108,7 @@ function onInputScientificName() {
 function clearScientificName() {
   scientificName.value = ''
   showClearScentificName = false
-  taxonOptions.value = null
+  searchOptions.value = null
 }
 </script>
 <style scoped>

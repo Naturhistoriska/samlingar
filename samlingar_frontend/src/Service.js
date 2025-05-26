@@ -110,6 +110,13 @@ export default class Service {
     return response.data
   }
 
+  async apiIdSearch(id) {
+    const url = `${samlingApi}/id?id=${id}`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
   //
   //
   //

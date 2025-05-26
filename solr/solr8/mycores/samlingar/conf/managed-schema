@@ -287,6 +287,9 @@
   <field name="genus" type="string" indexed="true" stored="true"/>
   <field name="genericName" type="string" indexed="false" stored="true"/>
   <field name="geo" type="location_rpt" indexed="true" stored="true" multiValued="true"  />
+  <field name="geodeticDatum" type="string" indexed="false" stored="true"/>
+
+
   <!-- <field name="geohash" type="string" multiValued="true" indexed="true" required="false" stored="true"/>
   <field name="geopoint" type="location" indexed="true" stored="true"/>
   <field name="geodeticDatum" type="string" indexed="false" stored="true"/>
@@ -359,7 +362,7 @@
   <field name="point-0.001" type="string" indexed="true" stored="true"/>
 
 
-  <field name="recordedBy" type="string"  indexed="true" stored="true"/>
+  <field name="recordedBy" type="string" multiValued="true" indexed="true" stored="true"/>
   <field name="recordNumber" type="string" indexed="true" stored="true"/>
   <field name="riverDrainage" type="string" indexed="false" stored="true"/>
   <field name="reproductiveCondition" type="string" indexed="false" stored="true"/>

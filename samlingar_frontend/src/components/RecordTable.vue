@@ -2,11 +2,14 @@
   <div class="card">
     <DataTable
       :value="records"
+      v-model:selection="selectedRecord"
+      selectionMode="single"
+      dataKey="id"
       ref="dt"
       stripedRows
       resizableColumns
       columnResizeMode="fit"
-      :size="size"
+      class="p-datatable-sm"
       scrollable
       scrollHeight="400px"
       tableStyle="min-width: 50rem"
@@ -23,9 +26,10 @@
       <template #header>
         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
           <span class="text-xl text-900 font-bold">
-            {{ $t('results.searchResults') }} [{{ $t('results.num_results', totalCount) }}]
+            {{ $t('results.searchResults') }}
+            [{{ $t('results.num_results', totalCount) }}]
           </span>
-          <div style="text-align: right" class="grid">
+          <div style="text-align: right" clss="grid">
             <Button
               icon="pi pi-external-link"
               :label="$t('exportData.exportDatatable')"
@@ -46,6 +50,16 @@
           </div>
         </template>
       </Column>
+      <Column class="w-24 !text-end">
+        <template #body="{ data }">
+          <Button
+            text
+            @click="selectRow(data)"
+            severity="secondary"
+            :label="$t('records.view')"
+          ></Button>
+        </template>
+      </Column>
     </DataTable>
     <Dialog
       v-model:visible="dialogVisible"
@@ -62,7 +76,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 import { useStore } from 'vuex'
 
@@ -70,6 +84,7 @@ import Service from '../Service'
 const service = new Service()
 
 const store = useStore()
+const router = useRouter()
 
 const emits = defineEmits(['search'])
 
@@ -90,6 +105,7 @@ const emits = defineEmits(['search'])
 
 let count = ref(30)
 let records = ref(Array.from({ length: 100000 }))
+const selectedRecord = ref()
 const lazyLoading = ref(false)
 const loadLazyTimeout = ref()
 const size = ref('small')
@@ -163,6 +179,14 @@ const exportCSV = () => {
   dt.value.exportCSV()
 }
 
+function selectRow(data) {
+  selectedRecord.value = data
+  // store.commit('setShowDetail', true)
+  store.commit('setSelectedRecord', selectedRecord)
+
+  router.push(`/record/${data.id}`)
+}
+
 function fetchData(start, numPerPage) {
   console.log('fatchData')
 
@@ -184,3 +208,19 @@ function fetchData(start, numPerPage) {
     .finally(() => {})
 }
 </script>
+<style scoped>
+.p-button-text:hover {
+  color: var(--p-emerald-500) !important;
+  text-decoration: none !important;
+  background: transparent !important;
+}
+
+.p-datatable {
+  font-size: 12px !important;
+  padding-top: 0 !important;
+}
+
+.p-button-text {
+  text-decoration: underline;
+}
+</style>

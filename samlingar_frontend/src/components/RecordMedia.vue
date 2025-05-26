@@ -1,5 +1,5 @@
 <template>
-  <div class="grid">medias</div>
+  <div class="grid">media</div>
 </template>
 <script setup></script>
 <style scoped></style>

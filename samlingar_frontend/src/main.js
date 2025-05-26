@@ -45,6 +45,7 @@ import DataTable from 'primevue/datatable'
 import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
 import IconField from 'primevue/iconfield'
+import Fieldset from 'primevue/fieldset'
 import Image from 'primevue/image'
 import InputGroup from 'primevue/inputgroup'
 import InputIcon from 'primevue/inputicon'
@@ -118,6 +119,7 @@ app.component('Column', Column)
 app.component('DataTable', DataTable)
 app.component('Dialog', Dialog)
 app.component('Divider', Divider)
+app.component('Fieldset', Fieldset),
 app.component('IconField', IconField)
 app.component('Image', Image)
 app.component('InputGroup', InputGroup)
