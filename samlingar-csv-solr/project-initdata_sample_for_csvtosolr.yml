@@ -1,0 +1,61 @@
+## YAML Template.
+---
+swarm:
+  port:
+    offset: 200
+  deployment:
+    timeout: 3600
+  solr:
+    path: http://localhost:18983/solr/samlingar/update/json?wt=json&commit=true
+    username: username
+    password: password
+
+  csv:
+    file:
+      # path: /Users/idali/Downloads/exportPAL1.csv
+      paths:
+        paleobiology:
+          csv: path_to_csv
+        zoo:
+          csv: path_to_csv
+          image: path_to_csv
+        bot:
+          fungi:
+            fungidir: path_to_dir
+            main: path_to_csv/naturarvkollekt.csv
+            best: path_to_csv/naturarvbest.csv
+            name: path_to_csv/naturarvnamn.csv
+            exsickat: path_to_csv/naturarvexsickat.csv
+            catalog: path_to_csv/naturarvkatalog.csv
+            taxon: path_to_csv/exporttaxon.csv
+          mosses:
+            main: path_to_csv/naturarvkollekt.csv
+            best: path_to_csv/naturarvbest.csv
+            name: path_to_csv/naturarvnamn.csv
+            exsickat: path_to_csv/naturarvexsickat.csv
+            catalog: path_to_csv/naturarvkatalog.csv
+          algae:
+            main: path_to_csv/naturarvkollekt.csv
+            best: path_to_csv/naturarvbest.csv
+            name: /path_to_csv/naturarvnamn.csv
+            exsickat: path_to_csv/naturarvexsickat.csv
+            catalog: path_to_csv/naturarvkatalog.csv
+          vascular_plants:
+            vpdir: path_to_dir
+            main: path_to_csv/naturarvkollekt.csv
+            best: path_to_csv/naturarvbestamningar.csv
+            name: path_to_csv/naturarvnamn.csv
+            exsickat: path_to_csv/naturarvexsickat.csv
+            catalog: path_to_csv/naturarvkatalog.csv
+          image:
+            fbo: path_to_image_csv/FboBilder.csv
+            kbo: path_to_image_csv/KboBilder.csv
+      # evpath: /Users/idali/temp/paleobiology/EVmain.csv
+      # path: ⁨/Users⁩/idali⁩/java⁩/repos⁩/paleobiologists⁩/documents⁩/
+      # path: /Users/idali/Downloads/test.csv
+  mapping:
+    files:
+      paleo: mapping_files/paleo_solr_data_mapping.json
+      bot: mapping_files/bot_solr_data_mapping.json
+      zoo: mapping_files/zoo_solr_data_mapping.json
+      image: mapping_files/image_data_mapping.json

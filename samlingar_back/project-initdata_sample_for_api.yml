@@ -1,0 +1,11 @@
+## YAML Template.
+---
+swarm:
+  port:
+    offset: 100
+  solr:
+    path: url_to_solr
+    core: samlingar
+    username: username
+    password: password
+
