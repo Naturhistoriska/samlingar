@@ -37,6 +37,7 @@ import JsonExcel from 'vue-json-excel3'
 
 
 import AutoComplete from 'primevue/autocomplete'
+import Breadcrumb from 'primevue/breadcrumb'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Checkbox from 'primevue/checkbox'
@@ -46,7 +47,10 @@ import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
 import IconField from 'primevue/iconfield'
 import Fieldset from 'primevue/fieldset'
+
+import Galleria from 'primevue/galleria'
 import Image from 'primevue/image'
+
 import InputGroup from 'primevue/inputgroup'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
@@ -112,6 +116,7 @@ app.use(PrimeVue, {
 })
 
 app.component('AutoComplete', AutoComplete)
+app.component('Breadcrumb', Breadcrumb)
 app.component('Button', Button)
 app.component('Card', Card)
 app.component('Checkbox', Checkbox)
@@ -121,6 +126,7 @@ app.component('Dialog', Dialog)
 app.component('Divider', Divider)
 app.component('Fieldset', Fieldset),
 app.component('IconField', IconField)
+app.component('Galleria', Galleria)
 app.component('Image', Image)
 app.component('InputGroup', InputGroup)
 app.component('InputIcon', InputIcon)

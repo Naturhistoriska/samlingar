@@ -6,19 +6,20 @@ export default createStore({
     filterImage: false,
     filterInSweden: false,
     filterType: false,
+    geoData: [],
     isFuzzySearch: undefined,
+    results: [],
     scientificName: null,
     searchText: null,
     selectedRecord: null,
+
+    //
+    //
+    //
+    //
+    //
+    //
     showDetail: false,
-
-    //
-    //
-    //
-    //
-    //
-    //
-
     botanyCollectionTotal: 0,
     catalogNumber: null,
     chartDataAlgae: [],
@@ -49,7 +50,7 @@ export default createStore({
     family: [],
 
     genus: [],
-    geoData: [],
+
     geoCollectionTotal: 0,
     imageCount: 0,
     inSwedenCount: 0,
@@ -65,7 +66,6 @@ export default createStore({
     openGalleria: false,
     resetPaging: false,
     paleaCollectionTotal: 0,
-    results: [],
 
     selectedCollection: null,
     selectedDataset: null,
@@ -101,9 +101,16 @@ export default createStore({
     filterCoordinates(state) {
       return state.filterCoordinates
     },
+    geoData(state) {
+      return state.geoData
+    },
     isFuzzySearch(state) {
       return state.isFuzzySearch
     },
+    results(state) {
+      return state.results
+    },
+
     searchText(state) {
       return state.searchText
     },
@@ -217,9 +224,7 @@ export default createStore({
     genus(state) {
       return state.genus
     },
-    geoData(state) {
-      return state.geoData
-    },
+
     geoCollectionTotal(state) {
       return state.geoCollectionTotal
     },
@@ -267,9 +272,6 @@ export default createStore({
     },
     resetPaging(state) {
       return state.resetPaging
-    },
-    results(state) {
-      return state.results
     },
 
     selectedCollection(state) {
@@ -331,7 +333,9 @@ export default createStore({
     setFilterImage: (state, payload) => (state.filterImage = payload),
     setFilterInSweden: (state, payload) => (state.filterInSweden = payload),
     setFilterType: (state, payload) => (state.filterType = payload),
+    setGeoData: (state, payload) => (state.geoData = payload),
     setIsFuzzySearch: (state, payload) => (state.isFuzzySearch = payload),
+    setResults: (state, payload) => (state.results = payload),
     setScientificName: (state, payload) => (state.scientificName = payload),
     setSearchText: (state, payload) => (state.searchText = payload),
     setSelectedRecord: (state, payload) => (state.selectedRecord = payload),
@@ -376,7 +380,7 @@ export default createStore({
     setFamily: (state, payload) => (state.family = payload),
 
     setGenus: (state, payload) => (state.genus = payload),
-    setGeoData: (state, payload) => (state.geoData = payload),
+
     setGeoCollectionTotal: (state, payload) => (state.geoCollectionTotal = payload),
     setInSwedenCount: (state, payload) => (state.inSwedenCount = payload),
     setIsTypeCount: (state, payload) => (state.isTypeCount = payload),
@@ -392,7 +396,6 @@ export default createStore({
     setOpenGalleria: (state, payload) => (state.openGalleria = payload),
     setPaleaCollectionTotal: (state, payload) => (state.paleaCollectionTotal = payload),
     setResetPaging: (state, payload) => (state.resetPaging = payload),
-    setResults: (state, payload) => (state.results = payload),
 
     setSelectedCollection: (state, payload) => (state.selectedCollection = payload),
     setSelectedDataset: (state, payload) => (state.selectedDataset = payload),

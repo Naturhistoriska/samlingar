@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- <div class="grid">
+      <nav-link style="font-size: 10px" />
+    </div> -->
     <div class="grid">
       <div class="col-4" no-gutters>
         <search-records @search="handleSearch" />
@@ -21,17 +24,15 @@ import Service from '../Service'
 import SearchRecords from '../components/SearchRecords.vue'
 import Records from '../components/Records.vue'
 import Map from '../components/MyMap.vue'
+// import NavLink from '../components/NavLink.vue'
 
 const store = useStore()
 
 const service = new Service()
 
-// onMounted(async () => {
-
-//   console.log('onMounted')
-//   const value = store.getters['searchText']
-//   console.log('value....', value)
-// })
+onMounted(async () => {
+  console.log('onMounted')
+})
 
 onBeforeRouteLeave((to, from) => {
   console.log('onBeforeRouteLeave', to, from)

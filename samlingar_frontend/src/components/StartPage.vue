@@ -1,37 +1,37 @@
 <template>
   <div class="grid">
-    <div class="grid">
-      <div class="col-6" no-gutters>
-        <div class="grid">
-          <Search v-bind:loading="loading" @freeTextSearch="handleFreeTextSearch" />
-        </div>
-        <div class="grid">
-          <start-page-text />
-        </div>
-
-        <div class="grid">
-          <Filter
-            style="padding-top: 2rem"
-            @freeTextSearch="handleFreeTextSearch"
-            @filterWithCoordinates="handleFilterWithCoordinates"
-            @filterWithInSweden="handleFilterWithInSweden"
-            @filterWithImages="handleFilterWithImages"
-            @filterWithInType="handleFilterWithType"
-            v-bind:filterSearchLoading="filterSearchLoading"
-            v-bind:loading="loading"
-          />
-        </div>
+    <!-- <div class="grid"> -->
+    <div class="col-6" no-gutters>
+      <div class="grid startPageStyle">
+        <Search v-bind:loading="loading" @freeTextSearch="handleFreeTextSearch" />
+      </div>
+      <div class="grid">
+        <start-page-text />
       </div>
 
-      <div class="col-6" no-gutters>
-        <Collections
-          @searchBotanyCollections="handleSearchBotanyCollections"
-          @searchZooCollections="handleSearchZooCollections"
-          @searchPaleaCollections="handleSearchPaleaCollections"
-          @searchGeoCollections="handleSearchGeoCollections"
+      <div class="grid">
+        <Filter
+          style="padding-top: 2rem"
+          @freeTextSearch="handleFreeTextSearch"
+          @filterWithCoordinates="handleFilterWithCoordinates"
+          @filterWithInSweden="handleFilterWithInSweden"
+          @filterWithImages="handleFilterWithImages"
+          @filterWithInType="handleFilterWithType"
+          v-bind:filterSearchLoading="filterSearchLoading"
+          v-bind:loading="loading"
         />
       </div>
     </div>
+
+    <div class="col-6" no-gutters>
+      <Collections
+        @searchBotanyCollections="handleSearchBotanyCollections"
+        @searchZooCollections="handleSearchZooCollections"
+        @searchPaleaCollections="handleSearchPaleaCollections"
+        @searchGeoCollections="handleSearchGeoCollections"
+      />
+    </div>
+    <!-- </div> -->
   </div>
 </template>
 <script setup>

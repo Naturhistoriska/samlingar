@@ -43,7 +43,7 @@ watch(
   () => router.currentRoute.value.name,
   () => {
     const currentRouteName = router.currentRoute.value.name
-    console.log('currentRouteName', currentRouteName)
+    // console.log('currentRouteName', currentRouteName)
 
     switch (currentRouteName) {
       case 'Home':

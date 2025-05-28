@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid">
+    <div class="grid homePage">
       <!-- <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleSimpleSearch" /> -->
       <start-page
         @freeTextSearch="handleFreeTextSearch"
@@ -74,12 +74,12 @@ function handleFreeTextSearch(value, start, numPerPage) {
       const results = response.response.docs
       const total = response.response.numFound
 
-      // if (total > 0) {
-      //   const facets = response.facets
+      if (total > 0) {
+        const geofacet = response.facets.geo.buckets
+        console.log('geo', geofacet, geofacet.length)
 
-      //   const geoFacet = facets.geohash.buckets
-      //   console.log('geo', geoFacet, geoFacet.length)
-      // }
+        store.commit('setGeoData', geofacet)
+      }
 
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
@@ -1448,3 +1448,8 @@ async function handleExportData() {
     .finally(() => {})
 }
 </script>
+<style scoped>
+.homePage {
+  padding: 4rem 2rem;
+}
+</style>

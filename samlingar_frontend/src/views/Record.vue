@@ -9,19 +9,29 @@
     <div class="col-12 scientificNameText" no-gutters>
       <i>{{ name }}</i>
     </div>
-    <div v-if="hasData">
-      <div class="col-12" no-gutters>
-        <Dataset v-if="collection == 'NHRS'" />
-        <record-dataset v-else />
+    <div class="grid" v-if="hasData">
+      <div class="col-7" no-gutters>
+        <div class="col-12" no-gutters>
+          <Dataset v-if="collection == 'NHRS'" />
+          <record-dataset v-else />
+        </div>
+        <div class="col-12" no-gutters>
+          <record-event />
+        </div>
+        <div class="col-12" no-gutters>
+          <Location />
+        </div>
+        <div class="col-12" no-gutters>
+          <Taxonomy />
+        </div>
       </div>
-      <div class="col-12" no-gutters>
-        <record-event />
-      </div>
-      <div class="col-12" no-gutters>
-        <Location />
-      </div>
-      <div class="col-12" no-gutters>
-        <Taxonomy />
+      <div class="col-5" no-gutters>
+        <div class="col-12" no-gutters>
+          <single-map />
+        </div>
+        <div class="col-12" no-gutters>
+          <Images />
+        </div>
       </div>
     </div>
   </div>
@@ -32,7 +42,9 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Service from '../Service'
 import Dataset from '../components/nhrs/Dataset.vue'
+import Images from '../components/Images.vue'
 import Location from '../components/Location.vue'
+import SingleMap from '../components/SingleMap.vue'
 import RecordDataset from '../components/RecordDataset.vue'
 import RecordEvent from '../components/RecordEvent.vue'
 import Taxonomy from '../components/Taxonomy.vue'

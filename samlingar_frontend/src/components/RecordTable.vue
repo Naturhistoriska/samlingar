@@ -121,20 +121,11 @@ let columns = ref([
   { field: 'catalogNumber', header: 'CatalogNumber' }
 ])
 
-// watch(
-//   () => store.getters['searchText'],
-//   (newValue, oldValue) => {
-//     console.log('watch')
-
-//     count.value = 100
-//     fetchData(0, 100)
-//   }
-// )
-
 watch(
   () => store.getters['results'],
   (newValue, oldValue) => {
     records.value = store.getters['results']
+    console.log('watched...')
   }
 )
 
