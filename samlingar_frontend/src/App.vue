@@ -59,7 +59,7 @@ import Navigation from './components/Navigation.vue'
 .main-container {
   max-width: 100%;
   margin: 0 auto;
-  padding: 5.5rem 4rem 3rem;
+  padding: 1rem 2rem 2rem;
   min-height: 400px;
 }
 </style>
