@@ -107,9 +107,9 @@ public class SamlingarService {
             @QueryParam("sort") String sort) {
         log.info("scientificname  {} -- {}", text, fuzzySearch + " -- " + sort);
 
-        if (text == null || text.isEmpty()) {
-            text = wildCard;
-        }
+//        if (text == null || text.isEmpty()) {
+//            text = wildCard;
+//        }
         return Response.ok(logic.scientificNameSearch(text, fuzzySearch,
                 start, numPerPage, sort)).build();
     }

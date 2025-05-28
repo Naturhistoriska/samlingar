@@ -161,6 +161,7 @@ public class SolrService implements Serializable {
     final TermsFacetMap inSwedenFacet;
     final TermsFacetMap typeFacet;
     final TermsFacetMap collectionFacet;
+    final TermsFacetMap geoFacet;
      
     @Inject
     private InitialProperties properties;
@@ -185,6 +186,9 @@ public class SolrService implements Serializable {
         
         collectionFacet = new TermsFacetMap(collectionCodeFacetKey)
                 .setLimit(50); 
+        
+        geoFacet = new TermsFacetMap(point01FacetKey)
+                .setLimit(30000);
         
     }
 
@@ -268,11 +272,9 @@ public class SolrService implements Serializable {
             boolean isType, boolean isInSweden, String collections,
             int numPerPage, String text, String sort) {
         log.info("freeTextSearch ..... : {} -- {} ", collections + " -- " + numPerPage, text);
- 
-        text = text == null ? wildSearch : catchAllField + text;
-         
+  
 //        final TermsFacetMap geoHashFacet = new TermsFacetMap(point01FacetKey)
-//                .setLimit(40000);
+//                .setLimit(30000);
         
 //        final HeatmapFacetMap heatMap = new HeatmapFacetMap(geoFacetKey)
 //                .setGridLevel(2)
@@ -282,8 +284,8 @@ public class SolrService implements Serializable {
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)  
                 .setOffset(start)
-                .setLimit(numPerPage);
-//                .withFacet(geohashFacetKey, heatMap);
+                .setLimit(numPerPage)
+                .withFacet(geoFacetKey, geoFacet);
         
         if (hasImages) {
             jsonRequest.withFilter(imageFilter);
@@ -434,11 +436,13 @@ public class SolrService implements Serializable {
     public String scientificNameSearch(int start, int numPerPage, String text,
             String sort) {
         log.info("scientificNameSearch ..... : {} -- {} ", start + " -- " + numPerPage, text);
+         
    
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)
                 .setOffset(start)
-                .setLimit(numPerPage);
+                .setLimit(numPerPage)
+                .withFacet(geoFacetKey, geoFacet);
 
         if (!StringUtils.isBlank(sort)) {
             jsonRequest.setSort(sort);

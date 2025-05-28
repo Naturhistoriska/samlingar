@@ -48,10 +48,14 @@ public class SolrSearchHelper {
 
     public String buildSearchText(String text, String key, boolean fuzzySearch) {
 
-        if(text == null) {
-            return null;
+        fuzzySeachTextSb = new StringBuilder(); 
+           
+        if(text == null || text.isEmpty() || text.equals(star)) {
+            fuzzySeachTextSb.append(key);
+            fuzzySeachTextSb.append(star);
+            return fuzzySeachTextSb.toString().trim(); 
         }
-        fuzzySeachTextSb = new StringBuilder();
+         
         if (fuzzySearch) {
             if (text.contains(emptySpace)) {
                 searchText = text.split(emptySpace);

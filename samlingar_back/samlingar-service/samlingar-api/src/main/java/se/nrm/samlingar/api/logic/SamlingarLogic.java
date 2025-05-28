@@ -76,7 +76,8 @@ public class SamlingarLogic {
     private final String preprationField = "prepration";
     
     // Search field key
-    private final String scientificNameKey = "scientificName:";
+    private final String scientificNameKey = "scientificName:"; 
+    private final String catchallKey = "catchall:";
     
     private int total;
 
@@ -97,6 +98,9 @@ public class SamlingarLogic {
             boolean isType, boolean isInSweden, String collections,
             int start, int numPerPage, String sort ) {
         log.info("simpleSearch : {}", text);
+        
+        text = SolrSearchHelper.getInstance().buildSearchText(text, catchallKey, true);
+        log.info("text : {}", text);
          
         return service.freeTextSearch(start, hasImage, hasCoordinates, 
                 isType, isInSweden, collections, numPerPage, text, sort);
@@ -112,9 +116,10 @@ public class SamlingarLogic {
     
     public String scientificNameSearch(String text, boolean fuzzySearch, 
             int start, int numPerPage, String sort ) {
-        log.info("simpleSearch : {}", text);
+        log.info("scientificNameSearch : {}", text);
         
         text = SolrSearchHelper.getInstance().buildSearchText(text, scientificNameKey, fuzzySearch);
+        log.info("text... {}", text);
         return service.scientificNameSearch(start, numPerPage, text, sort);
     }
     
