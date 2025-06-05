@@ -188,7 +188,7 @@ public class SolrService implements Serializable {
                 .setLimit(50); 
         
         geoFacet = new TermsFacetMap(point01FacetKey)
-                .setLimit(30000);
+                .setLimit(50000);
         
     }
 

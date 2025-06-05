@@ -96,12 +96,9 @@ const emits = defineEmits(['search'])
 //   }
 // })
 
-// onMounted(async () => {
-// console.log('onMounted')
-
-// count.value = 100
-// fetchData(0, 100)
-// })
+onMounted(() => {
+  console.log('table onMounted')
+})
 
 let count = ref(30)
 let records = ref(Array.from({ length: 100000 }))
@@ -125,7 +122,6 @@ watch(
   () => store.getters['results'],
   (newValue, oldValue) => {
     records.value = store.getters['results']
-    console.log('watched...')
   }
 )
 

@@ -34,6 +34,9 @@ import moment from 'moment'
 
 import JsonExcel from 'vue-json-excel3'
 
+import VueLazyLoad from 'vue3-lazyload'
+
+import { VueSpinnersPlugin } from 'vue3-spinners'
 
 
 import AutoComplete from 'primevue/autocomplete'
@@ -43,6 +46,9 @@ import Card from 'primevue/card'
 import Checkbox from 'primevue/checkbox'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
+
+// import DataView from 'primevue/dataview'
+
 import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
 import IconField from 'primevue/iconfield'
@@ -87,6 +93,8 @@ app.use(i18n)
 app.use(VueAxios, axios)
 app.provide('axios', app.config.globalProperties.axios) // provide 'axios'
 app.use(moment)
+app.use(VueLazyLoad)
+app.use(VueSpinnersPlugin)
 
 app.use(PrimeVue, {
   theme: {
@@ -122,6 +130,7 @@ app.component('Card', Card)
 app.component('Checkbox', Checkbox)
 app.component('Column', Column)
 app.component('DataTable', DataTable)
+// app.component('DataView', DataView)
 app.component('Dialog', Dialog)
 app.component('Divider', Divider)
 app.component('Fieldset', Fieldset),

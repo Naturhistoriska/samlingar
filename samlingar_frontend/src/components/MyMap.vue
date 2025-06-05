@@ -26,7 +26,7 @@ onMounted(() => {
   console.log('onMounted')
   initMap()
 
-  // addClusterMarkers()
+  addClusterMarkers()
 })
 
 watch(
@@ -59,7 +59,7 @@ function addClusterMarkers() {
     const latLong = lat_long.val
     const count = lat_long.count
 
-    const array = latLong.split(',')
+    const array = JSON.parse('[' + latLong + ']')
 
     const latitude = array[0]
     const longitude = array[1]

@@ -47,6 +47,10 @@ const store = useStore()
 
 let records = ref(Array.from({ length: 100000 }))
 
+onMounted(() => {
+  console.log('labels onMounted')
+})
+
 const totalCount = computed(() => {
   return store.getters['totalRecords']
 })

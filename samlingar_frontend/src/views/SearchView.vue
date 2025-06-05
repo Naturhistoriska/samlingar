@@ -7,23 +7,33 @@
       <div class="col-4" no-gutters>
         <search-records @search="handleSearch" />
       </div>
-      <div class="col-8" no-gutters><Map /></div>
+      <div class="col-8" no-gutters>
+        <Suspense>
+          <template #default>
+            <async-map />
+          </template>
+          <template #fallback>
+            <VueSpinnerDots size="20" color="red" />
+          </template>
+        </Suspense>
+      </div>
     </div>
     <div class="grid">
       <div class="col-12" no-gutters>
-        <Records @freeTextSearch="handleFreeTextSearch" />
+        <Records @freeTextSearch="handleFreeTextSearch" @fetchMedia="handleMeadSearch" />
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref, Suspense, watch } from 'vue'
 import { useStore } from 'vuex'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
 import Service from '../Service'
 import SearchRecords from '../components/SearchRecords.vue'
 import Records from '../components/Records.vue'
-import Map from '../components/MyMap.vue'
+import LoadingSkeleton from '../components/baseComponents/LoadingSkeleton.vue'
+// import Map from '../components/MyMap.vue'
 // import NavLink from '../components/NavLink.vue'
 
 const store = useStore()
@@ -41,6 +51,32 @@ onBeforeRouteLeave((to, from) => {
     // store.commit('setShowResults', false)
   }
 })
+
+const AsyncMap = defineAsyncComponent({
+  // the loader function
+  loader: () => import('../components/MyMap.vue')
+
+  //hydrate: hydrateOnVisible()
+  // A component to use while the async component is loading
+  // loadingComponent: () => import('../components/baseComponents/LoadingSkeleton.vue')
+  // Delay before showing the loading component. Default: 200ms.
+  // delay: 200
+
+  // A component to use if the load fails
+  // errorComponent: ErrorComponent,
+  // The error component will be displayed if a timeout is
+  // provided and exceeded. Default: Infinity.
+  // timeout: 3000
+})
+
+// const AsyncMap = defineAsyncComponent(
+
+//   () => import('../components/MyMap.vue')
+// )
+
+function handleMeadSearch() {
+  console.log('handleMeadSearch')
+}
 
 function handleSearch(hasImage, hasMap, start, numPerPage) {
   console.log('handleSearch', hasImage, hasMap)
