@@ -4,7 +4,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, onUpdated, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -36,17 +36,6 @@ watch(
     addClusterMarkers()
   }
 )
-
-// watch(
-// () => router.currentRoute.value.name,
-// () => {
-// const currentRouteName = router.currentRoute.value.name
-// console.log('currentRouteName', currentRouteName)
-// }
-// )
-//
-// watch(() => isMapFetch, fetchData, { immediate: true })
-// onUnmounted(() => console.log('onUnmounted'))
 
 function addClusterMarkers() {
   console.log('addClusterMarkers')

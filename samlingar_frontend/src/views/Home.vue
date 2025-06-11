@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="grid homePage">
-      <!-- <AdvanceSearch v-if="isAdvanceSearch" @advanceSearch="handleSimpleSearch" /> -->
       <start-page
         @freeTextSearch="handleFreeTextSearch"
         @filterWithCoordinates="handleFilterWithCoordinates"
@@ -27,7 +26,6 @@ import { computed, onMounted, ref } from 'vue'
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import StartPage from '../components/StartPage.vue'
-// import AdvanceSearch from '../components/AdvanceSearch.vue'
 import StatisticCharts from '../components/StatisticCharts.vue'
 
 import { useI18n } from 'vue-i18n'
@@ -44,9 +42,7 @@ const router = useRouter()
 const { t } = useI18n()
 
 onBeforeRouteUpdate(async (to, from) => {
-  // react to route changes...
   console.log('onBeforeRouteUpdate', to, from)
-  // userData.value = await fetchUser(to.params.id)
 })
 
 onBeforeRouteLeave((to, from) => {
@@ -76,8 +72,6 @@ function handleFreeTextSearch(value, start, numPerPage) {
 
       if (total > 0) {
         const geofacet = response.facets.geo.buckets
-        console.log('geo', geofacet, geofacet.length)
-
         store.commit('setGeoData', geofacet)
       }
 
@@ -182,42 +176,6 @@ function fetchInitdata() {
       store.commit('setFilterCoordinates', false)
       store.commit('setFilterInSweden', false)
       store.commit('setFilterType', false)
-
-      // const zooGroup = import.meta.env.VITE_ZOO_GROUP
-      // const geoGroup = import.meta.env.VITE_GEO_GROUP
-      // const paleaGroup = import.meta.env.VITE_PALEA_GROUP
-      // const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
-
-      // let zooCount = 0
-      // let paleaCount = 0
-      // let botanyCount = 0
-      // let geoCount = 0
-      // const collections = facets.collectionCode.buckets
-
-      // for (let i = 0; i < collections.length; i++) {
-      //   const collection = collections[i]
-      //   const collectionId = collection.val
-
-      //   const count = collection.count
-      //   if (zooGroup.includes(collectionId)) {
-      //     zooCount += count
-      //   } else if (paleaGroup.includes(collectionId)) {
-      //     paleaCount += count
-      //   } else if (geoGroup.includes(collectionId)) {
-      //     geoCount += count
-      //   } else if (botanyGroup.includes(collectionId)) {
-      //     botanyCount += collection.count
-      //   }
-      // }
-
-      // store.commit('setBotanyCollectionTotal', botanyCount)
-      // store.commit('setGeoCollectionTotal', geoCount)
-      // store.commit('setPaleaCollectionTotal', paleaCount)
-      // store.commit('setZooCollectionTotal', zooCount)
-
-      // store.commit('setSelectedCollection', null)
-      // store.commit('setSelectedType', null)
-      // store.commit('setSelectedFamily', null)
     })
     .catch()
     .finally(() => {})

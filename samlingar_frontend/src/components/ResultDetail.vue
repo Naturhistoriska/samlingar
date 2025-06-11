@@ -95,7 +95,7 @@
 <script setup>
 import ImageGalleria from './ImageGalleria.vue'
 
-import { computed, ref, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 

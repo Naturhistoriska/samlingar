@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- <div class="grid">
-      <nav-link style="font-size: 10px" />
-    </div> -->
     <div class="grid">
       <div class="col-4" no-gutters>
         <search-records @search="handleSearch" />
@@ -28,13 +25,10 @@
 <script setup>
 import { computed, defineAsyncComponent, onMounted, ref, Suspense, watch } from 'vue'
 import { useStore } from 'vuex'
-import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
+import { onBeforeRouteLeave } from 'vue-router'
 import Service from '../Service'
 import SearchRecords from '../components/SearchRecords.vue'
 import Records from '../components/Records.vue'
-import LoadingSkeleton from '../components/baseComponents/LoadingSkeleton.vue'
-// import Map from '../components/MyMap.vue'
-// import NavLink from '../components/NavLink.vue'
 
 const store = useStore()
 
