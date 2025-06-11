@@ -42,7 +42,7 @@ public class SolrService implements Serializable {
     private final String star = "*";
     private final String emptySpace = " ";
     private final String imageFilter = "hasImage:*";
-    private final String mapFilter = "verbatimCoordinates:*";
+    private final String mapFilter = "point-1:*";
     private final String typeFilter = "typeStatus:*";
     private final String isInSwedenFilter = "country:Sweden";
 
@@ -171,7 +171,7 @@ public class SolrService implements Serializable {
                 = new TermsFacetMap(catalogedMonthFacetKey)
                         .setLimit(catalogedMonthLimit);
         
-        mapFacet = new TermsFacetMap(verbatimCoordinatesKey)
+        mapFacet = new TermsFacetMap(point1FacetKey)
                 .includeAllBucketsUnionBucket(true)
                 .setLimit(1);
         
@@ -346,7 +346,8 @@ public class SolrService implements Serializable {
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)  
                 .setOffset(start)
-                .setLimit(numPerPage);
+                .setLimit(numPerPage)
+                .withFacet(geoFacetKey, geoFacet);
          
         if (hasImages) {
             jsonRequest.withFilter(imageFilter);
