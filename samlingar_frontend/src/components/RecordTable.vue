@@ -25,11 +25,8 @@
     >
       <template #header>
         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-          <span class="text-xl text-900 font-bold">
-            {{ $t('results.searchResults') }}
-            [{{ $t('results.num_results', totalCount) }}]
-          </span>
-          <div style="text-align: right" clss="grid">
+          <span class="text-xl text-900 font-bold"> </span>
+          <div style="text-align: right" clss="grid justify-end">
             <Button
               icon="pi pi-external-link"
               :label="$t('exportData.exportDatatable')"
@@ -75,7 +72,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useStore } from 'vuex'
@@ -88,24 +85,10 @@ const router = useRouter()
 
 const emits = defineEmits(['search'])
 
-// onBeforeRouteUpdate((to, from) => {
-//   console.log('onBeforeRouteUpdate', to, from)
-//   const { name } = to
-//   if (name === 'Home') {
-//     // store.commit('setShowResults', false)
-//   }
-// })
-
-onMounted(() => {
-  console.log('table onMounted')
-})
-
-let count = ref(30)
 let records = ref(Array.from({ length: 100000 }))
 const selectedRecord = ref()
 const lazyLoading = ref(false)
 const loadLazyTimeout = ref()
-const size = ref('small')
 
 const dialogVisible = ref(false)
 
@@ -118,45 +101,87 @@ let columns = ref([
   { field: 'catalogNumber', header: 'CatalogNumber' }
 ])
 
-watch(
-  () => store.getters['results'],
-  (newValue, oldValue) => {
-    records.value = store.getters['results']
-  }
-)
-
-const totalCount = computed(() => {
-  return store.getters['totalRecords']
+const searchText = computed(() => {
+  let text = store.getters['searchText']
+  return text ? text : '*'
 })
 
-const loadRecoudsLazy = (event) => {
+const scientificName = computed(() => {
+  return store.getters['scientificName']
+})
+
+const isFuzzySearch = computed(() => {
+  return store.getters['isFuzzySearch']
+})
+
+const hasImages = computed(() => {
+  return store.getters['filterImage']
+})
+
+const hasCoordinates = computed(() => {
+  return store.getters['filterCoordinates']
+})
+
+const isInSweden = computed(() => {
+  return store.getters['filterInSweden']
+})
+
+const isType = computed(() => {
+  return store.getters['filterType']
+})
+
+const loadRecoudsLazy = async (event) => {
   console.log('loadRecoudsLazy')
 
-  console.log('event', event)
-  console.log('count.value', count.value)
-
-  const results = store.getters['results']
-  console.log('results', results)
-
-  records.value = results
-
   !lazyLoading.value && (lazyLoading.value = true)
+
+  await new Promise((res) => setTimeout(res, 500))
 
   if (loadLazyTimeout.value) {
     clearTimeout(loadLazyTimeout.value)
   }
 
+  let _virtualRecords = [...records.value]
+
   loadLazyTimeout.value = setTimeout(
     () => {
       let { first, last } = event
-      console.log(first, last, totalCount.value)
+      service
+        .apiSearch(
+          searchText.value,
+          scientificName.value,
+          isFuzzySearch.value,
+          hasImages.value,
+          hasCoordinates.value,
+          isType.value,
+          isInSweden.value,
+          first,
+          last
+        )
+        .then((response) => {
+          const loadedRecords = response.response.docs
 
-      if (last >= count.value && totalCount.value > count.value) {
-        emits('search')
-        // fetchData(count.value, 100)
-        count.value += 30
-      }
-      lazyLoading.value = false
+          if (first == 0) {
+            const total = response.response.numFound
+            store.commit('setResults', loadedRecords)
+            store.commit('setTotalRecords', total)
+
+            if (total > 0) {
+              const geofacet = response.facets.geo.buckets
+              store.commit('setGeoData', geofacet)
+            }
+          }
+
+          Array.prototype.splice.apply(_virtualRecords, [
+            ...[first, last - first],
+            ...loadedRecords
+          ])
+          records.value = _virtualRecords
+        })
+        .catch()
+        .finally(() => {
+          lazyLoading.value = false
+        })
     },
     Math.random() * 1000 + 250
   )
@@ -168,31 +193,9 @@ const exportCSV = () => {
 
 function selectRow(data) {
   selectedRecord.value = data
-  // store.commit('setShowDetail', true)
   store.commit('setSelectedRecord', selectedRecord)
 
   router.push(`/record/${data.id}`)
-}
-
-function fetchData(start, numPerPage) {
-  console.log('fatchData')
-
-  const searchText = store.getters['searchText']
-  const value = searchText == null ? '*' : searchText
-
-  service
-    .apiFreeTextSearch(value, start, numPerPage)
-    .then((response) => {
-      const results = response.response.docs
-      const total = response.response.numFound
-
-      store.commit('setResults', results)
-      store.commit('setTotalRecords', total)
-
-      records.value = results
-    })
-    .catch()
-    .finally(() => {})
 }
 </script>
 <style scoped>

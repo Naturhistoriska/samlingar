@@ -5,6 +5,11 @@
         <Tab value="0">{{ $t('records.list') }}</Tab>
         <Tab value="1">{{ $t('records.labels') }}</Tab>
         <Tab value="2">{{ $t('records.media') }}</Tab>
+        <Tab value="3" disabled>
+          <span class="text-900 font-bold">
+            [{{ $t('results.searchResults') }} {{ $t('results.num_results', totalCount) }}]
+          </span>
+        </Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="0" v-if="isListView">
@@ -44,6 +49,11 @@ const isLableView = computed(() => {
 const isMediaView = computed(() => {
   return value.value == 2
 })
+
+const totalCount = computed(() => {
+  return store.getters['totalRecords']
+})
+
 function fetchList() {
   console.log('fetchList', value.value)
 }
