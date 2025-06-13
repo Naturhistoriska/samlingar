@@ -4,7 +4,8 @@
     "header2": "Du kan söka efter föremål från följande samlingar"
   },
   "btnLabel": {
-    "columns": "Columns"
+    "columns": "Columns",
+    "removeDates": "Remove dates"
   },
   "chart": {
     "JANUARY": "jan",
@@ -178,6 +179,7 @@
     "header": "Välkommen till Naturhistoriska riksmuseets sökportal för naturhistoriska samlingar"
   },
   "labels": {
+    "collectingDate": "Date collected [Date range: start - end]",
     "scientificName": "Scientific Name"
   },
   "locale": {
@@ -273,14 +275,18 @@
     "catalogNumber": "Katalognummer",
     "clearFilter": "Rensa alla val",
     "closeAdvanceSearch": "Stäng avancerad sökning",
+    "collectingDate": "Date collected",
     "contains": "Innehåller",
     "datasetName": "Namn på dataset",
+    "end": "End",
     "endDate": "Slutdatum [YYYY-MM-DD]",
     "endDateLabel": "Slutdatum",
     "exact": "Exakt",
     "freeTextSearch": "Free text search",
     "haveCoordinates": "Have coordinates",
     "haveImages": "Have images",
+    "inSweden": "In Sweden",
+    "isType": "Is typestatus",
     "providScientificName": "Provided scientific name",
     "scientificName": "Scientific name",
     "search": "Sök",
@@ -298,6 +304,7 @@
     "searchSynonym": "Search synonym",
     "simpleSearch": "Simple search",
     "speciesGroup": "Species group",
+    "start": "Start",
     "startsWith": "Börja med",
     "synonym": "Synonym",
     "typeStatus": "Typestatus",

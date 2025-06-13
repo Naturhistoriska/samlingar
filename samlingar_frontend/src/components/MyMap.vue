@@ -31,8 +31,18 @@ onMounted(() => {
 
 watch(
   () => store.getters['geoData'],
-  (newValue, oldValue) => {
-    console.log('geoData')
+  () => {
+    initialMap.value.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        layer.remove()
+      } else if (layer instanceof L.Circle) {
+        layer.remove()
+      } else {
+        layer.remove()
+      }
+    })
+    resetMap()
+
     addClusterMarkers()
   }
 )
@@ -40,139 +50,50 @@ watch(
 function addClusterMarkers() {
   console.log('addClusterMarkers')
   const latLongArray = store.getters['geoData']
-  console.log('geodata', latLongArray)
 
-  const markers = L.markerClusterGroup()
+  if (latLongArray) {
+    const markers = L.markerClusterGroup()
 
-  latLongArray.forEach((lat_long) => {
-    const latLong = lat_long.val
-    const count = lat_long.count
+    latLongArray.forEach((lat_long) => {
+      const latLong = lat_long.val
+      const count = lat_long.count
 
-    const array = JSON.parse('[' + latLong + ']')
+      const array = JSON.parse('[' + latLong + ']')
 
-    const latitude = array[0]
-    const longitude = array[1]
+      const latitude = array[0]
+      const longitude = array[1]
 
-    for (let i = 0; i < count; i++) {
-      // const div = document.createElement('div')
-      // div.innerHTML = `Coordinates: ${latitude}, ${longitude}<br><br>`
+      for (let i = 0; i < count; i++) {
+        const marker = new L.marker([latitude, longitude])
+        markers.addLayer(marker)
+      }
+    })
+    initialMap.value.addLayer(markers)
+  }
+}
 
-      // const button = document.createElement('button')
-      // button.innerHTML = 'More details'
+function resetMap() {
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    minZoom: 1,
+    maxZoom: 7,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(initialMap.value)
 
-      // button.onclick = function () {
-      //   displayDetail(latitude, longitude)
-      // }
-      // div.style.cssText = 'width: auto;  '
-      // div.appendChild(button)
-
-      // const marker = new L.marker([latLong])
-      const marker = new L.marker([latitude, longitude])
-      // .bindPopup(div)
-
-      // const marker = L.marker(L.latLng(parseFloat(item[latitude]), parseFloat(item[longitude])))
-
-      markers.addLayer(marker)
+  L.Marker.prototype._animateZoom = function (opt) {
+    if (!this._map) {
+      return
     }
+    const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round()
+    this._setPos(pos)
+  }
 
-    // console.log('lat lon', latLong, count)
-
-    // if (latLong !== 'Not supplied') {
-    //   const array = latLong.split(',')
-
-    //   const latitude = array[0]
-    //   const longitude = array[1]
-    //   if (count === 1) {
-    //     const div = document.createElement('div')
-    //     div.innerHTML = `Coordinates: ${latitude}, ${longitude}<br><br>`
-
-    //     const button = document.createElement('button')
-    //     button.innerHTML = 'More details'
-
-    //     button.onclick = function () {
-    //       onClickDetail(coordinates)
-    //     }
-    //     div.style.cssText = 'width: auto;  '
-    //     div.appendChild(button)
-
-    //     const marker = new L.marker([latitude, longitude]).bindPopup(div)
-
-    //     markers.addLayer(marker)
-    //   } else {
-    //     const div = document.createElement('div')
-    //     div.innerHTML = `<br>Total occurrences: ${count}<br>
-    //       Coordinates: ${latitude}, ${longitude}<br><br>`
-
-    //     const button = document.createElement('button')
-    //     button.innerHTML = 'More details'
-
-    //     button.onclick = function () {
-    //       onClick(coordinates, count)
-    //     }
-    //     div.appendChild(button)
-
-    //     L.circle([array[0], array[1]], {
-    //       color: 'red',
-    //       fillColor: '#f03',
-    //       fillOpacity: 0.5,
-    //       radius: 60000
-    //     })
-    //       .bindPopup(div)
-    //       .addTo(initialMap.value)
-    //   }
-    // }
-
-    // if (latLong !== 'Not supplied') {
-    //   const array = latLong.split(',')
-
-    //   const count = lat_long.count
-    //   const latitude = array[0]
-    //   const longitude = array[1]
-
-    //   const coordinates = array.toString()
-    //   if (count === 1) {
-    //     const div = document.createElement('div')
-    //     div.innerHTML = `Coordinates: ${latitude}, ${longitude}<br><br>`
-
-    //     const button = document.createElement('button')
-    //     button.innerHTML = 'More details'
-
-    //     button.onclick = function () {
-    //       onClickDetail(coordinates)
-    //     }
-    //     div.style.cssText = 'width: auto;  '
-    //     div.appendChild(button)
-
-    //     const marker = new L.marker([latitude, longitude]).bindPopup(div)
-
-    //     // const marker = L.marker(L.latLng(parseFloat(item[latitude]), parseFloat(item[longitude])))
-
-    //     markers.addLayer(marker)
-    //   } else {
-    //     const div = document.createElement('div')
-    //     div.innerHTML = `<br>Total occurrences: ${count}<br>
-    //       Coordinates: ${latitude}, ${longitude}<br><br>`
-
-    //     const button = document.createElement('button')
-    //     button.innerHTML = 'More details'
-
-    //     button.onclick = function () {
-    //       onClick(coordinates, count)
-    //     }
-    //     div.appendChild(button)
-
-    //     L.circle([array[0], array[1]], {
-    //       color: 'red',
-    //       fillColor: '#f03',
-    //       fillOpacity: 0.5,
-    //       radius: 60000
-    //     })
-    //       .bindPopup(div)
-    //       .addTo(initialMap.value)
-    //   }
-    // }
-  })
-  initialMap.value.addLayer(markers)
+  L.circle.prototype._animateZoom = function (opt) {
+    if (!this._map) {
+      return
+    }
+    const pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round()
+    this._setPos(pos)
+  }
 }
 
 function initMap() {
@@ -181,8 +102,8 @@ function initMap() {
     zoomControl: true,
     zoomAnimation: false
   })
-    .setView([59.0, 15.0], 6)
-    .setZoom(3)
+    .setView([59.0, 15.0], 1)
+    .setZoom(1)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     minZoom: 1,
     maxZoom: 7,
@@ -195,9 +116,5 @@ function initMap() {
   L.Icon.Default.imagePath = '' // necessary to avoid Leaflet adds some prefix to image path.
 
   isMapFetch.value = true
-
-  // initialMap.value.on('zoomend', function (e) {
-  //   // onZoomChanged()
-  // })
 }
 </script>

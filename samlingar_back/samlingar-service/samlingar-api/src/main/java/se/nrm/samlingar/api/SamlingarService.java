@@ -137,6 +137,8 @@ public class SamlingarService {
             @QueryParam("isType") boolean isType,
             @QueryParam("isInSweden") boolean isInSweden,
             @QueryParam("collections") String collections,
+            @QueryParam("startDate") String startDate,
+            @QueryParam("endDate") String endDate,
             @QueryParam("start") int start,
             @QueryParam("numPerPage") int numPerPage,
             @QueryParam("sort") String sort) {
@@ -146,7 +148,7 @@ public class SamlingarService {
          
         return Response.ok(logic.search(text, scientificName, fuzzySearch,
                 hasImage, hasCoordinates, isType, isInSweden, collections, 
-                start, numPerPage, sort)).build();
+                startDate, endDate, start, numPerPage, sort)).build();
     }
     
         

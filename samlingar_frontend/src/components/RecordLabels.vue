@@ -58,7 +58,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Service from '../Service'
@@ -71,6 +71,14 @@ const service = new Service()
 let records = ref(Array.from({ length: 50 }))
 
 const layout = ref('grid')
+
+watch(
+  () => store.getters['results'],
+  (newValue, oldValue) => {
+    console.log('watch')
+    records.value = store.getters['results']
+  }
+)
 
 const searchText = computed(() => {
   let text = store.getters['searchText']
@@ -101,10 +109,19 @@ const isType = computed(() => {
   return store.getters['filterType']
 })
 
+const startDate = computed(() => {
+  return store.getters['startDate']
+})
+
+const endDate = computed(() => {
+  return store.getters['endDate']
+})
+
 onMounted(async () => {
   console.log('labels onMounted')
 
   await new Promise((res) => setTimeout(res, 500))
+
   fetchData(0, 30)
 })
 
@@ -118,15 +135,13 @@ function fetchData(start, end) {
       hasCoordinates.value,
       isType.value,
       isInSweden.value,
+      startDate.value,
+      endDate.value,
       start,
       end
     )
     .then((response) => {
-      const total = response.response.numFound
       const results = response.response.docs
-
-      store.commit('setResults', results)
-      // store.commit('setTotalRecords', total)
 
       records.value = results
     })

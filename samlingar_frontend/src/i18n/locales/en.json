@@ -4,7 +4,8 @@
     "header2": "The collections you can search for are: "
   },
   "btnLabel": {
-    "columns": "Columns"
+    "columns": "Columns",
+    "removeDates": "Remove dates"
   },
   "chart": {
     "JANUARY": "JANUARY",
@@ -178,6 +179,7 @@
     "header": "Welcome to the search portal for natural history collections inThe Swedish Museum of Natural History"
   },
   "labels": {
+    "collectingDate": "Date collected [Date range: start - end]",
     "scientificName": "Scientific Name"
   },
   "locale": {
@@ -273,14 +275,18 @@
     "catalogNumber": "Catalogue number",
     "clearFilter": "Clear filter",
     "closeAdvanceSearch": "Close advance search",
+    "collectingDate": "Date collected",
     "contains": "Contains",
     "datasetName": "Dataset name",
+    "end": "End",
     "endDate": "End date [YYYY-MM-DD]",
     "endDateLabel": "End date",
     "exact": "Exact",
     "freeTextSearch": "Free text search",
     "haveCoordinates": "Have coordinates",
     "haveImages": "Have images",
+    "inSweden": "In Sweden",
+    "isType": "Is typestatus",
     "providScientificName": "Provided scientific name",
     "scientificName": "Scientific name",
     "search": "Search",
@@ -298,6 +304,7 @@
     "searchSynonym": "Search synonym",
     "speciesGroup": "Species group",
     "simpleSearch": "Simple search",
+    "start": "Start",
     "startsWith": "Starts with",
     "synonym": "Synonym",
     "typeStatus": "Typestatus",

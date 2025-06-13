@@ -16,7 +16,7 @@
       :virtualScrollerOptions="{
         lazy: true,
         onLazyLoad: loadRecoudsLazy,
-        itemSize: 44,
+        itemSize: 30,
         delay: 200,
         showLoader: true,
         loading: lazyLoading,
@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useStore } from 'vuex'
@@ -85,11 +85,6 @@ const router = useRouter()
 
 const emits = defineEmits(['search'])
 
-let records = ref(Array.from({ length: 100000 }))
-const selectedRecord = ref()
-const lazyLoading = ref(false)
-const loadLazyTimeout = ref()
-
 const dialogVisible = ref(false)
 
 const dt = ref()
@@ -100,6 +95,75 @@ let columns = ref([
   { field: 'locality', header: 'Locality' },
   { field: 'catalogNumber', header: 'CatalogNumber' }
 ])
+
+let firstLoad = ref(false)
+
+let records = ref(Array.from({ length: 10000 }))
+// let records = ref()
+// let records = ref([])
+const selectedRecord = ref()
+const lazyLoading = ref(false)
+const loadLazyTimeout = ref()
+
+watch(
+  async () => store.getters['results'],
+  (newValue, oldValue) => {
+    const total = store.getters['totalRecords']
+    if (total < 10000) {
+      records.value = Array.apply(null, Array(total)).map(function () {})
+    }
+    records.value = store.getters['results']
+  }
+)
+
+onMounted(async () => {
+  console.log('table onMounted')
+  // firstLoad.value = true
+
+  await service
+    .apiSearch(
+      searchText.value,
+      scientificName.value,
+      isFuzzySearch.value,
+      hasImages.value,
+      hasCoordinates.value,
+      isType.value,
+      isInSweden.value,
+      startDate.value,
+      endDate.value,
+      0,
+      40
+    )
+    .then((response) => {
+      const loadedRecords = response.response.docs
+      const total = response.response.numFound
+
+      store.commit('setResults', loadedRecords)
+      store.commit('setTotalRecords', total)
+
+      if (total < 10000) {
+        records.value = Array.apply(null, Array(total)).map(function () {})
+      }
+      let _virtualRecords = [...records.value]
+
+      Array.prototype.splice.apply(_virtualRecords, [
+        ...[0, loadedRecords.length],
+        ...loadedRecords
+      ])
+      records.value = _virtualRecords
+
+      if (total > 0) {
+        const geofacet = response.facets.geo.buckets
+        store.commit('setGeoData', geofacet)
+      }
+    })
+    .catch(() => {
+      console.log('error')
+    })
+    .finally(() => {
+      return { response: [] }
+    })
+})
 
 const searchText = computed(() => {
   let text = store.getters['searchText']
@@ -130,12 +194,18 @@ const isType = computed(() => {
   return store.getters['filterType']
 })
 
+const startDate = computed(() => {
+  return store.getters['startDate']
+})
+
+const endDate = computed(() => {
+  return store.getters['endDate']
+})
+
 const loadRecoudsLazy = async (event) => {
   console.log('loadRecoudsLazy')
 
   !lazyLoading.value && (lazyLoading.value = true)
-
-  await new Promise((res) => setTimeout(res, 500))
 
   if (loadLazyTimeout.value) {
     clearTimeout(loadLazyTimeout.value)
@@ -146,6 +216,7 @@ const loadRecoudsLazy = async (event) => {
   loadLazyTimeout.value = setTimeout(
     () => {
       let { first, last } = event
+
       service
         .apiSearch(
           searchText.value,
@@ -155,25 +226,16 @@ const loadRecoudsLazy = async (event) => {
           hasCoordinates.value,
           isType.value,
           isInSweden.value,
+          startDate.value,
+          endDate.value,
           first,
           last
         )
         .then((response) => {
           const loadedRecords = response.response.docs
 
-          if (first == 0) {
-            const total = response.response.numFound
-            store.commit('setResults', loadedRecords)
-            store.commit('setTotalRecords', total)
-
-            if (total > 0) {
-              const geofacet = response.facets.geo.buckets
-              store.commit('setGeoData', geofacet)
-            }
-          }
-
           Array.prototype.splice.apply(_virtualRecords, [
-            ...[first, last - first],
+            ...[first, loadedRecords.length],
             ...loadedRecords
           ])
           records.value = _virtualRecords

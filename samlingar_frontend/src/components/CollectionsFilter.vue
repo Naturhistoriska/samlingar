@@ -26,7 +26,7 @@
 </template>
 <script setup>
 import ImageFiltLink from './baseComponents/ImageFiltLink.vue'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 const botanicalCollection = ref('startPage.botanicalCollection')
 const botImageSource = ref('/paucidentatus.jpg')

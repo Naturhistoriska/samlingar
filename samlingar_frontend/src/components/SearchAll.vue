@@ -18,7 +18,7 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const emits = defineEmits(['freeTextSearch'])
+const emits = defineEmits(['search'])
 
 const value = ref()
 
@@ -30,7 +30,7 @@ onMounted(() => {
 function onSearch() {
   const searchText = value.value ? value.value : '*'
   store.commit('setSearchText', searchText)
-  emits('freeTextSearch', searchText)
+  emits('search')
 }
 </script>
 <style scoped></style>

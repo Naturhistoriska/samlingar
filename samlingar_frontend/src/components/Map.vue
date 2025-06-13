@@ -83,9 +83,9 @@ function initMap() {
     zoomAnimation: false
   })
     .setView([59.0, 15.0], 6)
-    .setZoom(3)
+    .setZoom(0)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    minZoom: 1,
+    minZoom: 0,
     maxZoom: 7,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(initialMap.value)

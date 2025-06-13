@@ -22,6 +22,28 @@
       />
       <label for="image" class="text-sm">{{ $t('search.haveCoordinates') }}</label>
     </div>
+    <div class="flex items-center gap-2">
+      <Checkbox
+        v-model="type"
+        inputId="types"
+        name="type"
+        binary
+        size="small"
+        @click="typeClicked"
+      />
+      <label for="image" class="text-sm">{{ $t('search.isType') }}</label>
+    </div>
+    <div class="flex items-center gap-2">
+      <Checkbox
+        v-model="sweden"
+        inputId="sweden"
+        name="sweden"
+        binary
+        size="small"
+        @click="swedenClicked"
+      />
+      <label for="image" class="text-sm">{{ $t('search.inSweden') }}</label>
+    </div>
   </div>
 </template>
 <script setup>
@@ -34,25 +56,38 @@ const emits = defineEmits(['search'])
 
 let image = ref(false)
 let coordinates = ref(false)
+let type = ref(false)
+let sweden = ref(false)
 
 onMounted(() => {
   image.value = store.getters['filterImage']
   coordinates.value = store.getters['filterCoordinates']
+  type.value = store.getters['filterType']
+  sweden.value = store.getters['filterInSweden']
 })
 
+function swedenClicked() {
+  const searchInSweden = !sweden.value
+  store.commit('setFilterInSweden', searchInSweden)
+  emits('search')
+}
+
+function typeClicked() {
+  const searchType = !type.value
+  store.commit('setFilterType', searchType)
+  emits('search')
+}
+
 function coordinatesClicked() {
-  console.log('coordinatesClicked', image.value, map.value)
   const searchMap = !coordinates.value
 
   store.commit('setFilterCoordinates', searchMap)
-  emits('search', image.value, searchMap)
+  emits('search')
 }
 
 function imageClicked() {
-  console.log('imageClicked', image.value)
   const searchImage = !image.value
-
   store.commit('setFilterImage', searchImage)
-  emits('search', searchImage, coordinates.value)
+  emits('search')
 }
 </script>

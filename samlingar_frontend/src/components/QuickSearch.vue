@@ -46,6 +46,7 @@ export default {
       'setGeoData',
       'setIsFuzzySearch',
       'setResults',
+      'setSearchText',
       'setScientificName',
       'setTotalRecords'
     ]),
@@ -100,6 +101,7 @@ export default {
           this.setTotalRecords(total)
           this.setScientificName(searchText)
           this.setIsFuzzySearch(fuzzySearch)
+          this.setSearchText(null)
         })
         .catch()
         .finally(() => {

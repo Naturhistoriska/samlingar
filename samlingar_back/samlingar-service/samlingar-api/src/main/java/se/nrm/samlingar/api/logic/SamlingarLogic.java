@@ -130,8 +130,8 @@ public class SamlingarLogic {
 
     
     public String search(String text, String scientificName, boolean fuzzySearch,
-            boolean hasImages, boolean hasCoordinates,
-            boolean isType, boolean isInSweden, String collections,
+            boolean hasImages, boolean hasCoordinates, boolean isType, 
+            boolean isInSweden, String collections, String startDate, String endDate,
             int start, int numPerPage, String sort ) {
         log.info("search : {}", text);
          
@@ -141,7 +141,8 @@ public class SamlingarLogic {
         }
          
         return service.search(text, scientificName, hasImages, hasCoordinates, 
-                isType, isInSweden, collections, start, numPerPage, sort);
+                isType, isInSweden, collections, startDate, endDate ,
+                start, numPerPage, sort);
     }
     
     public String searchWithId(String id) {

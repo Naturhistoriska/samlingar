@@ -24,6 +24,7 @@
             value="exact"
             size="small"
             class="mt-1"
+            :disabled="checkboxDisabled"
             @value-change="change"
           />
           <label for="searchOption1" class="ml-2">
@@ -38,13 +39,14 @@
             value="contains"
             class="mt-1"
             size="small"
+            :disabled="checkboxDisabled"
             @value-change="change"
           />
           <label for="searchOptions2" class="ml-2">
             <small>{{ $t('search.contains') }}</small>
           </label>
         </div>
-        <div class="flex items-center">
+        <!-- <div class="flex items-center">
           <RadioButton
             v-model="searchOptions"
             inputId="searchOptions3"
@@ -57,13 +59,13 @@
           <label for="searchOptions3" class="ml-2">
             <small>{{ $t('search.startsWith') }}</small>
           </label>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 const store = useStore()
 
@@ -71,7 +73,7 @@ let scientificName = ref()
 let searchOptions = ref()
 let showClearScentificName = ref(false)
 
-const emits = defineEmits(['freeTextSearch', 'search'])
+const emits = defineEmits(['search'])
 
 watch(
   () => store.getters['scientificName'],
@@ -80,6 +82,10 @@ watch(
     setSearchOption()
   }
 )
+
+const checkboxDisabled = computed(() => {
+  return !scientificName.value
+})
 
 onMounted(() => {
   scientificName.value = store.getters['scientificName']
@@ -94,7 +100,28 @@ function setSearchOption() {
 }
 
 function change() {
-  console.log('searchOptions', searchOptions.value, searchOptions)
+  console.log('change', searchOptions.value)
+  const option = searchOptions.value
+
+  if (option === 'exact') {
+    store.commit('setIsFuzzySearch', false)
+  } else if (option === 'contains') {
+    store.commit('setIsFuzzySearch', true)
+  }
+
+  // else {
+  //   let text = scientificName.value.charAt(0).toUpperCase() + scientificName.value.slice(1)
+
+  //   if (/\s/.test(scientificName.value)) {
+  //     store.commit('setIsFuzzySearch', true)
+  //   } else {
+  //     text = text + '*'
+  //     store.commit('setIsFuzzySearch', false)
+  //   }
+  //   store.commit('setScientificName', text)
+  // }
+
+  emits('search')
 }
 
 function onInputScientificName() {
@@ -102,13 +129,19 @@ function onInputScientificName() {
 
   if (scientificName !== undefined && scientificName.value) {
     store.commit('setScientificName', scientificName.value)
+    searchOptions.value = 'contains'
+    store.commit('setIsFuzzySearch', true)
   }
+  emits('search')
 }
 
 function clearScientificName() {
   scientificName.value = ''
   showClearScentificName = false
   searchOptions.value = null
+  store.commit('setScientificName', null)
+  store.commit('setIsFuzzySearch', false)
+  emits('search')
 }
 </script>
 <style scoped>

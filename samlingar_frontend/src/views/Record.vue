@@ -58,7 +58,10 @@ onMounted(async () => {
   const record = store.getters['selectedRecord']
   if (record) {
     const { higherClassification, scientificName } = record
-    classification.value = higherClassification.replaceAll('/', ' > ')
+    if (higherClassification) {
+      classification.value = higherClassification.replaceAll('/', ' > ')
+    }
+
     name.value = scientificName
     hasData.value = true
     collection.value = record.collectionCode
@@ -75,7 +78,6 @@ const hasData = ref(false)
 const collection = ref()
 
 function fetchRecord(id) {
-  console.log('id', id)
   service
     .apiIdSearch(id)
     .then((response) => {

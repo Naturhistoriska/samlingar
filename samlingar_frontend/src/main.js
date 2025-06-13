@@ -63,7 +63,9 @@ import InputGroup from 'primevue/inputgroup'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
+
 import Menu from 'primevue/menu'
+import MultiSelect from 'primevue/multiselect'
 import Paginator from 'primevue/paginator'
 import Panel from 'primevue/panel'
 import ProgressSpinner from 'primevue/progressspinner'
@@ -151,6 +153,9 @@ app.component('InputIcon', InputIcon)
 app.component('InputText', InputText)
 app.component('FloatLabel', FloatLabel)
 app.component('Menu', Menu)
+
+app.component('MultiSelect', MultiSelect)
+
 app.component('Paginator', Paginator)
 app.component('Panel', Panel)
 app.component('ProgressSpinner', ProgressSpinner)

@@ -42,9 +42,7 @@
 <script setup>
 import DatePicker from 'primevue/datepicker'
 import { ref } from 'vue'
-import { useStore } from 'vuex'
 
-const store = useStore()
 let beginDate = ref()
 let endDate = ref()
 

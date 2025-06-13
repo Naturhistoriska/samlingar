@@ -34,6 +34,7 @@ export default class Service {
     return response.data
   }
 
+
   async apiFreeTextSearchWithFilter(
     searchText,
     hasCoordinates,
@@ -73,6 +74,8 @@ export default class Service {
     hasCoordinates,
     isType,
     isInSweden,
+    startDate,
+    endDate,
     start,
     numPerPage
   ) {
@@ -94,6 +97,12 @@ export default class Service {
     }
     if (isInSweden) {
       url += '&isInSweden=true'
+    }
+    if (startDate) {
+      url +=  `&startDate=${startDate}`
+    }
+    if (endDate) {
+      url += `&endDate=${endDate}`
     }
 
     url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`

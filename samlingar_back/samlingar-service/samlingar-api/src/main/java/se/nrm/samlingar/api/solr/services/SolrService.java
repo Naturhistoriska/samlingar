@@ -118,9 +118,11 @@ public class SolrService implements Serializable {
     private final String collectionCodeKey = "collectionCode:";
     private final String typeStatusKey = "typeStatus:";
     private final String familyKey = "family:";
+    private final String eventDateKey = "eventDate:";
+    
     private final String txFullNameKey = "txFullName:";
     
-    
+   
     
     // field key search
     private final String scientificNameKey = "scientificName:";
@@ -139,7 +141,11 @@ public class SolrService implements Serializable {
     private final int defaultNumPerPage = 10;
     private final String geohashPreFix = "4_";
     private final String pointPreFix = "0_";
-
+    private final String leftBlacket = "[";
+    private final String rightBlacket = "]";
+    
+    private final String to = " TO ";
+    private final String toWithStar = " TO *]";
     private final int collectionFacetLimit = 100;
     private final int catalogedMonthLimit = 12;
 
@@ -152,6 +158,7 @@ public class SolrService implements Serializable {
     private int yearOfToday;
     private int lastTenYear;
     private int nextYear;
+    private String dateRange;
     
     private StringBuilder fuzzySeachTextSb;
     
@@ -334,8 +341,8 @@ public class SolrService implements Serializable {
     }
     
     public String search(String text, String scientificName, 
-            boolean hasImages, boolean hasCoordinates,
-            boolean isType, boolean isInSweden, String collections,
+            boolean hasImages, boolean hasCoordinates, boolean isType, 
+            boolean isInSweden, String collections, String startDate, String endDate,
             int start, int numPerPage, String sort ) {
          
          
@@ -374,6 +381,13 @@ public class SolrService implements Serializable {
             jsonRequest.setSort(sort);
         }
  
+        if(!StringUtils.isBlank(startDate) && !StringUtils.isBlank(endDate) ) {
+           dateRange = leftBlacket + startDate + to + endDate + rightBlacket;
+           jsonRequest.withFilter(eventDateKey + dateRange); 
+        } else if(!StringUtils.isBlank(startDate)) {
+            dateRange = leftBlacket + startDate + toWithStar;
+            jsonRequest.withFilter(eventDateKey + dateRange); 
+        }
         jsonRequest.setBasicAuthCredentials(username, password);
 
         String jsonResponse;
