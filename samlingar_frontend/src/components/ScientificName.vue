@@ -109,38 +109,31 @@ function change() {
     store.commit('setIsFuzzySearch', true)
   }
 
-  // else {
-  //   let text = scientificName.value.charAt(0).toUpperCase() + scientificName.value.slice(1)
-
-  //   if (/\s/.test(scientificName.value)) {
-  //     store.commit('setIsFuzzySearch', true)
-  //   } else {
-  //     text = text + '*'
-  //     store.commit('setIsFuzzySearch', false)
-  //   }
-  //   store.commit('setScientificName', text)
-  // }
-
   emits('search')
 }
 
 function onInputScientificName() {
   showClearScentificName = scientificName.value
 
+  let option = false
   if (scientificName !== undefined && scientificName.value) {
-    store.commit('setScientificName', scientificName.value)
     searchOptions.value = 'contains'
-    store.commit('setIsFuzzySearch', true)
+    option = true
   }
-  emits('search')
+  search(scientificName.value, option)
 }
 
 function clearScientificName() {
   scientificName.value = ''
   showClearScentificName = false
   searchOptions.value = null
-  store.commit('setScientificName', null)
-  store.commit('setIsFuzzySearch', false)
+
+  search(null, false)
+}
+
+function search(scientificName, fuzzy) {
+  store.commit('setScientificName', scientificName)
+  store.commit('setIsFuzzySearch', fuzzy)
   emits('search')
 }
 </script>

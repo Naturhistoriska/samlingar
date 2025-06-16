@@ -274,7 +274,7 @@
     "beginDate": "Startdatum [YYYY-MM-DD]",
     "beginDateLabel": "Startdatum",
     "catalogNumber": "Sök katalognummer",
-    "class": "Search class",
+    "clazz": "Search class",
     "clearFilter": "Rensa alla val",
     "closeAdvanceSearch": "Stäng avancerad sökning",
     "collectingDate": "Date collected",

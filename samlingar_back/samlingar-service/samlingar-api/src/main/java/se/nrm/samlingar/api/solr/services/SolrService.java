@@ -342,15 +342,50 @@ public class SolrService implements Serializable {
     }
     
     public String search(Map<String, String> paramMap, String text, 
-            String scientificName, int start, int numPerPage, String sort) {
+            String scientificName, String startDate, String endDate,
+            int start, int numPerPage, String sort) {
         
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)  
+                .setQuery(text)   
                 .setOffset(start)
                 .setLimit(numPerPage)
                 .withFacet(geoFacetKey, geoFacet);
+        
+        if (!StringUtils.isBlank(scientificName)) {
+            jsonRequest.withFilter(scientificName);
+        }
+        
+        if(!StringUtils.isBlank(startDate) && !StringUtils.isBlank(endDate) ) {
+           dateRange = leftBlacket + startDate + to + endDate + rightBlacket;
+           jsonRequest.withFilter(eventDateKey + dateRange); 
+        } else if(!StringUtils.isBlank(startDate)) {
+            dateRange = leftBlacket + startDate + toWithStar;
+            jsonRequest.withFilter(eventDateKey + dateRange); 
+        }
+        
+        paramMap.forEach((key, value) -> {
+                jsonRequest.withFilter(key + ":" + value);
+            });
+        
          
-        return null;
+        jsonRequest.setBasicAuthCredentials(username, password);
+
+        String jsonResponse;
+        try {
+            response = jsonRequest.process(client);
+
+            rawJsonResponseParser = new NoOpResponseParser();
+            rawJsonResponseParser.setWriterType(jsonKey);
+            jsonRequest.setResponseParser(rawJsonResponseParser);
+
+            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
+//            log.info("simplesearch what... {}", jsonResponse);
+
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+        return jsonResponse; 
     }
     
     public String search(String text, String scientificName, 

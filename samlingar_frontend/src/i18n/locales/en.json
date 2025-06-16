@@ -274,7 +274,7 @@
     "beginDate": "Begin date [YYYY-MM-DD]",
     "beginDateLabel": "Begin date",
     "catalogNumber": "Search catalogue number",
-    "class": "Search class",
+    "clazz": "Search class",
     "clearFilter": "Clear filter",
     "closeAdvanceSearch": "Close advance search",
     "collectingDate": "Date collected",

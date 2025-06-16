@@ -66,47 +66,53 @@ export default class Service {
     return response.data
   }
 
+  // async apiSearch(
+  //   params,
+  //   searchText,
+  //   scientificName,
+  //   isFuzzySearch,
+  //   hasImages,
+  //   hasCoordinates,
+  //   isType,
+  //   isInSweden,
+  //   startDate,
+  //   endDate,
+  //   start,
+  //   numPerPage
+  // )
+
   async apiSearch(
-    // params,
-    searchText,
-    scientificName,
-    isFuzzySearch,
-    hasImages,
-    hasCoordinates,
-    isType,
-    isInSweden,
-    startDate,
-    endDate,
+    params,
     start,
     numPerPage
   ) {
-    let url = `${samlingApi}/search?text=${searchText}`
+    // let url = `${samlingApi}/search?text=${searchText}`
 
-    // let url = `${samlingApi}/search?${params.toString()}`
+    let url = `${samlingApi}/search?${params.toString()}`
 
-    if (scientificName) {
-      scientificName = scientificName.replace(/&/g, '%26')
-      url += `&scientificName=${scientificName}&fuzzySearch=${isFuzzySearch}`
-    }
+    // if (scientificName) {
+    //   scientificName = scientificName.replace(/&/g, '%26')
+    //   url += `&scientificName=${scientificName}&fuzzySearch=${isFuzzySearch}`
+    // }
 
-    if (hasCoordinates) {
-      url += '&hasCoordinates=true'
-    }
-    if (hasImages) {
-      url += '&hasImage=true'
-    }
-    if (isType) {
-      url += '&isType=true'
-    }
-    if (isInSweden) {
-      url += '&isInSweden=true'
-    }
-    if (startDate) {
-      url += `&startDate=${startDate}`
-    }
-    if (endDate) {
-      url += `&endDate=${endDate}`
-    }
+    // if (hasCoordinates) {
+    //   url += '&hasCoordinates=true'
+    // }
+    // if (hasImages) {
+    //   url += '&hasImage=true'
+    // }
+    // if (isType) {
+    //   url += '&isType=true'
+    // }
+    // if (isInSweden) {
+    //   url += '&isInSweden=true'
+    // }
+    // if (startDate) {
+    //   url += `&startDate=${startDate}`
+    // }
+    // if (endDate) {
+    //   url += `&endDate=${endDate}`
+    // }
 
     url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
 

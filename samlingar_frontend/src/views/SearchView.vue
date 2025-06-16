@@ -23,7 +23,7 @@
   </div>
 </template>
 <script setup>
-import { defineAsyncComponent, onMounted, Suspense } from 'vue'
+import { defineAsyncComponent, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { onBeforeRouteLeave } from 'vue-router'
 import Service from '../Service'
@@ -62,7 +62,8 @@ function search(start, numPerPage) {
 
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
-  console.log('date ', startDate, endDate)
+
+  const fields = store.getters['fields']
 
   // const params = new URLSearchParams({
   //   text: searchText,
@@ -76,20 +77,48 @@ function search(start, numPerPage) {
   //   endDate: endDate
   // })
 
+  const params = new URLSearchParams({
+    text: searchText
+  })
+
+  if (scientificName) {
+    params.set('scientificName', scientificName)
+    params.set('fuzzySearch', isFuzzy)
+  }
+
+  if (isType) {
+    params.set('isType', isType)
+  }
+
+  if (isInSweden) {
+    params.set('isInSweden', isInSweden)
+  }
+
+  if (hasImages) {
+    params.set('hasImages', hasImages)
+  }
+
+  if (hasCoordinates) {
+    params.set('hasCoordinates', hasCoordinates)
+  }
+
+  if (startDate) {
+    params.set('startDate', startDate)
+  }
+
+  if (endDate) {
+    params.set('endDate', endDate)
+  }
+
+  fields
+    .filter((field) => field.text)
+    .forEach((field) => {
+      console.log('what...', field.value, field.text)
+      params.set(field.value, field.text)
+    })
+
   service
-    .apiSearch(
-      searchText,
-      scientificName,
-      isFuzzy,
-      hasImages,
-      hasCoordinates,
-      isType,
-      isInSweden,
-      startDate,
-      endDate,
-      start,
-      numPerPage
-    )
+    .apiSearch(params, start, numPerPage)
     .then((response) => {
       const total = response.response.numFound
       const results = response.response.docs

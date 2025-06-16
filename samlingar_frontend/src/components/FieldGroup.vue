@@ -23,8 +23,8 @@ watch(
   }
 )
 
-function handleSearch(key, value) {
-  emits('search', key, value)
+function handleSearch() {
+  emits('search')
 }
 </script>
 <style scoped></style>

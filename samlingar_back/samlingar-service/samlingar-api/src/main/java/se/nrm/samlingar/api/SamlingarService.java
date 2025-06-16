@@ -130,88 +130,89 @@ public class SamlingarService {
     
     
     @GET
-    @Path("/test")
+    @Path("/search")
     @ApiOperation(value = "test",
             notes = "Return search results in json",
             response = String.class
     ) 
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSearchResults(@Context UriInfo uriInfo) {
-        MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+    public Response getSearchResults(@Context UriInfo uriInfo) { 
+        return Response.ok(logic.search(uriInfo.getQueryParameters())).build();
 
-        int start = 0;
-        int numPerPage = 0;
-        boolean fuzzySearch = true;
-        String scientificName = null;
-        String text = "*";
-        String sort = null;
-                
-        Map<String, String> paramMap = new HashMap<>();
-        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
-            
-            switch (entry.getKey()) {
-                case "scientificName": 
-                    scientificName = queryParams.get("scientificName").get(0); 
-                    break;
-                case "text": 
-                    text = queryParams.get("text").get(0); 
-                    break;
-                case "start":
-                    start = Integer.parseInt(queryParams.get("start").get(0)); 
-                    break;
-                case "numPerPage":
-                    numPerPage = Integer.parseInt(queryParams.get("numPerPage").get(0));
-                    break;  
-                case "fuzzySearch":
-                    fuzzySearch = Boolean.parseBoolean(queryParams.get("fuzzySearch").get(0));
-                    break;
-                case "sort":
-                    sort =  queryParams.get("sort").get(0);
-                    break;
-                default:
-                    paramMap.put(entry.getKey(), entry.getValue().get(0));
-                    break;
-            }
-        }
- 
-        return Response.ok(logic.search(paramMap, text, scientificName, fuzzySearch,  
-                start, numPerPage, sort)).build();
-    }
-    
-    @GET
-    @Path("/search")
-    @ApiOperation(value = "search",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response search(@QueryParam("text") String text,
-            @QueryParam("scientificName") String scientificName,
-            @QueryParam("fuzzySearch") boolean fuzzySearch,
-            @QueryParam("hasCoordinates") boolean hasCoordinates,
-            @QueryParam("hasImage") boolean hasImage,
-            @QueryParam("isType") boolean isType,
-            @QueryParam("isInSweden") boolean isInSweden,
-            @QueryParam("collections") String collections,
-            @QueryParam("startDate") String startDate,
-            @QueryParam("endDate") String endDate,
-            @QueryParam("start") int start,
-            @QueryParam("numPerPage") int numPerPage,
-            @QueryParam("sort") String sort ) {
-        
-        log.info("search... {}", scientificName);
-//        
-//        MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
+//        int start = 0;
+//        int numPerPage = 0;
+//        boolean fuzzySearch = true;
+//        String scientificName = null;
+//        String text = "*";
+//        String sort = null;
+//        String startDate = null;
+//        String endDate = null;
+//                
 //        Map<String, String> paramMap = new HashMap<>();
 //        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
-//            paramMap.put(entry.getKey(), entry.getValue().get(0)); // or handle list if needed
+//            
+//            switch (entry.getKey()) {
+//                case "scientificName": 
+//                    scientificName = queryParams.get("scientificName").get(0); 
+//                    break;
+//                case "text": 
+//                    text = queryParams.get("text").get(0); 
+//                    break;
+//                case "startDate": 
+//                    startDate = queryParams.get("startDate").get(0); 
+//                    break;
+//                case "endDate": 
+//                    endDate = queryParams.get("endDate").get(0); 
+//                    break;
+//                case "start":
+//                    start = Integer.parseInt(queryParams.get("start").get(0)); 
+//                    break;
+//                case "numPerPage":
+//                    numPerPage = Integer.parseInt(queryParams.get("numPerPage").get(0));
+//                    break;  
+//                case "fuzzySearch":
+//                    fuzzySearch = Boolean.parseBoolean(queryParams.get("fuzzySearch").get(0));
+//                    break;
+//                case "sort":
+//                    sort =  queryParams.get("sort").get(0);
+//                    break;
+//                default:
+//                    paramMap.put(entry.getKey(), entry.getValue().get(0));
+//                    break;
+//            }
 //        }
-//        log.info("map...", paramMap);
-        
-        return Response.ok(logic.search(text, scientificName, fuzzySearch,
-                hasImage, hasCoordinates, isType, isInSweden, collections, 
-                startDate, endDate, start, numPerPage, sort)).build();
+ 
+//        return Response.ok(logic.search(paramMap, text, scientificName, startDate,
+//                endDate, fuzzySearch, start, numPerPage, sort)).build();
     }
+    
+//    @GET
+//    @Path("/search")
+//    @ApiOperation(value = "search",
+//            notes = "Return search results in json",
+//            response = String.class
+//    )
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response search(@QueryParam("text") String text,
+//            @QueryParam("scientificName") String scientificName,
+//            @QueryParam("fuzzySearch") boolean fuzzySearch,
+//            @QueryParam("hasCoordinates") boolean hasCoordinates,
+//            @QueryParam("hasImage") boolean hasImage,
+//            @QueryParam("isType") boolean isType,
+//            @QueryParam("isInSweden") boolean isInSweden,
+//            @QueryParam("collections") String collections,
+//            @QueryParam("startDate") String startDate,
+//            @QueryParam("endDate") String endDate,
+//            @QueryParam("start") int start,
+//            @QueryParam("numPerPage") int numPerPage,
+//            @QueryParam("sort") String sort ) {
+//        
+//        log.info("search... {}", scientificName);
+// 
+//        return Response.ok(logic.search(text, scientificName, fuzzySearch,
+//                hasImage, hasCoordinates, isType, isInSweden, collections, 
+//                startDate, endDate, start, numPerPage, sort)).build();
+//    }
     
         
     @GET

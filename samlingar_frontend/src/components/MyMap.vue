@@ -1,6 +1,6 @@
 <template>
   <div id="myMap">
-    <div id="map" style="height: 90vh" class="custom-popup"></div>
+    <div id="map" style="height: 70vh" class="custom-popup"></div>
   </div>
 </template>
 <script setup>
@@ -102,7 +102,7 @@ function initMap() {
     zoomControl: true,
     zoomAnimation: false
   })
-    .setView([59.0, 15.0], 1)
+    .setView([20.0, 15.0], 1)
     .setZoom(1)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     minZoom: 1,

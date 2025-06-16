@@ -12,7 +12,7 @@
       display="chip"
       placeholder="Add search fields"
       class="w-full md:w-80"
-      :hide="hide"
+      :hide="true"
       @change="onSelect(event)"
     >
       <template #optiongroup="slotProps">
@@ -43,7 +43,7 @@ const groupedSelections = ref([
     items: [
       { label: 'Kingdom', value: 'kingdom', key: 'kingdom:' },
       { label: 'Phylum', value: 'phylum', key: 'phylum:' },
-      { label: 'Class', value: 'class', key: 'clazz:' },
+      { label: 'Class', value: 'clazz', key: 'clazz:' },
       { label: 'Order', value: 'order', key: 'order:' },
       { label: 'Family', value: 'family', key: 'family:' },
       { label: 'Genus', value: 'genus', key: 'genus:' },
@@ -88,20 +88,16 @@ const groupedSelections = ref([
 const emits = defineEmits(['search'])
 
 function onSelect(event) {
-  console.log('onSelect')
-
   if (selectedItems) {
-    console.log('selectedItems', selectedItems)
-    // const items = selectedItems.value.map((item) => item.value)
     store.commit('setFields', selectedItems)
     hide.value = true
   }
 }
 
-function handleSearch(key, value) {
-  console.log('handleSearch', key, value)
+function handleSearch() {
+  console.log('handleSearch')
 
-  emits('search', key, value)
+  emits('search')
 }
 </script>
 <style scoped>

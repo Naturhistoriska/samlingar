@@ -66,7 +66,7 @@
       modal
       :contentStyle="{ height: '300px' }"
     >
-      test
+      <datatable-column />
     </Dialog>
   </div>
 </template>
@@ -74,6 +74,8 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+
+import DatatableColumn from './DatatableColumn.vue'
 
 import { useStore } from 'vuex'
 
@@ -114,7 +116,9 @@ watch(
 
 onMounted(async () => {
   console.log('table onMounted')
-  // firstLoad.value = true
+
+  const fields = store.getters['fields']
+  console.log('fields', fields)
 
   // const params = new URLSearchParams({
   //   text: searchText.value,
@@ -128,21 +132,48 @@ onMounted(async () => {
   //   endDate: endDate.value
   // })
 
+  const params = new URLSearchParams({
+    text: searchText.value
+  })
+
+  if (scientificName.value) {
+    params.set('scientificName', scientificName.value)
+    params.set('fuzzySearch', isFuzzy.value)
+  }
+
+  if (isType.value) {
+    params.set('isType', isType.value)
+  }
+
+  if (isInSweden.value) {
+    params.set('isInSweden', isInSweden.value)
+  }
+
+  if (hasImages.value) {
+    params.set('hasImages', hasImages.value)
+  }
+
+  if (hasCoordinates.value) {
+    params.set('hasCoordinates', hasCoordinates.value)
+  }
+
+  if (startDate.value) {
+    params.set('startDate', startDate.value)
+  }
+
+  if (endDate.value) {
+    params.set('endDate', endDate.value)
+  }
+
+  fields
+    .filter((field) => field.text)
+    .forEach((field) => {
+      console.log('what...', field.value, field.text)
+      params.set(field.value, field.text)
+    })
+
   await service
-    .apiSearch(
-      // params,
-      searchText.value,
-      scientificName.value,
-      isFuzzySearch.value,
-      hasImages.value,
-      hasCoordinates.value,
-      isType.value,
-      isInSweden.value,
-      startDate.value,
-      endDate.value,
-      0,
-      40
-    )
+    .apiSearch(params, 0, 40)
     .then((response) => {
       const loadedRecords = response.response.docs
       const total = response.response.numFound
@@ -226,6 +257,8 @@ const loadRecoudsLazy = async (event) => {
     () => {
       let { first, last } = event
 
+      const fields = store.getters['fields']
+
       // const params = new URLSearchParams({
       // text: searchText.value,
       // scientificName: scientificName.value,
@@ -238,21 +271,48 @@ const loadRecoudsLazy = async (event) => {
       // endDate: endDate.value
       // })
 
+      const params = new URLSearchParams({
+        text: searchText.value
+      })
+
+      if (scientificName.value) {
+        params.set('scientificName', scientificName.value)
+        params.set('fuzzySearch', isFuzzy.value)
+      }
+
+      if (isType.value) {
+        params.set('isType', isType.value)
+      }
+
+      if (isInSweden.value) {
+        params.set('isInSweden', isInSweden.value)
+      }
+
+      if (hasImages.value) {
+        params.set('hasImages', hasImages.value)
+      }
+
+      if (hasCoordinates.value) {
+        params.set('hasCoordinates', hasCoordinates.value)
+      }
+
+      if (startDate.value) {
+        params.set('startDate', startDate.value)
+      }
+
+      if (endDate.value) {
+        params.set('endDate', endDate.value)
+      }
+
+      fields
+        .filter((field) => field.text)
+        .forEach((field) => {
+          console.log('what...', field.value, field.text)
+          params.set(field.value, field.text)
+        })
+
       service
-        .apiSearch(
-          // params,
-          searchText.value,
-          scientificName.value,
-          isFuzzySearch.value,
-          hasImages.value,
-          hasCoordinates.value,
-          isType.value,
-          isInSweden.value,
-          startDate.value,
-          endDate.value,
-          first,
-          last
-        )
+        .apiSearch(params, first, last)
         .then((response) => {
           const loadedRecords = response.response.docs
 

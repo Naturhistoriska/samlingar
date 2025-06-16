@@ -156,19 +156,63 @@ function buildImages() {
 }
 
 function fetchData(start, end) {
-  service
+  const fields = store.getters['fields']
+  console.log('fields', fields)
 
-    .apiSearch(
-      searchText.value,
-      scientificName.value,
-      isFuzzySearch.value,
-      true,
-      hasCoordinates.value,
-      isType.value,
-      isInSweden.value,
-      start,
-      end
-    )
+  // const params = new URLSearchParams({
+  //   text: searchText.value,
+  //   scientificName: scientificName.value,
+  //   fuzzySearch: isFuzzySearch.value,
+  //   hasImages: true,
+  //   isType: isType.value,
+  //   isInSweden: isInSweden.value,
+  //   hasCoordinates: hasCoordinates.value,
+  //   startDate: startDate.value,
+  //   endDate: endDate.value
+  // })
+
+  const params = new URLSearchParams({
+    text: searchText.value
+  })
+
+  if (scientificName.value) {
+    params.set('scientificName', scientificName.value)
+    params.set('fuzzySearch', isFuzzy.value)
+  }
+
+  if (isType.value) {
+    params.set('isType', isType.value)
+  }
+
+  if (isInSweden.value) {
+    params.set('isInSweden', isInSweden.value)
+  }
+
+  if (hasImages.value) {
+    params.set('hasImages', hasImages.value)
+  }
+
+  if (hasCoordinates.value) {
+    params.set('hasCoordinates', hasCoordinates.value)
+  }
+
+  if (startDate.value) {
+    params.set('startDate', startDate.value)
+  }
+
+  if (endDate.value) {
+    params.set('endDate', endDate.value)
+  }
+
+  fields
+    .filter((field) => field.text)
+    .forEach((field) => {
+      console.log('what...', field.value, field.text)
+      params.set(field.value, field.text)
+    })
+
+  service
+    .apiSearch(params, start, end)
     .then((response) => {
       records.value = response.response.docs
       const total = response.response.numFound
