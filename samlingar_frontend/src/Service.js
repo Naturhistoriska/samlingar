@@ -67,6 +67,7 @@ export default class Service {
   }
 
   async apiSearch(
+    // params,
     searchText,
     scientificName,
     isFuzzySearch,
@@ -80,6 +81,8 @@ export default class Service {
     numPerPage
   ) {
     let url = `${samlingApi}/search?text=${searchText}`
+
+    // let url = `${samlingApi}/search?${params.toString()}`
 
     if (scientificName) {
       scientificName = scientificName.replace(/&/g, '%26')
@@ -99,7 +102,7 @@ export default class Service {
       url += '&isInSweden=true'
     }
     if (startDate) {
-      url +=  `&startDate=${startDate}`
+      url += `&startDate=${startDate}`
     }
     if (endDate) {
       url += `&endDate=${endDate}`

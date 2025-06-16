@@ -64,6 +64,18 @@ function search(start, numPerPage) {
   const startDate = store.getters['startDate']
   console.log('date ', startDate, endDate)
 
+  // const params = new URLSearchParams({
+  //   text: searchText,
+  //   scientificName: scientificName,
+  //   fuzzySearch: isFuzzy,
+  //   hasImages: hasImages,
+  //   isType: isType,
+  //   isInSweden: isInSweden,
+  //   hasCoordinates: hasCoordinates,
+  //   startDate: startDate,
+  //   endDate: endDate
+  // })
+
   service
     .apiSearch(
       searchText,
@@ -104,6 +116,7 @@ function handleMediaSearch() {
 
 function handleFreeTextSearch(value, start, numPerPage) {
   console.log('handleFreeTextSearch...', value, start, numPerPage)
+
   service
     .apiFreeTextSearch(value, start, numPerPage)
     .then((response) => {
@@ -116,7 +129,9 @@ function handleFreeTextSearch(value, start, numPerPage) {
       console.log('total:', total)
       console.log('results:', results)
     })
-    .catch()
+    .catch((error) => {
+      console.error('Fetch error:', error)
+    })
     .finally(() => {})
 }
 </script>

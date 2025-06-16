@@ -12,6 +12,8 @@
       display="chip"
       placeholder="Add search fields"
       class="w-full md:w-80"
+      :hide="hide"
+      @change="onSelect(event)"
     >
       <template #optiongroup="slotProps">
         <div class="flex items-center">
@@ -19,16 +21,18 @@
         </div>
       </template>
     </MultiSelect>
-    <div style="min-height: 20px">&nbsp</div>
-    <input-box v-bind:field="field" v-bind:placehold="label" />
+    <Divider type="solid" />
+    <field-group @search="handleSearch" />
   </div>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useStore } from 'vuex'
-import InputBox from './baseComponents/InputBox.vue'
+import FieldGroup from './FieldGroup.vue'
 
 const store = useStore()
+
+let hide = ref(false)
 
 const selectedItems = ref()
 
@@ -37,54 +41,68 @@ const groupedSelections = ref([
     label: 'Taxonomy',
     code: 'tx',
     items: [
-      { label: 'Kingdom', value: 'kingdom' },
-      { label: 'Phylum', value: 'phylum' },
-      { label: 'Class', value: 'class' },
-      { label: 'Order', value: 'order' },
-      { label: 'Family', value: 'family' },
-      { label: 'Genus', value: 'genus' },
-      { label: 'Subgenus', value: 'subgenus' },
-      { label: 'Species', value: 'species' },
-      { label: 'Vernacular name', value: 'vernacularName' },
-      { label: 'Taxon rank', value: 'taxonRank' }
+      { label: 'Kingdom', value: 'kingdom', key: 'kingdom:' },
+      { label: 'Phylum', value: 'phylum', key: 'phylum:' },
+      { label: 'Class', value: 'class', key: 'clazz:' },
+      { label: 'Order', value: 'order', key: 'order:' },
+      { label: 'Family', value: 'family', key: 'family:' },
+      { label: 'Genus', value: 'genus', key: 'genus:' },
+      { label: 'Subgenus', value: 'subgenus', key: 'subgenus:' },
+      { label: 'Species', value: 'species', key: 'species:' },
+      { label: 'Vernacular name', value: 'vernacularName', key: 'vernacularName:' },
+      { label: 'Synonyms', value: 'synonyms', key: 'synonyms:' },
+      { label: 'Taxon rank', value: 'taxonRank', key: 'taxonRank:' }
     ]
   },
   {
     label: 'Specimen',
     code: 'specimen',
     items: [
-      { label: 'Institution code', value: 'instCode' },
-      { label: 'Catalog number', value: 'catalogNumber' },
-      { label: 'Type status', value: 'typeStatus' },
-      { label: 'Collection code', value: 'collectionCode' }
+      { label: 'Catalog number', value: 'catalogNumber', key: 'catalogNumber:' },
+      { label: 'Type status', value: 'typeStatus', key: 'typeStatus:' },
+      { label: 'Collection code', value: 'collectionCode', key: 'collectionCode:' },
+      { label: 'Collection name', value: 'collectionName', key: 'collectionName:' }
     ]
   },
   {
     label: 'Collection event',
     code: 'event',
     items: [
-      { label: 'Date collected', value: 'collectingDate' },
-      { label: 'Colleced by', value: 'collector' },
-      { label: 'Field number', value: 'fieldNumber' }
+      { label: 'Collected by', value: 'collector', key: 'collector:' },
+      { label: 'Field number', value: 'fieldNumber', key: 'fieldNumber:' }
     ]
   },
   {
     label: 'Locality',
     code: 'locality',
     items: [
-      { label: 'Country', value: 'country' },
-      { label: 'State/Province', value: 'state' },
-      { label: 'County/Parish', value: 'county' },
-      { label: 'Water body', value: 'waterBody' },
-      { label: 'Locality', value: 'locality' }
+      { label: 'Country', value: 'country', key: 'country:' },
+      { label: 'State/Province', value: 'state', key: 'stateProvince:' },
+      { label: 'County/Parish', value: 'county', key: 'county:' },
+      { label: 'Water body', value: 'waterBody', key: 'waterBody:' },
+      { label: 'Locality', value: 'locality', key: 'locality:' }
     ]
   }
 ])
 
-const label = ref('search.searchAll')
-const field = ref('setKindom')
-
 const emits = defineEmits(['search'])
+
+function onSelect(event) {
+  console.log('onSelect')
+
+  if (selectedItems) {
+    console.log('selectedItems', selectedItems)
+    // const items = selectedItems.value.map((item) => item.value)
+    store.commit('setFields', selectedItems)
+    hide.value = true
+  }
+}
+
+function handleSearch(key, value) {
+  console.log('handleSearch', key, value)
+
+  emits('search', key, value)
+}
 </script>
 <style scoped>
 .searchLabel {

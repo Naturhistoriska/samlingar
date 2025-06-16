@@ -25,7 +25,7 @@
         <filter-checkbox @search="handleSearch" />
 
         <Panel>
-          <filter-fields @search="handleSearch" style="padding-bottom: 5px" />
+          <filter-fields @search="doSearch" style="padding-bottom: 5px" />
         </Panel>
 
         <Panel :header="$t('labels.scientificName')" toggleable>
@@ -53,6 +53,10 @@ import ScientificName from './ScientificName.vue'
 const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
 
 function search() {}
+
+function doSearch(key, value) {
+  console.log('doSearch', key, value)
+}
 
 function handleSearch() {
   emits('search', 0, 50)

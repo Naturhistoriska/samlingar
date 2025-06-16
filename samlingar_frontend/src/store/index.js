@@ -4,6 +4,7 @@ export default createStore({
   state: {
     dates: null,
     endDate: null,
+    fields: [],
     filterCoordinates: false,
     filterImage: false,
     filterInSweden: false,
@@ -97,6 +98,9 @@ export default createStore({
     },
     endDate(state) {
       return state.endDate
+    },
+    fields(state) {
+      return state.fields
     },
     filterImage(state) {
       return state.filterImage
@@ -339,6 +343,7 @@ export default createStore({
   mutations: {
     setDates: (state, payload) => (state.dates = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
+    setFields: (state, payload) => (state.fields = payload),
     setFilterCoordinates: (state, payload) => (state.filterCoordinates = payload),
     setFilterImage: (state, payload) => (state.filterImage = payload),
     setFilterInSweden: (state, payload) => (state.filterInSweden = payload),

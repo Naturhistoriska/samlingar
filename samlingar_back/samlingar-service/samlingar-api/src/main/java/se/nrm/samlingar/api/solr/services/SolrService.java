@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -338,6 +339,18 @@ public class SolrService implements Serializable {
         }
 
         return jsonResponse;
+    }
+    
+    public String search(Map<String, String> paramMap, String text, 
+            String scientificName, int start, int numPerPage, String sort) {
+        
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)  
+                .setOffset(start)
+                .setLimit(numPerPage)
+                .withFacet(geoFacetKey, geoFacet);
+         
+        return null;
     }
     
     public String search(String text, String scientificName, 

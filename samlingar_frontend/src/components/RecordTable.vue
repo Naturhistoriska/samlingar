@@ -96,11 +96,7 @@ let columns = ref([
   { field: 'catalogNumber', header: 'CatalogNumber' }
 ])
 
-let firstLoad = ref(false)
-
 let records = ref(Array.from({ length: 10000 }))
-// let records = ref()
-// let records = ref([])
 const selectedRecord = ref()
 const lazyLoading = ref(false)
 const loadLazyTimeout = ref()
@@ -120,8 +116,21 @@ onMounted(async () => {
   console.log('table onMounted')
   // firstLoad.value = true
 
+  // const params = new URLSearchParams({
+  //   text: searchText.value,
+  //   scientificName: scientificName.value,
+  //   fuzzySearch: isFuzzySearch.value,
+  //   hasImages: hasImages.value,
+  //   isType: isType.value,
+  //   isInSweden: isInSweden.value,
+  //   hasCoordinates: hasCoordinates.value,
+  //   startDate: startDate.value,
+  //   endDate: endDate.value
+  // })
+
   await service
     .apiSearch(
+      // params,
       searchText.value,
       scientificName.value,
       isFuzzySearch.value,
@@ -217,8 +226,21 @@ const loadRecoudsLazy = async (event) => {
     () => {
       let { first, last } = event
 
+      // const params = new URLSearchParams({
+      // text: searchText.value,
+      // scientificName: scientificName.value,
+      // fuzzySearch: isFuzzySearch.value,
+      // hasImages: hasImages.value,
+      // isType: isType.value,
+      // isInSweden: isInSweden.value,
+      // hasCoordinates: hasCoordinates.value,
+      // startDate: startDate.value,
+      // endDate: endDate.value
+      // })
+
       service
         .apiSearch(
+          // params,
           searchText.value,
           scientificName.value,
           isFuzzySearch.value,

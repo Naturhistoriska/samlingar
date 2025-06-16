@@ -1,6 +1,6 @@
 <template>
   <div id="myMap">
-    <div id="map" style="height: 60vh" class="custom-popup"></div>
+    <div id="map" style="height: 90vh" class="custom-popup"></div>
   </div>
 </template>
 <script setup>

@@ -4,6 +4,7 @@ import ch.hsr.geohash.GeoHash;
 import java.io.IOException; 
 import java.io.StringReader;
 import java.io.StringWriter; 
+import java.util.Map;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -148,6 +149,17 @@ public class SamlingarLogic {
     public String searchWithId(String id) {
         log.info("searchWithId : {}", id);
         return service.searchWithId(id);
+    }
+    
+    public String search(Map<String, String> paramMap, String text, String scientificName, 
+            boolean fuzzySearch, int start, int numPerPage, String sort ) {
+        
+        if(scientificName != null) {
+            scientificName = SolrSearchHelper.getInstance().buildSearchText(
+                scientificName, scientificNameKey, fuzzySearch);
+        }
+        return service.search(paramMap, text, scientificName, start, numPerPage, sort);
+        
     }
     
     
