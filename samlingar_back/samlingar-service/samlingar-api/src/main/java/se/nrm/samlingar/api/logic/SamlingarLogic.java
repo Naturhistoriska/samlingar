@@ -235,6 +235,7 @@ public class SamlingarLogic {
             }
         }
         
+        
         if(scientificName != null) {
             scientificName = SolrSearchHelper.getInstance().buildSearchText(
                 scientificName, scientificNameFieldKey, isFuzzySearch);

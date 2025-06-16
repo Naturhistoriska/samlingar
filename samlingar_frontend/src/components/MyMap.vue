@@ -102,8 +102,8 @@ function initMap() {
     zoomControl: true,
     zoomAnimation: false
   })
-    .setView([20.0, 15.0], 1)
-    .setZoom(1)
+    .setView([20.0, 15.0], 2)
+    .setZoom(2)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     minZoom: 1,
     maxZoom: 7,

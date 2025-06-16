@@ -345,8 +345,9 @@ public class SolrService implements Serializable {
             String scientificName, String startDate, String endDate,
             int start, int numPerPage, String sort) {
         
+        log.info("search", paramMap);
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)   
+                .setQuery(catchAllField + text)   
                 .setOffset(start)
                 .setLimit(numPerPage)
                 .withFacet(geoFacetKey, geoFacet);

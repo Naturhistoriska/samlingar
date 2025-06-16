@@ -138,7 +138,7 @@ onMounted(async () => {
 
   if (scientificName.value) {
     params.set('scientificName', scientificName.value)
-    params.set('fuzzySearch', isFuzzy.value)
+    params.set('fuzzySearch', isFuzzySearch.value)
   }
 
   if (isType.value) {
@@ -277,7 +277,7 @@ const loadRecoudsLazy = async (event) => {
 
       if (scientificName.value) {
         params.set('scientificName', scientificName.value)
-        params.set('fuzzySearch', isFuzzy.value)
+        params.set('fuzzySearch', isFuzzySearch.value)
       }
 
       if (isType.value) {

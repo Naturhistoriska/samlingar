@@ -137,6 +137,7 @@ public class SamlingarService {
     ) 
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSearchResults(@Context UriInfo uriInfo) { 
+        log.info("getSearchResults");
         return Response.ok(logic.search(uriInfo.getQueryParameters())).build();
 
 //        int start = 0;
