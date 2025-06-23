@@ -69,25 +69,25 @@ onMounted(() => {
 function swedenClicked() {
   const searchInSweden = !sweden.value
   store.commit('setFilterInSweden', searchInSweden)
-  emits('search')
+  // emits('search')
 }
 
 function typeClicked() {
   const searchType = !type.value
   store.commit('setFilterType', searchType)
-  emits('search')
+  // emits('search')
 }
 
 function coordinatesClicked() {
   const searchMap = !coordinates.value
 
   store.commit('setFilterCoordinates', searchMap)
-  emits('search')
+  // emits('search')
 }
 
 function imageClicked() {
   const searchImage = !image.value
   store.commit('setFilterImage', searchImage)
-  emits('search')
+  // emits('search')
 }
 </script>

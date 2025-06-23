@@ -44,7 +44,7 @@
   </div>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 
 import Service from '../Service'
@@ -145,82 +145,4 @@ function loadData(start, numPerPage) {
 function addColumns() {
   console.log('add columns')
 }
-
-//simulate remote connection with a timeout
-// loadLazyTimeout.value = setTimeout(() => {
-//     let _virtualCars = [...virtualRecords.value];
-//     let { first, last } = event;
-
-//     //load data of required page
-//     const loadedCars = cars.value.slice(first, last);
-
-//     //populate page of virtual cars
-//     Array.prototype.splice.apply(_virtualCars, [...[first, last - first], ...loadedCars]);
-
-//     virtualCars.value = _virtualCars;
-//     lazyLoading.value = false;
-// }, Math.random() * 1000 + 250);
-
-// const loadCarsLazy = (event) => {
-//   !lazyLoading.value && (lazyLoading.value = true)
-
-//   if (loadLazyTimeout.value) {
-//     clearTimeout(loadLazyTimeout.value)
-//   }
-
-//   loadLazyTimeout.value = setTimeout(() => {
-//     let { first, last } = event
-
-//     console.log('what...', first, last)
-//     const searchText = store.getters['searchText']
-//     let value = searchText == null ? '*' : searchText
-//     emits('freeTextSearch', value, last, 10)
-
-//     // records.value = store.getters['results']
-
-//     // console.log('what. again..', first, last)
-//     // //load data of required page
-
-//     // //populate page of virtual cars
-//     let _virtualCars = [...virtualRecords.value]
-
-//     records.value = _virtualCars
-//     lazyLoading.value = false
-//   })
-
-// !lazyLoading.value && (lazyLoading.value = true)
-// console.log('lazyLoading', lazyLoading.value)
-
-// if (loadLazyTimeout.value) {
-//   clearTimeout(loadLazyTimeout.value)
-// }
-
-//simulate remote connection with a timeout
-// loadLazyTimeout.value = setTimeout(
-//   () => {
-//     let { first, last } = event
-//     console.log('what ...', first, last)
-//     const searchText = store.getters['searchText']
-//     // emits('freeTextSearch', searchText, last, 10)
-//     // let _results = records
-
-//     //load data of required page
-//     // const loadResults = records.value.slice(first, last)
-
-//     //populate page of virtual cars
-//     // Array.prototype.splice.apply(_results, [...[first, last - first], ...loadResults])
-
-//     // records.value = _results
-//     lazyLoading.value = false
-//   }
-//   // Math.random() * 1000 + 250
-// )
-// }
-
-// const columns = [
-//   { field: 'collectionName', header: 'Collection Name' },
-//   { field: 'scientificName', header: 'Scientific Name' },
-//   { field: 'locality', header: 'Locality' },
-//   { field: 'catalogNumber', header: 'CatalogNumber' }
-// ]
 </script>

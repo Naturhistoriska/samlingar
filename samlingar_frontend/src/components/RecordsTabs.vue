@@ -16,7 +16,7 @@
           <RecordTable @search="handleSearch" />
         </TabPanel>
         <TabPanel value="1" v-if="isLableView">
-          <RecordLabels />
+          <RecordLabels @search="handleSearch" />
         </TabPanel>
         <TabPanel value="2">
           <RecordMedia v-if="isMediaView" />
@@ -26,7 +26,7 @@
   </div>
 </template>
 <script setup>
-import { computed, defineAsyncComponent, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import RecordLabels from './RecordLabels.vue'
 import RecordTable from './RecordTable.vue'
@@ -34,7 +34,7 @@ import RecordMedia from './RecordMedia.vue'
 
 const store = useStore()
 
-const emits = defineEmits(['fetchMedia', 'freeTextSearch'])
+const emits = defineEmits(['fetchMedia', 'freeTextSearch', 'search'])
 
 const value = ref('0')
 
@@ -74,8 +74,9 @@ function fetchImageData() {
   emits('fetchMedia')
 }
 
-function handleSearch() {
-  console.log('handleSearch')
+function handleSearch(start, numPerPage, saveData) {
+  console.log('handleSearch', start, numPerPage, saveData)
+  emits('search', start, numPerPage, saveData)
 }
 
 function handleFreeTextSearch(searchText, start, numPerPage) {

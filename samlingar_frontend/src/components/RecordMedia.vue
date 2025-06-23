@@ -2,12 +2,13 @@
   <div class="card">
     <DataView
       :value="images"
-      :layout="layout"
+      layout="grid"
       paginator
       :rows="30"
       :paginator="true"
       :lazy="true"
       @page="onPage($event)"
+      :totalRecords="totalCount"
     >
       <template #grid="slotProps">
         <div class="grid grid-cols-12">
@@ -72,8 +73,6 @@ let records = ref(Array.from({ length: 50 }))
 let images = ref([])
 let dataset = ref()
 
-const layout = ref('grid')
-
 const searchText = computed(() => {
   let text = store.getters['searchText']
   return text ? text : '*'
@@ -97,6 +96,14 @@ const isInSweden = computed(() => {
 
 const isType = computed(() => {
   return store.getters['filterType']
+})
+
+const startDate = computed(() => {
+  return store.getters['startDate']
+})
+
+const endDate = computed(() => {
+  return store.getters['endDate']
 })
 
 onMounted(async () => {
@@ -172,7 +179,8 @@ function fetchData(start, end) {
   // })
 
   const params = new URLSearchParams({
-    text: searchText.value
+    text: searchText.value,
+    hasImages: true
   })
 
   if (scientificName.value) {
@@ -186,10 +194,6 @@ function fetchData(start, end) {
 
   if (isInSweden.value) {
     params.set('isInSweden', isInSweden.value)
-  }
-
-  if (hasImages.value) {
-    params.set('hasImages', hasImages.value)
   }
 
   if (hasCoordinates.value) {

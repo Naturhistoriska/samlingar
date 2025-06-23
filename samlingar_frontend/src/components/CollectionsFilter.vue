@@ -27,6 +27,9 @@
 <script setup>
 import ImageFiltLink from './baseComponents/ImageFiltLink.vue'
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
 
 const botanicalCollection = ref('startPage.botanicalCollection')
 const botImageSource = ref('/paucidentatus.jpg')
@@ -40,25 +43,40 @@ const paleoImageSource = ref('/Angelinoceras.jpg')
 const geoCollection = ref('startPage.geoCollection')
 const geoImageSource = ref('/Bergkristall.jpg')
 
-const emits = defineEmits([
-  'searchBotanyCollections',
-  'searchZooCollections',
-  'searchPaleaCollections',
-  'searchGeoCollections'
-])
+const emits = defineEmits(['searchCollections'])
 
 function handleBotCollectionSearch() {
-  emits('searchBotanyCollections')
+  const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
+  search(botanyGroup)
 }
 
 function handleZooCollectionSearch() {
-  emits('searchZooCollections')
+  const zooGroup = import.meta.env.VITE_ZOO_GROUP
+  search(zooGroup)
 }
+
 function handlePaleoCollectionSearch() {
-  emits('searchPaleaCollections')
+  const paleaGroup = import.meta.env.VITE_PALEA_GROUP
+  search(paleaGroup)
 }
+
 function handleGeoCollectionSearch() {
-  emits('searchGeoCollections')
+  const geoGroup = import.meta.env.VITE_GEO_GROUP
+  search(geoGroup)
+}
+
+function search(value) {
+  const searchText = '*'
+  store.commit('setSearchText', searchText)
+
+  store.commit('setFilterCoordinates', false)
+  store.commit('setFilterInSweden', false)
+  store.commit('setFilterImage', false)
+  store.commit('setFilterType', false)
+
+  store.commit('setCollectionGroup', value)
+
+  emits('searchCollections')
 }
 </script>
 <style scoped>

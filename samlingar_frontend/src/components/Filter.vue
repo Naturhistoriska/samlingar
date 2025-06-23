@@ -11,58 +11,47 @@
     <filt-link
       v-bind:text="allSpecimensText"
       v-bind:total="totalCount"
-      v-bind:loading="loading"
       @doSearch="handleFreeTextSearch"
     />
 
     <filt-link
       v-bind:text="coordinatesText"
       v-bind:total="coordinatesCount"
-      v-bind:loading="filterSearchLoading"
       @doSearch="handleCoordinatesSearch"
     />
 
     <filt-link
       v-bind:text="inSwedenText"
       v-bind:total="inSwedenCount"
-      v-bind:loading="filterSearchLoading"
       @doSearch="handleInSwedenSearch"
     />
 
     <filt-link
       v-bind:text="hasImageText"
       v-bind:total="imageCount"
-      v-bind:loading="filterSearchLoading"
       @doSearch="handleHasImageSearch"
     />
 
     <filt-link
       v-bind:text="isTypeText"
       v-bind:total="isTypeCount"
-      v-bind:loading="filterSearchLoading"
-      @doSearch="handleIsTypeSearch"
+      @doSearch="handleTypeStatusSearch"
     />
   </div>
 </template>
 <script setup>
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useI18n } from 'vue-i18n'
+// import { useI18n } from 'vue-i18n'
 import FiltLink from './baseComponents/FiltLink.vue'
 
-const { t } = useI18n()
+// const { t } = useI18n()
 
-const emits = defineEmits([
-  'freeTextSearch',
-  'filterWithCoordinates',
-  'filterWithImages',
-  'filterWithInSweden',
-  'filterWithInType'
-])
+const emits = defineEmits(['freeTextSearch', 'filterSearch'])
 
 const store = useStore()
 
-const props = defineProps(['loading', 'filterSearchLoading'])
+const props = defineProps(['filterSearchLoading'])
 
 const allSpecimensText = ref('startPage.allSpecimens')
 const coordinatesText = ref('startPage.specimensWithCoordinates')
@@ -91,25 +80,36 @@ const inSwedenCount = computed(() => {
 })
 
 function handleFreeTextSearch() {
-  const searchText = '*'
-  store.commit('setSearchText', searchText)
-  emits('freeTextSearch', searchText)
+  search(false, false, false, false)
 }
 
 function handleCoordinatesSearch() {
-  emits('filterWithCoordinates')
+  search(true, false, false, false)
 }
 
 function handleInSwedenSearch() {
-  emits('filterWithInSweden')
+  search(false, false, true, false)
 }
 
 function handleHasImageSearch() {
-  emits('filterWithImages')
+  search(false, true, false, false)
 }
 
-function handleIsTypeSearch() {
-  emits('filterWithInType')
+function handleTypeStatusSearch() {
+  search(false, false, false, true)
+}
+
+function search(filtCoordinates, filtImages, filtInSweden, filtTypeStatus) {
+  const searchText = '*'
+  store.commit('setSearchText', searchText)
+
+  store.commit('setFilterCoordinates', filtCoordinates)
+  store.commit('setFilterInSweden', filtInSweden)
+  store.commit('setFilterImage', filtImages)
+  store.commit('setFilterType', filtTypeStatus)
+
+  store.commit('setCollectionGroup', null)
+  emits('filterSearch')
 }
 </script>
 <style scoped>

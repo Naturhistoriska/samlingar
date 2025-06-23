@@ -52,7 +52,9 @@ import SearchAll from './SearchAll.vue'
 
 const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
 
-function search() {}
+function search() {
+  emits('search', 0, 50, true)
+}
 
 // function doSearch(key, value) {
 //   console.log('doSearch')
@@ -60,7 +62,7 @@ function search() {}
 // }
 
 function handleSearch() {
-  emits('search', 0, 50)
+  // emits('search', 0, 50)
 }
 </script>
 <style scoped>

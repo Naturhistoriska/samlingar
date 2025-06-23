@@ -5,14 +5,22 @@ const speciesSearchUrl = import.meta.env.VITE_SBDI_SPECIES_SEARCH
 // const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
 const resultsPerPage = 10
 
-const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
-// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
+// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
+const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
 
 const fiedList =
   'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'
 const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
 export default class Service {
+  async apiSearch(params, start, numPerPage) {
+    let url = `${samlingApi}/search?${params.toString()}`
+
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+    const response = await axios.get(url)
+    return response.data
+  }
+
   async apiFreeTextSearch(searchText, start, rows) {
     const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
     const response = await axios.get(url)
@@ -33,7 +41,6 @@ export default class Service {
     const response = await axios.get(url)
     return response.data
   }
-
 
   async apiFreeTextSearchWithFilter(
     searchText,
@@ -81,43 +88,11 @@ export default class Service {
   //   numPerPage
   // )
 
-  async apiSearch(
-    params,
-    start,
-    numPerPage
-  ) {
-    // let url = `${samlingApi}/search?text=${searchText}`
-
+  async apiSearch(params, start, numPerPage) {
     let url = `${samlingApi}/search?${params.toString()}`
 
-    // if (scientificName) {
-    //   scientificName = scientificName.replace(/&/g, '%26')
-    //   url += `&scientificName=${scientificName}&fuzzySearch=${isFuzzySearch}`
-    // }
-
-    // if (hasCoordinates) {
-    //   url += '&hasCoordinates=true'
-    // }
-    // if (hasImages) {
-    //   url += '&hasImage=true'
-    // }
-    // if (isType) {
-    //   url += '&isType=true'
-    // }
-    // if (isInSweden) {
-    //   url += '&isInSweden=true'
-    // }
-    // if (startDate) {
-    //   url += `&startDate=${startDate}`
-    // }
-    // if (endDate) {
-    //   url += `&endDate=${endDate}`
-    // }
-
     url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
-
     const response = await axios.get(url)
-
     return response.data
   }
 
