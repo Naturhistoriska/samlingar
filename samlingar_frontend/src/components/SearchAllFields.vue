@@ -19,12 +19,14 @@
 </template>
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import InputWithIcon from './baseComponents/InputWithIcon.vue'
 
-const emits = defineEmits(['freeTextSearch'])
+// const emits = defineEmits(['freeTextSearch'])
 
 const store = useStore()
+const router = useRouter()
 
 const props = defineProps(['loading'])
 
@@ -38,9 +40,11 @@ function handleFreeTextSearch(value) {
 
   const searchText = value ? value : '*'
 
-  console.log('searchText', searchText)
   store.commit('setSearchText', searchText)
-  emits('freeTextSearch', searchText)
+  store.commit('setScientificName', null)
+  router.push('/search')
+
+  // emits('freeTextSearch', searchText)
 }
 </script>
 <style scoped>

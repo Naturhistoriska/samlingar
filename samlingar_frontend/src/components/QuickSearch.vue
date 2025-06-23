@@ -42,7 +42,14 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['setIsFuzzySearch', 'setResults', 'setScientificName', 'setTotalRecords']),
+    ...mapMutations([
+      'setGeoData',
+      'setIsFuzzySearch',
+      'setResults',
+      'setSearchText',
+      'setScientificName',
+      'setTotalRecords'
+    ]),
 
     onChange() {
       this.itemSelected = false
@@ -83,10 +90,18 @@ export default {
           const total = response.response.numFound
           const results = response.response.docs
 
+          console.log('total', total)
+
+          if (total > 0) {
+            const geofacet = response.facets.geo.buckets
+            this.setGeoData(geofacet)
+          }
+
           this.setResults(results)
           this.setTotalRecords(total)
           this.setScientificName(searchText)
           this.setIsFuzzySearch(fuzzySearch)
+          this.setSearchText(null)
         })
         .catch()
         .finally(() => {
@@ -94,74 +109,6 @@ export default {
           this.$router.push('/search')
         })
     },
-
-    // apiSearch() {
-    //   let searchText = this.search
-    //   const fuzzySearch = !this.itemSelected
-
-    //   // searchText = searchText.replace(/^./, searchText[0].toUpperCase())
-    //   // if (this.itemSelected) {
-    //   //   searchText = '%2BtxFullName:"' + searchText + '"'
-    //   // } else {
-    //   //   searchText = '%2B(txFullName:' + searchText + '*' + ' txFullName:"' + searchText + '")'
-    //   // }
-    //   // console.log('what..2..', searchText)
-    //   service
-    //     .apiQuickSearch(searchText, fuzzySearch, 0, 10)
-    //     .then((response) => {
-    //       const total = response.response.numFound
-    //       const results = response.response.docs
-
-    //       if (total > 0) {
-    //         const facets = response.facets
-
-    //         this.setCommentFacet(facets)
-
-    //         const familyFacet = facets.family
-    //         if (familyFacet !== undefined) {
-    //           const family = familyFacet.buckets
-    //           console.log('family length', family.length)
-    //           family.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-    //           this.setFamily(family)
-    //         } else {
-    //           this.setFamily([])
-    //         }
-    //         const genusFacet = facets.genus
-    //         if (genusFacet !== undefined) {
-    //           const genus = genusFacet.buckets
-    //           console.log('genus length', genus.length)
-    //           genus.sort((a, b) => (a.val.toLowerCase() > b.val.toLowerCase() ? 1 : -1))
-    //           this.setGenus(genus)
-    //         } else {
-    //           this.setGenus([])
-    //         }
-
-    //         const collections = facets.collectionName.buckets
-    //         this.setCollections(collections)
-
-    //         const typeStatus = facets.typeStatus.buckets
-    //         console.log('typeStatus length', typeStatus.length)
-
-    //         this.setTypeStatus(typeStatus)
-    //       }
-    //       this.setResults(results)
-    //       this.setTotalRecords(total)
-    //       this.setSearchText(searchText)
-
-    //       this.setShowDetail(false)
-    //       this.setShowResults(true)
-    //       this.setResetPaging(true)
-    //       this.setFilterCoordinates(false)
-    //       this.setFilterImage(false)
-    //       this.setFilterInSweden(false)
-    //       this.setFilterType(false)
-    //     })
-    //     .catch()
-    //     .finally(() => {
-    //       this.search = null
-    //       this.$router.push('/records')
-    //     })
-    // },
 
     setCommentFacet(facets) {
       const imageFacet = facets.image.buckets

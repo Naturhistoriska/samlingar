@@ -5,8 +5,8 @@ const speciesSearchUrl = import.meta.env.VITE_SBDI_SPECIES_SEARCH
 // const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
 const resultsPerPage = 10
 
-// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
-const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
+const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
+// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
 
 const fiedList =
   'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'
@@ -33,6 +33,7 @@ export default class Service {
     const response = await axios.get(url)
     return response.data
   }
+
 
   async apiFreeTextSearchWithFilter(
     searchText,
@@ -65,36 +66,53 @@ export default class Service {
     return response.data
   }
 
+  // async apiSearch(
+  //   params,
+  //   searchText,
+  //   scientificName,
+  //   isFuzzySearch,
+  //   hasImages,
+  //   hasCoordinates,
+  //   isType,
+  //   isInSweden,
+  //   startDate,
+  //   endDate,
+  //   start,
+  //   numPerPage
+  // )
+
   async apiSearch(
-    searchText,
-    scientificName,
-    isFuzzySearch,
-    hasImages,
-    hasCoordinates,
-    isType,
-    isInSweden,
+    params,
     start,
     numPerPage
   ) {
-    let url = `${samlingApi}/search?text=${searchText}`
+    // let url = `${samlingApi}/search?text=${searchText}`
 
-    if (scientificName) {
-      scientificName = scientificName.replace(/&/g, '%26')
-      url += `&scientificName=${scientificName}&fuzzySearch=${isFuzzySearch}`
-    }
+    let url = `${samlingApi}/search?${params.toString()}`
 
-    if (hasCoordinates) {
-      url += '&hasCoordinates=true'
-    }
-    if (hasImages) {
-      url += '&hasImage=true'
-    }
-    if (isType) {
-      url += '&isType=true'
-    }
-    if (isInSweden) {
-      url += '&isInSweden=true'
-    }
+    // if (scientificName) {
+    //   scientificName = scientificName.replace(/&/g, '%26')
+    //   url += `&scientificName=${scientificName}&fuzzySearch=${isFuzzySearch}`
+    // }
+
+    // if (hasCoordinates) {
+    //   url += '&hasCoordinates=true'
+    // }
+    // if (hasImages) {
+    //   url += '&hasImage=true'
+    // }
+    // if (isType) {
+    //   url += '&isType=true'
+    // }
+    // if (isInSweden) {
+    //   url += '&isInSweden=true'
+    // }
+    // if (startDate) {
+    //   url += `&startDate=${startDate}`
+    // }
+    // if (endDate) {
+    //   url += `&endDate=${endDate}`
+    // }
 
     url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
 

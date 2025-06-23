@@ -47,6 +47,8 @@ import Checkbox from 'primevue/checkbox'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 
+import DataView from 'primevue/dataview'
+
 // import DataView from 'primevue/dataview'
 
 import Dialog from 'primevue/dialog'
@@ -61,12 +63,16 @@ import InputGroup from 'primevue/inputgroup'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
+
 import Menu from 'primevue/menu'
+import MultiSelect from 'primevue/multiselect'
 import Paginator from 'primevue/paginator'
 import Panel from 'primevue/panel'
 import ProgressSpinner from 'primevue/progressspinner'
 import RadioButton from 'primevue/radiobutton'
 import Select from 'primevue/select'
+import SelectButton from 'primevue/selectbutton'
+
 import Skeleton from 'primevue/skeleton'
 import Tab from 'primevue/tab'
 import Tabs from 'primevue/tabs'
@@ -130,7 +136,12 @@ app.component('Card', Card)
 app.component('Checkbox', Checkbox)
 app.component('Column', Column)
 app.component('DataTable', DataTable)
-// app.component('DataView', DataView)
+app.component('DataView', DataView)
+
+
+
+
+
 app.component('Dialog', Dialog)
 app.component('Divider', Divider)
 app.component('Fieldset', Fieldset),
@@ -142,11 +153,15 @@ app.component('InputIcon', InputIcon)
 app.component('InputText', InputText)
 app.component('FloatLabel', FloatLabel)
 app.component('Menu', Menu)
+
+app.component('MultiSelect', MultiSelect)
+
 app.component('Paginator', Paginator)
 app.component('Panel', Panel)
 app.component('ProgressSpinner', ProgressSpinner)
 app.component('RadioButton', RadioButton)
 app.component('Select', Select)
+app.component('SelectButton', SelectButton)
 app.component('Skeleton', Skeleton)
 app.component('Tab', Tab)
 app.component('Tabs', Tabs)

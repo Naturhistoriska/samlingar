@@ -2,6 +2,9 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    dates: null,
+    endDate: null,
+    fields: [],
     filterCoordinates: false,
     filterImage: false,
     filterInSweden: false,
@@ -12,6 +15,7 @@ export default createStore({
     scientificName: null,
     searchText: null,
     selectedRecord: null,
+    startDate: null,
 
     //
     //
@@ -45,7 +49,7 @@ export default createStore({
     classs: [],
     dataset: null,
     dateRange: null,
-    endDate: null,
+
     exportData: [],
     family: [],
 
@@ -76,7 +80,7 @@ export default createStore({
 
     showResults: false,
     speciesGrouup: null,
-    startDate: null,
+
     startRecord: 0,
     synonym: null,
     totalCount: 0,
@@ -89,6 +93,15 @@ export default createStore({
   },
 
   getters: {
+    dates(state) {
+      return state.dates
+    },
+    endDate(state) {
+      return state.endDate
+    },
+    fields(state) {
+      return state.fields
+    },
     filterImage(state) {
       return state.filterImage
     },
@@ -122,6 +135,9 @@ export default createStore({
     },
     showDetail(state) {
       return state.showDetail
+    },
+    startDate(state) {
+      return state.startDate
     },
 
     //
@@ -211,9 +227,7 @@ export default createStore({
     dateRange(state) {
       return state.dateRange
     },
-    endDate(state) {
-      return state.endDate
-    },
+
     exportData(state) {
       return state.exportData
     },
@@ -299,9 +313,7 @@ export default createStore({
     speciesGrouup(state) {
       return state.speciesGrouup
     },
-    startDate(state) {
-      return state.startDate
-    },
+
     startRecord(state) {
       return state.startRecord
     },
@@ -329,6 +341,9 @@ export default createStore({
   },
 
   mutations: {
+    setDates: (state, payload) => (state.dates = payload),
+    setEndDate: (state, payload) => (state.endDate = payload),
+    setFields: (state, payload) => (state.fields = payload),
     setFilterCoordinates: (state, payload) => (state.filterCoordinates = payload),
     setFilterImage: (state, payload) => (state.filterImage = payload),
     setFilterInSweden: (state, payload) => (state.filterInSweden = payload),
@@ -340,6 +355,7 @@ export default createStore({
     setSearchText: (state, payload) => (state.searchText = payload),
     setSelectedRecord: (state, payload) => (state.selectedRecord = payload),
     setShowDetail: (state, payload) => (state.showDetail = payload),
+    setStartDate: (state, payload) => (state.startDate = payload),
 
     //
     //
@@ -374,7 +390,7 @@ export default createStore({
 
     setDataset: (state, payload) => (state.dataset = payload),
     setDateRange: (state, payload) => (state.dateRange = payload),
-    setEndDate: (state, payload) => (state.endDate = payload),
+
     setExportData: (state, payload) => (state.exportData = payload),
     setImageCount: (state, payload) => (state.imageCount = payload),
     setFamily: (state, payload) => (state.family = payload),
@@ -406,7 +422,7 @@ export default createStore({
 
     setShowResults: (state, payload) => (state.showResults = payload),
     setSpeciesGroup: (state, payload) => (state.speciesGrouup = payload),
-    setStartDate: (state, payload) => (state.startDate = payload),
+
     setStartRecord: (state, payload) => (state.startRecord = payload),
     setSynonym: (state, payload) => (state.synonym = payload),
     setTotalGeoData: (state, payload) => (state.totalGeoData = payload),

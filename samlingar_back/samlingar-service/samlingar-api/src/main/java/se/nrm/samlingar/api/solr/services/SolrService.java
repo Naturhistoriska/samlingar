@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class SolrService implements Serializable {
     private final String star = "*";
     private final String emptySpace = " ";
     private final String imageFilter = "hasImage:*";
-    private final String mapFilter = "verbatimCoordinates:*";
+    private final String mapFilter = "point-1:*";
     private final String typeFilter = "typeStatus:*";
     private final String isInSwedenFilter = "country:Sweden";
 
@@ -118,9 +119,11 @@ public class SolrService implements Serializable {
     private final String collectionCodeKey = "collectionCode:";
     private final String typeStatusKey = "typeStatus:";
     private final String familyKey = "family:";
+    private final String eventDateKey = "eventDate:";
+    
     private final String txFullNameKey = "txFullName:";
     
-    
+   
     
     // field key search
     private final String scientificNameKey = "scientificName:";
@@ -139,7 +142,11 @@ public class SolrService implements Serializable {
     private final int defaultNumPerPage = 10;
     private final String geohashPreFix = "4_";
     private final String pointPreFix = "0_";
-
+    private final String leftBlacket = "[";
+    private final String rightBlacket = "]";
+    
+    private final String to = " TO ";
+    private final String toWithStar = " TO *]";
     private final int collectionFacetLimit = 100;
     private final int catalogedMonthLimit = 12;
 
@@ -152,6 +159,7 @@ public class SolrService implements Serializable {
     private int yearOfToday;
     private int lastTenYear;
     private int nextYear;
+    private String dateRange;
     
     private StringBuilder fuzzySeachTextSb;
     
@@ -171,7 +179,7 @@ public class SolrService implements Serializable {
                 = new TermsFacetMap(catalogedMonthFacetKey)
                         .setLimit(catalogedMonthLimit);
         
-        mapFacet = new TermsFacetMap(verbatimCoordinatesKey)
+        mapFacet = new TermsFacetMap(point1FacetKey)
                 .includeAllBucketsUnionBucket(true)
                 .setLimit(1);
         
@@ -333,9 +341,57 @@ public class SolrService implements Serializable {
         return jsonResponse;
     }
     
+    public String search(Map<String, String> paramMap, String text, 
+            String scientificName, String startDate, String endDate,
+            int start, int numPerPage, String sort) {
+        
+        log.info("search", paramMap);
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(catchAllField + text)   
+                .setOffset(start)
+                .setLimit(numPerPage)
+                .withFacet(geoFacetKey, geoFacet);
+        
+        if (!StringUtils.isBlank(scientificName)) {
+            jsonRequest.withFilter(scientificName);
+        }
+        
+        if(!StringUtils.isBlank(startDate) && !StringUtils.isBlank(endDate) ) {
+           dateRange = leftBlacket + startDate + to + endDate + rightBlacket;
+           jsonRequest.withFilter(eventDateKey + dateRange); 
+        } else if(!StringUtils.isBlank(startDate)) {
+            dateRange = leftBlacket + startDate + toWithStar;
+            jsonRequest.withFilter(eventDateKey + dateRange); 
+        }
+        
+        paramMap.forEach((key, value) -> {
+                jsonRequest.withFilter(key + ":" + value);
+            });
+        
+         
+        jsonRequest.setBasicAuthCredentials(username, password);
+
+        String jsonResponse;
+        try {
+            response = jsonRequest.process(client);
+
+            rawJsonResponseParser = new NoOpResponseParser();
+            rawJsonResponseParser.setWriterType(jsonKey);
+            jsonRequest.setResponseParser(rawJsonResponseParser);
+
+            jsonResponse = (String) client.request(jsonRequest).get(responseKey);
+//            log.info("simplesearch what... {}", jsonResponse);
+
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+        return jsonResponse; 
+    }
+    
     public String search(String text, String scientificName, 
-            boolean hasImages, boolean hasCoordinates,
-            boolean isType, boolean isInSweden, String collections,
+            boolean hasImages, boolean hasCoordinates, boolean isType, 
+            boolean isInSweden, String collections, String startDate, String endDate,
             int start, int numPerPage, String sort ) {
          
          
@@ -346,7 +402,8 @@ public class SolrService implements Serializable {
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)  
                 .setOffset(start)
-                .setLimit(numPerPage);
+                .setLimit(numPerPage)
+                .withFacet(geoFacetKey, geoFacet);
          
         if (hasImages) {
             jsonRequest.withFilter(imageFilter);
@@ -373,6 +430,13 @@ public class SolrService implements Serializable {
             jsonRequest.setSort(sort);
         }
  
+        if(!StringUtils.isBlank(startDate) && !StringUtils.isBlank(endDate) ) {
+           dateRange = leftBlacket + startDate + to + endDate + rightBlacket;
+           jsonRequest.withFilter(eventDateKey + dateRange); 
+        } else if(!StringUtils.isBlank(startDate)) {
+            dateRange = leftBlacket + startDate + toWithStar;
+            jsonRequest.withFilter(eventDateKey + dateRange); 
+        }
         jsonRequest.setBasicAuthCredentials(username, password);
 
         String jsonResponse;

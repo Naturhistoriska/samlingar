@@ -20,38 +20,51 @@
     <template #content>
       <div class="grid">
         <div class="col-12" no-gutters>
-          <search-all @freeTextSearch="handleFreeTextSearch" style="padding-bottom: 5px" />
+          <search-all @search="handleSearch" style="padding-bottom: 5px" />
         </div>
         <filter-checkbox @search="handleSearch" />
+
+        <Panel>
+          <filter-fields @search="handleSearch" style="padding-bottom: 5px" />
+        </Panel>
+
         <Panel :header="$t('labels.scientificName')" toggleable>
           <scientific-name @search="handleSearch" />
         </Panel>
+        <Panel :header="$t('labels.collectingDate')" toggleable>
+          <event-date @search="handleSearch" />
+        </Panel>
+      </div>
+    </template>
+    <template #footer>
+      <div class="flex gap-3 mt-1 grid justify-end" style="float: inline-end">
+        <Button :label="$t('search.search')" @click="search()" />
       </div>
     </template>
   </Card>
 </template>
 <script setup>
-import SearchAll from './SearchAll.vue'
-import ScientificName from './ScientificName.vue'
+import EventDate from './EventDate.vue'
 import FilterCheckbox from './FilterCheckbox.vue'
+import FilterFields from './FilterFields.vue'
+import ScientificName from './ScientificName.vue'
+import SearchAll from './SearchAll.vue'
 
-const emits = defineEmits(['freeTextSearch', 'search'])
+const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
 
-function handleFreeTextSearch(value) {
-  console.log('handleFreeTextSearch', value)
-  emits('freeTextSearch', value, 0, 50)
-}
+function search() {}
 
-function handleSearch(hasImage, hasCoordinates) {
-  emits('search', hasImage, hasCoordinates, 0, 50)
+// function doSearch(key, value) {
+//   console.log('doSearch')
+//   emits('search', 0, 50)
+// }
+
+function handleSearch() {
+  emits('search', 0, 50)
 }
 </script>
 <style scoped>
 .p-panel {
   min-width: 100% !important;
 }
-/* .p-panel-title {
-  font-weight: 100 !important;
-  font-size: 6px !important;
-} */
 </style>

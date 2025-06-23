@@ -2,7 +2,7 @@
   <div style="font-size: 12px">
     <p style="font-weight: bold; font-size: 1em">{{ $t('results.locality') }}</p>
     <div class="grid">
-      <div class="col-3 reducePadding">{{ $t('results.scientificName') }}</div>
+      <div class="col-3 reducePadding">{{ $t('results.locality') }}</div>
       <div class="col-9 reducePadding">
         {{ localityName }}
       </div>

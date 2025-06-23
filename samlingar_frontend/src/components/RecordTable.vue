@@ -16,7 +16,7 @@
       :virtualScrollerOptions="{
         lazy: true,
         onLazyLoad: loadRecoudsLazy,
-        itemSize: 44,
+        itemSize: 30,
         delay: 200,
         showLoader: true,
         loading: lazyLoading,
@@ -25,11 +25,8 @@
     >
       <template #header>
         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-          <span class="text-xl text-900 font-bold">
-            {{ $t('results.searchResults') }}
-            [{{ $t('results.num_results', totalCount) }}]
-          </span>
-          <div style="text-align: right" clss="grid">
+          <span class="text-xl text-900 font-bold"> </span>
+          <div style="text-align: right" clss="grid justify-end">
             <Button
               icon="pi pi-external-link"
               :label="$t('exportData.exportDatatable')"
@@ -69,7 +66,7 @@
       modal
       :contentStyle="{ height: '300px' }"
     >
-      test
+      <datatable-column />
     </Dialog>
   </div>
 </template>
@@ -77,6 +74,8 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+
+import DatatableColumn from './DatatableColumn.vue'
 
 import { useStore } from 'vuex'
 
@@ -87,25 +86,6 @@ const store = useStore()
 const router = useRouter()
 
 const emits = defineEmits(['search'])
-
-// onBeforeRouteUpdate((to, from) => {
-//   console.log('onBeforeRouteUpdate', to, from)
-//   const { name } = to
-//   if (name === 'Home') {
-//     // store.commit('setShowResults', false)
-//   }
-// })
-
-onMounted(() => {
-  console.log('table onMounted')
-})
-
-let count = ref(30)
-let records = ref(Array.from({ length: 100000 }))
-const selectedRecord = ref()
-const lazyLoading = ref(false)
-const loadLazyTimeout = ref()
-const size = ref('small')
 
 const dialogVisible = ref(false)
 
@@ -118,27 +98,152 @@ let columns = ref([
   { field: 'catalogNumber', header: 'CatalogNumber' }
 ])
 
+let records = ref(Array.from({ length: 10000 }))
+const selectedRecord = ref()
+const lazyLoading = ref(false)
+const loadLazyTimeout = ref()
+
 watch(
-  () => store.getters['results'],
+  async () => store.getters['results'],
   (newValue, oldValue) => {
+    const total = store.getters['totalRecords']
+    if (total < 10000) {
+      records.value = Array.apply(null, Array(total)).map(function () {})
+    }
     records.value = store.getters['results']
   }
 )
 
-const totalCount = computed(() => {
-  return store.getters['totalRecords']
+onMounted(async () => {
+  console.log('table onMounted')
+
+  const fields = store.getters['fields']
+  console.log('fields', fields)
+
+  // const params = new URLSearchParams({
+  //   text: searchText.value,
+  //   scientificName: scientificName.value,
+  //   fuzzySearch: isFuzzySearch.value,
+  //   hasImages: hasImages.value,
+  //   isType: isType.value,
+  //   isInSweden: isInSweden.value,
+  //   hasCoordinates: hasCoordinates.value,
+  //   startDate: startDate.value,
+  //   endDate: endDate.value
+  // })
+
+  const params = new URLSearchParams({
+    text: searchText.value
+  })
+
+  if (scientificName.value) {
+    params.set('scientificName', scientificName.value)
+    params.set('fuzzySearch', isFuzzySearch.value)
+  }
+
+  if (isType.value) {
+    params.set('isType', isType.value)
+  }
+
+  if (isInSweden.value) {
+    params.set('isInSweden', isInSweden.value)
+  }
+
+  if (hasImages.value) {
+    params.set('hasImages', hasImages.value)
+  }
+
+  if (hasCoordinates.value) {
+    params.set('hasCoordinates', hasCoordinates.value)
+  }
+
+  if (startDate.value) {
+    params.set('startDate', startDate.value)
+  }
+
+  if (endDate.value) {
+    params.set('endDate', endDate.value)
+  }
+
+  fields
+    .filter((field) => field.text)
+    .forEach((field) => {
+      console.log('what...', field.value, field.text)
+      params.set(field.value, field.text)
+    })
+
+  await service
+    .apiSearch(params, 0, 40)
+    .then((response) => {
+      const loadedRecords = response.response.docs
+      const total = response.response.numFound
+
+      store.commit('setResults', loadedRecords)
+      store.commit('setTotalRecords', total)
+
+      if (total < 10000) {
+        records.value = Array.apply(null, Array(total)).map(function () {})
+      }
+      let _virtualRecords = [...records.value]
+
+      Array.prototype.splice.apply(_virtualRecords, [
+        ...[0, loadedRecords.length],
+        ...loadedRecords
+      ])
+      records.value = _virtualRecords
+
+      if (total > 0) {
+        const geofacet = response.facets.geo.buckets
+        store.commit('setGeoData', geofacet)
+      }
+    })
+    .catch(() => {
+      console.log('error')
+    })
+    .finally(() => {
+      return { response: [] }
+    })
 })
 
-const loadRecoudsLazy = (event) => {
+const searchText = computed(() => {
+  let text = store.getters['searchText']
+  return text ? text : '*'
+})
+
+const scientificName = computed(() => {
+  return store.getters['scientificName']
+})
+
+const isFuzzySearch = computed(() => {
+  return store.getters['isFuzzySearch']
+})
+
+const hasImages = computed(() => {
+  return store.getters['filterImage']
+})
+
+const hasCoordinates = computed(() => {
+  return store.getters['filterCoordinates']
+})
+
+const isInSweden = computed(() => {
+  return store.getters['filterInSweden']
+})
+
+const isType = computed(() => {
+  return store.getters['filterType']
+})
+
+const startDate = computed(() => {
+  return store.getters['startDate']
+})
+
+const endDate = computed(() => {
+  return store.getters['endDate']
+})
+
+const loadRecoudsLazy = async (event) => {
   console.log('loadRecoudsLazy')
-
-  console.log('event', event)
-  console.log('count.value', count.value)
-
-  const results = store.getters['results']
-  console.log('results', results)
-
-  records.value = results
 
   !lazyLoading.value && (lazyLoading.value = true)
 
@@ -146,17 +251,81 @@ const loadRecoudsLazy = (event) => {
     clearTimeout(loadLazyTimeout.value)
   }
 
+  let _virtualRecords = [...records.value]
+
   loadLazyTimeout.value = setTimeout(
     () => {
       let { first, last } = event
-      console.log(first, last, totalCount.value)
 
-      if (last >= count.value && totalCount.value > count.value) {
-        emits('search')
-        // fetchData(count.value, 100)
-        count.value += 30
+      const fields = store.getters['fields']
+
+      // const params = new URLSearchParams({
+      // text: searchText.value,
+      // scientificName: scientificName.value,
+      // fuzzySearch: isFuzzySearch.value,
+      // hasImages: hasImages.value,
+      // isType: isType.value,
+      // isInSweden: isInSweden.value,
+      // hasCoordinates: hasCoordinates.value,
+      // startDate: startDate.value,
+      // endDate: endDate.value
+      // })
+
+      const params = new URLSearchParams({
+        text: searchText.value
+      })
+
+      if (scientificName.value) {
+        params.set('scientificName', scientificName.value)
+        params.set('fuzzySearch', isFuzzySearch.value)
       }
-      lazyLoading.value = false
+
+      if (isType.value) {
+        params.set('isType', isType.value)
+      }
+
+      if (isInSweden.value) {
+        params.set('isInSweden', isInSweden.value)
+      }
+
+      if (hasImages.value) {
+        params.set('hasImages', hasImages.value)
+      }
+
+      if (hasCoordinates.value) {
+        params.set('hasCoordinates', hasCoordinates.value)
+      }
+
+      if (startDate.value) {
+        params.set('startDate', startDate.value)
+      }
+
+      if (endDate.value) {
+        params.set('endDate', endDate.value)
+      }
+
+      fields
+        .filter((field) => field.text)
+        .forEach((field) => {
+          console.log('what...', field.value, field.text)
+          params.set(field.value, field.text)
+        })
+
+      service
+        .apiSearch(params, first, last)
+        .then((response) => {
+          const loadedRecords = response.response.docs
+
+          Array.prototype.splice.apply(_virtualRecords, [
+            ...[first, loadedRecords.length],
+            ...loadedRecords
+          ])
+          records.value = _virtualRecords
+        })
+        .catch()
+        .finally(() => {
+          lazyLoading.value = false
+        })
     },
     Math.random() * 1000 + 250
   )
@@ -168,31 +337,9 @@ const exportCSV = () => {
 
 function selectRow(data) {
   selectedRecord.value = data
-  // store.commit('setShowDetail', true)
   store.commit('setSelectedRecord', selectedRecord)
 
   router.push(`/record/${data.id}`)
-}
-
-function fetchData(start, numPerPage) {
-  console.log('fatchData')
-
-  const searchText = store.getters['searchText']
-  const value = searchText == null ? '*' : searchText
-
-  service
-    .apiFreeTextSearch(value, start, numPerPage)
-    .then((response) => {
-      const results = response.response.docs
-      const total = response.response.numFound
-
-      store.commit('setResults', results)
-      store.commit('setTotalRecords', total)
-
-      records.value = results
-    })
-    .catch()
-    .finally(() => {})
 }
 </script>
 <style scoped>

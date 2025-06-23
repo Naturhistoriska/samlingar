@@ -70,7 +70,6 @@ let catalogNum = ref()
 let taxon = ref()
 
 onMounted(() => {
-  console.log('mounted...')
   const record = store.getters['selectedRecord']
 
   if (record) {
@@ -96,8 +95,6 @@ onMounted(() => {
         images.value = associatedMedia
           .filter((media) => !media.includes(smallImage))
           .map((a) => (a = a.match(/(?<=\[).+?(?=\])/g).toString()))
-
-        console.log('images', images.value)
       } else {
         smallImage = 'thumb'
         if (paleo.includes(collectionCode)) {

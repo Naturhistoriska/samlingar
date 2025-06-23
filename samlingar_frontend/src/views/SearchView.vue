@@ -1,13 +1,10 @@
 <template>
   <div>
-    <!-- <div class="grid">
-      <nav-link style="font-size: 10px" />
-    </div> -->
     <div class="grid">
-      <div class="col-4" no-gutters>
-        <search-records @search="handleSearch" />
+      <div class="col-5" no-gutters>
+        <search-records @search="search" />
       </div>
-      <div class="col-8" no-gutters>
+      <div class="col-7" no-gutters>
         <Suspense>
           <template #default>
             <async-map />
@@ -20,21 +17,18 @@
     </div>
     <div class="grid">
       <div class="col-12" no-gutters>
-        <Records @freeTextSearch="handleFreeTextSearch" @fetchMedia="handleMeadSearch" />
+        <Records @freeTextSearch="handleFreeTextSearch" @fetchMedia="handleMediaSearch" />
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { computed, defineAsyncComponent, onMounted, ref, Suspense, watch } from 'vue'
+import { defineAsyncComponent, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
+import { onBeforeRouteLeave } from 'vue-router'
 import Service from '../Service'
 import SearchRecords from '../components/SearchRecords.vue'
 import Records from '../components/Records.vue'
-import LoadingSkeleton from '../components/baseComponents/LoadingSkeleton.vue'
-// import Map from '../components/MyMap.vue'
-// import NavLink from '../components/NavLink.vue'
 
 const store = useStore()
 
@@ -48,58 +42,83 @@ onBeforeRouteLeave((to, from) => {
   console.log('onBeforeRouteLeave', to, from)
   const { name } = to
   if (name === 'Home') {
-    // store.commit('setShowResults', false)
   }
 })
 
 const AsyncMap = defineAsyncComponent({
-  // the loader function
   loader: () => import('../components/MyMap.vue')
-
-  //hydrate: hydrateOnVisible()
-  // A component to use while the async component is loading
-  // loadingComponent: () => import('../components/baseComponents/LoadingSkeleton.vue')
-  // Delay before showing the loading component. Default: 200ms.
-  // delay: 200
-
-  // A component to use if the load fails
-  // errorComponent: ErrorComponent,
-  // The error component will be displayed if a timeout is
-  // provided and exceeded. Default: Infinity.
-  // timeout: 3000
 })
 
-// const AsyncMap = defineAsyncComponent(
+function search(start, numPerPage) {
+  const scientificName = store.getters['scientificName']
+  const isFuzzy = store.getters['isFuzzySearch']
 
-//   () => import('../components/MyMap.vue')
-// )
-
-function handleMeadSearch() {
-  console.log('handleMeadSearch')
-}
-
-function handleSearch(hasImage, hasMap, start, numPerPage) {
-  console.log('handleSearch', hasImage, hasMap)
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
+  const hasCoordinates = store.getters['filterCoordinates']
+  const hasImages = store.getters['filterImage']
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
 
-  const scientificName = store.getters['scientificName']
-  const isFuzzy = store.getters['isFuzzySearch']
-  const isType = store.getters['filterType']
-  const isInSweden = store.getters['filterInSweden']
+  const endDate = store.getters['endDate']
+  const startDate = store.getters['startDate']
+
+  const fields = store.getters['fields']
+
+  // const params = new URLSearchParams({
+  //   text: searchText,
+  //   scientificName: scientificName,
+  //   fuzzySearch: isFuzzy,
+  //   hasImages: hasImages,
+  //   isType: isType,
+  //   isInSweden: isInSweden,
+  //   hasCoordinates: hasCoordinates,
+  //   startDate: startDate,
+  //   endDate: endDate
+  // })
+
+  const params = new URLSearchParams({
+    text: searchText
+  })
+
+  if (scientificName) {
+    params.set('scientificName', scientificName)
+    params.set('fuzzySearch', isFuzzy)
+  }
+
+  if (isType) {
+    params.set('isType', isType)
+  }
+
+  if (isInSweden) {
+    params.set('isInSweden', isInSweden)
+  }
+
+  if (hasImages) {
+    params.set('hasImages', hasImages)
+  }
+
+  if (hasCoordinates) {
+    params.set('hasCoordinates', hasCoordinates)
+  }
+
+  if (startDate) {
+    params.set('startDate', startDate)
+  }
+
+  if (endDate) {
+    params.set('endDate', endDate)
+  }
+
+  fields
+    .filter((field) => field.text)
+    .forEach((field) => {
+      console.log('what...', field.value, field.text)
+      params.set(field.value, field.text)
+    })
 
   service
-    .apiSearch(
-      searchText,
-      scientificName,
-      isFuzzy,
-      hasImage,
-      hasMap,
-      isType,
-      isInSweden,
-      start,
-      numPerPage
-    )
+    .apiSearch(params, start, numPerPage)
     .then((response) => {
       const total = response.response.numFound
       const results = response.response.docs
@@ -107,15 +126,26 @@ function handleSearch(hasImage, hasMap, start, numPerPage) {
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
-      console.log('total:', total)
-      console.log('results:', results)
+      if (total > 0) {
+        const geofacet = response.facets.geo.buckets
+        store.commit('setGeoData', geofacet)
+      } else {
+        store.commit('setGeoData', null)
+      }
     })
-    .catch()
+    .catch(() => {
+      console.err('error')
+    })
     .finally(() => {})
+}
+
+function handleMediaSearch() {
+  console.log('handleMeadSearch')
 }
 
 function handleFreeTextSearch(value, start, numPerPage) {
   console.log('handleFreeTextSearch...', value, start, numPerPage)
+
   service
     .apiFreeTextSearch(value, start, numPerPage)
     .then((response) => {
@@ -128,7 +158,9 @@ function handleFreeTextSearch(value, start, numPerPage) {
       console.log('total:', total)
       console.log('results:', results)
     })
-    .catch()
+    .catch((error) => {
+      console.error('Fetch error:', error)
+    })
     .finally(() => {})
 }
 </script>

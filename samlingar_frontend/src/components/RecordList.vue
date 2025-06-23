@@ -1,13 +1,5 @@
 <template>
   <div id="recordList">
-    <!-- <template v-for="(record, index) in records" :key="record.id">
-      <Record v-bind:record="record" />
-      <Divider
-        v-if="index + 1 < records.length"
-        :key="`devider-${index}`"
-        style="padding-bottom: 20px"
-      />
-    </template> -->
     <DataTable
       :value="virtualRecords"
       scrollable
