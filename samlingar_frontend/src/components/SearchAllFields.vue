@@ -11,7 +11,6 @@
           v-bind:placehold="label"
           v-bind:size="size"
           v-bind:icon="icon"
-          v-bind:loading="loading"
         />
       </div>
     </div>
@@ -19,16 +18,12 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import InputWithIcon from './baseComponents/InputWithIcon.vue'
 
-// const emits = defineEmits(['freeTextSearch'])
+const emits = defineEmits(['freeTextSearch'])
 
 const store = useStore()
-const router = useRouter()
-
-const props = defineProps(['loading'])
 
 const icon = ref('pi pi-search')
 const size = ref('small')
@@ -39,12 +34,18 @@ function handleFreeTextSearch(value) {
   console.log('handleFreeTextSearch', value)
 
   const searchText = value ? value : '*'
-
   store.commit('setSearchText', searchText)
-  store.commit('setScientificName', null)
-  router.push('/search')
 
-  // emits('freeTextSearch', searchText)
+  store.commit('setScientificName', null)
+
+  store.commit('setFilterCoordinates', false)
+  store.commit('setFilterInSweden', false)
+  store.commit('setFilterImage', false)
+  store.commit('setFilterType', false)
+
+  store.commit('setCollectionGroup', null)
+
+  emits('freeTextSearch')
 }
 </script>
 <style scoped>

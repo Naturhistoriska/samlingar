@@ -83,7 +83,7 @@ const displayButton = computed(() => {
 })
 
 onMounted(async () => {
-  console.log('labels onMounted')
+  console.log('event date')
 
   dates.value = store.getters['dates']
 })

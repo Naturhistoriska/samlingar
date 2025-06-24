@@ -17,7 +17,11 @@
     </div>
     <div class="grid">
       <div class="col-12" no-gutters>
-        <Records @freeTextSearch="handleFreeTextSearch" @fetchMedia="handleMediaSearch" />
+        <Records
+          @freeTextSearch="handleFreeTextSearch"
+          @fetchMedia="handleMediaSearch"
+          @search="search"
+        />
       </div>
     </div>
   </div>
@@ -34,10 +38,6 @@ const store = useStore()
 
 const service = new Service()
 
-onMounted(async () => {
-  console.log('onMounted')
-})
-
 onBeforeRouteLeave((to, from) => {
   console.log('onBeforeRouteLeave', to, from)
   const { name } = to
@@ -49,7 +49,14 @@ const AsyncMap = defineAsyncComponent({
   loader: () => import('../components/MyMap.vue')
 })
 
-function search(start, numPerPage) {
+onMounted(async () => {
+  console.log('onMounted')
+  search(0, 10, true)
+})
+
+function search(start, numPerPage, saveData) {
+  const fields = store.getters['fields']
+
   const scientificName = store.getters['scientificName']
   const isFuzzy = store.getters['isFuzzySearch']
 
@@ -63,19 +70,7 @@ function search(start, numPerPage) {
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
 
-  const fields = store.getters['fields']
-
-  // const params = new URLSearchParams({
-  //   text: searchText,
-  //   scientificName: scientificName,
-  //   fuzzySearch: isFuzzy,
-  //   hasImages: hasImages,
-  //   isType: isType,
-  //   isInSweden: isInSweden,
-  //   hasCoordinates: hasCoordinates,
-  //   startDate: startDate,
-  //   endDate: endDate
-  // })
+  const collectionGroup = store.getters['collectionGroup']
 
   const params = new URLSearchParams({
     text: searchText
@@ -87,19 +82,23 @@ function search(start, numPerPage) {
   }
 
   if (isType) {
-    params.set('isType', isType)
+    params.set('typeStatus', '*')
   }
 
   if (isInSweden) {
-    params.set('isInSweden', isInSweden)
+    params.set('country', 'Sweden')
   }
 
   if (hasImages) {
-    params.set('hasImages', hasImages)
+    params.set('hasImage', hasImages)
   }
 
   if (hasCoordinates) {
-    params.set('hasCoordinates', hasCoordinates)
+    params.set('geo', '*')
+  }
+
+  if (collectionGroup) {
+    params.set('collectionCode', collectionGroup)
   }
 
   if (startDate) {
@@ -113,7 +112,6 @@ function search(start, numPerPage) {
   fields
     .filter((field) => field.text)
     .forEach((field) => {
-      console.log('what...', field.value, field.text)
       params.set(field.value, field.text)
     })
 
@@ -126,15 +124,17 @@ function search(start, numPerPage) {
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
-      if (total > 0) {
-        const geofacet = response.facets.geo.buckets
-        store.commit('setGeoData', geofacet)
-      } else {
-        store.commit('setGeoData', null)
+      if (saveData) {
+        if (total > 0) {
+          const geofacet = response.facets.geo.buckets
+          store.commit('setGeoData', geofacet)
+        } else {
+          store.commit('setGeoData', null)
+        }
       }
     })
-    .catch(() => {
-      console.err('error')
+    .catch((error) => {
+      console.err('error', error)
     })
     .finally(() => {})
 }

@@ -31,6 +31,7 @@ import { useStore } from 'vuex'
 import FieldGroup from './FieldGroup.vue'
 
 const store = useStore()
+const emits = defineEmits(['search'])
 
 let hide = ref(false)
 
@@ -85,8 +86,6 @@ const groupedSelections = ref([
   }
 ])
 
-const emits = defineEmits(['search'])
-
 function onSelect(event) {
   if (selectedItems) {
     store.commit('setFields', selectedItems)
@@ -95,9 +94,7 @@ function onSelect(event) {
 }
 
 function handleSearch() {
-  console.log('handleSearch')
-
-  emits('search')
+  // emits('search')
 }
 </script>
 <style scoped>

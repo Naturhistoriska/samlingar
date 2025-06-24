@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="map" style="height: 60vh" class="custom-popup"></div>
+    <div id="map" style="height: 50vh" class="custom-popup"></div>
 
     <ProgressSpinner
       v-if="isLoading"

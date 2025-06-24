@@ -65,7 +65,6 @@ let catlogNumOptions = ref()
 watch(
   () => store.getters['catalogNumber'],
   (newValue, oldValue) => {
-    console.log('new value:', oldValue, newValue)
     catalogNumber.value = newValue
   }
 )
