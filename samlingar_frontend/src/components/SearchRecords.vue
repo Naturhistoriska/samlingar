@@ -24,15 +24,15 @@
         </div>
         <filter-checkbox @search="handleSearch" />
 
-        <Panel>
-          <filter-fields @search="handleSearch" style="padding-bottom: 5px" />
-        </Panel>
-
         <Panel :header="$t('labels.scientificName')" toggleable>
           <scientific-name @search="handleSearch" />
         </Panel>
         <Panel :header="$t('labels.collectingDate')" toggleable>
           <event-date @search="handleSearch" />
+        </Panel>
+
+        <Panel>
+          <filter-fields @search="handleSearch" style="padding-bottom: 5px" />
         </Panel>
       </div>
     </template>
