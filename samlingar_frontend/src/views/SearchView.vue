@@ -109,11 +109,13 @@ function search(start, numPerPage, saveData) {
     params.set('endDate', endDate)
   }
 
-  fields
-    .filter((field) => field.text)
-    .forEach((field) => {
-      params.set(field.value, field.text)
-    })
+  if (fields) {
+    fields
+      .filter((field) => field.text)
+      .forEach((field) => {
+        params.set(field.value, field.text)
+      })
+  }
 
   service
     .apiSearch(params, start, numPerPage)
