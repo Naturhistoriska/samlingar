@@ -131,7 +131,7 @@ public class EntityToJson implements Serializable {
     private final String scientificNameKey = "scientificName";
     private final String serieKey = "serie";
     private final String startDayOfYearKey = "startDayOfYear";
-    private final String endDayOfYearKey = "startDayOfYear";
+    private final String endDayOfYearKey = "endDayOfYear";
     private final String stateProvinceKey = "stateProvince";
     private final String seKey = "se";
     private final String sexKey = "sex";
@@ -370,26 +370,18 @@ public class EntityToJson implements Serializable {
         addCurrentDeterminations(attBuilder, bean.getDeterminationList());
           
         addCollectingEvent(attBuilder, bean.getCollectingEvent());
-        log.info("here.. 7..");
-        
-        
+     
         addPreparations(attBuilder, bean.getPreparationList());
-        
-        
-
+         
         if (collectionCode.equals(entomologyCollectionCode)) {
             addImages(attBuilder, bean);
         }
         if (collectionCode.equals(mineralogyCollection)) {
             addAttValue(attBuilder, serieKey, bean.getText1());
-        }
-         log.info("here..8..");
+        } 
         
         addAdditionalDetermination(attBuilder, bean.getDeterminationList(),  
-                collectionCode.equals(mineralogyCollection));
-        
-         log.info("here..9..");
-        
+                collectionCode.equals(mineralogyCollection)); 
     }
     
   
@@ -422,6 +414,7 @@ public class EntityToJson implements Serializable {
                                 taxaSb.append(addtionalTaxon.getAuthor());
                             }
                             if (cd.getDeterminer() != null) {
+                                
                                 taxaSb.append(strDet);
                                 taxaSb.append(cd.getDeterminer().getFullName());
                                 if (cd.getDeterminedDate() != null) {
@@ -623,10 +616,10 @@ public class EntityToJson implements Serializable {
     
             addAttValue(attBuilder, eventRemarksKey, event.getRemarks());
             addAttValue(attBuilder, verbatimEventDateKey, event.getVerbatimDate());
-            log.info("ddfdd");
+ 
             
             addLocality(attBuilder, event.getLocality());  
-            log.info("addLocalityadded");
+ 
             
             addCollectors(attBuilder, event.getCollectorList());
             log.info("addCollectors added");
