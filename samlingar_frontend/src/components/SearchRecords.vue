@@ -22,13 +22,13 @@
         <div class="col-12" no-gutters>
           <search-all @search="handleSearch" style="padding-bottom: 5px" />
         </div>
-        <filter-checkbox @search="handleSearch" />
+        <filter-checkbox />
 
         <Panel :header="$t('labels.scientificName')" toggleable>
-          <scientific-name @search="handleSearch" />
+          <scientific-name />
         </Panel>
         <Panel :header="$t('labels.collectingDate')" toggleable>
-          <event-date @search="handleSearch" />
+          <event-date />
         </Panel>
 
         <Panel>
@@ -55,11 +55,6 @@ const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
 function search() {
   emits('search', 0, 50, true)
 }
-
-// function doSearch(key, value) {
-//   console.log('doSearch')
-//   emits('search', 0, 50)
-// }
 
 function handleSearch() {
   // emits('search', 0, 50)

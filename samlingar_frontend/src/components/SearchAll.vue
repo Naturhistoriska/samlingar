@@ -19,7 +19,7 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const emits = defineEmits(['search'])
+// const emits = defineEmits(['search'])
 
 const value = ref()
 let showClearBtn = ref(false)
@@ -42,7 +42,7 @@ function clearInputValue() {
 
   value.value = ''
   store.commit('searchText', null)
-  emits('search')
+  // emits('search')
 }
 </script>
 <style scoped></style>

@@ -73,7 +73,7 @@ let scientificName = ref()
 let searchOptions = ref()
 let showClearScentificName = ref(false)
 
-const emits = defineEmits(['search'])
+// const emits = defineEmits(['search'])
 
 watch(
   () => store.getters['scientificName'],
@@ -109,7 +109,7 @@ function change() {
     store.commit('setIsFuzzySearch', true)
   }
 
-  emits('search')
+  // emits('search')
 }
 
 function onInputScientificName() {

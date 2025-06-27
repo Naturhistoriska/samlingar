@@ -24,47 +24,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="col-12">
-      <div class="grid" id="dates">
-        <div class="col-10">
-          <div class="grid">
-            <div class="col-6">
-              <div class="flex flex-col gap-2 selectGroup">
-                <label class="searchLabel">
-                  {{ $t('search.start') }}
-                </label>
-                <DatePicker
-                  v-model="beginDate"
-                  dateFormat="yy-m-dd"
-                  showIcon
-                  fluid
-                  size="small"
-                  inputId="startDate"
-                  :placeholder="$t('search.beginDateLabel')"
-                  @date-select="onSelect"
-                />
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="flex flex-col gap-2 selectGroup">
-                <label class="searchLabel">
-                  {{ $t('search.end') }}
-                </label>
-                <DatePicker
-                  v-model="endDate"
-                  dateFormat="yy-m-dd"
-                  showIcon
-                  size="small"
-                  fluid
-                  inputId="endDate"
-                  :placeholder="$t('search.endDateLabel')"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 <script setup>
@@ -76,7 +35,7 @@ const store = useStore()
 
 const dates = ref()
 
-const emits = defineEmits(['search'])
+// const emits = defineEmits(['search'])
 
 const displayButton = computed(() => {
   return dates.value
@@ -105,7 +64,7 @@ function onSelect() {
   store.commit('setStartDate', startDate)
   store.commit('setEndDate', endDate)
   store.commit('setDates', startDate + ' - ' + endDate)
-  emits('search')
+  // emits('search')
 }
 
 function removeDates() {
