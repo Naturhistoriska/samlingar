@@ -20,7 +20,7 @@
         size="small"
         @click="coordinatesClicked"
       />
-      <label for="image" class="text-sm">{{ $t('search.haveCoordinates') }}</label>
+      <label for="coordinates" class="text-sm">{{ $t('search.haveCoordinates') }}</label>
     </div>
     <div class="flex items-center gap-2">
       <Checkbox
@@ -31,7 +31,7 @@
         size="small"
         @click="typeClicked"
       />
-      <label for="image" class="text-sm">{{ $t('search.isType') }}</label>
+      <label for="types" class="text-sm">{{ $t('search.isType') }}</label>
     </div>
     <div class="flex items-center gap-2">
       <Checkbox
@@ -42,7 +42,7 @@
         size="small"
         @click="swedenClicked"
       />
-      <label for="image" class="text-sm">{{ $t('search.inSweden') }}</label>
+      <label for="sweden" class="text-sm">{{ $t('search.inSweden') }}</label>
     </div>
   </div>
 </template>

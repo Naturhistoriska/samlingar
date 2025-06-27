@@ -56,7 +56,6 @@ export default {
     },
 
     onItemSelect() {
-      console.log('onItemSelect')
       this.itemSelected = true
     },
 
@@ -69,9 +68,9 @@ export default {
       let searchText = event.query
 
       service
-        .apiAutoCompleteSearch(searchText)
+        .apiAutoCompleteSearch(searchText, 'scientificName')
         .then((response) => {
-          const facets = response.facets.scientificName
+          const facets = response.facets.facet
           if (facets) {
             this.items = facets.buckets.map((a) => a.val)
           }

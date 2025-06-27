@@ -1,95 +1,109 @@
 <template>
-  <div class="justify-right" style="float: right">
-    <FloatLabel>
+  <div class="justify-right" style="float: left; margin-top: 10px">
+    <FloatLabel variant="on">
       <InputGroup>
         <AutoComplete
+          dropdown
           forceSelection
-          v-model="value"
+          v-model="values"
           size="small"
-          :inputId="id"
+          fluid
+          :inputId="inputId"
           :suggestions="items"
           :minLength="3"
-          :placeholder="placeholder"
           :multiple="multiple"
           @complete="apiAutoComplete"
+          @option-select="onItemSelect"
+          @option-unselect="onItemRemove"
           :inputStyle="acwidth"
         />
-        <Button icon="pi pi-search" :loading="loading" @click="apiSearch" text />
-        <label for="ac">{{ $t('search.searchSpecies') }} </label>
+        <label :for="inputId">{{ $t(placehold) }}</label>
       </InputGroup>
     </FloatLabel>
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import Service from '../../Service'
 
-import Service from '../Service'
 const service = new Service()
 
-// const emits = defineEmits(['autoCompleteSearch'])
+const store = useStore()
 
-const props = defineProps(['id', 'multiple', 'placeholder'])
+const emits = defineEmits(['search'])
+
+const props = defineProps(['field', 'multiple'])
 
 const acwidth = ref()
 const items = ref([])
-const value = ref('')
+const values = ref([])
+
+const placehold = computed(() => {
+  return 'search.' + props.field.value
+})
+
+const inputId = computed(() => {
+  return props.field.label
+})
 
 onMounted(() => {
-  acwidth.modelValue = { width: '300px' }
+  acwidth.value = { width: '400px' }
 })
 
 const apiAutoComplete = (event) => {
-  console.log('search', event.query)
-  items.value = [...Array(10).keys()].map((item) => event.query + '-' + item)
-}
-
-function autoCompleteSearch() {
-  console.log('apiAutoComplete', value.query)
-  let searchText = event.query
-
+  const field = props.field.value
+  const value = event.query
   service
-    .apiAutoCompleteSearch(searchText)
+    .apiAutoCompleteSearch(value, field)
     .then((response) => {
-      const facets = response.facets.scientificName
+      const facets = response.facets.facet
       if (facets) {
-        this.items = facets.buckets.map((a) => a.val)
+        items.value = facets.buckets.map((a) => a.val)
       }
     })
     .catch()
     .finally(() => {})
-
-  // emits('freeTextSearch', value, last, 10)
 }
 
-// onChange() {
-//   this.itemSelected = false
-// },
+function onItemRemove(event) {
+  itemsChanged()
+}
 
-// onItemSelect() {
-//   console.log('onItemSelect')
-//   this.itemSelected = true
-// },
+function onItemSelect() {
+  itemsChanged()
+}
 
-// onPressEnter() {
-//   this.apiSearch()
-// },
+function itemsChanged() {
+  const fieldKey = props.field.key
 
-// function search() {
-//   console.log('search')
+  let fields = store.getters['fields']
+  const field = fields.find(({ key }) => key === fieldKey)
 
-//   let searchText = value.value
+  const value = values.value
+    .map((str) => `"${str}"`) // Wrap each string in single quotes
+    .join(' ')
 
-//   service
-//     .apiAutoCompleteSearch(searchText)
-//     .then((response) => {
-//       const facets = response.facets.scientificName
-//       if (facets) {
-//         this.items = facets.buckets.map((a) => a.val)
-//       }
-//     })
-//     .catch()
-//     .finally(() => {})
-// }
+  field.text = `(${value})`
+  console.log('fields : ', fields)
+
+  store.commit('setFields', fields)
+}
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 // sbdi
 function sbdiAutoComplete(event) {

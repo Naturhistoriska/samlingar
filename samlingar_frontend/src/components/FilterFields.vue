@@ -12,7 +12,7 @@
       display="chip"
       placeholder="Add search fields"
       class="w-full md:w-80"
-      :hide="true"
+      @reset="reset"
       @change="onSelect(event)"
     >
       <template #optiongroup="slotProps">
@@ -28,24 +28,27 @@
 <script setup>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import Service from '../Service'
 import FieldGroup from './FieldGroup.vue'
 
 const store = useStore()
+const service = new Service()
+
 const emits = defineEmits(['search'])
 
-let hide = ref(false)
+// let hide = ref(false)
 
-const selectedItems = ref()
+const selectedItems = ref([])
 
 const groupedSelections = ref([
   {
     label: 'Taxonomy',
     code: 'tx',
     items: [
-      { label: 'Kingdom', value: 'kingdom', key: 'kingdom:' },
-      { label: 'Phylum', value: 'phylum', key: 'phylum:' },
+      // { label: 'Kingdom', value: 'kingdom', key: 'kingdom:' },
+      // { label: 'Phylum', value: 'phylum', key: 'phylum:' },
       { label: 'Class', value: 'clazz', key: 'clazz:' },
-      { label: 'Order', value: 'order', key: 'order:' },
+      // { label: 'Order', value: 'order', key: 'order:' },
       { label: 'Family', value: 'family', key: 'family:' },
       { label: 'Genus', value: 'genus', key: 'genus:' },
       { label: 'Subgenus', value: 'subgenus', key: 'subgenus:' },
@@ -86,15 +89,27 @@ const groupedSelections = ref([
   }
 ])
 
+function reset() {
+  console.log('reset...')
+}
+
 function onSelect(event) {
-  if (selectedItems) {
+  console.log('onSelect', selectedItems.value)
+  if (selectedItems.value && selectedItems.value.length > 0) {
     store.commit('setFields', selectedItems)
-    hide.value = true
+
+    const item = selectedItems.value.slice(-1)
+
+    if (item) {
+      console.log('here...', item[0].value)
+    }
+
+    // hide.value = true
   }
 }
 
 function handleSearch() {
-  // emits('search')
+  emits('search')
 }
 </script>
 <style scoped>

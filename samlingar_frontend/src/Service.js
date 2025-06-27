@@ -27,8 +27,8 @@ export default class Service {
     return response.data
   }
 
-  async apiAutoCompleteSearch(searchText) {
-    const url = `${samlingApi}/autocomplete?text=${searchText}`
+  async apiAutoCompleteSearch(searchText, field) {
+    const url = `${samlingApi}/autocomplete?text=${searchText}&field=${field}`
 
     const response = await axios.get(url)
     return response.data
@@ -41,6 +41,28 @@ export default class Service {
     const response = await axios.get(url)
     return response.data
   }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
   async apiFreeTextSearchWithFilter(
     searchText,
@@ -73,6 +95,14 @@ export default class Service {
     return response.data
   }
 
+  // async apiSearch(params, start, numPerPage) {
+  //   let url = `${samlingApi}/search?${params.toString()}`
+
+  //   url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+  //   const response = await axios.get(url)
+  //   return response.data
+  // }
+
   // async apiSearch(
   //   params,
   //   searchText,
@@ -87,14 +117,6 @@ export default class Service {
   //   start,
   //   numPerPage
   // )
-
-  async apiSearch(params, start, numPerPage) {
-    let url = `${samlingApi}/search?${params.toString()}`
-
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
-    const response = await axios.get(url)
-    return response.data
-  }
 
   async apiCollectionGroupSearch(searchText, collections, start, numPerPage) {
     const url = `${samlingApi}/freeTextSearch?text=${searchText}&collections=${collections}&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
