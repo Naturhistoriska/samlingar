@@ -18,6 +18,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter; 
+import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.api.solr.services.SolrService;
 import se.nrm.samlingar.api.utils.SolrSearchHelper;
 
@@ -84,6 +85,11 @@ public class SamlingarLogic {
     
     
     private final String wildCard = "*";
+    private final String leftBlacket = "[";
+    private final String rightBlacket = "]";
+    
+    private final String to = " TO ";
+    private final String toWithStar = " TO *]";
     
     private final String scientificNameKey = "scientificName";
     private final String textKey = "text";
@@ -99,8 +105,8 @@ public class SamlingarLogic {
     
     
     // Search field key
-    private final String scientificNameFieldKey = "scientificName:"; 
-    private final String catchallKey = "catchall:";
+    private final String scientificNameFieldKey = "scientificName"; 
+    private final String catchallKey = "catchall";
     
     private int total;
 
@@ -116,6 +122,50 @@ public class SamlingarLogic {
         return service.getInitalData();
     }
      
+            
+    public String autoCompleteSearch(String text, String field) {
+        text = SolrSearchHelper.getInstance()
+                .buildSearchText(text, field, true);
+      
+        return service.autoCompleteSearch(text, field);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
      
     public String freeTextSearch(String text, boolean hasImage, boolean hasCoordinates,
             boolean isType, boolean isInSweden, String collections,
@@ -129,14 +179,7 @@ public class SamlingarLogic {
                 isType, isInSweden, collections, numPerPage, text, sort);
     }
 
-        
-    public String autoCompleteSearch(String text) {
-        text = SolrSearchHelper.getInstance()
-                .buildSearchText(text, scientificNameFieldKey, true);
-      
-        return service.autoCompleteSearch(text);
-    }
-    
+
     public String scientificNameSearch(String text, boolean fuzzySearch, 
             int start, int numPerPage, String sort ) {
         log.info("scientificNameSearch : {}", text);
@@ -174,18 +217,18 @@ public class SamlingarLogic {
     }
     
         
-    public String search(Map<String, String> paramMap, String text, String scientificName, 
-            String startDate, String endDate, boolean fuzzySearch, int start, 
-            int numPerPage, String sort ) {
-        
-        if(scientificName != null) {
-            scientificName = SolrSearchHelper.getInstance().buildSearchText(
-                scientificName, scientificNameFieldKey, fuzzySearch);
-        }
-        return service.search(paramMap, text, scientificName, startDate, endDate, 
-                start, numPerPage, sort);
-        
-    }
+//    public String search(Map<String, String> paramMap, String text, String scientificName, 
+//            String startDate, String endDate, boolean fuzzySearch, int start, 
+//            int numPerPage, String sort ) {
+//        
+//        if(scientificName != null) {
+//            scientificName = SolrSearchHelper.getInstance().buildSearchText(
+//                scientificName, scientificNameFieldKey, fuzzySearch);
+//        }
+//        return service.search(paramMap, text, scientificName, startDate, endDate, null,
+//                start, numPerPage, sort);
+//        
+//    }
     
     
     
@@ -200,6 +243,8 @@ public class SamlingarLogic {
         String sort = null;
         String startDate = null;
         String endDate = null;
+        String facets = null;
+        String dateRange;
                 
         Map<String, String> paramMap = new HashMap<>();
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
@@ -229,6 +274,9 @@ public class SamlingarLogic {
                 case sortKey:
                     sort =  queryParams.get(sortKey).get(0);
                     break;
+                case facetsKey:
+                    facets = queryParams.get(facetsKey).get(0);
+                    break;
                 default:
                     paramMap.put(entry.getKey(), entry.getValue().get(0));
                     break;
@@ -240,7 +288,22 @@ public class SamlingarLogic {
             scientificName = SolrSearchHelper.getInstance().buildSearchText(
                 scientificName, scientificNameFieldKey, isFuzzySearch);
         }
-        return service.search(paramMap, text, scientificName, startDate, endDate, 
+        if(text != null && !text.equals(wildCard)) {
+            text = SolrSearchHelper.getInstance().buildSearchText(
+                text, catchallKey, true);
+        }
+        log.info("text and scientificName : {} -- {}", text, scientificName);
+        
+        
+        if(!StringUtils.isBlank(startDate) && !StringUtils.isBlank(endDate) ) {
+            dateRange = leftBlacket + startDate + to + endDate + rightBlacket; 
+        } else if(!StringUtils.isBlank(startDate)) {
+            dateRange = leftBlacket + startDate + toWithStar; 
+        } else {
+            dateRange = null;
+        }
+          
+        return service.search(paramMap, text, scientificName, dateRange, facets,
                 start, numPerPage, sort);
         
     }

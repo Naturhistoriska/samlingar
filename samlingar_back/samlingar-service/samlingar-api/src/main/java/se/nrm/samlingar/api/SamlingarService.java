@@ -4,18 +4,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Info;
 import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import io.swagger.annotations.Tag;  
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.MediaType; 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
@@ -57,6 +53,75 @@ public class SamlingarService {
         return Response.ok(logic.getInitalData()).build();
     }
     
+    @GET
+    @Path("/autocomplete")
+    @ApiOperation(value = "autocomplete",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response autoCompleteSearch(@QueryParam("text") String text,
+            @QueryParam("field") String field) {
+        log.info("autoCompleteSearch: {} ", text, field);
+        
+        
+        return Response.ok(logic.autoCompleteSearch(text, field)).build();
+    } 
+    
+    @GET
+    @Path("/search")
+    @ApiOperation(value = "Search",
+            notes = "Return search results in json",
+            response = String.class
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSearchResults(@Context UriInfo uriInfo) { 
+        log.info("getSearchResults");
+        return Response.ok(logic.search(uriInfo.getQueryParameters())).build(); 
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
         
     @GET
     @Path("/freeTextSearch")
@@ -87,17 +152,7 @@ public class SamlingarService {
                 start, numPerPage, sort)).build();
     }
       
-    @GET
-    @Path("/autocomplete")
-    @ApiOperation(value = "autocomplete",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response autoCompleteSearch(@QueryParam("text") String text) {
-        log.info("autoCompleteSearch: {} ", text);
-        return Response.ok(logic.autoCompleteSearch(text)).build();
-    } 
+
         
     @GET
     @Path("/scientificname")
@@ -129,64 +184,7 @@ public class SamlingarService {
     }
     
     
-    @GET
-    @Path("/search")
-    @ApiOperation(value = "test",
-            notes = "Return search results in json",
-            response = String.class
-    ) 
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getSearchResults(@Context UriInfo uriInfo) { 
-        log.info("getSearchResults");
-        return Response.ok(logic.search(uriInfo.getQueryParameters())).build();
 
-//        int start = 0;
-//        int numPerPage = 0;
-//        boolean fuzzySearch = true;
-//        String scientificName = null;
-//        String text = "*";
-//        String sort = null;
-//        String startDate = null;
-//        String endDate = null;
-//                
-//        Map<String, String> paramMap = new HashMap<>();
-//        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
-//            
-//            switch (entry.getKey()) {
-//                case "scientificName": 
-//                    scientificName = queryParams.get("scientificName").get(0); 
-//                    break;
-//                case "text": 
-//                    text = queryParams.get("text").get(0); 
-//                    break;
-//                case "startDate": 
-//                    startDate = queryParams.get("startDate").get(0); 
-//                    break;
-//                case "endDate": 
-//                    endDate = queryParams.get("endDate").get(0); 
-//                    break;
-//                case "start":
-//                    start = Integer.parseInt(queryParams.get("start").get(0)); 
-//                    break;
-//                case "numPerPage":
-//                    numPerPage = Integer.parseInt(queryParams.get("numPerPage").get(0));
-//                    break;  
-//                case "fuzzySearch":
-//                    fuzzySearch = Boolean.parseBoolean(queryParams.get("fuzzySearch").get(0));
-//                    break;
-//                case "sort":
-//                    sort =  queryParams.get("sort").get(0);
-//                    break;
-//                default:
-//                    paramMap.put(entry.getKey(), entry.getValue().get(0));
-//                    break;
-//            }
-//        }
- 
-//        return Response.ok(logic.search(paramMap, text, scientificName, startDate,
-//                endDate, fuzzySearch, start, numPerPage, sort)).build();
-    }
-    
 //    @GET
 //    @Path("/search")
 //    @ApiOperation(value = "search",

@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class SolrSearchHelper {
 
-    private final String querySeparator = ":";
+    private final String colon = ":";
     private final String wildCard = "*";
     private final String fromZoom = ":00Z";
     private final String toZoom = "Z";
@@ -52,6 +52,7 @@ public class SolrSearchHelper {
            
         if(text == null || text.isEmpty() || text.equals(star)) {
             fuzzySeachTextSb.append(key);
+            fuzzySeachTextSb.append(colon);
             fuzzySeachTextSb.append(star);
             return fuzzySeachTextSb.toString().trim(); 
         }
@@ -61,6 +62,7 @@ public class SolrSearchHelper {
                 searchText = text.split(emptySpace);
                 for (String value : searchText) {  
                     fuzzySeachTextSb.append(key);
+                    fuzzySeachTextSb.append(colon);
                     fuzzySeachTextSb.append(star);
                     fuzzySeachTextSb.append(value);
                     fuzzySeachTextSb.append(star);
@@ -68,21 +70,25 @@ public class SolrSearchHelper {
                 } 
             } else {
                 fuzzySeachTextSb.append(key);
+                fuzzySeachTextSb.append(colon);
                 fuzzySeachTextSb.append(text); 
                 fuzzySeachTextSb.append(emptySpace);
 
                 fuzzySeachTextSb.append(key);
+                fuzzySeachTextSb.append(colon);
                 fuzzySeachTextSb.append(star);
                 fuzzySeachTextSb.append(text);
                 fuzzySeachTextSb.append(star);
                 fuzzySeachTextSb.append(emptySpace);
 
                 fuzzySeachTextSb.append(key);
+                fuzzySeachTextSb.append(colon);
                 fuzzySeachTextSb.append(StringUtils.capitalize(text));
                 fuzzySeachTextSb.append(star);
             }
         } else {
             fuzzySeachTextSb.append(key);
+            fuzzySeachTextSb.append(colon);
             fuzzySeachTextSb.append(quotationMark);
             fuzzySeachTextSb.append(text);
             fuzzySeachTextSb.append(quotationMark);
