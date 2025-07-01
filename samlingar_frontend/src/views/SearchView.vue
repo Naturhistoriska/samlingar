@@ -55,6 +55,7 @@ onMounted(async () => {
 })
 
 function search(start, numPerPage, saveData) {
+  console.log('search...')
   const fields = store.getters['fields']
 
   const scientificName = store.getters['scientificName']
@@ -94,7 +95,7 @@ function search(start, numPerPage, saveData) {
   }
 
   if (hasCoordinates) {
-    params.set('geo', '*')
+    params.set('lat_long', '*')
   }
 
   if (collectionGroup) {
