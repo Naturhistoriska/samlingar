@@ -52,8 +52,6 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const emits = defineEmits(['search'])
-
 let image = ref(false)
 let coordinates = ref(false)
 let type = ref(false)
@@ -69,25 +67,21 @@ onMounted(() => {
 function swedenClicked() {
   const searchInSweden = !sweden.value
   store.commit('setFilterInSweden', searchInSweden)
-  // emits('search')
 }
 
 function typeClicked() {
   const searchType = !type.value
   store.commit('setFilterType', searchType)
-  // emits('search')
 }
 
 function coordinatesClicked() {
   const searchMap = !coordinates.value
 
   store.commit('setFilterCoordinates', searchMap)
-  // emits('search')
 }
 
 function imageClicked() {
   const searchImage = !image.value
   store.commit('setFilterImage', searchImage)
-  // emits('search')
 }
 </script>

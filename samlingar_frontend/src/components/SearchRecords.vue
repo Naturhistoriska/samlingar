@@ -19,6 +19,7 @@
     </template>
     <template #content>
       <Dialog
+        id="helpDialog"
         v-model:visible="dialogVisible"
         header="Flex Scroll"
         :style="{ width: '75vw' }"
@@ -30,7 +31,7 @@
       </Dialog>
       <div class="grid">
         <div class="col-12" no-gutters>
-          <search-all @search="handleSearch" style="padding-bottom: 5px" />
+          <search-all style="padding-bottom: 5px" />
         </div>
         <filter-checkbox />
 
@@ -42,13 +43,13 @@
         </Panel>
 
         <Panel>
-          <filter-fields @search="handleSearch" style="padding-bottom: 5px" />
+          <filter-fields style="padding-bottom: 5px" />
         </Panel>
       </div>
     </template>
     <template #footer>
       <div class="flex gap-3 mt-1 grid justify-end" style="float: inline-end">
-        <Button :label="$t('search.search')" @click="search()" />
+        <Button :label="$t('search.search')" @click="search" id="searchRecordBtn" />
       </div>
     </template>
   </Card>
@@ -89,10 +90,6 @@ function reset() {
 
 function search() {
   emits('search', 0, 50, true)
-}
-
-function handleSearch() {
-  // emits('search', 0, 50)
 }
 </script>
 <style scoped>
