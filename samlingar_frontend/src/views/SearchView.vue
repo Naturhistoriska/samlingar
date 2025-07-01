@@ -120,15 +120,15 @@ function search(start, numPerPage, saveData) {
   service
     .apiSearch(params, start, numPerPage)
     .then((response) => {
-      const total = response.response.numFound
-      const results = response.response.docs
+      const total = response.facets.count
+      const results = response.response
 
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
       if (saveData) {
         if (total > 0) {
-          const geofacet = response.facets.geo.buckets
+          const geofacet = response.facets.map.buckets
           store.commit('setGeoData', geofacet)
         } else {
           store.commit('setGeoData', null)
@@ -140,6 +140,26 @@ function search(start, numPerPage, saveData) {
     })
     .finally(() => {})
 }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 function handleMediaSearch() {
   console.log('handleMeadSearch')

@@ -61,6 +61,7 @@ function onSelect() {
 
   const endDate = utcEndDate.toISOString() // Includes time and Z
 
+  console.log('startDate', startDate, endDate)
   store.commit('setStartDate', startDate)
   store.commit('setEndDate', endDate)
   store.commit('setDates', startDate + ' - ' + endDate)

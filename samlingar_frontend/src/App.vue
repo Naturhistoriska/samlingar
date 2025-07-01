@@ -48,8 +48,9 @@ import Navigation from './components/Navigation.vue'
   text-decoration: underline;
 }
 .p-button-link:hover * {
-  color: var(--p-emerald-500) !important;
+  /* color: var(--p-emerald-500) !important; */
   /* color: #9dabf3 !important; */
+  color: #4b4949 !important;
   text-decoration: none !important;
   background: transparent !important;
   font-size: 16px;

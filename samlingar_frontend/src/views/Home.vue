@@ -4,9 +4,9 @@
       <start-page />
     </div>
 
-    <div class="grid" style="margin-top: 10px">
+    <!-- <div class="grid" style="margin-top: 10px">
       <StatisticCharts />
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup>
@@ -40,7 +40,7 @@ function fetchInitdata() {
       store.commit('setTotalCount', totalCount)
 
       setSearchCommentFacet(facets)
-      setChartData(facets)
+      // setChartData(facets)
 
       store.commit('setFilterImage', false)
       store.commit('setFilterCoordinates', false)
@@ -54,7 +54,7 @@ function fetchInitdata() {
 }
 
 function setSearchCommentFacet(facets) {
-  const imageFacet = facets.hasImage.buckets
+  const imageFacet = facets.associatedMedia.buckets
   const imageCount = imageFacet.length > 0 ? imageFacet[0].count : 0
   store.commit('setImageCount', imageCount)
 
@@ -68,6 +68,19 @@ function setSearchCommentFacet(facets) {
   const mapCount = facets.map.allBuckets.count
   store.commit('setHasCoordinatesCount', mapCount)
 }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 function setChartData(facets) {
   const total = facets.count

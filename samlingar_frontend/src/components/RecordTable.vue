@@ -32,7 +32,13 @@
         </div>
       </template>
 
-      <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header">
+      <Column
+        v-for="col of columns"
+        :key="col.field"
+        :field="col.field"
+        :header="col.header"
+        :style="getColumnStyle(col)"
+      >
         <template #loading>
           <div
             class="flex items-center"
@@ -82,10 +88,10 @@ const dialogVisible = ref(false)
 const dt = ref()
 
 let columns = ref([
-  { field: 'collectionName', header: 'Collection Name' },
-  { field: 'scientificName', header: 'Scientific Name' },
-  { field: 'locality', header: 'Locality' },
-  { field: 'catalogNumber', header: 'CatalogNumber' }
+  { field: 'dataResourceName', header: 'Collection Name', minWidth: '150px', maxWidth: '150px' },
+  { field: 'scientificName', header: 'Scientific Name', minWidth: '150px', maxWidth: '150px' },
+  { field: 'locality', header: 'Locality', minWidth: '250px', maxWidth: '250px' },
+  { field: 'catalogNumber', header: 'CatalogNumber', minWidth: '150px', maxWidth: '150px' }
 ])
 
 const selectedRecord = ref()
@@ -104,12 +110,21 @@ const totalCount = computed(() => {
 })
 
 onMounted(async () => {
-  // emits('search', 0, 20, true)
   records.value = store.getters['results']
 })
 
 const exportCSV = () => {
   dt.value.exportCSV()
+}
+
+function getColumnStyle(col) {
+  return {
+    minWidth: col.minWidth,
+    maxWidth: col.maxWidth,
+    width: col.width || 'auto',
+    overflow: 'visible',
+    whiteSpace: 'wrap'
+  }
 }
 
 function selectRow(data) {

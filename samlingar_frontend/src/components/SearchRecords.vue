@@ -6,18 +6,28 @@
           {{ $t('search.search') }}
         </div>
         <div class="col-2" no-gutters>
-          <Button variant="link">
+          <Button variant="text" @click="help">
             <small>{{ $t('common.help') }}</small>
           </Button>
         </div>
         <div class="col-2" no-gutters>
-          <Button variant="link">
+          <Button variant="text" @click="reset">
             <small>{{ $t('common.reset') }}</small>
           </Button>
         </div>
       </div>
     </template>
     <template #content>
+      <Dialog
+        v-model:visible="dialogVisible"
+        header="Flex Scroll"
+        :style="{ width: '75vw' }"
+        maximizable
+        modal
+        :contentStyle="{ height: '300px' }"
+      >
+        <Help />
+      </Dialog>
       <div class="grid">
         <div class="col-12" no-gutters>
           <search-all @search="handleSearch" style="padding-bottom: 5px" />
@@ -44,13 +54,38 @@
   </Card>
 </template>
 <script setup>
+import { ref } from 'vue'
+import { useStore } from 'vuex'
 import EventDate from './EventDate.vue'
 import FilterCheckbox from './FilterCheckbox.vue'
 import FilterFields from './FilterFields.vue'
+import Help from './Help.vue'
 import ScientificName from './ScientificName.vue'
 import SearchAll from './SearchAll.vue'
 
+const store = useStore()
 const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
+
+const dialogVisible = ref(false)
+
+function help() {
+  dialogVisible.value = true
+}
+function reset() {
+  console.log('reset')
+
+  store.commit('setSearchText', '*')
+  store.commit('setScientificName', null)
+  store.commit('setCollectionGroup', null)
+
+  store.commit('setFilterCoordinates', false)
+  store.commit('setFilterInSweden', false)
+  store.commit('setFilterImage', false)
+  store.commit('setFilterType', false)
+
+  store.commit[('setFields', [])]
+  search()
+}
 
 function search() {
   emits('search', 0, 50, true)

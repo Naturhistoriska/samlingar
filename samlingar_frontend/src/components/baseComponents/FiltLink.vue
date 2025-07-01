@@ -1,7 +1,7 @@
 <template>
-  <div class="grid divLink" @click="doSearch">
-    <div class="col-6" no-gutters style="float: left; text-align: left">
-      <Button text :label="$t(text)" />
+  <div class="grid divLink" @click="doSearch" @mouseover="onHover" @mouseleave="unHover">
+    <div class="col-6" no-gutters>
+      <Button text :label="$t(text)" :class="{ hover: isHover }" />
     </div>
     <div class="col-2">
       <Button
@@ -12,43 +12,57 @@
         title="loading"
       />
     </div>
-
-    <div class="col-4" style="float: left; text-align: left">
-      <Button text>
+    <div class="col-4">
+      <Button text :class="{ hover: isHover }">
         {{ total }}
       </Button>
     </div>
   </div>
 </template>
 <script setup>
+import { ref } from 'vue'
+
 const props = defineProps(['loading', 'text', 'total'])
 const emits = defineEmits(['doSearch'])
+
+const isHover = ref(false)
+
+function onHover() {
+  isHover.value = true
+}
+
+function unHover() {
+  isHover.value = false
+}
 
 function doSearch() {
   emits('doSearch')
 }
 </script>
 <style scoped>
+.hover {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+.p-button-text {
+  color: #4a4949b6;
+  text-decoration: underline;
+}
+
 .p-button-text:hover {
-  color: var(--p-emerald-500) !important;
+  /* color: var(--p-emerald-500) !important; */
+  /* color: #fff !important; */
   text-decoration: none !important;
   background: transparent !important;
 }
 
-.p-button-text {
-  text-decoration: underline;
+.divLink {
+  min-width: 100% !important;
+  cursor: pointer !important;
 }
 
-.divLink {
-  min-width: 100% !important;
-  cursor: pointer !important;
-}
-.divLink {
-  min-width: 100% !important;
-  cursor: pointer !important;
-}
 .divLink:hover {
   background: #0e3a12;
-  color: var(--p-emerald-500) !important;
 }
 </style>

@@ -84,15 +84,15 @@ export default {
       const fuzzySearch = !this.itemSelected
 
       service
-        .apiQuickSearch(searchText, fuzzySearch, 0, 50)
+        .apiScientificnameSearch(searchText, fuzzySearch, 0, 50)
         .then((response) => {
-          const total = response.response.numFound
-          const results = response.response.docs
+          const total = response.facets.count
+          const results = response.response
 
           console.log('total', total)
 
           if (total > 0) {
-            const geofacet = response.facets.geo.buckets
+            const geofacet = response.facets.map.buckets
             this.setGeoData(geofacet)
           }
 

@@ -68,6 +68,7 @@ function handleGeoCollectionSearch() {
 function search(value) {
   const searchText = '*'
   store.commit('setSearchText', searchText)
+  store.commit('setScientificName', null)
 
   store.commit('setFilterCoordinates', false)
   store.commit('setFilterInSweden', false)

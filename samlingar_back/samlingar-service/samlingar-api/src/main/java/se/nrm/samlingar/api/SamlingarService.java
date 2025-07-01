@@ -68,6 +68,25 @@ public class SamlingarService {
         return Response.ok(logic.autoCompleteSearch(text, field)).build();
     } 
     
+            
+    @GET
+    @Path("/scientificname")
+    @ApiOperation(value = "scientificname",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response scientificname(@QueryParam("text") String text,
+            @QueryParam("fuzzySearch") boolean fuzzySearch,
+            @QueryParam("start") int start, 
+            @QueryParam("numPerPage") int numPerPage,
+            @QueryParam("sort") String sort) {
+        log.info("scientificname  {} -- {}", text, fuzzySearch + " -- " + sort);
+ 
+        return Response.ok(logic.scientificNameSearch(text, fuzzySearch,
+                start, numPerPage, sort)).build();
+    }
+    
     @GET
     @Path("/search")
     @ApiOperation(value = "Search",
@@ -80,6 +99,19 @@ public class SamlingarService {
         return Response.ok(logic.search(uriInfo.getQueryParameters())).build(); 
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
     
     
     
@@ -153,25 +185,11 @@ public class SamlingarService {
     }
       
 
-        
-    @GET
-    @Path("/scientificname")
-    @ApiOperation(value = "scientificname",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response scientificname(@QueryParam("text") String text,
-            @QueryParam("fuzzySearch") boolean fuzzySearch,
-            @QueryParam("start") int start, 
-            @QueryParam("numPerPage") int numPerPage,
-            @QueryParam("sort") String sort) {
-        log.info("scientificname  {} -- {}", text, fuzzySearch + " -- " + sort);
- 
-        return Response.ok(logic.scientificNameSearch(text, fuzzySearch,
-                start, numPerPage, sort)).build();
-    }
+
      
+    
+    
+    
     @GET
     @Path("/chart")
     @ApiOperation(value = "ChartData",

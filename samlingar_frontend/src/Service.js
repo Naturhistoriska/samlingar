@@ -13,16 +13,8 @@ const fiedList =
 const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
 export default class Service {
-  async apiSearch(params, start, numPerPage) {
-    let url = `${samlingApi}/search?${params.toString()}`
-
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
-    const response = await axios.get(url)
-    return response.data
-  }
-
-  async apiFreeTextSearch(searchText, start, rows) {
-    const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+  async apiInitdata() {
+    const url = `${samlingApi}/initialData`
     const response = await axios.get(url)
     return response.data
   }
@@ -34,7 +26,7 @@ export default class Service {
     return response.data
   }
 
-  async apiQuickSearch(searchText, fuzzySearch, start, rows) {
+  async apiScientificnameSearch(searchText, fuzzySearch, start, rows) {
     searchText = searchText.replace(/&/g, '%26')
 
     const url = `${samlingApi}/scientificname?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
@@ -42,27 +34,58 @@ export default class Service {
     return response.data
   }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+  async apiSearch(params, start, numPerPage) {
+    let url = `${samlingApi}/search?${params.toString()}`
 
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+    const response = await axios.get(url)
+    return response.data
+  }
 
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  async apiFreeTextSearch(searchText, start, rows) {
+    const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   async apiFreeTextSearchWithFilter(
     searchText,
@@ -139,12 +162,6 @@ export default class Service {
   //
   //
   //
-
-  async apiInitdata() {
-    const url = `${samlingApi}/initialData`
-    const response = await axios.get(url)
-    return response.data
-  }
 
   async apiCollectionsChartData(collection) {
     let url = `${samlingApi}/chart?collection="${collection}"`

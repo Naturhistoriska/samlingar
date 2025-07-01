@@ -102,34 +102,15 @@ function handleTypeStatusSearch() {
 function search(filtCoordinates, filtImages, filtInSweden, filtTypeStatus) {
   const searchText = '*'
   store.commit('setSearchText', searchText)
+  store.commit('setScientificName', null)
+  store.commit('setCollectionGroup', null)
 
   store.commit('setFilterCoordinates', filtCoordinates)
   store.commit('setFilterInSweden', filtInSweden)
   store.commit('setFilterImage', filtImages)
   store.commit('setFilterType', filtTypeStatus)
 
-  store.commit('setCollectionGroup', null)
   emits('filterSearch')
 }
 </script>
-<style scoped>
-.p-button-text:hover {
-  color: var(--p-emerald-500) !important;
-  /* color: #9dabf3 !important; */
-  text-decoration: none !important;
-  background: transparent !important;
-}
-
-.p-button-text {
-  /* color: #fff !important; */
-  text-decoration: underline;
-}
-.divLink {
-  min-width: 100% !important;
-  cursor: pointer !important;
-}
-.divLink:hover {
-  background: #0e3a12;
-  color: var(--p-emerald-500) !important;
-}
-</style>
+<style scoped></style>
