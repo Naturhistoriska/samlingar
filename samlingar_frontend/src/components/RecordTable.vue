@@ -13,6 +13,7 @@
       tableStyle="min-width: 50rem"
       paginator
       lazy
+      @row-select="onSelect"
       @page="onPage($event)"
       :rows="10"
       :rowsPerPageOptions="[5, 10, 20]"
@@ -125,6 +126,14 @@ function getColumnStyle(col) {
     overflow: 'visible',
     whiteSpace: 'wrap'
   }
+}
+
+function onSelect() {
+  console.log('data', selectedRecord.value)
+
+  store.commit('setSelectedRecord', selectedRecord)
+
+  router.push(`/record/${selectedRecord.value.id}`)
 }
 
 function selectRow(data) {
