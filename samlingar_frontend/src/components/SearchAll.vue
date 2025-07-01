@@ -4,7 +4,7 @@
       <InputText
         id="freeTextSearch"
         v-model="value"
-        @input="onSearch"
+        @blur="valueChange"
         :placeholder="$t('search.searchAllFields')"
         size="small"
         class="w-full"
@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
@@ -22,27 +22,36 @@ const store = useStore()
 // const emits = defineEmits(['search'])
 
 const value = ref()
-let showClearBtn = ref(false)
+// let showClearBtn = ref(false)
+
+const showClearBtn = computed(() => {
+  return value.value
+})
 
 onMounted(() => {
   const freeText = store.getters['searchText']
   value.value = freeText == '*' ? null : freeText
 })
 
-function onSearch() {
+function onInput() {
+  console.log('onInput')
   showClearBtn = value.value
+  // const searchText = value.value ? value.value : '*'
+  // store.commit('setSearchText', searchText)
+}
+
+function valueChange() {
+  console.log('valueChange', value.value)
 
   const searchText = value.value ? value.value : '*'
   store.commit('setSearchText', searchText)
-  emits('search')
 }
 
 function clearInputValue() {
-  showClearBtn = false
+  // showClearBtn = false
 
   value.value = ''
   store.commit('searchText', null)
-  // emits('search')
 }
 </script>
 <style scoped></style>
