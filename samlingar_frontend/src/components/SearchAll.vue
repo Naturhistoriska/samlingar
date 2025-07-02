@@ -19,10 +19,7 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-// const emits = defineEmits(['search'])
-
 const value = ref()
-// let showClearBtn = ref(false)
 
 const showClearBtn = computed(() => {
   return value.value
@@ -33,25 +30,14 @@ onMounted(() => {
   value.value = freeText == '*' ? null : freeText
 })
 
-function onInput() {
-  console.log('onInput')
-  showClearBtn = value.value
-  // const searchText = value.value ? value.value : '*'
-  // store.commit('setSearchText', searchText)
-}
-
 function valueChange() {
-  console.log('valueChange', value.value)
-
   const searchText = value.value ? value.value : '*'
   store.commit('setSearchText', searchText)
 }
 
 function clearInputValue() {
-  // showClearBtn = false
-
   value.value = ''
-  store.commit('searchText', null)
+  store.commit('setSearchText', null)
 }
 </script>
 <style scoped></style>
