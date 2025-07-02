@@ -2,88 +2,123 @@
   <div style="font-size: 12px">
     <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
-      <div class="col-3 reducePadding">{{ $t('results.dataResource') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.dataResource') }}</div>
+      <div class="col-8 reducePadding">
         {{ dataResource }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.institiutionCode') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.institiutionCode') }}</div>
+      <div class="col-8 reducePadding">
         {{ institution }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.collectionName') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.collectionName') }}</div>
+      <div class="col-8 reducePadding">
         {{ collection }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.catalogNumber') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.collectionCode') }}</div>
+      <div class="col-8 reducePadding">
+        {{ code }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
+      <div class="col-8 reducePadding">
         {{ catNumber }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.recordedType') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.otherCatalogNumbers') }}</div>
+      <div class="col-8 reducePadding">
+        {{ otherCatNumbers }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.catalogedDate') }}</div>
+      <div class="col-8 reducePadding">
+        {{ catalogedDate }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.recordedType') }}</div>
+      <div class="col-8 reducePadding">
         {{ recordType }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.preparation') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.biome') }}</div>
+      <div class="col-8 reducePadding">
+        {{ biomeData }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.expeditionName') }}</div>
+      <div class="col-8 reducePadding">
+        {{ expeditionName }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
+      <div class="col-8 reducePadding">
         {{ preparationList }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.identifiedBy') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.preservation') }}</div>
+      <div class="col-8 reducePadding">
+        {{ preservations }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.identifiedBy') }}</div>
+      <div class="col-8 reducePadding">
         {{ identifier }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-9 reducePadding">
-        {{ collectors }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.sex') }}</div>
-      <div class="col-9 reducePadding">
-        {{ specimenSex }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.lifeStage') }}</div>
-      <div class="col-9 reducePadding">
-        {{ stage }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.reproductiveCondition') }}</div>
-      <div class="col-9 reducePadding">
-        {{ reproductCondition }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.individualCount') }}</div>
-      <div class="col-9 reducePadding">
-        {{ count }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.license') }}</div>
-      <div class="col-9 reducePadding">
-        {{ specimenLicense }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.modified') }}</div>
-      <div class="col-9 reducePadding">
-        {{ modifiedDate }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.dateIdentified') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.dateIdentified') }}</div>
+      <div class="col-8 reducePadding">
         {{ identifiedDate }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
+      <div class="col-8 reducePadding">
+        {{ collectors }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.sex') }}</div>
+      <div class="col-8 reducePadding">
+        {{ specimenSex }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.lifeStage') }}</div>
+      <div class="col-8 reducePadding">
+        {{ stage }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.reproductiveCondition') }}</div>
+      <div class="col-8 reducePadding">
+        {{ reproductCondition }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.individualCount') }}</div>
+      <div class="col-8 reducePadding">
+        {{ count }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.occurrenceStatus') }}</div>
+      <div class="col-8 reducePadding">
+        {{ status }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.license') }}</div>
+      <div class="col-8 reducePadding">
+        {{ specimenLicense }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
+      <div class="col-8 reducePadding">
+        {{ modifiedDate }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
+      <div class="col-8 reducePadding">
         {{ occurrenceAttRemarks }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
+      <div class="col-8 reducePadding">
         {{ remarks }}
       </div>
     </div>
@@ -98,85 +133,98 @@ const { t } = useI18n()
 
 const store = useStore()
 
+const additionalDetermination = ref()
+const biomeData = ref()
+const catalogedDate = ref()
 const catNumber = ref()
+const code = ref()
 const collection = ref()
 const collectors = ref()
 const count = ref()
-
 const dataResource = ref()
-
+const expeditionName = ref()
 const identifiedDate = ref()
 const identifier = ref()
 const institution = ref()
-
 const modifiedDate = ref()
-
 const occurrenceAttRemarks = ref()
-
+const otherCatNumbers = ref()
 const specimenLicense = ref()
 const preparationList = ref()
-
+const preservations = ref()
 const recordType = ref()
 const remarks = ref()
 const reproductCondition = ref()
-
 const specimenSex = ref()
 const stage = ref()
+const status = ref()
 
 onMounted(async () => {
   console.log('onMounted dataset')
   const record = store.getters['selectedRecord']
 
   const {
-    additionalDetermination,
     basisOfRecord,
+    biome,
     catalogNumber,
     collectionCode,
     collectionName,
+    dataResourceName,
     dateIdentified,
+    dynamicProperties_createdDate,
+    dynamicProperties_expeditionName,
+    dynamicProperties_preservation,
     identifiedBy,
-    individualCount,
     institutionCode,
+    institutionName,
+    individualCount,
     license,
     lifeStage,
     modified,
     occurrenceAttributeRemarks,
     occurrenceRemarks,
+    occurrenceStatus,
+    previousIdentifications,
     preparations,
-    prepCount,
     recordedBy,
     reproductiveCondition,
+    otherCatalogNumbers,
     sex
   } = record
 
-  collection.value = collectionName
+  additionalDetermination.value = previousIdentifications
+  biomeData.value = biome
   catNumber.value = catalogNumber
-  recordType.value = basisOfRecord
-  preparationList.value =
-    collectionCode == 'NHRS'
-      ? prepCount
-        ? prepCount.toString()
-        : ''
-      : preparations
-        ? preparations.toString()
-        : ''
+  catalogedDate.value = dynamicProperties_createdDate
+  code.value = collectionCode
+  collection.value = collectionName
+  collectors.value = recordedBy ? recordedBy.toString() : ''
+  count.value = individualCount
+
+  dataResource.value = dataResourceName
+
+  expeditionName.value = dynamicProperties_expeditionName
 
   identifier.value = identifiedBy
-  collectors.value = recordedBy ? recordedBy.toString() : ''
-  specimenSex.value = sex
-  stage.value = lifeStage
-  count.value = individualCount
-  specimenLicense.value = license
-  modifiedDate.value = modified
   identifiedDate.value = dateIdentified
-  institution.value = t('common.institution') + ' [ ' + institutionCode + ' ] '
-  dataResource.value = t('common.institution') + ' -' + collectionName
 
-  // institution.value = institutionID + ' [ ' + institutionCode + ' ] '
-  // dataResource.value = institutionID + ' -' + collectionName
+  institution.value = institutionName + ' [ ' + institutionCode + ' ] '
+
+  modifiedDate.value = modified
+
   occurrenceAttRemarks.value = occurrenceAttributeRemarks
-  reproductCondition.value = reproductiveCondition
+  otherCatNumbers.value = otherCatalogNumbers
+  preparationList.value = preparations
+  preservations.value = dynamicProperties_preservation
+
+  recordType.value = basisOfRecord
   remarks.value = occurrenceRemarks
+  reproductCondition.value = reproductiveCondition
+
+  specimenSex.value = sex
+  specimenLicense.value = license
+  stage.value = lifeStage
+  status.value = occurrenceStatus
 })
 </script>
 <style scoped>
