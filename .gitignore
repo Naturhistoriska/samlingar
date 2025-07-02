@@ -20,6 +20,7 @@ solr/solr8/original_file
 project-initdata_local.yml
 project-initdata_ent.yml
 
+
 notes
 /samlingar-specify-dwc/specify-data-model/target/
 /samlingar-specify-dwc/specify-data-jpa/target/
@@ -38,3 +39,5 @@ specify-to-dwc
 documents
 /samlingar-csv-solr/samlingar-data-process/target/
 /samlingar-csv-solr/project-initdata.yml
+
+/samlingar_frontend/package-lock.json
