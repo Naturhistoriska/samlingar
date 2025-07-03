@@ -99,8 +99,42 @@ public class SamlingarService {
         return Response.ok(logic.search(uriInfo.getQueryParameters())).build(); 
     }
     
+    @GET
+    @Path("/chart")
+    @ApiOperation(value = "Search",
+            notes = "Return search results in json",
+            response = String.class
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getChart(@QueryParam("collectionCode") String collectionCode, 
+            @QueryParam("isYearChart") String isYearChart) { 
+        log.info("getYearChart");
+        return Response.ok(logic.getChart(collectionCode, isYearChart)).build(); 
+    }
     
-    
+//    @GET
+//    @Path("/yearChart")
+//    @ApiOperation(value = "Search",
+//            notes = "Return search results in json",
+//            response = String.class
+//    ) 
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getYearChart(@QueryParam("collectionName") String collectionName) { 
+//        log.info("getYearChart");
+//        return Response.ok(logic.getYearChart(collectionName)).build(); 
+//    }
+//    
+//    @GET
+//    @Path("/monthChart")
+//    @ApiOperation(value = "Search",
+//            notes = "Return search results in json",
+//            response = String.class
+//    ) 
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getMonthChart(@QueryParam("collectionCode") String collectionCode) { 
+//        log.info("getYearChart");
+//        return Response.ok(logic.getMonthChart(collectionCode)).build(); 
+//    }
     
     
     

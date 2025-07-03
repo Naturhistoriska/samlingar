@@ -4,6 +4,8 @@ import ch.hsr.geohash.GeoHash;
 import java.io.IOException; 
 import java.io.StringReader;
 import java.io.StringWriter; 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,15 +91,18 @@ public class SamlingarLogic {
     
     
 
-    
-    private final String scientificNameKey = "scientificName";
-    private final String textKey = "text";
-    private final String startDateKey = "startDate";
+    private final String collectionCodeKey = "collectionCode";
     private final String endDateKey = "endDate";
-    private final String startKey = "start";
-    private final String numPerPageKey = "numPerPage";
-    
     private final String fuzzySearch = "fuzzySearch";
+    private final String numPerPageKey = "numPerPage"; 
+    private final String scientificNameKey = "scientificName";
+    private final String startKey = "start";
+    private final String startDateKey = "startDate";
+    private final String textKey = "text";
+    
+
+    
+    
     
     private final String sortKey = "sort";
     
@@ -135,7 +140,7 @@ public class SamlingarLogic {
     private String endDate;
     private String facets;
     private String dateRange;
-    
+    private boolean yearChart;
         
     
     public String getInitalData() {
@@ -224,12 +229,43 @@ public class SamlingarLogic {
         return solr.search(paramMap, text, scientificName, dateRange, facets,
                 start, numPerPage, sort);
         
+    } 
+     
+    public String getChart(String collectionCode, String isYearChart) {
+        
+        collectionCode = SolrSearchHelper.getInstance().buildSearchCollectionCode(
+                collectionCodeKey, collectionCode); 
+        
+        yearChart = Boolean.parseBoolean(isYearChart);
+        startDate = SolrSearchHelper.getInstance().getStartDate(yearChart);  
+        endDate = SolrSearchHelper.getInstance().getEndDate();  
+
+        return solr.getChart(collectionCode, startDate, endDate, yearChart); 
     }
+//    
+//    public String getMonthChart(String collectionCode) {
+//        collectionCode = SolrSearchHelper.getInstance().buildSearchCollectionCode(
+//                collectionCodeKey, collectionCode);
+//        
+//        startDate = SolrSearchHelper.getInstance().getFirstDayOfLastTwelveMohth();
+//        endDate = SolrSearchHelper.getInstance().getTomorrow();
+        
+//        return Boolean.parseBoolean(isYearChart) ? solr.getYearChart(collectionCode, startDate, endDate) :
+//                solr.getMonthChart(collectionCode, startDate, endDate);
+//    }
     
-    
-    
-    
-    
+//    public String getYearChart(String collectionCode) { 
+//        collectionCode = SolrSearchHelper.getInstance().buildSearchCollectionCode(
+//                collectionCodeKey, collectionCode);
+//        
+//        startDate = SolrSearchHelper.getInstance().getFirstDayOfLastTenYears();  
+//        endDate = SolrSearchHelper.getInstance().getTomorrow();  
+//        
+//        return solr.getYearChart(collectionCode, startDate, endDate);
+
+//        
+//        return solr.getMonthChart(collectionCode, startDate, endDate);
+//    }
     
     
     

@@ -2,7 +2,11 @@ package se.nrm.samlingar.api.utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.YearMonth; 
+import java.time.ZoneOffset; 
+import java.time.format.DateTimeFormatter; 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,9 +20,9 @@ public class SolrSearchHelper {
     private final String colon = ":";
     private final String wildCard = "*";
     private final String fromZoom = ":00Z";
-    private final String toZoom = "Z";
+//    private final String toZoom = "Z";
     private final String toDate = " TO *]";
-    private final String squareEnd = "]";
+//    private final String squareEnd = "]";
 
     private final String emptySpace = " ";
     private final String star = "*";
@@ -31,6 +35,15 @@ public class SolrSearchHelper {
     private int nextYear;
 
     private StringBuilder fuzzySeachTextSb;
+    private StringBuilder collectionCodeSearchSb;
+    
+    private LocalDate firstDayOfYear;
+    private LocalDate tomorrow;
+ 
+    
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm zzzz");
+ 
+    
 
     private LocalDateTime startDate;
     private String[] searchText;
@@ -44,6 +57,56 @@ public class SolrSearchHelper {
             }
         }
         return instance;
+    }
+    
+    public String getStartDate(boolean isYearChart) {
+        return isYearChart ? getFirstDayOfLastTenYears() : getFirstDayOfLastTwelveMohth();
+    }
+     
+    public String getEndDate() {  
+        tomorrow = LocalDate.now()
+                .plusDays(1); 
+        return convertLocalDateToString(tomorrow); 
+    }
+     
+    private String getFirstDayOfLastTenYears() {
+        firstDayOfYear = LocalDate.now()
+                .minusYears(10)
+                .withDayOfYear(1);
+        
+        return convertLocalDateToString(firstDayOfYear);
+    }
+    
+    private String getFirstDayOfLastTwelveMohth() {
+        firstDayOfYear = LocalDate.now()
+                .minusMonths(11)
+                .withDayOfMonth(1);  
+        return convertLocalDateToString(firstDayOfYear);
+    }
+    
+    private String convertLocalDateToString(LocalDate date) {
+        OffsetDateTime utcDateTime = date
+                .atTime(LocalTime.MIDNIGHT)
+                .atOffset(ZoneOffset.UTC); 
+        return utcDateTime.format(DateTimeFormatter.ISO_INSTANT);  
+    }
+    
+  
+ 
+//    public String getFirstDayOfCurrentYear() {  
+//        firstDayOfYear = LocalDate.now().withDayOfYear(1);  
+//        return convertLocalDateToString(firstDayOfYear); 
+//    }
+
+    
+    public String buildSearchCollectionCode(String collectionCodeKey, String collectionCodeValue) {
+        
+        collectionCodeValue = collectionCodeValue == null ? wildCard : collectionCodeValue;
+        collectionCodeSearchSb = new StringBuilder(); 
+        collectionCodeSearchSb.append(collectionCodeKey);
+        collectionCodeSearchSb.append(colon); 
+        collectionCodeSearchSb.append(collectionCodeValue); 
+        return collectionCodeSearchSb.toString().trim();
     }
 
     public String buildSearchText(String text, String key, boolean fuzzySearch) {
