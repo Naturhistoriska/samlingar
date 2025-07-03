@@ -5,7 +5,7 @@
 
   <groupId>se.nrm</groupId>
   <artifactId>samlingar-service</artifactId>
-  <version>0.0.1</version>
+  <version>0.3.0</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
 
