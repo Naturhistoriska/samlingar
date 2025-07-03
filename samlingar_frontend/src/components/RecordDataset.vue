@@ -128,6 +128,7 @@
 import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
+import moment from 'moment-timezone'
 
 const { t } = useI18n()
 
@@ -169,9 +170,9 @@ onMounted(async () => {
     catalogNumber,
     collectionCode,
     collectionName,
+    createdDate_dt,
     dataResourceName,
     dateIdentified,
-    dynamicProperties_createdDate,
     dynamicProperties_expeditionName,
     dynamicProperties_preservation,
     identifiedBy,
@@ -195,7 +196,13 @@ onMounted(async () => {
   additionalDetermination.value = previousIdentifications
   biomeData.value = biome
   catNumber.value = catalogNumber
-  catalogedDate.value = dynamicProperties_createdDate
+
+  if (createdDate_dt) {
+    catalogedDate.value = moment
+      .tz(createdDate_dt, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
+      .format('YYYY-MM-DD')
+  }
+
   code.value = collectionCode
   collection.value = collectionName
   collectors.value = recordedBy ? recordedBy.toString() : ''

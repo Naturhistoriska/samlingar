@@ -3,7 +3,7 @@
     <p style="font-weight: bold; font-size: 1em">{{ $t('results.taxonomy') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.scientificName') }}</div>
-      <div class="col-8 reducePadding">{{ taxonName }} {{ scientificNameAuthorshipData }}</div>
+      <div class="col-8 reducePadding">{{ taxonName }}</div>
 
       <div class="col-4 reducePadding">{{ $t('results.scientificNameAuthorship') }}</div>
       <div class="col-8 reducePadding">
@@ -60,6 +60,16 @@
         {{ commonName }}
       </div>
 
+      <div class="col-4 reducePadding">{{ $t('results.synonyms') }}</div>
+      <div class="col-8 reducePadding">
+        {{ synonyms }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.infragenericEpithet') }}</div>
+      <div class="col-8 reducePadding">
+        {{ infragenericEpithet }}
+      </div>
+
       <div class="col-4 reducePadding">{{ $t('results.infraspecificEpithet') }}</div>
       <div class="col-8 reducePadding">
         {{ infraspecificEpithetData }}
@@ -95,8 +105,10 @@ const theSubgenus = ref()
 const theSpecies = ref()
 const commonName = ref()
 const infraspecificEpithetData = ref()
+const infragenericEpithet = ref()
 const specificEpithetData = ref()
 const scientificNameAuthorshipData = ref()
+const synonyms = ref()
 const remarks = ref()
 
 onMounted(async () => {
@@ -113,9 +125,11 @@ onMounted(async () => {
     species,
     subgenus,
     taxonRank,
-
+    dynamicProperties_infragenericEpithet,
     infraspecificEpithet,
     specificEpithet,
+
+    dynamicProperties_synonyms,
 
     scientificNameAuthorship,
     vernacularName,
@@ -136,6 +150,8 @@ onMounted(async () => {
   specificEpithetData.value = specificEpithet
   scientificNameAuthorshipData.value = scientificNameAuthorship
 
+  infragenericEpithet.value = dynamicProperties_infragenericEpithet
+  synonyms.value = dynamicProperties_synonyms
   taxonName.value = scientificName
   rank.value = taxonRank
   remarks.value = taxonRemarks

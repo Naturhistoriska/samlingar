@@ -4,9 +4,9 @@
       <start-page />
     </div>
 
-    <!-- <div class="grid" style="margin-top: 10px">
+    <div class="grid" style="margin-top: 10px">
       <StatisticCharts />
-    </div> -->
+    </div>
   </div>
 </template>
 <script setup>
@@ -28,7 +28,64 @@ const store = useStore()
 
 onMounted(() => {
   fetchInitdata()
+  fetchYearChartData()
+  fetchMonthChartData()
 })
+
+function fetchMonthChartData() {
+  service
+    .apiChart('*', false)
+    .then((response) => {
+      console.log('response', response)
+      const counts = response.facet_counts.facet_ranges.createdDate_dt.counts
+
+      console.log('facets', counts)
+
+      setMonthChartData(counts)
+    })
+    .catch()
+    .finally(() => {})
+}
+
+function fetchYearChartData() {
+  service
+    .apiChart('*', true)
+    .then((response) => {
+      const counts = response.facet_counts.facet_ranges.createdDate_dt.counts
+
+      const totalCount = response.total
+      store.commit('setTotalCount', totalCount)
+
+      setYearChartData(totalCount, counts)
+    })
+    .catch()
+    .finally(() => {})
+}
+
+function setMonthChartData(monthData) {
+  const cumulativeData = {}
+  let key
+  for (const [date, value] of Object.entries(monthData)) {
+    key = moment(date).format('MMM YYYY')
+    cumulativeData[key] = value
+  }
+  console.log('cumulativeData', cumulativeData)
+  store.commit('setMonthData', cumulativeData)
+}
+
+function setYearChartData(total, years) {
+  const sum = Object.values(years).reduce((total, num) => total + num, 0)
+  let cumulatedTotal = total - sum
+  let key
+  const cumulativeData = {}
+
+  for (const [date, value] of Object.entries(years)) {
+    cumulatedTotal += value
+    key = moment(date).year()
+    cumulativeData[key] = cumulatedTotal
+  }
+  store.commit('setYearData', cumulativeData)
+}
 
 function fetchInitdata() {
   service
@@ -40,7 +97,6 @@ function fetchInitdata() {
       store.commit('setTotalCount', totalCount)
 
       setSearchCommentFacet(facets)
-      // setChartData(facets)
 
       store.commit('setFilterImage', false)
       store.commit('setFilterCoordinates', false)
@@ -137,21 +193,6 @@ function buildMonthChartData(years) {
   }
   newMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
   store.commit('setMonthData', newMonthData)
-}
-
-function setYearChartData(total, years) {
-  // cumulatedTotal from last ten years
-  const sum = years.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
-
-  // cumulatedTotal before last ten years
-  let cumulatedTotal = total - sum
-  // Setup cumulatedTotal for last ten years
-  years.map((year) => {
-    const count = year.count
-    cumulatedTotal += count
-    year.count = cumulatedTotal
-  })
-  store.commit('setYearData', years)
 }
 
 //

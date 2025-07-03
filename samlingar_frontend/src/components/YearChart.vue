@@ -17,14 +17,15 @@ const { t } = useI18n()
 const chartData = computed(() => {
   const documentStyle = getComputedStyle(document.documentElement)
   const data = store.getters['yearData']
-  const labels = data.map((d) => d.val)
-  const monthData = data.map((d) => d.count)
+
+  const labels = Object.keys(data)
+  const values = Object.values(data)
   return {
     labels: labels,
     datasets: [
       {
         label: t('startPage.yearChartLabel'),
-        data: monthData,
+        data: values,
         color: 'white',
         backgroundColor: documentStyle.getPropertyValue('--p-emerald-500'),
         borderWidth: 1

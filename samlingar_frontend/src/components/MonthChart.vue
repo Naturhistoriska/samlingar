@@ -17,22 +17,15 @@ const chartData = computed(() => {
   const documentStyle = getComputedStyle(document.documentElement)
   const data = store.getters['monthData']
 
-  const labels = data.map((d) => {
-    const val = d.val
-    const mon = val.split(' ')
-
-    return t('chart.' + mon[0]) + ' ' + mon[1]
-    // console.log('mon', t('chart.' + mon[0]) + ' ' + mon[1])
-  })
-
-  const monthData = data.map((d) => d.count)
+  const labels = Object.keys(data)
+  const values = Object.values(data)
 
   return {
     labels: labels,
     datasets: [
       {
         label: t('startPage.monthChartLabel'),
-        data: monthData,
+        data: values,
         color: 'white',
         backgroundColor: documentStyle.getPropertyValue('--p-emerald-500'),
         borderWidth: 1
@@ -41,8 +34,6 @@ const chartData = computed(() => {
   }
 })
 const chartOptions = computed(() => {
-  // const documentStyle = getComputedStyle(document.documentElement)
-
   return {
     plugins: {
       legend: {
