@@ -21,17 +21,18 @@ const chartData = computed(() => {
   const { chart } = props
 
   let labels
-  let monthData
+  let values
   if (chart) {
-    labels = chart.map((d) => d.val)
-    monthData = chart.map((d) => d.count)
+    labels = Object.keys(chart)
+    values = Object.values(chart)
   }
+
   return {
     labels: labels,
     datasets: [
       {
         label: t('startPage.yearChartLabel'),
-        data: monthData,
+        data: values,
         color: 'white',
         backgroundColor: documentStyle.getPropertyValue('--p-emerald-500'),
         borderWidth: 1
@@ -40,8 +41,7 @@ const chartData = computed(() => {
   }
 })
 const chartOptions = computed(() => {
-  const documentStyle = getComputedStyle(document.documentElement)
-
+  // const documentStyle = getComputedStyle(document.documentElement)
   return {
     plugins: {
       legend: {

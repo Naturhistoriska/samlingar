@@ -6,34 +6,30 @@
 
 <script setup>
 import Chart from 'primevue/chart'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-const props = defineProps(['chart', 'collection'])
+const props = defineProps(['chart'])
 
 const chartData = computed(() => {
   const documentStyle = getComputedStyle(document.documentElement)
   const { chart } = props
 
   let labels
-  let monthData
+  let values
   if (chart) {
-    labels = chart.map((d) => {
-      const val = d.val
-      const mon = val.split(' ')
-
-      return t('chart.' + mon[0]) + ' ' + mon[1]
-    })
-    monthData = chart.map((d) => d.count)
+    labels = Object.keys(chart)
+    values = Object.values(chart)
   }
+
   return {
     labels: labels,
     datasets: [
       {
         label: t('startPage.monthChartLabel'),
-        data: monthData,
+        data: values,
         color: 'white',
         backgroundColor: documentStyle.getPropertyValue('--p-emerald-500'),
         borderWidth: 1

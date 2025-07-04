@@ -22,29 +22,29 @@
     "DECEMBER": "dec"
   },
   "collectionName": {
-    "HE": {
+    "NRM-Herps": {
       "name": "Grod och kräldjur",
-      "code": "HE"
+      "code": "NRM-Herps"
     },
-    "AV": {
+    "Birds": {
       "name": "Fågel",
-      "code": "AV"
+      "code": "Birds"
     },
-    "PI": {
+    "NRM-Fish": {
       "name": "Fisk",
-      "code": "PI"
+      "code": "NRM-Fish"
     },
-    "ev": {
+    "EVmain": {
       "name": "Evertebrater",
-      "code": "ev"
+      "code": "EVmain"
     },
-    "et": {
+    "EVtype": {
       "name": "Evertebrater typsamling",
-      "code": "et"
+      "code": "EVtype"
     },
-    "MA": {
+    "Mammals": {
       "name": "Däggdjur",
-      "code": "MA"
+      "code": "Mammals"
     },
     "NHRS": {
       "name": "Entomologisk",
@@ -66,21 +66,25 @@
       "name": "Paleozoologisk",
       "code": "pz"
     },
-    "algae": {
+    "PAL": {
+      "name": "Paleontologiska samlingar",
+      "code": "PAL"
+    },
+    "Algae": {
       "name": "Alger",
       "code": "algae"
     },
-    "mosses": {
+    "S-Bryophytes": {
       "name": "Mossor",
-      "code": "mosses"
+      "code": "S-Bryophytes"
     },
-    "fungi": {
+    "S-Fungi": {
       "name": "Svampar/Lavar",
-      "code": "fungi"
+      "code": "S-Fungi"
     },
-    "vp": {
+    "VascularPlants": {
       "name": "Kärlväxter",
-      "code": "vp"
+      "code": "VascularPlants"
     },
     "NRMMIN": {
       "name": "Mineralogisk",
@@ -99,13 +103,11 @@
     "Fish": "Fisk",
     "Invertebrate main collection": "Evertebrater",
     "Invertebrate type collection": "Evertebrater typsamling",
-    "Mammals": "Däggdjur",
     "NRM Entomology Collection Objects": "Entomologisk",
     "Swedish Malaise Trap Project (SMTP) Collection Obj": "Swedish Malaise Trap Project (SMTP) Collection Obj",
     "Swedish Malaise Trap Project (SMTP) Species Lists": "Swedish Malaise Trap Project (SMTP) Species Lists",
     "Paleozoology": "Paleozoologisk",
     "Paleobotany": "Paleobotanisk",
-    "Algae": "Alger",
     "Fungi/Lichens": "Svampar/Lavar",
     "Mosses": "Mossor",
     "Vascular Plants": "Kärlväxter",

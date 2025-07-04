@@ -41,29 +41,29 @@
     "yes": "YES"
   },
   "collectionName": {
-    "HE": {
+    "NRM-Herps": {
       "name": "Amphibians and reptiles",
-      "code": "HE"
+      "code": "NRM-Herps"
     },
-    "AV": {
+    "Birds": {
       "name": "Bird",
-      "code": "AV"
+      "code": "Birds"
     },
-    "PI": {
+    "NRM-Fish": {
       "name": "Fish",
-      "code": "PI"
+      "code": "NRM-Fish"
     },
-    "ev": {
+    "EVmain": {
       "name": "Invertebrate main collection",
-      "code": "ev"
+      "code": "EVmain"
     },
-    "et": {
+    "EVtype": {
       "name": "Invertebrate type collection",
-      "code": "et"
+      "code": "EVtype"
     },
-    "MA": {
+    "Mammals": {
       "name": "Mammals",
-      "code": "MA"
+      "code": "Mammals"
     },
     "NHRS": {
       "name": "NRM Entomology Collection Objects",
@@ -85,21 +85,25 @@
       "name": "Paleozoology",
       "code": "pz"
     },
-    "algae": {
+    "PAL": {
+      "name": "Paleontological collection",
+      "code": "PAL"
+    },
+    "Algae": {
       "name": "Algae",
-      "code": "algae"
+      "code": "Algae"
     },
-    "mosses": {
+    "S-Bryophytes": {
       "name": "Mosses",
-      "code": "mosses"
+      "code": "S-Bryohpytes"
     },
-    "fungi": {
+    "S-Fungi": {
       "name": "Fungi/Lichens",
-      "code": "fungi"
+      "code": "S-Fungi"
     },
-    "vp": {
+    "VascularPlants": {
       "name": "Vascular Plants",
-      "code": "vp"
+      "code": "VascularPlants"
     },
     "NRMMIN": {
       "name": "NRM Mineralogy",
@@ -118,13 +122,12 @@
     "Fish": "Fish",
     "Invertebrate main collection": "Invertebrate main collection",
     "Invertebrate type collection": "Invertebrate type collection",
-    "Mammals": "Mammals",
+
     "NRM Entomology Collection Objects": "NRM Entomology Collection Objects",
     "Swedish Malaise Trap Project (SMTP) Collection Obj": "Swedish Malaise Trap Project (SMTP) Collection Obj",
     "Swedish Malaise Trap Project (SMTP) Species Lists": "Swedish Malaise Trap Project (SMTP) Species Lists",
     "Paleozoology": "Paleozoology",
     "Paleobotany": "Paleobotany",
-    "Algae": "Algae",
     "Fungi/Lichens": "Fungi/Lichens",
     "Mosses": "Mosses",
     "Vascular Plants": "Vascular Plants",
