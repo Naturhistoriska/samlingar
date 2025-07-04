@@ -108,8 +108,6 @@ function change() {
   } else if (option === 'contains') {
     store.commit('setIsFuzzySearch', true)
   }
-
-  // emits('search')
 }
 
 function onInputScientificName() {
@@ -134,7 +132,7 @@ function clearScientificName() {
 function search(scientificName, fuzzy) {
   store.commit('setScientificName', scientificName)
   store.commit('setIsFuzzySearch', fuzzy)
-  emits('search')
+  // emits('search')
 }
 </script>
 <style scoped>

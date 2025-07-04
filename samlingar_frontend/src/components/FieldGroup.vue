@@ -2,7 +2,7 @@
   <div style="min-width: 100%; max-height: 200px; overflow-y: scroll">
     <template v-for="(field, index) in fields" :key="field">
       <!-- <input-box v-bind:field="field" @search="handleSearch" /> -->
-      <autocomplete-box v-bind:multiple="true" v-bind:field="field" @search="handleSearch" />
+      <autocomplete-box v-bind:multiple="true" v-bind:field="field" />
     </template>
   </div>
 </template>
@@ -11,7 +11,7 @@ import { ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import AutocompleteBox from './baseComponents/AutocompleteBox.vue'
 import InputBox from './baseComponents/InputBox.vue'
-const emits = defineEmits(['search'])
+// const emits = defineEmits(['search'])
 
 const store = useStore()
 
@@ -25,8 +25,8 @@ watch(
   }
 )
 
-function handleSearch() {
-  emits('search')
-}
+// function handleSearch() {
+// emits('search')
+// }
 </script>
 <style scoped></style>
