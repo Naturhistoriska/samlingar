@@ -50,12 +50,10 @@ const AsyncMap = defineAsyncComponent({
 })
 
 onMounted(async () => {
-  console.log('onMounted')
   search(0, 10, true)
 })
 
 function search(start, numPerPage, saveData) {
-  console.log('search...')
   const fields = store.getters['fields']
 
   const scientificName = store.getters['scientificName']

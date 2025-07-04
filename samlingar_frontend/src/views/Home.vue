@@ -36,10 +36,7 @@ function fetchMonthChartData() {
   service
     .apiChart('*', false)
     .then((response) => {
-      console.log('response', response)
       const counts = response.facet_counts.facet_ranges.createdDate_dt.counts
-
-      console.log('facets', counts)
 
       setMonthChartData(counts)
     })
@@ -69,7 +66,6 @@ function setMonthChartData(monthData) {
     key = moment(date).format('MMM YYYY')
     cumulativeData[key] = value
   }
-  console.log('cumulativeData', cumulativeData)
   store.commit('setMonthData', cumulativeData)
 }
 
