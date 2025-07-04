@@ -183,6 +183,7 @@
   },
   "labels": {
     "catalogNumber": "Catalogue number",
+    "collections": "Collections",
     "collectingDate": "Date collected [Date range: start - end]",
     "scientificName": "Scientific Name"
   },

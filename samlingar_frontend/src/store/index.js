@@ -3,6 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     dates: null,
+    dataResource: null,
     endDate: null,
     fields: [],
     filterCoordinates: false,
@@ -95,6 +96,9 @@ export default createStore({
   getters: {
     dates(state) {
       return state.dates
+    },
+    dataResource(state) {
+      return state.dataResource
     },
     endDate(state) {
       return state.endDate
@@ -342,6 +346,7 @@ export default createStore({
 
   mutations: {
     setDates: (state, payload) => (state.dates = payload),
+    setDataResource: (state, payload) => (state.dataResource = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
     setFields: (state, payload) => (state.fields = payload),
     setFilterCoordinates: (state, payload) => (state.filterCoordinates = payload),

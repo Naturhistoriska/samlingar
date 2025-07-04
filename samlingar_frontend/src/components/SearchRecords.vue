@@ -38,6 +38,11 @@
         <Panel :header="$t('labels.scientificName')" toggleable>
           <scientific-name />
         </Panel>
+
+        <Panel :header="$t('labels.collections')" toggleable>
+          <Collections />
+        </Panel>
+
         <Panel :header="$t('labels.collectingDate')" toggleable>
           <event-date />
         </Panel>
@@ -57,6 +62,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import Collections from './Collections.vue'
 import EventDate from './EventDate.vue'
 import FilterCheckbox from './FilterCheckbox.vue'
 import FilterFields from './FilterFields.vue'
@@ -85,6 +91,7 @@ function reset() {
   store.commit('setFilterType', false)
 
   store.commit[('setFields', [])]
+  store.commit('setDataResource', null)
   search()
 }
 

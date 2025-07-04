@@ -22,7 +22,7 @@
       </template>
     </MultiSelect>
     <Divider type="solid" />
-    <field-group @search="handleSearch" />
+    <field-group />
   </div>
 </template>
 <script setup>
@@ -34,7 +34,7 @@ import FieldGroup from './FieldGroup.vue'
 const store = useStore()
 const service = new Service()
 
-const emits = defineEmits(['search'])
+// const emits = defineEmits(['search'])
 
 // let hide = ref(false)
 
@@ -45,10 +45,10 @@ const groupedSelections = ref([
     label: 'Taxonomy',
     code: 'tx',
     items: [
-      // { label: 'Kingdom', value: 'kingdom', key: 'kingdom:' },
-      // { label: 'Phylum', value: 'phylum', key: 'phylum:' },
-      { label: 'Class', value: 'clazz', key: 'clazz:' },
-      // { label: 'Order', value: 'order', key: 'order:' },
+      { label: 'Kingdom', value: 'kingdom', key: 'kingdom:' },
+      { label: 'Phylum', value: 'phylum', key: 'phylum:' },
+      { label: 'Class', value: 'class', key: 'class:' },
+      { label: 'Order', value: 'order', key: 'order:' },
       { label: 'Family', value: 'family', key: 'family:' },
       { label: 'Genus', value: 'genus', key: 'genus:' },
       { label: 'Subgenus', value: 'subgenus', key: 'subgenus:' },
@@ -65,7 +65,8 @@ const groupedSelections = ref([
       { label: 'Catalog number', value: 'catalogNumber', key: 'catalogNumber:' },
       { label: 'Type status', value: 'typeStatus', key: 'typeStatus:' },
       { label: 'Collection code', value: 'collectionCode', key: 'collectionCode:' },
-      { label: 'Collection name', value: 'collectionName', key: 'collectionName:' }
+      { label: 'Collection name', value: 'collectionName', key: 'collectionName:' },
+      { label: 'Data resource name', value: 'dataResourceName', key: 'dataResourceName:' }
     ]
   },
   {
@@ -108,9 +109,9 @@ function onSelect(event) {
   }
 }
 
-function handleSearch() {
-  emits('search')
-}
+// function handleSearch() {
+//   emits('search')
+// }
 </script>
 <style scoped>
 .searchLabel {

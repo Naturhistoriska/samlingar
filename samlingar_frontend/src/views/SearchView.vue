@@ -66,6 +66,8 @@ function search(start, numPerPage, saveData) {
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
 
+  const dataResource = store.getters['dataResource']
+
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
 
@@ -108,6 +110,10 @@ function search(start, numPerPage, saveData) {
     params.set('endDate', endDate)
   }
 
+  if (dataResource) {
+    params.set('dataResourceName', dataResource)
+  }
+
   if (fields) {
     fields
       .filter((field) => field.text)
@@ -135,7 +141,7 @@ function search(start, numPerPage, saveData) {
       }
     })
     .catch((error) => {
-      console.err('error', error)
+      console.log('error', error)
     })
     .finally(() => {})
 }
