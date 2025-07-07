@@ -218,6 +218,7 @@ public class SamlingarLogic {
         log.info("text and scientificName : {} -- {}", text, scientificName);
         
         
+        
         if(!StringUtils.isBlank(startDate) && !StringUtils.isBlank(endDate) ) {
             dateRange = leftBlacket + startDate + to + endDate + rightBlacket; 
         } else if(!StringUtils.isBlank(startDate)) {
@@ -226,6 +227,7 @@ public class SamlingarLogic {
             dateRange = null;
         }
           
+        log.info("map : {}", paramMap);
         return solr.search(paramMap, text, scientificName, dateRange, facets,
                 start, numPerPage, sort);
         
