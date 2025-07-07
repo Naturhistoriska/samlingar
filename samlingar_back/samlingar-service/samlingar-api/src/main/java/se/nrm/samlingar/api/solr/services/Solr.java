@@ -319,7 +319,7 @@ public class Solr implements Serializable {
     public String search(Map<String, String> paramMap, String text, String scientificName,
             String dateRange, String facets, int start, int numPerPage, String sort) {
 
-        log.info("search", paramMap);
+        log.info("search : {}", paramMap);
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)
                 .setOffset(start)
@@ -350,6 +350,7 @@ public class Solr implements Serializable {
             sb.append(key)
                     .append(colon)
                     .append(value);
+            log.info("filter : {}", sb.toString());
             jsonRequest.withFilter(sb.toString());
         });
 
