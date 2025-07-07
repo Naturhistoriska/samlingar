@@ -47,25 +47,29 @@ const emits = defineEmits(['searchCollections'])
 
 function handleBotCollectionSearch() {
   const botanyGroup = import.meta.env.VITE_BOTANY_GROUP
-  search(botanyGroup)
+  const dataResource = import.meta.env.VITE_BOTANY_DATARESOURCE
+  search(botanyGroup, dataResource)
 }
 
 function handleZooCollectionSearch() {
   const zooGroup = import.meta.env.VITE_ZOO_GROUP
-  search(zooGroup)
+  const dataResource = import.meta.env.VITE_ZOO_DATARESOURCE
+  search(zooGroup, dataResource)
 }
 
 function handlePaleoCollectionSearch() {
   const paleaGroup = import.meta.env.VITE_PALEA_GROUP
-  search(paleaGroup)
+  const dataResource = import.meta.env.VITE_PALEA_DATARESOURCE
+  search(paleaGroup, dataResource)
 }
 
 function handleGeoCollectionSearch() {
   const geoGroup = import.meta.env.VITE_GEO_GROUP
-  search(geoGroup)
+  const dataResource = import.meta.env.VITE_GEO_DATARESOURCE
+  search(geoGroup, dataResource)
 }
 
-function search(value) {
+function search(value, dataResource) {
   const searchText = '*'
   store.commit('setSearchText', searchText)
   store.commit('setScientificName', null)
@@ -76,6 +80,7 @@ function search(value) {
   store.commit('setFilterType', false)
 
   store.commit('setCollectionGroup', value)
+  store.commit('setDataResource', dataResource)
 
   emits('searchCollections')
 }

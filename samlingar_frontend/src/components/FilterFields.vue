@@ -99,11 +99,11 @@ function onSelect(event) {
   if (selectedItems.value && selectedItems.value.length > 0) {
     store.commit('setFields', selectedItems)
 
-    const item = selectedItems.value.slice(-1)
+    // const item = selectedItems.value.slice(-1)
 
-    if (item) {
-      console.log('here...', item[0].value)
-    }
+    // if (item) {
+    //   console.log('here...', item[0].value)
+    // }
 
     // hide.value = true
   }

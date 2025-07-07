@@ -20,7 +20,6 @@ const fields = ref([])
 watch(
   () => store.getters['fields'],
   (newValue, oldValue) => {
-    console.log('value...', newValue)
     fields.value = newValue
   }
 )

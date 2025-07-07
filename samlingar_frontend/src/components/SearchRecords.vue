@@ -35,15 +35,23 @@
         </div>
         <filter-checkbox />
 
-        <Panel :header="$t('labels.scientificName')" toggleable>
+        <Panel
+          :header="$t('labels.scientificName')"
+          toggleable
+          :collapsed="scientificNamePanelVisible"
+        >
           <scientific-name />
         </Panel>
 
-        <Panel :header="$t('labels.collections')" toggleable>
+        <Panel
+          :header="$t('labels.collections')"
+          toggleable
+          :collapsed="collectionGroupPanelVisible"
+        >
           <Collections />
         </Panel>
 
-        <Panel :header="$t('labels.collectingDate')" toggleable>
+        <Panel :header="$t('labels.collectingDate')" toggleable collapsed>
           <event-date />
         </Panel>
 
@@ -60,7 +68,7 @@
   </Card>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import Collections from './Collections.vue'
 import EventDate from './EventDate.vue'
@@ -74,6 +82,14 @@ const store = useStore()
 const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
 
 const dialogVisible = ref(false)
+
+const scientificNamePanelVisible = computed(() => {
+  return store.getters['scientificName'] === null
+})
+
+const collectionGroupPanelVisible = computed(() => {
+  return store.getters['dataResource'] === null
+})
 
 function help() {
   dialogVisible.value = true

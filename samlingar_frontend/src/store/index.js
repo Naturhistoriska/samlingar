@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    collectionGroup: null,
     dates: null,
     dataResource: null,
     endDate: null,
@@ -46,7 +47,7 @@ export default createStore({
     chartDataSmtpList: [],
     chartDataVp: [],
     collectons: [],
-    collectionGroup: null,
+
     classs: [],
     dataset: null,
     dateRange: null,
@@ -94,6 +95,9 @@ export default createStore({
   },
 
   getters: {
+    collectionGroup(state) {
+      return state.collectionGroup
+    },
     dates(state) {
       return state.dates
     },
@@ -166,9 +170,6 @@ export default createStore({
     },
     collectons(state) {
       return state.collectons
-    },
-    collectionGroup(state) {
-      return state.collectionGroup
     },
 
     chartDataAlgae(state) {
@@ -345,6 +346,7 @@ export default createStore({
   },
 
   mutations: {
+    setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
     setDates: (state, payload) => (state.dates = payload),
     setDataResource: (state, payload) => (state.dataResource = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
@@ -372,7 +374,6 @@ export default createStore({
     setCatalogNumber: (state, payload) => (state.catalogNumber = payload),
     setClasss: (state, payload) => (state.classs = payload),
     setCollections: (state, payload) => (state.collectons = payload),
-    setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
 
     setChartDataAlgae: (state, payload) => (state.chartDataAlgae = payload),
     setChartDataEntomology: (state, payload) => (state.chartDataEntomology = payload),

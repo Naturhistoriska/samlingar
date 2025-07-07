@@ -71,7 +71,7 @@ function search(start, numPerPage, saveData) {
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
 
-  const collectionGroup = store.getters['collectionGroup']
+  // const collectionGroup = store.getters['collectionGroup']
 
   const params = new URLSearchParams({
     text: searchText
@@ -98,9 +98,9 @@ function search(start, numPerPage, saveData) {
     params.set('lat_long', '*')
   }
 
-  if (collectionGroup) {
-    params.set('collectionCode', collectionGroup)
-  }
+  // if (collectionGroup) {
+  //   params.set('collectionCode', collectionGroup)
+  // }
 
   if (startDate) {
     params.set('startDate', startDate)
@@ -111,7 +111,8 @@ function search(start, numPerPage, saveData) {
   }
 
   if (dataResource) {
-    params.set('dataResourceName', dataResource)
+    let newValue = dataResource.replace(/'/g, '"')
+    params.set('dataResourceName', newValue)
   }
 
   if (fields) {
