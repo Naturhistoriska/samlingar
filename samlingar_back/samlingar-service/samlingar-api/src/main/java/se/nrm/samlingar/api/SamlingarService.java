@@ -223,17 +223,17 @@ public class SamlingarService {
      
     
     
-    
-    @GET
-    @Path("/chart")
-    @ApiOperation(value = "ChartData",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getChartData(@QueryParam("collection") String collection) {
-        return Response.ok(logic.getChartData(collection)).build();
-    }
+//    
+//    @GET
+//    @Path("/chart")
+//    @ApiOperation(value = "ChartData",
+//            notes = "Return search results in json",
+//            response = String.class
+//    )
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getChartData(@QueryParam("collection") String collection) {
+//        return Response.ok(logic.getChartData(collection)).build();
+//    }
     
     
 
