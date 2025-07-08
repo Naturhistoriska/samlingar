@@ -12,7 +12,7 @@
         </Tab>
         <Tab :value="value" style="border-color: transparent !important">
           <div class="col-12" style="float: left; text-align: left">
-            <Download @exportData="preparaDataExport" />
+            <Download @download="download" @exportData="preparaDataExport" />
           </div>
           <!-- <i class="pi pi-file-export" style="color: slateblue"></i> -->
         </Tab>
@@ -32,7 +32,7 @@
   </div>
 </template>
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, onUpdated } from 'vue'
 import { useStore } from 'vuex'
 import Download from './Download.vue'
 import RecordLabels from './RecordLabels.vue'
@@ -41,7 +41,7 @@ import RecordMedia from './RecordMedia.vue'
 
 const store = useStore()
 
-const emits = defineEmits(['exportData', 'search'])
+const emits = defineEmits(['download', 'exportData', 'search'])
 
 let value = ref('0')
 
@@ -61,8 +61,20 @@ const totalCount = computed(() => {
   return store.getters['totalRecords']
 })
 
+onMounted(async () => {
+  console.log('onMounted')
+})
+
+onUpdated(async () => {
+  console.log('updated')
+})
+
 function preparaDataExport() {
   emits('exportData')
+}
+
+function download() {
+  emits('download')
 }
 
 function handleSearch(start, numPerPage, saveData) {

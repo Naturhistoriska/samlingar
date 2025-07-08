@@ -22,13 +22,13 @@
       <small style="padding-left: 10px"><i class="pi pi-download"></i></small>
     </downloadexcel>
 
-    <ProgressSpinner
+    <!-- <ProgressSpinner
       v-if="isLoading"
       aria-label="Loading"
       style="width: 50px; height: 50px; position: fixed; padding-left: 20%; z-index: 200"
       strokeWidth="8"
       fill="transparent"
-    />
+    /> -->
   </div>
 </template>
 <script setup>
@@ -38,7 +38,7 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const emits = defineEmits(['exportData'])
+const emits = defineEmits(['exportData', 'download'])
 
 let json_data = ref()
 let dataPrepared = ref(false)
@@ -47,7 +47,6 @@ const isLoading = ref(false)
 watch(
   () => store.getters['exportData'],
   () => {
-    console.log('data changed')
     json_data.value = store.getters['exportData']
     setTimeout(() => {
       dataPrepared.value = true
@@ -97,6 +96,7 @@ function exportData() {
 function downloadFile() {
   console.log('downloadFile')
   isLoading.value = true
+  emits('download')
 }
 </script>
 <style scoped>

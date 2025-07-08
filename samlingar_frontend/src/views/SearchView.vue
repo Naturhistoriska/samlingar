@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div v-if="loading" class="spinner-overlay">
+      <div class="spinner"></div>
+    </div>
     <div class="grid">
       <div class="col-5" no-gutters>
         <search-records @search="search" />
@@ -17,15 +20,16 @@
     </div>
     <div class="grid">
       <div class="col-12" no-gutters>
-        <Records @exportData="preparaDataExport" @search="search" />
+        <Records @download="download" @exportData="preparaDataExport" @search="search" />
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { defineAsyncComponent, onMounted } from 'vue'
+import { defineAsyncComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import Service from '../Service'
+
 import SearchRecords from '../components/SearchRecords.vue'
 import Records from '../components/RecordsTabs.vue'
 
@@ -37,11 +41,24 @@ const AsyncMap = defineAsyncComponent({
   loader: () => import('../components/MyMap.vue')
 })
 
+let loading = ref(true)
+
 onMounted(async () => {
   search(0, 10, true)
+  setTimeout(() => {
+    loading.value = false
+  }, 2000)
 })
 
+function download() {
+  loading.value = true
+  setTimeout(() => {
+    loading.value = false
+  }, 2000)
+}
+
 function preparaDataExport() {
+  loading.value = true
   const totalRecords = store.getters['totalRecords']
   let params = buildParams()
 
@@ -51,82 +68,16 @@ function preparaDataExport() {
       const results = response
 
       store.commit('setExportData', results)
+
+      setTimeout(() => {
+        loading.value = false
+      }, 2000)
     })
     .catch()
     .finally(() => {})
 }
 
 function search(start, numPerPage, saveData) {
-  // const fields = store.getters['fields']
-
-  // const scientificName = store.getters['scientificName']
-  // const isFuzzy = store.getters['isFuzzySearch']
-
-  // const isType = store.getters['filterType']
-  // const isInSweden = store.getters['filterInSweden']
-  // const hasCoordinates = store.getters['filterCoordinates']
-  // const hasImages = store.getters['filterImage']
-  // let searchText = store.getters['searchText']
-  // searchText = searchText ? searchText : '*'
-
-  // const dataResource = store.getters['dataResource']
-
-  // const endDate = store.getters['endDate']
-  // const startDate = store.getters['startDate']
-
-  // // const collectionGroup = store.getters['collectionGroup']
-
-  // const params = new URLSearchParams({
-  //   text: searchText
-  // })
-
-  // if (scientificName) {
-  //   params.set('scientificName', scientificName)
-  //   params.set('fuzzySearch', isFuzzy)
-  // }
-
-  // if (isType) {
-  //   params.set('typeStatus', '*')
-  // }
-
-  // if (isInSweden) {
-  //   params.set('country', 'Sweden')
-  // }
-
-  // if (hasImages) {
-  //   params.set('hasImage', hasImages)
-  // }
-
-  // if (hasCoordinates) {
-  //   params.set('lat_long', '*')
-  // }
-
-  // // if (collectionGroup) {
-  // //   params.set('collectionCode', collectionGroup)
-  // // }
-
-  // if (startDate) {
-  //   params.set('startDate', startDate)
-  // }
-
-  // if (endDate) {
-  //   params.set('endDate', endDate)
-  // }
-
-  // if (dataResource) {
-  //   let newValue = dataResource.replace(/'/g, '"')
-  //   params.set('dataResourceName', newValue)
-  // }
-
-  // if (fields) {
-  //   fields
-  //     .filter((field) => field.text)
-  //     .forEach((field) => {
-  //       params.set(field.value, field.text)
-  //     })
-  // }
-  // console.log(params)
-
   const params = buildParams()
   service
     .apiSearch(params, start, numPerPage)
@@ -272,7 +223,31 @@ function buildParams() {
 // }
 </script>
 <style scoped>
-/* .fullWidth {
-  margin: 0 auto;
-} */
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>
