@@ -68,7 +68,9 @@ import Menu from 'primevue/menu'
 import MultiSelect from 'primevue/multiselect'
 import Paginator from 'primevue/paginator'
 import Panel from 'primevue/panel'
+
 import ProgressSpinner from 'primevue/progressspinner'
+
 import RadioButton from 'primevue/radiobutton'
 import Select from 'primevue/select'
 import SelectButton from 'primevue/selectbutton'
@@ -89,9 +91,9 @@ import Toolbar from 'primevue/toolbar'
 // })
 
 const app = createApp(App, {
-  onFreeTextSearch() {
-    console.log('expand................')
-  }
+  // onFreeTextSearch() {
+  //   console.log('expand................')
+  // }
 })
 app.use(router)
 app.use(store)
@@ -158,6 +160,8 @@ app.component('MultiSelect', MultiSelect)
 
 app.component('Paginator', Paginator)
 app.component('Panel', Panel)
+
+
 app.component('ProgressSpinner', ProgressSpinner)
 app.component('RadioButton', RadioButton)
 app.component('Select', Select)
