@@ -68,7 +68,7 @@ const groupedSelections = ref([
   },
   {
     label: 'Paleontological collections',
-    code: 'event',
+    code: 'paleo',
     items: [
       {
         label: 'Palaeobotanical Collections (PB)',
@@ -92,7 +92,7 @@ const groupedSelections = ref([
 ])
 
 onMounted(() => {
-  const group = store.getters['collectionGroup']
+  // const group = store.getters['collectionGroup']
   const dataResource = store.getters['dataResource']
 
   const botany = import.meta.env.VITE_BOTANY_DATARESOURCE
@@ -100,59 +100,21 @@ onMounted(() => {
   const geo = import.meta.env.VITE_GEO_DATARESOURCE
   const paleao = import.meta.env.VITE_PALEA_DATARESOURCE
 
+  let key
   if (dataResource) {
     if (botany === dataResource) {
-      selectedItems.value = [
-        { label: 'Algae Collection', value: 'Algae (S)' },
-        { label: 'Fungi Collection', value: 'Fungi (S)' },
-        { label: 'Moss Collection', value: 'Mosses (S)' },
-        {
-          label: 'Phanerogamic Botanical Collections',
-          value: 'Phanerogamic Botanical Collections (S)'
-        }
-      ]
+      key = 'bot'
     } else if (zoo === dataResource) {
-      selectedItems.value = [
-        {
-          label: 'Entomological Collections (NRM)',
-          value: 'Entomological Collections (NHRS), Swedish Museum of Natural History (NRM)'
-        },
-        {
-          label: 'Invertebrates Collection NRM',
-          value: 'Invertebrates Collection of the Swedish Museum of Natural History'
-        },
-        {
-          label: 'Invertebrates Type Specimen Collection NRM',
-          value: 'Invertebrates (Type Specimens) of the Swedish Museum of Natural History'
-        },
-        { label: 'Fish Collection NRM', value: 'Fish Collection NRM' },
-
-        { label: 'Ornithology Collection NRM', value: 'Ornithology Collection NRM' },
-        { label: 'NRM-Mammals', value: 'NRM-Mammals' },
-        { label: 'Herpetology Collection NRM', value: 'Herpetology Collection NRM' }
-      ]
+      key = 'zoo'
     } else if (paleao === dataResource) {
-      selectedItems.value = [
-        {
-          label: 'Palaeobotanical Collections (PB)',
-          value: 'Palaeozoological Collections (PZ), Swedish Museum of Natural History (NRM)'
-        },
-        {
-          label: 'Palaeozoological Collections (PZ)',
-          value: 'Palaeobotanical Collections (PB), Swedish Museum of Natural History (NRM)'
-        }
-      ]
+      key = 'paleo'
     } else if (geo === dataResource) {
-      selectedItems.value = [
-        { label: 'NRM Isotope Geology', value: 'NRM Isotope Geology' },
-        { label: 'NRM Mineralogy', value: 'NRM Mineralogy' },
-        { label: 'NRM Nodules', value: 'NRM Nodules' }
-      ]
+      key = 'geo'
     }
-    // const value = selectedItems.value.map((obj) => `"${obj.value}"`).join(' ')
-    // const names = `(${value})`
-    // store.commit('setDataResource', names)
   }
+  selectedItems.value = groupedSelections.value
+    .filter((group) => group.code === key)
+    .map((item) => item.items)[0]
 })
 
 function onSelect() {

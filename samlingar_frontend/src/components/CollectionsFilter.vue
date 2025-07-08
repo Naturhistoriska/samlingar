@@ -1,25 +1,29 @@
 <template>
   <div class="grid" no-gutters>
     <image-filt-link
-      v-bind:text="botanicalCollection"
+      v-bind:group="botGroup"
       v-bind:imageSource="botImageSource"
+      v-bind:text="botanicalCollection"
       @searchCollection="handleBotCollectionSearch"
     />
     <image-filt-link
-      v-bind:text="zooCollection"
+      v-bind:group="zooGroup"
       v-bind:imageSource="zooImageSource"
+      v-bind:text="zooCollection"
       @searchCollection="handleZooCollectionSearch"
     />
 
     <image-filt-link
-      v-bind:text="paleoCollection"
+      v-bind:group="paleoGroup"
       v-bind:imageSource="paleoImageSource"
+      v-bind:text="paleoCollection"
       @searchCollection="handlePaleoCollectionSearch"
     />
 
     <image-filt-link
-      v-bind:text="geoCollection"
+      v-bind:group="geoGroup"
       v-bind:imageSource="geoImageSource"
+      v-bind:text="geoCollection"
       @searchCollection="handleGeoCollectionSearch"
     />
   </div>
@@ -33,15 +37,19 @@ const store = useStore()
 
 const botanicalCollection = ref('startPage.botanicalCollection')
 const botImageSource = ref('/paucidentatus.jpg')
+const botGroup = ref('botGroup')
 
 const zooCollection = ref('startPage.zooCollection')
 const zooImageSource = ref('/Zoologiska.jpg')
+const zooGroup = ref('zoo')
 
 const paleoCollection = ref('startPage.palaeCollection')
 const paleoImageSource = ref('/Angelinoceras.jpg')
+const paleoGroup = ref('paleo')
 
 const geoCollection = ref('startPage.geoCollection')
 const geoImageSource = ref('/Bergkristall.jpg')
+const geoGroup = ref('geo')
 
 const emits = defineEmits(['searchCollections'])
 
