@@ -31,9 +31,7 @@ public class InitialProperties implements Serializable {
         this.solrPath = solrPath;
         this.solrCore = solrCore; 
         this.username = username;
-        this.password = password;
-        
-        log.info("username and password : {} -- {}", username, password);
+        this.password = password; 
     }
 
     public String getSolrPath() {
