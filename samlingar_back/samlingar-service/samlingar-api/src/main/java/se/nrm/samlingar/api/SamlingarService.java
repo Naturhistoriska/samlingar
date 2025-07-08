@@ -12,8 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType; 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.Response; 
 import javax.ws.rs.core.UriInfo;
 import lombok.extern.slf4j.Slf4j;
 import se.nrm.samlingar.api.logic.SamlingarLogic;
@@ -35,9 +34,7 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class SamlingarService {
-
-    private final String wildCard = "*:*";
-
+  
     @Inject
     private SamlingarLogic logic;
       
@@ -67,7 +64,7 @@ public class SamlingarService {
         
         return Response.ok(logic.autoCompleteSearch(text, field)).build();
     } 
-    
+     
             
     @GET
     @Path("/scientificname")
@@ -112,111 +109,90 @@ public class SamlingarService {
         return Response.ok(logic.getChart(collectionCode, isYearChart)).build(); 
     }
     
-//    @GET
-//    @Path("/yearChart")
-//    @ApiOperation(value = "Search",
-//            notes = "Return search results in json",
-//            response = String.class
-//    ) 
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getYearChart(@QueryParam("collectionName") String collectionName) { 
-//        log.info("getYearChart");
-//        return Response.ok(logic.getYearChart(collectionName)).build(); 
-//    }
-//    
-//    @GET
-//    @Path("/monthChart")
-//    @ApiOperation(value = "Search",
-//            notes = "Return search results in json",
-//            response = String.class
-//    ) 
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getMonthChart(@QueryParam("collectionCode") String collectionCode) { 
-//        log.info("getYearChart");
-//        return Response.ok(logic.getMonthChart(collectionCode)).build(); 
-//    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-        
+            
     @GET
-    @Path("/freeTextSearch")
-    @ApiOperation(value = "freeTextSearch",
+    @Path("/id")
+    @ApiOperation(value = "Search by id",
             notes = "Return search results in json",
             response = String.class
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response freeTextSearch(@QueryParam("text") String text,
-                @QueryParam("hasCoordinates") boolean hasCoordinates,
-                @QueryParam("hasImage") boolean hasImage,
-                @QueryParam("isType") boolean isType,
-                @QueryParam("isInSweden") boolean isInSweden,
-                @QueryParam("collections") String collections, 
-                @QueryParam("start") int start,  
-                @QueryParam("numPerPage") int numPerPage,
-                @QueryParam("sort") String sort) {
-        log.info("freeTextSearch {} -- {}", text, start + " -- " + numPerPage);
-        
-        log.info("freeTextSearch  has image and map {} -- {}", hasImage, hasCoordinates);
-
-        if (text == null || text.isEmpty()) {
-            text = wildCard;
-        } 
-        
-        return Response.ok(logic.freeTextSearch(text, hasImage, 
-                hasCoordinates, isType, isInSweden, collections, 
-                start, numPerPage, sort)).build();
+    public Response idSearch(@QueryParam("id") String id ) { 
+        log.info("idSearch... {}", id); 
+        return Response.ok(logic.searchWithId(id)).build();
     }
+
+    @GET
+    @Path("/download")
+    @ApiOperation(value = "download",
+            notes = "Return data in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response download(@Context UriInfo uriInfo ) {  
+        return Response.ok(logic
+                .download(uriInfo.getQueryParameters())).build();
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ 
+    
+    
+    
+    
+    
+    
+    
+        
+//    @GET
+//    @Path("/freeTextSearch")
+//    @ApiOperation(value = "freeTextSearch",
+//            notes = "Return search results in json",
+//            response = String.class
+//    )
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response freeTextSearch(@QueryParam("text") String text,
+//                @QueryParam("hasCoordinates") boolean hasCoordinates,
+//                @QueryParam("hasImage") boolean hasImage,
+//                @QueryParam("isType") boolean isType,
+//                @QueryParam("isInSweden") boolean isInSweden,
+//                @QueryParam("collections") String collections, 
+//                @QueryParam("start") int start,  
+//                @QueryParam("numPerPage") int numPerPage,
+//                @QueryParam("sort") String sort) {
+//        log.info("freeTextSearch {} -- {}", text, start + " -- " + numPerPage);
+//        
+//        log.info("freeTextSearch  has image and map {} -- {}", hasImage, hasCoordinates);
+//
+//        if (text == null || text.isEmpty()) {
+//            text = wildCard;
+//        } 
+//        
+//        return Response.ok(logic.freeTextSearch(text, hasImage, 
+//                hasCoordinates, isType, isInSweden, collections, 
+//                start, numPerPage, sort)).build();
+//    }
       
 
 
@@ -265,18 +241,6 @@ public class SamlingarService {
 //                startDate, endDate, start, numPerPage, sort)).build();
 //    }
     
-        
-    @GET
-    @Path("/id")
-    @ApiOperation(value = "search",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response idSearch(@QueryParam("id") String id ) { 
-        log.info("idSearch... {}", id); 
-        return Response.ok(logic.searchWithId(id)).build();
-    }
 
 
 //    
@@ -353,18 +317,18 @@ public class SamlingarService {
     
     
     
-    @GET
-    @Path("/statistic")
-    @ApiOperation(value = "Statistic",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response statisticSearch() {
-        log.info("statisticSearch: {}, {}");
-
-        return Response.ok(logic.getStatisticData()).build();
-    }
+//    @GET
+//    @Path("/statistic")
+//    @ApiOperation(value = "Statistic",
+//            notes = "Return search results in json",
+//            response = String.class
+//    )
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response statisticSearch() {
+//        log.info("statisticSearch: {}, {}");
+//
+//        return Response.ok(logic.getStatisticData()).build();
+//    }
     
     
     
@@ -376,117 +340,83 @@ public class SamlingarService {
 
 
 
-    @GET
-    @Path("/filter")
-    @ApiOperation(value = "filter",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response filterSearch(@QueryParam("text") String text,
-            @QueryParam("collection") String collection,
-            @QueryParam("collections") String collections,
-            @QueryParam("typeStatus") String typeStatus,
-            @QueryParam("family") String family,
-            @QueryParam("hasCoordinates") String hasCoordinates,
-            @QueryParam("hasImage") String hasImage,
-            @QueryParam("inSweden") String inSweden,
-            @QueryParam("isType") String isType,
-            @QueryParam("start") int start,
-            @QueryParam("numPerPage") int numPerPage,
-            @QueryParam("sort") String sort) {
-
-        log.info("filter: {}, {}", collections, typeStatus);
-
-        if (text == null || text.isEmpty()) {
-            text = wildCard;
-        }
-
-        return Response.ok(logic
-                .filterSerch(start, numPerPage, text, collection, collections,
-                        typeStatus, family, hasCoordinates, hasImage, inSweden,
-                        isType, sort)).build();
-    }
-
-    @GET
-    @Path("/geo")
-    @ApiOperation(value = "geo",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response mapData(@QueryParam("text") String text,
-            @QueryParam("collection") String collection,
-            @QueryParam("collections") String collections,
-            @QueryParam("typeStatus") String typeStatus,
-            @QueryParam("family") String family,
-            @QueryParam("hasCoordinates") String hasCoordinates,
-            @QueryParam("hasImage") String hasImage,
-            @QueryParam("inSweden") String inSweden,
-            @QueryParam("isType") String isType) {
-
-        log.info("geo: {}, {}", collection, typeStatus);
-
-        if (text == null || text.isEmpty()) {
-            text = wildCard;
-        }
-
-        return Response.ok(logic
-                .mapDataSearch(text, collection, collections, typeStatus, family,
-                        hasCoordinates, hasImage, inSweden, isType)).build();
-    }
-
-    @GET
-    @Path("/typestatus")
-    @ApiOperation(value = "typestatus",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response typestatusSearch() {
-        log.info("typestatusSearch: {}, {}");
-        return Response.ok(logic.getTypeStatus()).build();
-    }
-
-
-
-
-
-    @GET
-    @Path("/download")
-    @ApiOperation(value = "Statistic",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response download(@QueryParam("text") String text,
-            @QueryParam("collection") String collection,
-            @QueryParam("typeStatus") String typeStatus,
-            @QueryParam("family") String family,
-            @QueryParam("numRows") int numRows) {
-        log.info("statisticSearch: {}, {}");
-
-        return Response.ok(logic
-                .download(text, collection, typeStatus, family, numRows)).build();
-    }
-
-
-    @Path("file/")
-    @GET
-    @Produces({"application/pdf"})
-    public StreamingOutput getFileContent() throws Exception {
-
-//        InputStream myStream = ;
-//        
-//        
+//    @GET
+//    @Path("/filter")
+//    @ApiOperation(value = "filter",
+//            notes = "Return search results in json",
+//            response = String.class
+//    )
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response filterSearch(@QueryParam("text") String text,
+//            @QueryParam("collection") String collection,
+//            @QueryParam("collections") String collections,
+//            @QueryParam("typeStatus") String typeStatus,
+//            @QueryParam("family") String family,
+//            @QueryParam("hasCoordinates") String hasCoordinates,
+//            @QueryParam("hasImage") String hasImage,
+//            @QueryParam("inSweden") String inSweden,
+//            @QueryParam("isType") String isType,
+//            @QueryParam("start") int start,
+//            @QueryParam("numPerPage") int numPerPage,
+//            @QueryParam("sort") String sort) {
 //
-//// Set the content type and attachment header.
-//        response.addHeader("Content-disposition", "attachment;filename=myfilename.txt");
-//        response.setContentType("txt/plain");
+//        log.info("filter: {}, {}", collections, typeStatus);
 //
-//// Copy the stream to the response's output stream.
-//        IOUtils.copy(myStream, response.getOutputStream());
-//        response.flushBuffer();
-        return null;
-    }
+//        if (text == null || text.isEmpty()) {
+//            text = wildCard;
+//        }
+//
+//        return Response.ok(logic
+//                .filterSerch(start, numPerPage, text, collection, collections,
+//                        typeStatus, family, hasCoordinates, hasImage, inSweden,
+//                        isType, sort)).build();
+//    }
+
+//    @GET
+//    @Path("/geo")
+//    @ApiOperation(value = "geo",
+//            notes = "Return search results in json",
+//            response = String.class
+//    )
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response mapData(@QueryParam("text") String text,
+//            @QueryParam("collection") String collection,
+//            @QueryParam("collections") String collections,
+//            @QueryParam("typeStatus") String typeStatus,
+//            @QueryParam("family") String family,
+//            @QueryParam("hasCoordinates") String hasCoordinates,
+//            @QueryParam("hasImage") String hasImage,
+//            @QueryParam("inSweden") String inSweden,
+//            @QueryParam("isType") String isType) {
+//
+//        log.info("geo: {}, {}", collection, typeStatus);
+//
+//        if (text == null || text.isEmpty()) {
+//            text = wildCard;
+//        }
+//
+//        return Response.ok(logic
+//                .mapDataSearch(text, collection, collections, typeStatus, family,
+//                        hasCoordinates, hasImage, inSweden, isType)).build();
+//    }
+
+//    @GET
+//    @Path("/typestatus")
+//    @ApiOperation(value = "typestatus",
+//            notes = "Return search results in json",
+//            response = String.class
+//    )
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response typestatusSearch() {
+//        log.info("typestatusSearch: {}, {}");
+//        return Response.ok(logic.getTypeStatus()).build();
+//    }
+
+
+
+
+
+
+
+ 
 }

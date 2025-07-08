@@ -3,9 +3,7 @@ package se.nrm.samlingar.api.logic;
 import ch.hsr.geohash.GeoHash; 
 import java.io.IOException; 
 import java.io.StringReader;
-import java.io.StringWriter; 
-import java.time.LocalDate;
-import java.time.YearMonth;
+import java.io.StringWriter;  
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +50,7 @@ public class SamlingarLogic {
     private final String geoDataKey = "geoData";
 
     private final String prefix = "4_";
-    private final int downloadSize = 5000;
-    private final int maxDownload = 50000;
+
 
     private final String authorField = "author";
     private final String catalogNumberField = "catalogNumber";
@@ -99,7 +96,7 @@ public class SamlingarLogic {
     private final String startKey = "start";
     private final String startDateKey = "startDate";
     private final String textKey = "text";
-    
+    private final String eventDateKey = "eventDate:";
 
     
     
@@ -111,17 +108,21 @@ public class SamlingarLogic {
     // Search field key 
  
     
-    private int total;
-
-    private GeoHash geohash;
-
-    private JsonObjectBuilder attBuilder;
+//    private int total;
+//
+//    private GeoHash geohash;
+//
+//    private JsonObjectBuilder attBuilder;
+    
+    
+    
     private JsonArrayBuilder arrayBuilder;
+//    
     
     
-    
-    
-    
+    private final int downloadSize = 5000;
+    private final int maxDownload = 50000;
+    private final String numRowsKey = "numRows";
     
     private final String wildCard = "*";
     private final String leftBlacket = "[";
@@ -141,6 +142,8 @@ public class SamlingarLogic {
     private String facets;
     private String dateRange;
     private boolean yearChart;
+    
+    private StringBuilder dateRangeSb;
         
     
     public String getInitalData() {
@@ -214,20 +217,35 @@ public class SamlingarLogic {
         if(text != null && !text.equals(wildCard)) {
             text = SolrSearchHelper.getInstance().buildSearchText(
                 text, textKey, true);
-        }
-        log.info("text and scientificName : {} -- {}", text, scientificName);
+        }  
         
-        
-        
-        if(!StringUtils.isBlank(startDate) && !StringUtils.isBlank(endDate) ) {
-            dateRange = leftBlacket + startDate + to + endDate + rightBlacket; 
-        } else if(!StringUtils.isBlank(startDate)) {
-            dateRange = leftBlacket + startDate + toWithStar; 
+        dateRangeSb = new StringBuilder();
+        if(!StringUtils.isBlank(startDate)) {
+            dateRangeSb.append(eventDateKey);
+            dateRangeSb.append(leftBlacket);
+            dateRangeSb.append(startDate);
+            
+            if(!StringUtils.isBlank(endDate)) {
+                dateRangeSb.append(to);
+                dateRangeSb.append(endDate);
+                dateRangeSb.append(rightBlacket);
+            } else {
+                dateRangeSb.append(toWithStar);
+            }
+            dateRange = dateRangeSb.toString().trim();
         } else {
             dateRange = null;
         }
-          
-        log.info("map : {}", paramMap);
+        
+        
+        
+//        if(!StringUtils.isBlank(startDate) && !StringUtils.isBlank(endDate) ) {
+//            dateRange = leftBlacket + startDate + to + endDate + rightBlacket; 
+//        } else if(!StringUtils.isBlank(startDate)) {
+//            dateRange = leftBlacket + startDate + toWithStar; 
+//        } else {
+//            dateRange = null;
+//        } 
         return solr.search(paramMap, text, scientificName, dateRange, facets,
                 start, numPerPage, sort);
         
@@ -244,6 +262,142 @@ public class SamlingarLogic {
 
         return solr.getChart(collectionCode, startDate, endDate, yearChart); 
     }
+    
+    public String download(MultivaluedMap<String, String> queryParams) {
+        
+        int numperOfRows = 0;
+
+        Map<String, String> paramMap = new HashMap<>();
+        text = wildCard;
+        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+             
+            switch (entry.getKey()) {
+                case scientificNameKey: 
+                    scientificName = queryParams.get(scientificNameKey).get(0); 
+                    break;
+                case textKey: 
+                    text = queryParams.get(textKey).get(0); 
+                    break;
+                case startDateKey: 
+                    startDate = queryParams.get(startDateKey).get(0); 
+                    break;
+                case endDateKey: 
+                    endDate = queryParams.get(endDateKey).get(0); 
+                    break;
+                case startKey:
+                    start = Integer.parseInt(queryParams.get(startKey).get(0)); 
+                    break;
+                case numRowsKey:
+                    numperOfRows = Integer.parseInt(queryParams.get(numRowsKey).get(0));
+                    break;  
+                case fuzzySearch:
+                    isFuzzySearch = Boolean.parseBoolean(queryParams.get(fuzzySearch).get(0));
+                    break;
+                case sortKey:
+                    sort =  queryParams.get(sortKey).get(0);
+                    break;
+    
+                default:
+                    paramMap.put(entry.getKey(), entry.getValue().get(0));
+                    break;
+            }
+        }
+        
+        
+        if(scientificName != null) {
+            scientificName = SolrSearchHelper.getInstance().buildSearchText(
+                scientificName, scientificNameKey, isFuzzySearch);
+        }
+        if(text != null && !text.equals(wildCard)) {
+            text = SolrSearchHelper.getInstance().buildSearchText(
+                text, textKey, true);
+        }  
+        
+        dateRangeSb = new StringBuilder();
+        if(!StringUtils.isBlank(startDate)) {
+            dateRangeSb.append(eventDateKey);
+            dateRangeSb.append(leftBlacket);
+            dateRangeSb.append(startDate);
+            
+            if(!StringUtils.isBlank(endDate)) {
+                dateRangeSb.append(to);
+                dateRangeSb.append(endDate);
+                dateRangeSb.append(rightBlacket);
+            } else {
+                dateRangeSb.append(toWithStar);
+            }
+            dateRange = dateRangeSb.toString().trim();
+        } else {
+            dateRange = null;
+        }
+         
+        JsonReader jsonReader = null;
+        JsonObject jsonObj;
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+
+        String results;
+        int totalDownload = numperOfRows <= maxDownload ? numperOfRows : maxDownload;
+        for (int i = 0; i < totalDownload; i += downloadSize) {
+            arrayBuilder = Json.createArrayBuilder();
+
+            results = solr.download(paramMap, text, scientificName, dateRange, i, downloadSize, sort);
+            
+            
+
+            jsonReader = Json.createReader(new StringReader(results));
+
+            jsonObj = jsonReader.readObject();
+            JsonArray docs = jsonObj.getJsonArray(responseKey);
+ 
+            docs.stream()
+                    .forEach(value -> { 
+                        builder.add(value);
+                    });
+        }
+        if (jsonReader != null) {
+            jsonReader.close();
+        }
+
+        JsonArray array = builder.build();
+        log.info("size : {}", array.size());
+        return array.toString();
+    }
+    
+    
+    
+    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
 //    
 //    public String getMonthChart(String collectionCode) {
 //        collectionCode = SolrSearchHelper.getInstance().buildSearchCollectionCode(
@@ -429,23 +583,23 @@ public class SamlingarLogic {
     
 
 
-    public String filterSerch(int start, int numPerPage, String text,
-            String collection, String collections, String typeStatus, 
-            String family, String hasCoordinates, String hasImage, 
-            String inSweden, String isType, String sort) {
-        log.info("filterSerch : {} -- {}", collection, typeStatus);
-
-        return service.filterSearch(start, numPerPage, text, collection, collections, 
-                typeStatus, family, hasCoordinates, hasImage, inSweden, isType, sort);
-    }
+//    public String filterSerch(int start, int numPerPage, String text,
+//            String collection, String collections, String typeStatus, 
+//            String family, String hasCoordinates, String hasImage, 
+//            String inSweden, String isType, String sort) {
+//        log.info("filterSerch : {} -- {}", collection, typeStatus);
+//
+//        return service.filterSearch(start, numPerPage, text, collection, collections, 
+//                typeStatus, family, hasCoordinates, hasImage, inSweden, isType, sort);
+//    }
     
-    public String mapDataSearch(String text, String collection, String collections,
-            String typeStatus, String family, String hasCoordinates, 
-            String hasImage, String inSweden, String isType) {
-         
-
-        return service.mapDataSearch(text, collection, collections, 
-                typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
+//    public String mapDataSearch(String text, String collection, String collections,
+//            String typeStatus, String family, String hasCoordinates, 
+//            String hasImage, String inSweden, String isType) {
+//         
+//
+//        return service.mapDataSearch(text, collection, collections, 
+//                typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
  
 //        JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
 //        JsonObject jsonObj = jsonReader.readObject();
@@ -491,7 +645,7 @@ public class SamlingarLogic {
 //        log.info("total : {}", total);
 //        jsonReader.close();
 //        return json.toString();
-    }
+//    }
 
 //    public String mapDataSearch(String text, String collection, String collections,
 //            String typeStatus, String family, String hasCoordinates, 
@@ -548,106 +702,75 @@ public class SamlingarLogic {
 //        return json.toString();
 //    }
     
-    public String getTypeStatus() {
-        return service.getTypeStatus();
-    }
+//    public String getTypeStatus() {
+//        return service.getTypeStatus();
+//    }
 
-    public String download(String text, String collection,
-            String typeStatus, String family, int numRows) {
+    
 
-        JsonReader jsonReader = null;
-        JsonObject jsonObj;
-        JsonArrayBuilder builder = Json.createArrayBuilder();
-
-        String results;
-        int totalDownload = numRows <= maxDownload ? numRows : maxDownload;
-        for (int i = 0; i < totalDownload; i += downloadSize) {
-            arrayBuilder = Json.createArrayBuilder();
-
-            results = service.download(text, collection, typeStatus, family, i, downloadSize);
-
-            jsonReader = Json.createReader(new StringReader(results));
-
-            jsonObj = jsonReader.readObject();
-            JsonArray docs = jsonObj.getJsonArray(responseKey);
- 
-            docs.stream()
-                    .forEach(value -> { 
-                        builder.add(value);
-                    });
-        }
-        if (jsonReader != null) {
-            jsonReader.close();
-        }
-
-        JsonArray array = builder.build();
-        log.info("size : {}", array.size());
-        return array.toString();
-    }
-
-    public void download1(String text, String collection,
-            String typeStatus, String family, int numRows) throws IOException {
-
-        StringWriter sw = new StringWriter();
-
-        CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
-                .setHeader(CsvHeader.class)
-                .build();
-        JsonReader jsonReader = null;
-        JsonObject jsonObj;
-        JsonArrayBuilder builder = Json.createArrayBuilder();
-
-        try (final CSVPrinter printer = new CSVPrinter(sw, csvFormat)) {
-
-            int totalDownload = numRows <= maxDownload ? numRows : maxDownload;
-            for (int i = 0; i < totalDownload; i += downloadSize) {
-                arrayBuilder = Json.createArrayBuilder();
-
-                String results = service.download(text, collection, typeStatus, family, i, downloadSize);
-
-                jsonReader = Json.createReader(new StringReader(results));
-
-                jsonObj = jsonReader.readObject();
-                JsonArray docs = jsonObj.getJsonArray(responseKey);
-                log.info("docs... {}", docs);
-
-                JsonObject json;
-                for (int j = 0; j < docs.size(); j++) {
-                    json = docs.getJsonObject(j);
-                    try {
-                        printer.printRecord(
-                                json.getString(catalogNumberField),
-                                json.getString(collectionNameField),
-                                json.getString(higherTxField),
-                                json.getString(familyField),
-                                json.getString(genusField),
-                                json.getString(speciesField),
-                                json.getString(authorField),
-                                json.getString(collectorField),
-                                json.getString(startDateKey),
-                                json.getString(catalogedDateField),
-                                json.getString(localityField),
-                                json.getString(countyField),
-                                json.getString(stateField),
-                                json.getString(countryField),
-                                json.getString(continentField),
-                                json.getString(oceanOrSeaField),
-                                json.getString(latitudeField),
-                                json.getString(longitudeField),
-                                json.getString(stationFieldNumberField),
-                                json.getString(determinerField),
-                                json.getString(preprationField),
-                                json.getString(typeStatusField),
-                                json.getString(remarksField));
-
-                    } catch (IOException ex) {
-                        log.error(ex.getMessage());
-                    }
-
-                }
-            }
-        }
-            
+//    public void download1(String text, String collection,
+//            String typeStatus, String family, int numRows) throws IOException {
+//
+//        StringWriter sw = new StringWriter();
+//
+//        CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
+//                .setHeader(CsvHeader.class)
+//                .build();
+//        JsonReader jsonReader = null;
+//        JsonObject jsonObj;
+//        JsonArrayBuilder builder = Json.createArrayBuilder();
+//
+//        try (final CSVPrinter printer = new CSVPrinter(sw, csvFormat)) {
+//
+//            int totalDownload = numRows <= maxDownload ? numRows : maxDownload;
+//            for (int i = 0; i < totalDownload; i += downloadSize) {
+//                arrayBuilder = Json.createArrayBuilder();
+//
+//                String results = service.download(text, collection, typeStatus, family, i, downloadSize);
+//
+//                jsonReader = Json.createReader(new StringReader(results));
+//
+//                jsonObj = jsonReader.readObject();
+//                JsonArray docs = jsonObj.getJsonArray(responseKey);
+//                log.info("docs... {}", docs);
+//
+//                JsonObject json;
+//                for (int j = 0; j < docs.size(); j++) {
+//                    json = docs.getJsonObject(j);
+//                    try {
+//                        printer.printRecord(
+//                                json.getString(catalogNumberField),
+//                                json.getString(collectionNameField),
+//                                json.getString(higherTxField),
+//                                json.getString(familyField),
+//                                json.getString(genusField),
+//                                json.getString(speciesField),
+//                                json.getString(authorField),
+//                                json.getString(collectorField),
+//                                json.getString(startDateKey),
+//                                json.getString(catalogedDateField),
+//                                json.getString(localityField),
+//                                json.getString(countyField),
+//                                json.getString(stateField),
+//                                json.getString(countryField),
+//                                json.getString(continentField),
+//                                json.getString(oceanOrSeaField),
+//                                json.getString(latitudeField),
+//                                json.getString(longitudeField),
+//                                json.getString(stationFieldNumberField),
+//                                json.getString(determinerField),
+//                                json.getString(preprationField),
+//                                json.getString(typeStatusField),
+//                                json.getString(remarksField));
+//
+//                    } catch (IOException ex) {
+//                        log.error(ex.getMessage());
+//                    }
+//
+//                }
+//            }
+//        }
+//            
 //            
 //            final OutputStream os = new FileOutputStream("/tmp/out");
 //final PrintStream printStream = new PrintStream(os);
@@ -684,7 +807,7 @@ public class SamlingarLogic {
 //        InputStream stream = new ByteArrayInputStream(sw.toString().getBytes());
 //     
 //        File file = new DefaultStreamedContent(stream, mimetype, "downloadFile.csv");  
-    }
+//    }
     
 
 }

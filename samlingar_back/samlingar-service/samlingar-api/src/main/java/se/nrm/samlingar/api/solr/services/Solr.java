@@ -3,9 +3,7 @@ package se.nrm.samlingar.api.solr.services;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.YearMonth;
+import java.time.Instant; 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +26,7 @@ import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList; 
 import se.nrm.samlingar.api.logic.InitialProperties; 
+import se.nrm.samlingar.api.utils.SolrSearchHelper;
 
 /**
  *
@@ -37,26 +36,30 @@ import se.nrm.samlingar.api.logic.InitialProperties;
 public class Solr implements Serializable {
 
     private SolrClient client;
+    private SolrQuery query;
     private QueryRequest request;
     private QueryResponse response;
-
-//    final TermsFacetMap catalogedMonthFacet;
+ 
     final TermsFacetMap mapFacet;
     final TermsFacetMap imageFacet;
     final TermsFacetMap inSwedenFacet;
     final TermsFacetMap typeFacet;
-
-    private YearMonth yearMonth;
-    private int yearOfToday; 
-
+ 
     private final String colon = ":";
-    private final String searchAll = "*:*";
-    private final String wildcard = "*";
+    private final String searchAll = "*:*"; 
 
     private final String geohashKey = "point-1";
-    private final String countryKey = "country";
-    private final String typeStatusKey = "typeStatus";
+    
+    
     private final String associatedMediaKey = "associatedMedia";
+    
+ 
+ 
+    private final String countryKey = "country"; 
+    private final String typeStatusKey = "typeStatus";
+     
+ 
+ 
 
     private final String mapKey = "map";
     private final String inSwedenKey = "inSweden";
@@ -64,7 +67,7 @@ public class Solr implements Serializable {
 
     private final String stringSweden = "Sweden";
 
-    private final String eventDateKey = "eventDate:";
+    
     private final String createDateKey = "createdDate_dt";
     private final String collectionCodeKey = "collectionCode";
     
@@ -73,10 +76,14 @@ public class Solr implements Serializable {
     private final String yearGap = "+1YEAR";
     private final String monthGap = "+1MONTH";
     private final String total = "total";
+    
+    private final String defaultSort = "createdDate_dt desc";
 
 
     private StringBuilder sb;
     private String gap;
+    
+    private List<String> fields;
 
     @Inject
     private InitialProperties properties;
@@ -100,9 +107,7 @@ public class Solr implements Serializable {
         log.info("init from search...");
 
         client = new HttpSolrClient.Builder(properties.getSolrURL()).build();
-
-        yearMonth = YearMonth.from(LocalDate.now());
-        yearOfToday = yearMonth.getYear();  
+ 
     }
     
     public String getChart(String collection, String startDate, String endDate, boolean isYearChart) {
@@ -110,7 +115,7 @@ public class Solr implements Serializable {
         gap = isYearChart ? yearGap : monthGap;
         
         try {
-            SolrQuery query = new SolrQuery(collection);
+            query = new SolrQuery(collection);
             query.setFacet(true); 
             query.setFields(collectionCodeKey);
             query.setRows(1);
@@ -123,21 +128,7 @@ public class Solr implements Serializable {
             request = new QueryRequest(query);
              
             response = request.process(client);
-            return isYearChart ? buildResult(response) : response.jsonStr();
-            
-            
-//            SolrDocumentList docs = response.getResults();
-//   
-//            JsonReader reader = Json.createReader(new StringReader(response.jsonStr()));
-//            JsonObject jsonObject = reader.readObject();
-//
-//            JsonObjectBuilder builder = Json.createObjectBuilder();
-//
-//            for (String key : jsonObject.keySet()) {
-//                builder.add(key, jsonObject.get(key));
-//            }
-//            builder.add(total, docs.getNumFound()); 
-//            return builder.build().toString(); 
+            return isYearChart ? buildResult(response) : response.jsonStr(); 
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
@@ -166,75 +157,6 @@ public class Solr implements Serializable {
         return builder.build().toString();
     }
     
-//    public String getYearChart(String collection, String startDate, String endDate) {
-//        log.info("getYearChart : {} -- {}", startDate, endDate);
-//        try {
-//            SolrQuery query = new SolrQuery(collection);
-//            query.setFacet(true); 
-//            query.setFields(collectionCodeKey);
-//            query.setRows(1);
-//             
-//            query.addDateRangeFacet(createDateKey,
-//                    Date.from(Instant.parse(startDate)),
-//                    Date.from(Instant.parse(endDate)),
-//                    yearGap);
-//              
-//            request = new QueryRequest(query);
-//             
-//            response = request.process(client);
-//            
-//            SolrDocumentList docs = response.getResults();
-//   
-//            JsonReader reader = Json.createReader(new StringReader(response.jsonStr()));
-//            JsonObject jsonObject = reader.readObject();
-//
-//            JsonObjectBuilder builder = Json.createObjectBuilder();
-//
-//            for (String key : jsonObject.keySet()) {
-//                builder.add(key, jsonObject.get(key));
-//            }
-//            builder.add(total, docs.getNumFound()); 
-//            return builder.build().toString(); 
-//        } catch (SolrServerException | IOException ex) {
-//            log.error(ex.getMessage());
-//            return null;
-//        } finally {
-//            try {
-//                client.close();
-//            } catch (IOException ex) {
-//                log.error(ex.getMessage());
-//               
-//            }
-//        } 
-//    }
-//
-//    public String getMonthChart(String collection, String startDate, String endDate) {
-//        log.info("getYearChart : {} -- {}", startDate, endDate);
-//        try {
-//            SolrQuery query = new SolrQuery(collection);
-//            query.setFacet(true);
-//            query.setFields(collectionCodeKey);
-//            query.setRows(1); 
-//            
-//            query.addDateRangeFacet(createDateKey,
-//                    Date.from(Instant.parse(startDate)),
-//                    Date.from(Instant.parse(endDate)),
-//                    monthGap);
-//            request = new QueryRequest(query);
-//             
-//            response = request.process(client); 
-//            return response.jsonStr();
-//        } catch (SolrServerException | IOException ex) {
-//            log.error(ex.getMessage());
-//            return null;
-//        } finally {
-//            try {
-//                client.close();
-//            } catch (IOException ex) {
-//                log.error(ex.getMessage());
-//            }
-//        }  
-//    }
         
     public String getInitalData() {
         log.info("getInitalData");
@@ -292,13 +214,16 @@ public class Solr implements Serializable {
     }
 
     public String scientificNameSearch(int start, int numPerPage, String text, String sort) {
-        log.info("scientificNameSearch: {} -- {}", text, numPerPage);
+        log.info("scientificNameSearch: {} -- {}", text, sort);
 
+        sort = sort == null ? defaultSort : sort;
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)
                 .setOffset(start)
                 .setLimit(numPerPage)
+                .setSort(sort)
                 .withFacet(mapKey, mapFacet.setLimit(20000));
+         
 
         try {
             response = jsonRequest.process(client);
@@ -318,12 +243,15 @@ public class Solr implements Serializable {
 
     public String search(Map<String, String> paramMap, String text, String scientificName,
             String dateRange, String facets, int start, int numPerPage, String sort) {
+        
+        sort = sort == null ? defaultSort : sort;
 
         log.info("search : {}", paramMap);
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)
+                .setQuery(text) 
                 .setOffset(start)
                 .setLimit(numPerPage)
+                .setSort(sort)
                 .withFacet(mapKey, mapFacet.setLimit(20000));
 
         if (facets != null) {
@@ -342,15 +270,14 @@ public class Solr implements Serializable {
         }
 
         if (!StringUtils.isBlank(dateRange)) {
-            jsonRequest.withFilter(eventDateKey + dateRange);
+            jsonRequest.withFilter(dateRange);
         }
 
         paramMap.forEach((key, value) -> {
             sb = new StringBuilder();
             sb.append(key)
                     .append(colon)
-                    .append(value);
-            log.info("filter : {}", sb.toString());
+                    .append(value); 
             jsonRequest.withFilter(sb.toString());
         });
 
@@ -369,4 +296,50 @@ public class Solr implements Serializable {
             }
         }  
     } 
+    
+    
+     public String download(Map<String, String> paramMap, String text, String scientificName,
+            String dateRange, int start, int rows, String sort) { 
+
+        sort = sort == null ? defaultSort : sort;
+         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)  
+                .setOffset(start)
+                .setLimit(rows)
+                .setSort(sort);
+ 
+
+        if (!StringUtils.isBlank(scientificName)) {
+            jsonRequest.withFilter(scientificName);
+        }
+
+        if (!StringUtils.isBlank(dateRange)) {
+            jsonRequest.withFilter(dateRange);
+        }
+
+        paramMap.forEach((key, value) -> {
+            sb = new StringBuilder();
+            sb.append(key)
+                    .append(colon)
+                    .append(value); 
+            jsonRequest.withFilter(sb.toString());
+        });
+
+        fields = SolrSearchHelper.getInstance().buildDataExportFields();
+        
+        fields.stream()
+                .forEach(field -> {
+                jsonRequest.returnFields(field);
+            });
+         
+        try { 
+            response = jsonRequest.process(client);
+//            response = request.process(client);
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        } 
+        return response.jsonStr();
+    }
 }
+
