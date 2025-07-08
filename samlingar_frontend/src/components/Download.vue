@@ -1,7 +1,9 @@
 <template>
   <div>
     <div v-if="!dataPrepared" class="preparaDataLink" @click="exportData">
-      <small>{{ $t('exportData.export') }}</small>
+      <small>
+        <i>{{ $t('exportData.export') }}</i>
+      </small>
       <small style="padding-left: 10px"><i class="pi pi-file-export"></i></small>
     </div>
     <downloadexcel
@@ -30,7 +32,7 @@
   </div>
 </template>
 <script setup>
-import { computed, ref, toRaw, isProxy, watch } from 'vue'
+import { ref, watch } from 'vue'
 import downloadexcel from 'vue-json-excel3'
 import { useStore } from 'vuex'
 
@@ -59,24 +61,21 @@ let json_fields = {
   'Catalogue Number': 'catalogNumber',
   Locality: 'locality',
   District: 'district',
-  'State Province': 'state',
+  'State Province': 'stateProvince',
   Country: 'country',
   Continent: 'continent',
-  Latitude: 'latitudeText',
-  Longitude: 'longitudeText',
-  'Station field number': 'stationFieldNumber',
-  Determiner: 'determiner',
+  Latitude: 'decimalLatitude',
+  Longitude: 'decimalLongitude',
+  'Station field number': 'fieldNumber',
   Family: 'family',
   Genus: 'genus',
   Species: 'species',
-  'High classification': 'higherTx',
-  Prepration: 'prepration',
-  Preservation: 'preservation',
-  'Vernacular Name': 'commonName',
-  'Cataloged date': 'catalogedDate',
-  'Event date': 'startDate',
-  Collectors: 'collector',
-  Author: 'author'
+  Prepration: 'preparations',
+  Preservation: 'dynamicProperties_preservation',
+  'Vernacular Name': 'vernacularName',
+  'Event date': 'eventDate',
+  'Recorded by': 'recordedBy',
+  'Expedition name': 'dynamicProperties_expeditionNam'
 }
 
 function startDownload() {

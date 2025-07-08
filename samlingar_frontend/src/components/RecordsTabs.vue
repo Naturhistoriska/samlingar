@@ -4,11 +4,17 @@
       <TabList>
         <Tab value="0">{{ $t('records.list') }}</Tab>
         <Tab value="1">{{ $t('records.labels') }}</Tab>
-        <Tab value="2">{{ $t('records.media') }}</Tab>
+        <Tab value="2" disabled>{{ $t('records.media') }}</Tab>
         <Tab value="3" disabled>
           <span class="text-900 font-bold">
             [{{ $t('results.searchResults') }} {{ $t('results.num_results', totalCount) }}]
           </span>
+        </Tab>
+        <Tab :value="value" style="border-color: transparent !important">
+          <div class="col-12" style="float: left; text-align: left">
+            <Download @exportData="preparaDataExport" />
+          </div>
+          <!-- <i class="pi pi-file-export" style="color: slateblue"></i> -->
         </Tab>
       </TabList>
       <TabPanels>
@@ -28,15 +34,16 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
+import Download from './Download.vue'
 import RecordLabels from './RecordLabels.vue'
 import RecordTable from './RecordTable.vue'
 import RecordMedia from './RecordMedia.vue'
 
 const store = useStore()
 
-const emits = defineEmits(['fetchMedia', 'freeTextSearch', 'search'])
+const emits = defineEmits(['exportData', 'search'])
 
-const value = ref('0')
+let value = ref('0')
 
 const isListView = computed(() => {
   return value.value == 0
@@ -54,33 +61,36 @@ const totalCount = computed(() => {
   return store.getters['totalRecords']
 })
 
-function fetchList() {
-  console.log('fetchList', value.value)
-}
-
-function fetchLabel() {
-  console.log('fetchLabel', value.value)
-}
-
-function fetchImageData() {
-  console.log('fetchImageData', value.value)
-
-  const filtMedia = store.getters['filterImage']
-  console.log('filtImages', filtMedia)
-  // const records = store.getters['results']
-  // const filtImages = store.getters['filterImage']
-
-  // console.log('filtImages', filtImages)
-  emits('fetchMedia')
+function preparaDataExport() {
+  emits('exportData')
 }
 
 function handleSearch(start, numPerPage, saveData) {
-  console.log('handleSearch', start, numPerPage, saveData)
   emits('search', start, numPerPage, saveData)
 }
 
-function handleFreeTextSearch(searchText, start, numPerPage) {
-  console.log('handleFreeTextSearch', searchText, start, numPerPage)
-  emits('freeTextSearch', searchText, start, numPerPage)
-}
+// function fetchList() {
+//   console.log('fetchList', value.value)
+// }
+
+// function fetchLabel() {
+//   console.log('fetchLabel', value.value)
+// }
+
+// function fetchImageData() {
+//   console.log('fetchImageData', value.value)
+
+//   const filtMedia = store.getters['filterImage']
+//   console.log('filtImages', filtMedia)
+//   // const records = store.getters['results']
+//   // const filtImages = store.getters['filterImage']
+
+//   // console.log('filtImages', filtImages)
+//   emits('fetchMedia')
+// }
+
+// function handleFreeTextSearch(searchText, start, numPerPage) {
+//   console.log('handleFreeTextSearch', searchText, start, numPerPage)
+//   emits('freeTextSearch', searchText, start, numPerPage)
+// }
 </script>

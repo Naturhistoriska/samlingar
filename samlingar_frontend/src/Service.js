@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const baseUrl = import.meta.env.VITE_SBDI_API
-const speciesSearchUrl = import.meta.env.VITE_SBDI_SPECIES_SEARCH
+// const speciesSearchUrl = import.meta.env.VITE_SBDI_SPECIES_SEARCH
 // const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
 const resultsPerPage = 10
 
@@ -35,7 +35,7 @@ export default class Service {
   async apiScientificnameSearch(searchText, fuzzySearch, start, rows) {
     searchText = searchText.replace(/&/g, '%26')
 
-    const url = `${samlingApi}/scientificname?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+    const url = `${samlingApi}/scientificname?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=createdDate_dt desc`
     const response = await axios.get(url)
     return response.data
   }
@@ -43,86 +43,114 @@ export default class Service {
   async apiSearch(params, start, numPerPage) {
     let url = `${samlingApi}/search?${params.toString()}`
 
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
     const response = await axios.get(url)
     return response.data
   }
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
+  async apiIdSearch(id) {
+    const url = `${samlingApi}/id?id=${id}`
 
-  async apiFreeTextSearch(searchText, start, rows) {
-    const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
     const response = await axios.get(url)
     return response.data
   }
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
-  async apiFreeTextSearchWithFilter(
-    searchText,
-    hasCoordinates,
-    hasImages,
-    isType,
-    isInSweden,
-    start,
-    numPerPage
-  ) {
-    let url = `${samlingApi}/freeTextSearch?text=${searchText}`
-
-    if (hasCoordinates) {
-      url += '&hasCoordinates=true'
-    }
-    if (hasImages) {
-      url += '&hasImage=true'
-    }
-    if (isType) {
-      url += '&isType=true'
-    }
-    if (isInSweden) {
-      url += '&isInSweden=true'
-    }
-
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+  async apiPreparaExport(params, total) {
+    let url = `${samlingApi}/download?${params.toString()}&numRows=${total}&sort=createdDate_dt desc`
 
     const response = await axios.get(url)
 
     return response.data
   }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  // async apiFreeTextSearch(searchText, start, rows) {
+    // const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+    // const response = await axios.get(url)
+    // return response.data
+  // }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  // async apiFreeTextSearchWithFilter(
+  //   searchText,
+  //   hasCoordinates,
+  //   hasImages,
+  //   isType,
+  //   isInSweden,
+  //   start,
+  //   numPerPage
+  // ) {
+  //   let url = `${samlingApi}/freeTextSearch?text=${searchText}`
+
+  //   if (hasCoordinates) {
+  //     url += '&hasCoordinates=true'
+  //   }
+  //   if (hasImages) {
+  //     url += '&hasImage=true'
+  //   }
+  //   if (isType) {
+  //     url += '&isType=true'
+  //   }
+  //   if (isInSweden) {
+  //     url += '&isInSweden=true'
+  //   }
+
+  //   url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+
+  //   const response = await axios.get(url)
+
+  //   return response.data
+  // }
 
   // async apiSearch(params, start, numPerPage) {
   //   let url = `${samlingApi}/search?${params.toString()}`
@@ -147,19 +175,12 @@ export default class Service {
   //   numPerPage
   // )
 
-  async apiCollectionGroupSearch(searchText, collections, start, numPerPage) {
-    const url = `${samlingApi}/freeTextSearch?text=${searchText}&collections=${collections}&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
-
-    const response = await axios.get(url)
-    return response.data
-  }
-
-  async apiIdSearch(id) {
-    const url = `${samlingApi}/id?id=${id}`
-
-    const response = await axios.get(url)
-    return response.data
-  }
+  // async apiCollectionGroupSearch(searchText, collections, start, numPerPage) {
+    // const url = `${samlingApi}/freeTextSearch?text=${searchText}&collections=${collections}&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+//
+    // const response = await axios.get(url)
+    // return response.data
+  // }
 
   //
   //
@@ -169,191 +190,191 @@ export default class Service {
   //
   //
 
-  async apiCollectionsChartData(collection) {
-    let url = `${samlingApi}/chart?collection="${collection}"`
-    const response = await axios.get(url)
-    return response.data
-  }
+  // async apiCollectionsChartData(collection) {
+  //   let url = `${samlingApi}/chart?collection="${collection}"`
+  //   const response = await axios.get(url)
+  //   return response.data
+  // }
 
-  async apiSimpleSearch(searchText, fuzzySearch, start, rows) {
-    const url = `${samlingApi}/search?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+  // async apiSimpleSearch(searchText, fuzzySearch, start, rows) {
+  //   const url = `${samlingApi}/search?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
 
-    const response = await axios.get(url)
-    return response.data
-  }
+  //   const response = await axios.get(url)
+  //   return response.data
+  // }
 
   /////
 
   //////
 
-  async apiSimpleFilterSearch(hasCoordinates, hasImages, isType, isInSweden) {
-    let url = `${samlingApi}/filter?text=*:*&sort=catalogedDate desc`
-    if (hasCoordinates) {
-      url += '&hasCoordinates=map:*'
-    }
-    if (hasImages) {
-      url += '&hasImage=image:*'
-    }
-    if (isType) {
-      url += '&isType=isType:*'
-    }
-    if (isInSweden) {
-      url += '&inSweden=inSweden:*'
-    }
-    url += `&start=${0}&numPerPage=${10}&sort=catalogedDate desc`
+  // async apiSimpleFilterSearch(hasCoordinates, hasImages, isType, isInSweden) {
+  //   let url = `${samlingApi}/filter?text=*:*&sort=catalogedDate desc`
+  //   if (hasCoordinates) {
+  //     url += '&hasCoordinates=map:*'
+  //   }
+  //   if (hasImages) {
+  //     url += '&hasImage=image:*'
+  //   }
+  //   if (isType) {
+  //     url += '&isType=isType:*'
+  //   }
+  //   if (isInSweden) {
+  //     url += '&inSweden=inSweden:*'
+  //   }
+  //   url += `&start=${0}&numPerPage=${10}&sort=catalogedDate desc`
 
-    const response = await axios.get(url)
-    return response.data
-  }
+  //   const response = await axios.get(url)
+  //   return response.data
+  // }
 
-  async apiFilterSearch(
-    searchText,
-    selectedColletion,
-    selectedTypeStatus,
-    selectedFamily,
-    collections,
-    hasCoordinates,
-    hasImages,
-    isType,
-    isInSweden,
-    start,
-    numPerPage
-  ) {
-    let url = `${samlingApi}/filter?text=${searchText}`
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    } else {
-      if (collections) {
-        url += `&collections=${collections}`
-      }
-    }
+  // async apiFilterSearch(
+  //   searchText,
+  //   selectedColletion,
+  //   selectedTypeStatus,
+  //   selectedFamily,
+  //   collections,
+  //   hasCoordinates,
+  //   hasImages,
+  //   isType,
+  //   isInSweden,
+  //   start,
+  //   numPerPage
+  // ) {
+  //   let url = `${samlingApi}/filter?text=${searchText}`
+  //   if (selectedColletion) {
+  //     url += `&collection="${selectedColletion}"`
+  //   } else {
+  //     if (collections) {
+  //       url += `&collections=${collections}`
+  //     }
+  //   }
 
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    } else {
-      if (isType) {
-        url += '&isType=isType:*'
-      }
-    }
+  //   if (selectedTypeStatus) {
+  //     url += `&typeStatus="${selectedTypeStatus}"`
+  //   } else {
+  //     if (isType) {
+  //       url += '&isType=isType:*'
+  //     }
+  //   }
 
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
+  //   if (selectedFamily) {
+  //     url += `&family="${selectedFamily}"`
+  //   }
 
-    if (hasCoordinates) {
-      url += '&hasCoordinates=map:*'
-    }
+  //   if (hasCoordinates) {
+  //     url += '&hasCoordinates=map:*'
+  //   }
 
-    if (hasImages) {
-      url += '&hasImage=image:*'
-    }
+  //   if (hasImages) {
+  //     url += '&hasImage=image:*'
+  //   }
 
-    if (isInSweden) {
-      url += '&inSweden=inSweden:*'
-    }
+  //   if (isInSweden) {
+  //     url += '&inSweden=inSweden:*'
+  //   }
 
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+  //   url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
 
-    const response = await axios.get(url)
+  //   const response = await axios.get(url)
 
-    return response.data
-  }
+  //   return response.data
+  // }
 
-  async apiAdvanceSearchWithFilters(
-    searchText,
-    selectedColletion,
-    selectedTypeStatus,
-    selectedFamily,
-    hasCoordinates,
-    hasImages,
-    isType,
-    isInSweden,
-    start,
-    numPerPage
-  ) {
-    let url = `${samlingApi}/filter?text=${searchText}`
+  // async apiAdvanceSearchWithFilters(
+    // searchText,
+    // selectedColletion,
+    // selectedTypeStatus,
+    // selectedFamily,
+    // hasCoordinates,
+    // hasImages,
+    // isType,
+    // isInSweden,
+    // start,
+    // numPerPage
+  // ) {
+    // let url = `${samlingApi}/filter?text=${searchText}`
 
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    }
+    // if (selectedColletion) {
+      // url += `&collection="${selectedColletion}"`
+    // }
 
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    }
+    // if (selectedTypeStatus) {
+      // url += `&typeStatus="${selectedTypeStatus}"`
+    // }
 
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
+    // if (selectedFamily) {
+      // url += `&family="${selectedFamily}"`
+    // }
 
-    if (hasCoordinates) {
-      url += '&hasCoordinates=map:*'
-    }
+    // if (hasCoordinates) {
+      // url += '&hasCoordinates=map:*'
+    // }
 
-    if (hasImages) {
-      url += '&hasImage=image:*'
-    }
+    // if (hasImages) {
+      // url += '&hasImage=image:*'
+    // }
 
-    if (isType) {
-      url += '&isType=isType:*'
-    }
+    // if (isType) {
+      // url += '&isType=isType:*'
+    // }
 
-    if (isInSweden) {
-      url += '&inSweden=inSweden:*'
-    }
+    // if (isInSweden) {
+      // url += '&inSweden=inSweden:*'
+    // }
 
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
-    const response = await axios.get(url)
+    // url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+    // const response = await axios.get(url)
 
-    return response.data
-  }
+    // return response.data
+  // }
 
-  async apiGeoDataSearch(
-    searchText,
-    selectedColletion,
-    selectedTypeStatus,
-    selectedFamily,
-    collections,
-    hasCoordinates,
-    hasImages,
-    isType,
-    isInSweden
-  ) {
-    let url = `${samlingApi}/geo?text=${searchText}`
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    } else {
-      if (collections) {
-        url += `&collections=${collections}`
-      }
-    }
+  // async apiGeoDataSearch(
+  //   searchText,
+  //   selectedColletion,
+  //   selectedTypeStatus,
+  //   selectedFamily,
+  //   collections,
+  //   hasCoordinates,
+  //   hasImages,
+  //   isType,
+  //   isInSweden
+  // ) {
+  //   let url = `${samlingApi}/geo?text=${searchText}`
+  //   if (selectedColletion) {
+  //     url += `&collection="${selectedColletion}"`
+  //   } else {
+  //     if (collections) {
+  //       url += `&collections=${collections}`
+  //     }
+  //   }
 
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    } else {
-      if (isType) {
-        url += '&isType=isType:*'
-      }
-    }
+  //   if (selectedTypeStatus) {
+  //     url += `&typeStatus="${selectedTypeStatus}"`
+  //   } else {
+  //     if (isType) {
+  //       url += '&isType=isType:*'
+  //     }
+  //   }
 
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
+  //   if (selectedFamily) {
+  //     url += `&family="${selectedFamily}"`
+  //   }
 
-    if (hasCoordinates) {
-      url += '&hasCoordinates=map:*'
-    }
+  //   if (hasCoordinates) {
+  //     url += '&hasCoordinates=map:*'
+  //   }
 
-    if (hasImages) {
-      url += '&hasImage=image:*'
-    }
+  //   if (hasImages) {
+  //     url += '&hasImage=image:*'
+  //   }
 
-    if (isInSweden) {
-      url += '&inSweden=inSweden:*'
-    }
+  //   if (isInSweden) {
+  //     url += '&inSweden=inSweden:*'
+  //   }
 
-    const response = await axios.get(url)
-    return response.data
-  }
+  //   const response = await axios.get(url)
+  //   return response.data
+  // }
 
   //
   //
@@ -372,118 +393,118 @@ export default class Service {
   //
   //
 
-  async apiAdvanceSearch(
-    scientificName,
-    catalogNumber,
-    synonym,
-    dataset,
-    dateRange,
-    types,
-    start,
-    rows
-  ) {
-    let url = `${samlingApi}/search?text=`
+  // async apiAdvanceSearch(
+  //   scientificName,
+  //   catalogNumber,
+  //   synonym,
+  //   dataset,
+  //   dateRange,
+  //   types,
+  //   start,
+  //   rows
+  // ) {
+  //   let url = `${samlingApi}/search?text=`
 
-    if (scientificName) {
-      url += `${scientificName}`
-    }
-    if (catalogNumber) {
-      url += ` ${catalogNumber}`
-    }
+  //   if (scientificName) {
+  //     url += `${scientificName}`
+  //   }
+  //   if (catalogNumber) {
+  //     url += ` ${catalogNumber}`
+  //   }
 
-    if (synonym) {
-      url += ` ${synonym}`
-    }
+  //   if (synonym) {
+  //     url += ` ${synonym}`
+  //   }
 
-    if (dataset) {
-      url += ` ${dataset}`
-    }
+  //   if (dataset) {
+  //     url += ` ${dataset}`
+  //   }
 
-    if (dateRange) {
-      url += ` ${dateRange}`
-    }
+  //   if (dateRange) {
+  //     url += ` ${dateRange}`
+  //   }
 
-    if (types) {
-      url += ` ${types}`
-    }
+  //   if (types) {
+  //     url += ` ${types}`
+  //   }
 
-    url += `&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
-    const response = await axios.get(url)
+  //   url += `&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+  //   const response = await axios.get(url)
 
-    return response.data
-  }
+  //   return response.data
+  // }
 
-  async apiConditionalSearch(
-    searchText,
-    selectedColletion,
-    selectedTypeStatus,
-    selectedFamily,
-    start,
-    numPerPage
-  ) {
-    let url = `${samlingApi}/filter?text=${searchText}`
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    }
+  // async apiConditionalSearch(
+  //   searchText,
+  //   selectedColletion,
+  //   selectedTypeStatus,
+  //   selectedFamily,
+  //   start,
+  //   numPerPage
+  // ) {
+  //   let url = `${samlingApi}/filter?text=${searchText}`
+  //   if (selectedColletion) {
+  //     url += `&collection="${selectedColletion}"`
+  //   }
 
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    }
+  //   if (selectedTypeStatus) {
+  //     url += `&typeStatus="${selectedTypeStatus}"`
+  //   }
 
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+  //   if (selectedFamily) {
+  //     url += `&family="${selectedFamily}"`
+  //   }
+  //   url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
 
-    const response = await axios.get(url)
+  //   const response = await axios.get(url)
 
-    return response.data
-  }
+  //   return response.data
+  // }
 
-  async apiSearchTypeStatus() {
-    const url = `${samlingApi}/typestatus`
-    const response = await axios.get(url)
-    return response.data
-  }
+  // async apiSearchTypeStatus() {
+  //   const url = `${samlingApi}/typestatus`
+  //   const response = await axios.get(url)
+  //   return response.data
+  // }
 
-  async apiPreparaExport(searchText, selectedColletion, selectedTypeStatus, selectedFamily, total) {
-    let url = `${samlingApi}/download?text=${searchText}`
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    }
+  // async apiPreparaExport(searchText, selectedColletion, selectedTypeStatus, selectedFamily, total) {
+  //   let url = `${samlingApi}/download?text=${searchText}`
+  //   if (selectedColletion) {
+  //     url += `&collection="${selectedColletion}"`
+  //   }
 
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    }
+  //   if (selectedTypeStatus) {
+  //     url += `&typeStatus="${selectedTypeStatus}"`
+  //   }
 
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
-    url += `&numRows=${total}`
+  //   if (selectedFamily) {
+  //     url += `&family="${selectedFamily}"`
+  //   }
+  //   url += `&numRows=${total}`
 
-    const response = await axios.get(url)
+  //   const response = await axios.get(url)
 
-    return response.data
-  }
+  //   return response.data
+  // }
 
-  async downloadItem(searchText, selectedColletion, selectedTypeStatus, selectedFamily, total) {
-    let url = `${samlingApi}/download?text=${searchText}`
-    if (selectedColletion) {
-      url += `&collection="${selectedColletion}"`
-    }
+  // async downloadItem(searchText, selectedColletion, selectedTypeStatus, selectedFamily, total) {
+  //   let url = `${samlingApi}/download?text=${searchText}`
+  //   if (selectedColletion) {
+  //     url += `&collection="${selectedColletion}"`
+  //   }
 
-    if (selectedTypeStatus) {
-      url += `&typeStatus="${selectedTypeStatus}"`
-    }
+  //   if (selectedTypeStatus) {
+  //     url += `&typeStatus="${selectedTypeStatus}"`
+  //   }
 
-    if (selectedFamily) {
-      url += `&family="${selectedFamily}"`
-    }
-    url += `&numRows=${total}`
-    axios.get(url, { responseType: 'blob' }).then((response) => {
-      saveAs(response.data, 'downloaded-file.pdf')
-    })
-  }
+  //   if (selectedFamily) {
+  //     url += `&family="${selectedFamily}"`
+  //   }
+  //   url += `&numRows=${total}`
+  //   axios.get(url, { responseType: 'blob' }).then((response) => {
+  //     saveAs(response.data, 'downloaded-file.pdf')
+  //   })
+  // }
 
   // async apiSimpleSearchWithFilter(
   //   searchText,
