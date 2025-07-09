@@ -78,6 +78,7 @@ function preparaDataExport() {
 }
 
 function search(start, numPerPage, saveData) {
+  loading.value = true
   const params = buildParams()
   service
     .apiSearch(params, start, numPerPage)
@@ -96,6 +97,10 @@ function search(start, numPerPage, saveData) {
           store.commit('setGeoData', null)
         }
       }
+
+      setTimeout(() => {
+        loading.value = false
+      }, 2000)
     })
     .catch((error) => {
       console.log('error', error)
