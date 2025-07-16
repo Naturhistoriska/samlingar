@@ -43,7 +43,6 @@ watch(
   () => router.currentRoute.value.name,
   () => {
     const currentRouteName = router.currentRoute.value.name
-    // console.log('currentRouteName', currentRouteName)
 
     switch (currentRouteName) {
       case 'Home':
@@ -71,41 +70,55 @@ watch(
 )
 
 function onClick() {
-  store.commit('setShowResults', false)
-  store.commit('setIsAdvanceSearch', false)
-  store.commit('setShowDetail', false)
-
-  clearStore()
-}
-
-function clearStore() {
-  store.commit('setFamily', [])
-  store.commit('setGenus', [])
-
-  store.commit('setCollections', [])
-  store.commit('setTypeStatus', [])
-  store.commit('setImageCount', 0)
-  store.commit('setIsTypeCount', 0)
-  store.commit('setHasCoordinatesCount', 0)
-  store.commit('setInSwedenCount', 0)
-  store.commit('setTotalRecords', 0)
-  store.commit('setResults', [])
-
+  store.commit('setSearchText', '*')
   store.commit('setScientificName', null)
-  store.commit('setCatalogNumber', null)
-  store.commit('setSynonym', null)
-  store.commit('setSelectedDataset', null)
-  store.commit('setDateRange', null)
-  store.commit('setSelectedTypes', null)
+  store.commit('setCollectionGroup', null)
 
   store.commit('setFilterCoordinates', false)
-  store.commit('setFilterImage', false)
   store.commit('setFilterInSweden', false)
+  store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
 
-  store.commit('setShowDetail', false)
-  store.commit('setShowResults', false)
+  store.commit('setFields', [])
+  store.commit('setDataResource', null)
 }
+
+// function onClick() {
+// store.commit('setShowResults', false)
+// store.commit('setIsAdvanceSearch', false)
+// store.commit('setShowDetail', false)
+
+// clearStore()
+// }
+
+// function clearStore() {
+//   store.commit('setFamily', [])
+//   store.commit('setGenus', [])
+
+//   store.commit('setCollections', [])
+//   store.commit('setTypeStatus', [])
+//   store.commit('setImageCount', 0)
+//   store.commit('setIsTypeCount', 0)
+//   store.commit('setHasCoordinatesCount', 0)
+//   store.commit('setInSwedenCount', 0)
+//   store.commit('setTotalRecords', 0)
+//   store.commit('setResults', [])
+
+//   store.commit('setScientificName', null)
+//   store.commit('setCatalogNumber', null)
+//   store.commit('setSynonym', null)
+//   store.commit('setSelectedDataset', null)
+//   store.commit('setDateRange', null)
+//   store.commit('setSelectedTypes', null)
+
+//   store.commit('setFilterCoordinates', false)
+//   store.commit('setFilterImage', false)
+//   store.commit('setFilterInSweden', false)
+//   store.commit('setFilterType', false)
+
+//   store.commit('setShowDetail', false)
+//   store.commit('setShowResults', false)
+// }
 </script>
 
 <style scoped>
