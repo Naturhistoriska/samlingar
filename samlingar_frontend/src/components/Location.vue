@@ -136,7 +136,6 @@ const water = ref()
 const uncertaintyInMeters = ref()
 
 onMounted(async () => {
-  console.log('onMounted dataset')
   const record = store.getters['selectedRecord']
 
   const {

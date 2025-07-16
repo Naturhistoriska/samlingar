@@ -161,7 +161,6 @@ const stage = ref()
 const status = ref()
 
 onMounted(async () => {
-  console.log('onMounted dataset')
   const record = store.getters['selectedRecord']
 
   const {

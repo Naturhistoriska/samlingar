@@ -35,20 +35,15 @@ const store = useStore()
 
 const dates = ref()
 
-// const emits = defineEmits(['search'])
-
 const displayButton = computed(() => {
   return dates.value
 })
 
 onMounted(async () => {
-  console.log('event date')
-
   dates.value = store.getters['dates']
 })
 
 function onSelect() {
-  console.log('dates : ', dates)
   const start = new Date(dates.value[0])
   const end = new Date(dates.value[1])
 
@@ -65,7 +60,6 @@ function onSelect() {
   store.commit('setStartDate', startDate)
   store.commit('setEndDate', endDate)
   store.commit('setDates', startDate + ' - ' + endDate)
-  // emits('search')
 }
 
 function removeDates() {
