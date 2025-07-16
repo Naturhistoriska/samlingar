@@ -121,8 +121,6 @@ function buildParams() {
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
 
-  console.log('searchText....', searchText)
-
   const dataResource = store.getters['dataResource']
 
   const endDate = store.getters['endDate']
