@@ -112,7 +112,6 @@ const synonyms = ref()
 const remarks = ref()
 
 onMounted(async () => {
-  console.log('onMounted dataset')
   const record = store.getters['selectedRecord']
 
   const {
