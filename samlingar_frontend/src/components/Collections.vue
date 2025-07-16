@@ -1,6 +1,7 @@
 <template>
   <MultiSelect
     v-model="selectedItems"
+    ref="multiSelectRef"
     :options="groupedSelections"
     optionLabel="label"
     :maxSelectedLabels="3"
@@ -20,14 +21,20 @@
       </div>
     </template>
   </MultiSelect>
+  <ul v-if="itemSelected">
+    <li v-for="val in selectedItems" :key="val">
+      {{ val.label }}
+    </li>
+  </ul>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { useStore } from 'vuex'
 const store = useStore()
 
 const selectedItems = ref([])
+const multiSelectRef = ref(null)
 
 const groupedSelections = ref([
   {
@@ -82,7 +89,7 @@ const groupedSelections = ref([
   },
   {
     label: 'Geological collections',
-    code: 'locality',
+    code: 'geo',
     items: [
       { label: 'NRM Isotope Geology', value: 'NRM Isotope Geology' },
       { label: 'NRM Mineralogy', value: 'NRM Mineralogy' },
@@ -90,6 +97,10 @@ const groupedSelections = ref([
     ]
   }
 ])
+
+const itemSelected = computed(() => {
+  return store.getters['dataResource'] !== null
+})
 
 onMounted(() => {
   // const group = store.getters['collectionGroup']
@@ -117,7 +128,10 @@ onMounted(() => {
     .map((item) => item.items)[0]
 })
 
-function onSelect() {
+function onSelect(event) {
+  if (multiSelectRef.value) {
+    multiSelectRef.value.hide() // This closes the panel
+  }
   if (selectedItems.value && selectedItems.value.length > 0) {
     const value = selectedItems.value.map((obj) => `'${obj.value}'`).join(' ')
     const names = `(${value})`
