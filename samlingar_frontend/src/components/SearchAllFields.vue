@@ -31,8 +31,6 @@ const size = ref('small')
 const label = ref('search.searchAll')
 
 function handleFreeTextSearch(value) {
-  console.log('handleFreeTextSearch', value)
-
   const searchText = value ? value : '*'
   store.commit('setSearchText', searchText)
 
@@ -44,6 +42,8 @@ function handleFreeTextSearch(value) {
   store.commit('setFilterType', false)
 
   store.commit('setCollectionGroup', null)
+  store.commit('setFields', [])
+  store.commit('setDataResource', null)
 
   emits('freeTextSearch')
 }
