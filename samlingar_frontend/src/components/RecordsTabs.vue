@@ -14,7 +14,6 @@
           <div class="col-12" style="float: left; text-align: left">
             <Download @download="download" @exportData="preparaDataExport" />
           </div>
-          <!-- <i class="pi pi-file-export" style="color: slateblue"></i> -->
         </Tab>
       </TabList>
       <TabPanels>
@@ -32,7 +31,7 @@
   </div>
 </template>
 <script setup>
-import { computed, onMounted, ref, onUpdated } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import Download from './Download.vue'
 import RecordLabels from './RecordLabels.vue'
@@ -59,14 +58,6 @@ const isMediaView = computed(() => {
 
 const totalCount = computed(() => {
   return store.getters['totalRecords']
-})
-
-onMounted(async () => {
-  console.log('onMounted')
-})
-
-onUpdated(async () => {
-  console.log('updated')
 })
 
 function preparaDataExport() {
