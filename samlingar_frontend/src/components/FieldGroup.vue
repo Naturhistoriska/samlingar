@@ -7,7 +7,7 @@
   </div>
 </template>
 <script setup>
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import AutocompleteBox from './baseComponents/AutocompleteBox.vue'
 import InputBox from './baseComponents/InputBox.vue'
@@ -24,8 +24,8 @@ watch(
   }
 )
 
-// function handleSearch() {
-// emits('search')
-// }
+onMounted(() => {
+  fields.value = store.getters['fields']
+})
 </script>
 <style scoped></style>
