@@ -49,11 +49,21 @@ const inputId = computed(() => {
 
 onMounted(() => {
   acwidth.value = { width: '400px' }
+
+  const input = props.field.text
+  if (input) {
+    values.value = input.match(/"([^"]+)"/g)?.map((s) => s.replace(/"/g, '')) || []
+  }
 })
 
 const apiAutoComplete = (event) => {
   const field = props.field.value
-  const value = event.query
+  let value = event.query
+
+  if (field === 'typeStatus') {
+    value = value.toUpperCase()
+  }
+
   service
     .apiAutoCompleteSearch(value, field)
     .then((response) => {
