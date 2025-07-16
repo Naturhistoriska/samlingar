@@ -145,6 +145,9 @@ onMounted(async () => {
 
     dynamicProperties_createdDate,
     dateIdentified,
+
+    earliestAgeOrLowestStage,
+
     identifiedBy,
     individualCount,
     institutionCode,
