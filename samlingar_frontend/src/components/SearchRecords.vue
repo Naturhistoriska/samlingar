@@ -6,7 +6,7 @@
           {{ $t('search.search') }}
         </div>
         <div class="col-2" no-gutters>
-          <Button variant="text" @click="help">
+          <Button variant="text" @click="dialogVisible = !dialogVisible">
             <small>{{ $t('common.help') }}</small>
           </Button>
         </div>
@@ -36,14 +36,16 @@
         <filter-checkbox />
 
         <Panel
+          :class="scientificNamePanelClass"
+          :collapsed="scientificNamePanelNotVisible"
           :header="$t('labels.scientificName')"
           toggleable
-          :collapsed="scientificNamePanelVisible"
         >
           <scientific-name />
         </Panel>
 
         <Panel
+          :class="collectionPanelClass"
           :header="$t('labels.collections')"
           toggleable
           :collapsed="collectionGroupPanelVisible"
@@ -55,7 +57,7 @@
           <event-date />
         </Panel>
 
-        <Panel>
+        <Panel :class="fieldsPanelClass">
           <filter-fields style="padding-bottom: 5px" />
         </Panel>
       </div>
@@ -83,7 +85,7 @@ const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
 
 const dialogVisible = ref(false)
 
-const scientificNamePanelVisible = computed(() => {
+const scientificNamePanelNotVisible = computed(() => {
   return store.getters['scientificName'] === null
 })
 
@@ -91,12 +93,18 @@ const collectionGroupPanelVisible = computed(() => {
   return store.getters['dataResource'] === null
 })
 
-function help() {
-  dialogVisible.value = true
-}
-function reset() {
-  console.log('reset')
+const scientificNamePanelClass = computed(() => {
+  return scientificNamePanelNotVisible.value ? '' : 'active-panel'
+})
+const collectionPanelClass = computed(() => {
+  return collectionGroupPanelVisible.value ? '' : 'active-panel'
+})
 
+const fieldsPanelClass = computed(() => {
+  return store.getters['fields'].length === 0 ? '' : 'active-panel'
+})
+
+function reset() {
   store.commit('setSearchText', '*')
   store.commit('setScientificName', null)
   store.commit('setCollectionGroup', null)
@@ -106,7 +114,7 @@ function reset() {
   store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
 
-  store.commit[('setFields', [])]
+  store.commit('setFields', [])
   store.commit('setDataResource', null)
   search()
 }
@@ -118,5 +126,9 @@ function search() {
 <style scoped>
 .p-panel {
   min-width: 100% !important;
+}
+
+.active-panel {
+  background-color: #eefaeb;
 }
 </style>
