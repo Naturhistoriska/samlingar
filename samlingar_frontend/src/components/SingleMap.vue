@@ -35,7 +35,6 @@ onMounted(() => {
 })
 
 function initMap(latitude, longitude) {
-  console.log('initmap')
   initialMap.value = L.map('map', {
     zoomControl: true,
     zoomAnimation: false
@@ -55,8 +54,6 @@ function initMap(latitude, longitude) {
 }
 
 function addSamlingarSinglemMarker(record) {
-  console.log('addSamlingarSinglemMarker')
-
   const {
     id,
     catalogNumber,
@@ -70,8 +67,6 @@ function addSamlingarSinglemMarker(record) {
     stateProvince,
     eventDate
   } = record
-
-  console.log('coordinates : ', decimalLatitude, decimalLongitude)
 
   if (decimalLatitude && decimalLongitude) {
     const div = document.createElement('div')
@@ -93,6 +88,13 @@ function addSamlingarSinglemMarker(record) {
     div.style.cssText = ' overflow-wrap: break-word;   '
 
     const marker = new L.marker([decimalLatitude, decimalLongitude]).bindPopup(div)
+
+    marker.on('popupopen', () => {
+      // You can trigger other actions here
+    })
+
+    marker.on('click', () => {})
+
     marker.addTo(initialMap.value)
   }
 }

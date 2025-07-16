@@ -73,8 +73,6 @@ let scientificName = ref()
 let searchOptions = ref()
 let showClearScentificName = ref(false)
 
-// const emits = defineEmits(['search'])
-
 watch(
   () => store.getters['scientificName'],
   (newValue, oldValue) => {
@@ -140,6 +138,7 @@ function search(scientificName, fuzzy) {
   max-width: 770px;
   padding-bottom: 1rem;
 }
+
 /* .searchLabel {
   padding-right: 2rem;
   padding-top: 0.3rem;
