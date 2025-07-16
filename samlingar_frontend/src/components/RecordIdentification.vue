@@ -22,6 +22,11 @@
         {{ typeStatusData }}
       </div>
 
+      <div class="col-4 reducePadding">Original Name Usage</div>
+      <div class="col-8 reducePadding">
+        {{ originalName }}
+      </div>
+
       <div class="col-4 reducePadding">{{ $t('results.identificationVerificationStatus') }}</div>
       <div class="col-8 reducePadding">
         {{ status }}
@@ -43,6 +48,7 @@ const store = useStore()
 const identifyDate = ref()
 const identifiedByData = ref()
 const identificationQualifierData = ref()
+const originalName = ref()
 const typeStatusData = ref()
 
 const status = ref()
@@ -56,6 +62,7 @@ onMounted(async () => {
     identificationQualifier,
     identifiedBy,
     identificationVerificationStatus,
+    originalNameUsage,
     typeStatus,
     identificationRemarks
   } = record
@@ -64,6 +71,7 @@ onMounted(async () => {
   identifiedByData.value = identifiedBy
   identificationQualifierData.value = identificationQualifier
 
+  originalName.value = originalNameUsage
   typeStatusData.value = typeStatus
 
   status.value = identificationVerificationStatus
