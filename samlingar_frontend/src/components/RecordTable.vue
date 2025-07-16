@@ -23,11 +23,11 @@
         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
           <span class="text-xl text-900 font-bold"> </span>
           <div style="text-align: right" clss="grid justify-end">
-            <Button
+            <!-- <Button
               icon="pi pi-external-link"
               :label="$t('exportData.exportDatatable')"
               @click="exportCSV($event)"
-            />
+            /> -->
             <Button type="button" :label="$t('btnLabel.columns')" @click="dialogVisible = true" />
           </div>
         </div>
@@ -88,7 +88,9 @@ const dialogVisible = ref(false)
 
 const dt = ref()
 
-let columns = ref([
+let columns = ref([])
+
+const defaultColumns = ref([
   { field: 'dataResourceName', header: 'Collection Name', minWidth: '150px', maxWidth: '150px' },
   { field: 'scientificName', header: 'Scientific Name', minWidth: '150px', maxWidth: '150px' },
   { field: 'locality', header: 'Locality', minWidth: '250px', maxWidth: '250px' },
@@ -106,17 +108,17 @@ watch(
 )
 
 const totalCount = computed(() => {
-  console.log('total count', store.getters['totalRecords'])
   return store.getters['totalRecords']
 })
 
 onMounted(async () => {
   records.value = store.getters['results']
+  columns.value = defaultColumns.value
 })
 
-const exportCSV = () => {
-  dt.value.exportCSV()
-}
+// const exportCSV = () => {
+//   dt.value.exportCSV()
+// }
 
 function getColumnStyle(col) {
   return {
@@ -129,8 +131,6 @@ function getColumnStyle(col) {
 }
 
 function onSelect() {
-  console.log('data', selectedRecord.value)
-
   store.commit('setSelectedRecord', selectedRecord)
 
   router.push(`/record/${selectedRecord.value.id}`)
@@ -145,7 +145,6 @@ function selectRow(data) {
 
 const onPage = async (event) => {
   const { first, rows } = event
-  console.log('onPage', first, rows)
   emits('search', first, rows, false)
 }
 </script>
