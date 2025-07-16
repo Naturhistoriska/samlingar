@@ -1,6 +1,6 @@
 <template>
   <div id="myMap">
-    <div id="map" style="height: 70vh" class="custom-popup"></div>
+    <div id="map" style="height: 54vh" class="custom-popup"></div>
   </div>
 </template>
 <script setup>
@@ -23,9 +23,7 @@ const router = useRouter()
 const isMapFetch = ref(false)
 
 onMounted(() => {
-  console.log('onMounted')
   initMap()
-
   addClusterMarkers()
 })
 
@@ -63,9 +61,20 @@ function addClusterMarkers() {
       const latitude = array[0]
       const longitude = array[1]
 
-      for (let i = 0; i < count; i++) {
-        const marker = new L.marker([latitude, longitude])
+      let marker
+      if (count === 1) {
+        marker = new L.marker([latitude, longitude])
+
+        marker.on('click', () => {
+          console.log('Marker was clicked!')
+        })
         markers.addLayer(marker)
+      } else {
+        for (let i = 0; i < count; i++) {
+          marker = new L.marker([latitude, longitude])
+
+          markers.addLayer(marker)
+        }
       }
     })
     initialMap.value.addLayer(markers)
@@ -102,7 +111,7 @@ function initMap() {
     zoomControl: true,
     zoomAnimation: false
   })
-    .setView([20.0, 15.0], 1)
+    .setView([0.0, 15.0], 1)
     .setZoom(1)
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     minZoom: 1,
