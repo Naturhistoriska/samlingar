@@ -354,7 +354,7 @@
     "start": "Start",
     "startsWith": "Starts with",
     "subgenus": "Search subgenus",
-    "synonyms": "Search synonyms",
+    "dynamicProperties_synonyms": "Search synonyms",
     "taxonRank": "Search taxon rank",
     "typeStatus": "search typestatus",
     "vernacularName": "Search vernacular name",

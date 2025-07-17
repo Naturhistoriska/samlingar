@@ -353,7 +353,7 @@
     "start": "Start",
     "startsWith": "Börja med",
     "subgenus": "Search subgenus",
-    "synonyms": "Search synonyms",
+    "dynamicProperties_synonyms": "Search synonyms",
     "taxonRank": "Search taxon rank",
     "typeStatus": "Sök typestatus",
     "vernacularName": "Search vernacular name",

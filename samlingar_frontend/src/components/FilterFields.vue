@@ -49,7 +49,12 @@ const groupedSelections = ref([
       { label: 'Subgenus', value: 'subgenus', key: 'subgenus:', code: 'tx' },
       { label: 'Species', value: 'species', key: 'species:', code: 'tx' },
       { label: 'Vernacular name', value: 'vernacularName', key: 'vernacularName:', code: 'tx' },
-      { label: 'Synonyms', value: 'synonyms', key: 'synonyms:', code: 'tx' },
+      {
+        label: 'Synonyms',
+        value: 'dynamicProperties_synonyms',
+        key: 'dynamicProperties_synonyms:',
+        code: 'tx'
+      },
       { label: 'Taxon rank', value: 'taxonRank', key: 'taxonRank:', code: 'tx' }
     ]
   },
