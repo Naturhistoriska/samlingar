@@ -77,10 +77,10 @@ function preparaDataExport() {
     .finally(() => {})
 }
 
-function search(start, numPerPage, saveData) {
+async function search(start, numPerPage, saveData) {
   loading.value = true
   const params = buildParams()
-  service
+  await service
     .apiSearch(params, start, numPerPage)
     .then((response) => {
       const total = response.facets.count
@@ -92,9 +92,15 @@ function search(start, numPerPage, saveData) {
       if (saveData) {
         if (total > 0) {
           const geofacet = response.facets.map.buckets
+          const collectionfacet = response.facets.dataResourceName.buckets
+
+          console.log('collectionfacet', collectionfacet)
+
           store.commit('setGeoData', geofacet)
+          store.commit('setCollections', collectionfacet)
         } else {
           store.commit('setGeoData', null)
+          store.commit('setCollections', null)
         }
       }
 

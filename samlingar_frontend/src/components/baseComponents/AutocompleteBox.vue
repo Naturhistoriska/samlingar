@@ -31,8 +31,6 @@ const service = new Service()
 
 const store = useStore()
 
-// const emits = defineEmits(['search'])
-
 const props = defineProps(['field', 'multiple'])
 
 const acwidth = ref()
@@ -94,83 +92,14 @@ function itemsChanged() {
     .map((str) => `"${str}"`) // Wrap each string in single quotes
     .join(' ')
 
-  field.text = `(${value})`
+  if (value.trim() !== '') {
+    field.text = `(${value})`
+  } else {
+    delete field.text
+  }
 
   store.commit('setFields', fields)
 }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-// sbdi
-// function sbdiAutoComplete(event) {
-//   service
-//     .autoComplete(searchText, 0, 10)
-//     .then((response) => {
-//       this.items = response.occurrences
-//         .filter((item) => item.scientificName.toLowerCase().startsWith(searchText.toLowerCase()))
-//         .map((a) => a.scientificName)
-//         .filter((value, index, self) => self.indexOf(value) === index)
-//     })
-//     .catch()
-//     .finally(() => {})
-// }
-
-// function completeSearch() {
-//   this.loading = true
-//   const searchText = this.itemSelected ? this.search : this.search + '*'
-//   service
-//     .quickSearch(searchText, 1, 10)
-//     .then((response) => {
-//       const total = response.totalRecords
-//       this.results = response.occurrences
-
-//       if (total > 0) {
-//         const facetResults = response.facetResults
-
-//         const typeStatusFacet = facetResults.find((facet) => facet.fieldName === 'typeStatus')
-//         const typeStatus = typeStatusFacet.fieldResult
-//         this.setTypeStatus(typeStatus)
-
-//         const collectionFacet = facetResults.find((facet) => facet.fieldName === 'collectionName')
-//         const collections = collectionFacet.fieldResult
-//         this.setCollections(collections)
-
-//         const pointFacet = facetResults.find((facet) => facet.fieldName === 'point-0.01')
-//         const point = pointFacet.fieldResult
-//         this.setLatLong(point)
-
-//         console.log('point length:', point.length)
-//       } else {
-//         this.setCollections([])
-//         this.setTypeStatus([])
-//       }
-//       this.setResults(this.results)
-//       this.setSearchText(searchText)
-//       this.setSelectedCollection(null)
-//       this.setShowDetail(false)
-//       this.setShowResults(true)
-//       this.setTotalRecords(total)
-
-//       setTimeout(() => {
-//         this.loading = false
-//       }, 2000)
-//     })
-//     .catch()
-//     .finally(() => {})
-// }
 </script>
 
 <style scoped>

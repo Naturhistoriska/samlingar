@@ -48,12 +48,17 @@
           :class="collectionPanelClass"
           :header="$t('labels.collections')"
           toggleable
-          :collapsed="collectionGroupPanelVisible"
+          :collapsed="collectionGroupPanelNotVisible"
         >
           <Collections />
         </Panel>
 
-        <Panel :header="$t('labels.collectingDate')" toggleable collapsed>
+        <Panel
+          :class="eventDatePanelClass"
+          :header="$t('labels.collectingDate')"
+          toggleable
+          :collapsed="eventDatePanelNotVisible"
+        >
           <event-date />
         </Panel>
 
@@ -89,15 +94,23 @@ const scientificNamePanelNotVisible = computed(() => {
   return store.getters['scientificName'] === null
 })
 
-const collectionGroupPanelVisible = computed(() => {
+const collectionGroupPanelNotVisible = computed(() => {
   return store.getters['dataResource'] === null
+})
+
+const eventDatePanelNotVisible = computed(() => {
+  return store.getters['dates'] === null
 })
 
 const scientificNamePanelClass = computed(() => {
   return scientificNamePanelNotVisible.value ? '' : 'active-panel'
 })
 const collectionPanelClass = computed(() => {
-  return collectionGroupPanelVisible.value ? '' : 'active-panel'
+  return collectionGroupPanelNotVisible.value ? '' : 'active-panel'
+})
+
+const eventDatePanelClass = computed(() => {
+  return eventDatePanelNotVisible.value ? '' : 'active-panel'
 })
 
 const fieldsPanelClass = computed(() => {

@@ -3,6 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     collectionGroup: null,
+    collections: null,
     dates: null,
     dataResource: null,
     endDate: null,
@@ -97,6 +98,9 @@ export default createStore({
   getters: {
     collectionGroup(state) {
       return state.collectionGroup
+    },
+    collections(state) {
+      return state.collections
     },
     dates(state) {
       return state.dates
@@ -347,6 +351,7 @@ export default createStore({
 
   mutations: {
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
+    setCollections: (state, payload) => (state.collections = payload),
     setDates: (state, payload) => (state.dates = payload),
     setDataResource: (state, payload) => (state.dataResource = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
@@ -373,7 +378,7 @@ export default createStore({
     setBotanyCollectionTotal: (state, payload) => (state.botanyCollectionTotal = payload),
     setCatalogNumber: (state, payload) => (state.catalogNumber = payload),
     setClasss: (state, payload) => (state.classs = payload),
-    setCollections: (state, payload) => (state.collectons = payload),
+    // setCollections: (state, payload) => (state.collectons = payload),
 
     setChartDataAlgae: (state, payload) => (state.chartDataAlgae = payload),
     setChartDataEntomology: (state, payload) => (state.chartDataEntomology = payload),

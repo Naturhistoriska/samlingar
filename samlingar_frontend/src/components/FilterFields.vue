@@ -13,7 +13,7 @@
       display="chip"
       placeholder="Add search fields"
       class="w-full md:w-80"
-      @change="onChange(event)"
+      @update:modelValue="onSelectionChange"
     >
       <template #optiongroup="slotProps">
         <div class="flex items-center">
@@ -34,6 +34,7 @@ const store = useStore()
 
 const selectedItems = ref([])
 const multiSelectRef = ref(null)
+let virtualSelectedItems = ref([])
 
 const groupedSelections = ref([
   {
@@ -126,16 +127,47 @@ onMounted(() => {
   }
 })
 
-function onChange(event) {
+function onSelectionChange(newValue) {
+  console.log('onSelectionChange', newValue, selectedItems.value)
+
   if (multiSelectRef.value) {
     multiSelectRef.value.hide() // This closes the panel
   }
+  const oldValue = store.getters['fields']
+  console.log('oldValue', oldValue)
+
+  // Compare with old value to detect removals
+  if (newValue) {
+    const removedItems = virtualSelectedItems.value.filter((item) => !newValue.includes(item))
+    console.log('Removed:', removedItems)
+    removedItems.forEach((obj) => {
+      delete obj.text
+    })
+  } else {
+    virtualSelectedItems.value.forEach((obj) => {
+      delete obj.text
+    })
+  }
+
   if (selectedItems.value && selectedItems.value.length > 0) {
     store.commit('setFields', selectedItems)
   } else {
     store.commit('setFields', [])
   }
+  virtualSelectedItems.value = selectedItems.value
 }
+
+// function onChange(event) {
+// console.log(event.value, selectedItems.value)
+// if (multiSelectRef.value) {
+// multiSelectRef.value.hide() // This closes the panel
+// }
+// if (selectedItems.value && selectedItems.value.length > 0) {
+// store.commit('setFields', selectedItems)
+// } else {
+// store.commit('setFields', [])
+// }
+// }
 </script>
 <style scoped>
 .searchLabel {

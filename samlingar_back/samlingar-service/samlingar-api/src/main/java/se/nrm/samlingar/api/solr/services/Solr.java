@@ -44,6 +44,7 @@ public class Solr implements Serializable {
     final TermsFacetMap imageFacet;
     final TermsFacetMap inSwedenFacet;
     final TermsFacetMap typeFacet;
+    final TermsFacetMap datasourceFacet;
  
     private final String colon = ":";
     private final String searchAll = "*:*"; 
@@ -57,8 +58,8 @@ public class Solr implements Serializable {
  
     private final String countryKey = "country"; 
     private final String typeStatusKey = "typeStatus";
-     
- 
+    private final String collectionNameKey = "collectionName";
+    private final String dataResourceNameKey = "dataResourceName";
  
 
     private final String mapKey = "map";
@@ -99,6 +100,8 @@ public class Solr implements Serializable {
 
         typeFacet = new TermsFacetMap(typeStatusKey)
                 .includeAllBucketsUnionBucket(true);
+        
+        datasourceFacet = new TermsFacetMap(dataResourceNameKey);
 
     }
 
@@ -221,7 +224,8 @@ public class Solr implements Serializable {
                 .setQuery(text)
                 .setOffset(start)
                 .setLimit(numPerPage)
-                .setSort(sort)
+                .setSort(sort) 
+                .withFacet(dataResourceNameKey, datasourceFacet.setLimit(20))
                 .withFacet(mapKey, mapFacet.setLimit(20000));
          
 
@@ -251,8 +255,9 @@ public class Solr implements Serializable {
                 .setQuery(text) 
                 .setOffset(start)
                 .setLimit(numPerPage)
-                .setSort(sort)
-                .withFacet(mapKey, mapFacet.setLimit(20000));
+                .setSort(sort) 
+                .withFacet(mapKey, mapFacet.setLimit(20000))
+                .withFacet(dataResourceNameKey, datasourceFacet.setLimit(20));
 
         if (facets != null) {
             List<String> facetList = Arrays.asList(facets.split(","));

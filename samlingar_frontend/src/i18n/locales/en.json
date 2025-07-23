@@ -331,6 +331,8 @@
     "isType": "Is typestatus",
     "kingdom": "Search kingdom",
     "locality": "Search locality",
+    "loadingData": "Loading data. Please wait...",
+    "noResultsFound": "No results found",
     "order": "Search order",
     "phylum": "Search phylum",
     "providScientificName": "Provided scientific name",
