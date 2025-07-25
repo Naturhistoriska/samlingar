@@ -80,7 +80,22 @@ const inSwedenCount = computed(() => {
 })
 
 function handleFreeTextSearch() {
-  search(false, false, false, false)
+  const searchText = '*'
+
+  store.commit('setSearchText', searchText)
+  store.commit('setScientificName', null)
+  store.commit('setCollectionGroup', null)
+
+  store.commit('setFilterCoordinates', false)
+  store.commit('setFilterInSweden', false)
+  store.commit('setFilterImage', false)
+  store.commit('setFilterType', false)
+
+  store.commit('setFields', [])
+  store.commit('setDataResource', null)
+  store.commit('setDates', null)
+
+  emits('freeTextSearch', searchText)
 }
 
 function handleCoordinatesSearch() {
@@ -110,7 +125,11 @@ function search(filtCoordinates, filtImages, filtInSweden, filtTypeStatus) {
   store.commit('setFilterImage', filtImages)
   store.commit('setFilterType', filtTypeStatus)
 
-  emits('filterSearch')
+  store.commit('setFields', [])
+  store.commit('setDataResource', null)
+  store.commit('setDates', null)
+
+  emits('filterSearch', filtCoordinates, filtImages, filtInSweden, filtTypeStatus)
 }
 </script>
 <style scoped></style>

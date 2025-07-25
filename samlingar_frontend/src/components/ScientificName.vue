@@ -21,7 +21,7 @@
             v-model="searchOptions"
             inputId="searchOption1"
             name="option1"
-            value="exact"
+            value="equals"
             size="small"
             class="mt-1"
             :disabled="checkboxDisabled"
@@ -46,7 +46,7 @@
             <small>{{ $t('search.contains') }}</small>
           </label>
         </div>
-        <!-- <div class="flex items-center">
+        <div class="flex items-center">
           <RadioButton
             v-model="searchOptions"
             inputId="searchOptions3"
@@ -59,7 +59,7 @@
           <label for="searchOptions3" class="ml-2">
             <small>{{ $t('search.startsWith') }}</small>
           </label>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -91,8 +91,9 @@ onMounted(() => {
 })
 
 function setSearchOption() {
+  const searchMode = store.getters['searchMode']
+  searchOptions.value = searchMode ? searchMode : 'contains'
   if (scientificName.value) {
-    searchOptions.value = store.getters['isFuzzySearch'] ? 'contains' : 'exact'
     showClearScentificName = true
   }
 }
@@ -100,23 +101,21 @@ function setSearchOption() {
 function change() {
   console.log('change', searchOptions.value)
   const option = searchOptions.value
+  const isFuzzySearch = option !== 'equals'
 
-  if (option === 'exact') {
-    store.commit('setIsFuzzySearch', false)
-  } else if (option === 'contains') {
-    store.commit('setIsFuzzySearch', true)
-  }
+  store.commit('setIsFuzzySearch', isFuzzySearch)
+  store.commit('setSearchMode', option)
 }
 
 function onInputScientificName() {
   showClearScentificName = scientificName.value
 
-  let option = false
+  let isFuzzy = false
   if (scientificName !== undefined && scientificName.value) {
     searchOptions.value = 'contains'
-    option = true
+    isFuzzy = true
   }
-  search(scientificName.value, option)
+  search(scientificName.value, searchOptions.value, isFuzzy)
 }
 
 function clearScientificName() {
@@ -127,8 +126,9 @@ function clearScientificName() {
   search(null, false)
 }
 
-function search(scientificName, fuzzy) {
+function search(scientificName, searchMode, fuzzy) {
   store.commit('setScientificName', scientificName)
+  store.commit('setSearchMode', searchMode)
   store.commit('setIsFuzzySearch', fuzzy)
   // emits('search')
 }

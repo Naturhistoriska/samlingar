@@ -43,9 +43,11 @@ export default {
 
   methods: {
     ...mapMutations([
+      'setCollections',
       'setGeoData',
       'setIsFuzzySearch',
       'setResults',
+      'setSearchMode',
       'setSearchText',
       'setScientificName',
       'setTotalRecords'
@@ -82,24 +84,28 @@ export default {
     apiSearch() {
       let searchText = this.search
       const fuzzySearch = !this.itemSelected
+      const searchMode = fuzzySearch ? 'contains' : 'equals'
 
       service
-        .apiScientificnameSearch(searchText, fuzzySearch, 0, 50)
+        .apiScientificnameSearch(searchText, searchMode, fuzzySearch, 0, 50)
         .then((response) => {
           const total = response.facets.count
           const results = response.response
 
-          console.log('total', total)
-
           if (total > 0) {
             const geofacet = response.facets.map.buckets
             this.setGeoData(geofacet)
+
+            const collectionsfacet = response.facets.dataResourceName.buckets
+            this.setCollections(collectionsfacet)
+            console.log(collectionsfacet)
           }
 
           this.setResults(results)
           this.setTotalRecords(total)
           this.setScientificName(searchText)
           this.setIsFuzzySearch(fuzzySearch)
+          this.setSearchMode(searchMode)
           this.setSearchText(null)
         })
         .catch()
@@ -109,39 +115,58 @@ export default {
         })
     },
 
-    setCommentFacet(facets) {
-      const imageFacet = facets.image.buckets
-      if (imageFacet.length > 0) {
-        const imageCount = imageFacet[0].count
-        this.setImageCount(imageCount)
-      } else {
-        this.setImageCount(0)
-      }
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    // setCommentFacet(facets) {
+    //   const imageFacet = facets.image.buckets
+    //   if (imageFacet.length > 0) {
+    //     const imageCount = imageFacet[0].count
+    //     this.setImageCount(imageCount)
+    //   } else {
+    //     this.setImageCount(0)
+    //   }
 
-      const isTyypeFacet = facets.isType.buckets
-      if (isTyypeFacet.length > 0) {
-        const isTypeCount = isTyypeFacet[0].count
-        this.setIsTypeCount(isTypeCount)
-      } else {
-        this.setIsTypeCount(0)
-      }
+    //   const isTyypeFacet = facets.isType.buckets
+    //   if (isTyypeFacet.length > 0) {
+    //     const isTypeCount = isTyypeFacet[0].count
+    //     this.setIsTypeCount(isTypeCount)
+    //   } else {
+    //     this.setIsTypeCount(0)
+    //   }
 
-      const inSwedenFacet = facets.inSweden.buckets
-      if (inSwedenFacet.length > 0) {
-        const inSwedenCount = inSwedenFacet[0].count
-        this.setInSwedenCount(inSwedenCount)
-      } else {
-        this.setInSwedenCount(0)
-      }
+    //   const inSwedenFacet = facets.inSweden.buckets
+    //   if (inSwedenFacet.length > 0) {
+    //     const inSwedenCount = inSwedenFacet[0].count
+    //     this.setInSwedenCount(inSwedenCount)
+    //   } else {
+    //     this.setInSwedenCount(0)
+    //   }
 
-      const mapFacet = facets.map.buckets
-      if (mapFacet.length > 0) {
-        const mapCount = mapFacet[0].count
-        this.setHasCoordinatesCount(mapCount)
-      } else {
-        this.setHasCoordinatesCount(0)
-      }
-    },
+    //   const mapFacet = facets.map.buckets
+    //   if (mapFacet.length > 0) {
+    //     const mapCount = mapFacet[0].count
+    //     this.setHasCoordinatesCount(mapCount)
+    //   } else {
+    //     this.setHasCoordinatesCount(0)
+    //   }
+    // },
 
     // sbdi
     sbdiAutoComplete(event) {

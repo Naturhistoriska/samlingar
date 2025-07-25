@@ -42,14 +42,6 @@ import InputWithIcon from './baseComponents/InputWithIcon.vue'
 
 const emits = defineEmits(['freeTextSearch'])
 
-const store = useStore()
-const router = useRouter()
-
-const loading = ref(false)
-const value = ref()
-
-const placehold = ref()
-
 function handleFreeTextSearch() {
   console.log('handleFreeTextSearch')
   emits('freeTextSearch')

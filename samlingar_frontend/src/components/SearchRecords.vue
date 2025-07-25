@@ -120,6 +120,7 @@ const fieldsPanelClass = computed(() => {
 function reset() {
   store.commit('setSearchText', '*')
   store.commit('setScientificName', null)
+  store.commit('setSearchMode', 'contains')
   store.commit('setCollectionGroup', null)
 
   store.commit('setFilterCoordinates', false)

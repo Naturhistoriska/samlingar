@@ -59,9 +59,8 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response autoCompleteSearch(@QueryParam("text") String text,
             @QueryParam("field") String field) {
-        log.info("autoCompleteSearch: {} ", text, field);
-        
-        
+        log.info("autoCompleteSearch: {} -- {} ", text, field);
+         
         return Response.ok(logic.autoCompleteSearch(text, field)).build();
     } 
      
@@ -74,13 +73,13 @@ public class SamlingarService {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public Response scientificname(@QueryParam("text") String text,
-            @QueryParam("fuzzySearch") boolean fuzzySearch,
+            @QueryParam("searchMode") String searchMode,
             @QueryParam("start") int start, 
             @QueryParam("numPerPage") int numPerPage,
             @QueryParam("sort") String sort) {
-        log.info("scientificname  {} -- {}", text, fuzzySearch + " -- " + sort);
+        log.info("scientificname  {} -- {}", text, searchMode + " -- " + sort);
  
-        return Response.ok(logic.scientificNameSearch(text, fuzzySearch,
+        return Response.ok(logic.scientificNameSearch(text, searchMode,
                 start, numPerPage, sort)).build();
     }
     

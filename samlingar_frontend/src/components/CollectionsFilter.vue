@@ -90,7 +90,10 @@ function search(value, dataResource) {
   store.commit('setCollectionGroup', value)
   store.commit('setDataResource', dataResource)
 
-  emits('searchCollections')
+  store.commit('setFields', [])
+  store.commit('setDates', null)
+
+  emits('searchCollections', dataResource)
 }
 </script>
 <style scoped>

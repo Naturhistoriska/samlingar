@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="grid homePage">
-      <start-page />
+      <start-page
+        @filterSearch="filterSearch"
+        @search="search"
+        @collectionsSearch="collectionsSearch"
+      />
     </div>
 
     <div class="grid" style="margin-top: 10px">
@@ -12,6 +16,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import StartPage from '../components/StartPage.vue'
 import StatisticCharts from '../components/StatisticCharts.vue'
 
@@ -23,6 +28,7 @@ import Service from '../Service'
 const service = new Service()
 
 const store = useStore()
+const router = useRouter()
 
 // const { t } = useI18n()
 
@@ -119,6 +125,100 @@ function setSearchCommentFacet(facets) {
 
   const mapCount = facets.map.allBuckets.count
   store.commit('setHasCoordinatesCount', mapCount)
+}
+
+async function filterSearch(
+  filtCoordinates,
+  filtImages,
+  filtInSweden,
+  filtTypeStatus,
+  start,
+  numPerPage
+) {
+  await service
+    .apiFilterSearch(filtCoordinates, filtImages, filtInSweden, filtTypeStatus, start, numPerPage)
+    .then((response) => {
+      const total = response.facets.count
+      const results = response.response
+
+      store.commit('setResults', results)
+      store.commit('setTotalRecords', total)
+
+      if (total > 0) {
+        const geofacet = response.facets.map.buckets
+        const collectionfacet = response.facets.dataResourceName.buckets
+
+        store.commit('setGeoData', geofacet)
+        store.commit('setCollections', collectionfacet)
+      } else {
+        store.commit('setGeoData', null)
+        store.commit('setCollections', null)
+      }
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {
+      router.push('/search')
+    })
+}
+
+async function collectionsSearch(value, start, numPerPage) {
+  await service
+    .apiFilterCollectionsSearch(value, start, numPerPage)
+    .then((response) => {
+      const total = response.facets.count
+      const results = response.response
+
+      store.commit('setResults', results)
+      store.commit('setTotalRecords', total)
+
+      if (total > 0) {
+        const geofacet = response.facets.map.buckets
+        const collectionfacet = response.facets.dataResourceName.buckets
+
+        store.commit('setGeoData', geofacet)
+        store.commit('setCollections', collectionfacet)
+      } else {
+        store.commit('setGeoData', null)
+        store.commit('setCollections', null)
+      }
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {
+      router.push('/search')
+    })
+}
+
+async function search(value, start, numPerPage) {
+  await service
+    .apiFreeTextSearch(value, start, numPerPage)
+    .then((response) => {
+      const total = response.facets.count
+      const results = response.response
+
+      store.commit('setResults', results)
+      store.commit('setTotalRecords', total)
+
+      if (total > 0) {
+        const geofacet = response.facets.map.buckets
+        const collectionfacet = response.facets.dataResourceName.buckets
+
+        store.commit('setGeoData', geofacet)
+        store.commit('setCollections', collectionfacet)
+      } else {
+        store.commit('setGeoData', null)
+        store.commit('setCollections', null)
+      }
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {
+      router.push('/search')
+    })
 }
 
 //
@@ -265,14 +365,9 @@ function processResult(facetResults, results, total) {
     const point = pointFacet.fieldResult
     store.commit('setLatLong', point)
 
-    console.log('length : ', point.length)
-
     const classFacet = facetResults.find((facet) => facet.fieldName === 'class')
     const classs = classFacet.fieldResult
     store.commit('setClasss', classs)
-
-    console.log('classs length : ', classs.length)
-    // store.commit('setLatLong', point)
   } else {
     store.commit('setCollections', [])
     store.commit('setLatLong', [])

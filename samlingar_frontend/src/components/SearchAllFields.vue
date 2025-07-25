@@ -44,8 +44,9 @@ function handleFreeTextSearch(value) {
   store.commit('setCollectionGroup', null)
   store.commit('setFields', [])
   store.commit('setDataResource', null)
+  store.commit('setDates', null)
 
-  emits('freeTextSearch')
+  emits('freeTextSearch', searchText)
 }
 </script>
 <style scoped>

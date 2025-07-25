@@ -16,6 +16,7 @@ export default createStore({
     isFuzzySearch: undefined,
     results: [],
     scientificName: null,
+    searchMode: 'contains',
     searchText: null,
     selectedRecord: null,
     startDate: null,
@@ -136,6 +137,9 @@ export default createStore({
       return state.results
     },
 
+    searchMode(state) {
+      return state.searchMode
+    },
     searchText(state) {
       return state.searchText
     },
@@ -364,6 +368,7 @@ export default createStore({
     setIsFuzzySearch: (state, payload) => (state.isFuzzySearch = payload),
     setResults: (state, payload) => (state.results = payload),
     setScientificName: (state, payload) => (state.scientificName = payload),
+    setSearchMode: (state, payload) => (state.searchMode = payload),
     setSearchText: (state, payload) => (state.searchText = payload),
     setSelectedRecord: (state, payload) => (state.selectedRecord = payload),
     setShowDetail: (state, payload) => (state.showDetail = payload),

@@ -32,10 +32,10 @@ export default class Service {
     return response.data
   }
 
-  async apiScientificnameSearch(searchText, fuzzySearch, start, rows) {
+  async apiScientificnameSearch(searchText, searchMode, fuzzySearch, start, rows) {
     searchText = searchText.replace(/&/g, '%26')
 
-    const url = `${samlingApi}/scientificname?text=${searchText}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=createdDate_dt desc`
+    const url = `${samlingApi}/scientificname?text=${searchText}&searchMode=${searchMode}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=createdDate_dt desc`
     const response = await axios.get(url)
     return response.data
   }
@@ -48,8 +48,56 @@ export default class Service {
     return response.data
   }
 
+  async apiFreeTextSearch(searchText, start, numPerPage) {
+    let url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
   async apiIdSearch(id) {
     const url = `${samlingApi}/id?id=${id}`
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiFilterSearch(
+    filtCoordinates,
+    filtImages,
+    filtInSweden,
+    filtTypeStatus,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/search?text=*`
+
+    if (filtCoordinates) {
+      url += '&lat_long=*'
+    }
+
+    if (filtImages) {
+      url += '&associatedMedia=*'
+    }
+
+    if (filtTypeStatus) {
+      url += '&typeStatus=*'
+    }
+
+    if (filtInSweden) {
+      url += '&country=Sweden'
+    }
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiFilterCollectionsSearch(
+    dataResource,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/search?text=*&dataResourceName=${dataResource}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
 
     const response = await axios.get(url)
     return response.data
@@ -96,9 +144,9 @@ export default class Service {
   //
 
   // async apiFreeTextSearch(searchText, start, rows) {
-    // const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
-    // const response = await axios.get(url)
-    // return response.data
+  // const url = `${samlingApi}/freeTextSearch?text=${searchText}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+  // const response = await axios.get(url)
+  // return response.data
   // }
 
   //
@@ -176,10 +224,10 @@ export default class Service {
   // )
 
   // async apiCollectionGroupSearch(searchText, collections, start, numPerPage) {
-    // const url = `${samlingApi}/freeTextSearch?text=${searchText}&collections=${collections}&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
-//
-    // const response = await axios.get(url)
-    // return response.data
+  // const url = `${samlingApi}/freeTextSearch?text=${searchText}&collections=${collections}&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+  //
+  // const response = await axios.get(url)
+  // return response.data
   // }
 
   //
@@ -281,51 +329,51 @@ export default class Service {
   // }
 
   // async apiAdvanceSearchWithFilters(
-    // searchText,
-    // selectedColletion,
-    // selectedTypeStatus,
-    // selectedFamily,
-    // hasCoordinates,
-    // hasImages,
-    // isType,
-    // isInSweden,
-    // start,
-    // numPerPage
+  // searchText,
+  // selectedColletion,
+  // selectedTypeStatus,
+  // selectedFamily,
+  // hasCoordinates,
+  // hasImages,
+  // isType,
+  // isInSweden,
+  // start,
+  // numPerPage
   // ) {
-    // let url = `${samlingApi}/filter?text=${searchText}`
+  // let url = `${samlingApi}/filter?text=${searchText}`
 
-    // if (selectedColletion) {
-      // url += `&collection="${selectedColletion}"`
-    // }
+  // if (selectedColletion) {
+  // url += `&collection="${selectedColletion}"`
+  // }
 
-    // if (selectedTypeStatus) {
-      // url += `&typeStatus="${selectedTypeStatus}"`
-    // }
+  // if (selectedTypeStatus) {
+  // url += `&typeStatus="${selectedTypeStatus}"`
+  // }
 
-    // if (selectedFamily) {
-      // url += `&family="${selectedFamily}"`
-    // }
+  // if (selectedFamily) {
+  // url += `&family="${selectedFamily}"`
+  // }
 
-    // if (hasCoordinates) {
-      // url += '&hasCoordinates=map:*'
-    // }
+  // if (hasCoordinates) {
+  // url += '&hasCoordinates=map:*'
+  // }
 
-    // if (hasImages) {
-      // url += '&hasImage=image:*'
-    // }
+  // if (hasImages) {
+  // url += '&hasImage=image:*'
+  // }
 
-    // if (isType) {
-      // url += '&isType=isType:*'
-    // }
+  // if (isType) {
+  // url += '&isType=isType:*'
+  // }
 
-    // if (isInSweden) {
-      // url += '&inSweden=inSweden:*'
-    // }
+  // if (isInSweden) {
+  // url += '&inSweden=inSweden:*'
+  // }
 
-    // url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
-    // const response = await axios.get(url)
+  // url += `&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+  // const response = await axios.get(url)
 
-    // return response.data
+  // return response.data
   // }
 
   // async apiGeoDataSearch(

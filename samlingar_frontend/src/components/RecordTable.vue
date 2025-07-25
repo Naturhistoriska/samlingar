@@ -1,6 +1,7 @@
 <template>
   <div class="card">
     <DataTable
+      inputId="recordDatatable"
       :value="records"
       v-model:selection="selectedRecord"
       selectionMode="single"
@@ -53,7 +54,7 @@
         field="dataResourceName"
         header="Collection name"
         :showFilterMenu="false"
-        style="min-width: 12rem"
+        style="min-width: 14rem; max-width: 14rem"
       >
         <template #body="{ data }">
           {{ data.dataResourceName }}
@@ -63,20 +64,23 @@
             v-model="filterModel.value"
             @change="filterCallback()"
             :options="collectionOptions"
-            placeholder="Any"
-            style="min-width: 14rem; max-width: 14rem"
+            placeholder="Select collections"
+            style="min-width: 14rem; max-width: 14rem; max-height: 1.9rem"
+            size="small"
             :maxSelectedLabels="1"
             :showClear="true"
           >
             <template #option="slotProps">
-              <div class="flex items-center gap-2">
-                <span>{{ slotProps.option }}</span>
+              <div class="flex items-center">
+                <span>
+                  <small>{{ slotProps.option }}</small>
+                </span>
               </div>
             </template>
           </MultiSelect>
         </template>
         <template #filtericon>
-          <i :class="filters.scientificName?.value ? 'pi pi-filter-fill' : 'pi pi-filter'" />
+          <i :class="filters.dataResourceName?.value ? 'pi pi-filter-fill' : 'pi pi-filter'" />
         </template>
         <template #filterclearicon>
           <!-- render nothing -->
@@ -88,6 +92,8 @@
         header="Scientific Name"
         style="min-width: 12rem"
         filterField="scientificName"
+        :filter="true"
+        :filterMatchModeOptions="nameFilterMatchModes"
       >
         <template #body="{ data }">
           {{ data.scientificName }}
@@ -110,12 +116,17 @@
         </template>
       </Column>
 
-      <Column field="catalogNumber" header="CatalogNumber" style="min-width: 12rem">
+      <Column
+        field="catalogNumber"
+        header="CatalogNumber"
+        :showFilterMenu="false"
+        style="min-width: 8rem; max-width: 8rem"
+      >
         <template #body="{ data }">
           {{ data.catalogNumber }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
-          <InputText
+          <!-- <InputText
             v-model="filterModel.value"
             type="text"
             size="small"
@@ -123,12 +134,56 @@
             @input="filterCallback()"
             placeholder="Filter by catalogNumber"
           />
+          <i
+            v-if="filterModel.value"
+            class="pi pi-times absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
+            @click="filterModel.value = ''"
+          /> -->
+
+          <InputGroup>
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              size="small"
+              class="small-placeholder"
+              @input="filterCallback()"
+              placeholder="Filter by catalogNumber"
+            />
+            <Button
+              v-if="filterModel.value"
+              icon="pi pi-times"
+              @click="onFilterChange(filterModel, filterCallback)"
+            />
+          </InputGroup>
         </template>
         <template #filtericon>
           <i :class="filters.catalogNumber?.value ? 'pi pi-filter-fill' : 'pi pi-filter'" />
         </template>
         <template #filterclearicon>
           <!-- render nothing -->
+        </template>
+      </Column>
+
+      <Column field="locality" header="Locality" :showFilterMenu="false" style="min-width: 12rem">
+        <template #body="{ data }">
+          {{ data.locality }}
+        </template>
+        <template #filter="{ filterModel, filterCallback }">
+          <InputGroup>
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              size="small"
+              class="small-placeholder"
+              @input="filterCallback()"
+              placeholder="Filter by locality"
+            />
+            <Button
+              v-if="filterModel.value"
+              icon="pi pi-times"
+              @click="onFilterChange(filterModel, filterCallback)"
+            />
+          </InputGroup>
         </template>
       </Column>
 
@@ -182,6 +237,12 @@ const defaultColumns = ref([
   // { field: 'catalogNumber', header: 'CatalogNumber', minWidth: '150px', maxWidth: '150px' }
 ])
 
+const nameFilterMatchModes = [
+  { label: 'Starts With', value: 'startsWith' },
+  { label: 'Contains', value: 'contains' },
+  { label: 'Equals', value: 'equals' }
+]
+
 const selectedRecord = ref()
 const records = ref()
 const collectionOptions = ref()
@@ -192,7 +253,8 @@ const loading = ref(false)
 const filters = ref({
   dataResourceName: { value: null, matchMode: FilterMatchMode.EQUALS },
   scientificName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-  catalogNumber: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+  catalogNumber: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+  locality: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
 
 const oldFilters = ref()
@@ -220,6 +282,9 @@ watch(
 
 onMounted(async () => {
   records.value = store.getters['results']
+  const collections = store.getters['collections']
+
+  collectionOptions.value = collections ? collections.map((item) => item.val) : []
   columns.value = defaultColumns.value
 })
 
@@ -233,6 +298,11 @@ function getColumnStyle(col) {
   }
 }
 
+function onFilterChange(filterModel, filterCallback) {
+  filterModel.value = null
+  filterCallback()
+}
+
 function onFilter(event) {
   filterArray.value = []
 
@@ -241,68 +311,85 @@ function onFilter(event) {
   const dataResource = filterMeta.dataResourceName
   const scientificName = filterMeta.scientificName
   const catalogNumber = filterMeta.catalogNumber
+  const locality = filterMeta.locality
 
   let filterSearch = false
 
   if (oldFilters.value) {
+    console.log('here....')
     if (oldFilters.value.dataResourceName.value !== filterMeta.dataResourceName.value) {
-      if (dataResource.value) {
-        buildFilter(dataResource, 'dataResourceName', true)
-      }
       filterSearch = true
     }
 
     if (oldFilters.value.scientificName.value !== filterMeta.scientificName.value) {
       if (!scientificName.value || scientificName.value.length >= 3) {
-        buildFilter(scientificName, 'scientificName', false)
         filterSearch = true
       }
     }
 
     if (oldFilters.value.catalogNumber.value !== filterMeta.catalogNumber.value) {
       if (!catalogNumber.value || catalogNumber.value.length >= 3) {
-        buildFilter(catalogNumber, 'catalogNumber', false)
         filterSearch = true
       }
     }
+  } else {
+    console.log('here1....')
+    if (dataResource.value) {
+      buildFilter(dataResource, 'dataResourceName', true)
+      filterSearch = true
+    }
+
+    console.log('scientificName', scientificName.value)
+    if (scientificName.value && scientificName.value.length >= 3) {
+      console.log('scientificName 1...', scientificName.value)
+      filterSearch = true
+    }
+
+    if (catalogNumber.value && catalogNumber.value.length >= 3) {
+      console.log('why...', !catalogNumber.value)
+
+      console.log('why.1..', catalogNumber.value.length >= 3)
+      filterSearch = true
+    }
   }
 
-  //
-  // if (scientificName.value && scientificName.value.length >= 3) {
-  // buildFilter(scientificName, 'scientificName', false)
-  // }
+  if (dataResource.value) {
+    buildFilter(dataResource, 'dataResourceName', true)
+  }
 
-  // if (catalogNumber.value) {
-  // buildFilter(catalogNumber, 'catalogNumber', false)
-  // }
-  //
-  oldFilters.value = event.filters
+  if (scientificName.value) {
+    buildFilter(scientificName, 'scientificName', false)
+  }
+
+  if (catalogNumber.value) {
+    buildFilter(catalogNumber, 'catalogNumber', false)
+  }
 
   if (filterSearch) {
     console.log('start search...')
+    oldFilters.value = event.filters
     loadRecordsLazy(first, rows)
   }
 }
 
 function buildFilter(data, filterKey, isArray) {
   let value
+
   if (isArray) {
     const string = data.value.map((val) => `'${val}'`).join(' ')
     value = `(${string})`
   } else {
     value = data.value
   }
-  console.log(data.matchMode)
   const matchMode = data.matchMode
-  if (matchMode === 'startsWith') {
-    value = value + '*'
-  }
 
   const json = {
     key: filterKey,
-    value
+    value,
+    matchMode
   }
   filterArray.value.push(json)
+  console.log('filterArray', filterArray.value)
 }
 
 async function loadRecordsLazy(first, rows) {
@@ -393,22 +480,44 @@ function buildParams() {
   }
 
   let scientificName
+  let searchMode
+  let isFuzzy
   const hasScientificName = filterArray.value.some((obj) => obj.key === 'scientificName')
   if (hasScientificName) {
-    scientificName = filterArray.value.filter((item) => item.key === 'scientificName')[0].value
-    params.set('fuzzySearch', true)
+    const scientificNameData = filterArray.value.filter((item) => item.key === 'scientificName')[0]
+    scientificName = scientificNameData.value
+    searchMode = scientificNameData.matchMode
+    isFuzzy = searchMode !== 'equals'
   } else {
     scientificName = store.getters['scientificName']
-    const isFuzzy = store.getters['isFuzzySearch']
-    params.set('fuzzySearch', isFuzzy)
+    if (scientificName) {
+      isFuzzy = store.getters['isFuzzySearch']
+      searchMode = store.getters['searchMode']
+    }
   }
   if (scientificName) {
     params.set('scientificName', scientificName)
+    params.set('searchMode', searchMode)
+    params.set('fuzzySearch', isFuzzy)
+  }
+
+  const hasCatalogNumber = filterArray.value.some((obj) => obj.key === 'catalogNumber')
+  if (hasCatalogNumber) {
+    const catalogNumber = filterArray.value.filter((item) => item.key === 'catalogNumber')[0].value
+    params.set('catalogNumber', catalogNumber + '*')
+  } else {
+    fields
+      .filter((field) => field.value === 'catalogNumber')
+      .forEach((field) => {
+        if (field.text) {
+          params.set(field.value, field.text)
+        }
+      })
   }
 
   if (fields) {
     fields
-      .filter((field) => field.text)
+      .filter((field) => field.text && field.value !== 'catalogNumber')
       .forEach((field) => {
         params.set(field.value, field.text)
       })
@@ -438,15 +547,10 @@ const onPage = async (event) => {
 .small-placeholder::placeholder {
   font-size: 0.8rem; /* or use 12px, etc. */
 }
+
 /* Hide the clear filter icon in DataTable header */
 .p-column-filter-clear-icon {
   display: none !important;
-}
-
-.p-button-text:hover {
-  color: var(--p-emerald-500) !important;
-  text-decoration: none !important;
-  background: transparent !important;
 }
 
 .p-datatable {

@@ -14,16 +14,20 @@
     placeholder="Add search fields"
     class="w-full md:w-80"
     @change="onSelect(event)"
+    :pt="{
+      item: { class: 'text-sm' }, // Individual item
+      itemGroup: { class: 'text-xs font-bold' } // Group label
+    }"
   >
     <template #optiongroup="slotProps">
       <div class="flex items-center">
-        <div>{{ slotProps.option.label }}</div>
+        {{ slotProps.option.label }}
       </div>
     </template>
   </MultiSelect>
   <ul v-if="itemSelected">
     <li v-for="val in selectedItems" :key="val">
-      {{ val.label }}
+      <small>{{ val.label }}</small>
     </li>
   </ul>
 </template>
@@ -141,4 +145,14 @@ function onSelect(event) {
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+.p-multiselect-items .p-multiselect-item-group {
+  font-size: 0.75rem;
+  /* font-weight: bold; */
+}
+
+/* Style the group items */
+.p-multiselect-items .p-multiselect-item {
+  font-size: 0.5rem !important;
+}
+</style>

@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;  
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -109,10 +109,11 @@ public class Solr implements Serializable {
     public void init() {
         log.info("init from search...");
 
-        client = new HttpSolrClient.Builder(properties.getSolrURL()).build();
- 
+        client = new HttpSolrClient.Builder(properties.getSolrURL()).build(); 
     }
-    
+
+
+
     public String getChart(String collection, String startDate, String endDate, boolean isYearChart) {
         log.info("getChart : {} -- {}", startDate, endDate);
         gap = isYearChart ? yearGap : monthGap;

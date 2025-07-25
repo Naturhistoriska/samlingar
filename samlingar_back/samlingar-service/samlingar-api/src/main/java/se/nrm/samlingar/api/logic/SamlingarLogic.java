@@ -93,6 +93,7 @@ public class SamlingarLogic {
     private final String fuzzySearch = "fuzzySearch";
     private final String numPerPageKey = "numPerPage"; 
     private final String scientificNameKey = "scientificName";
+    private final String searchModeKey = "searchMode";
     private final String startKey = "start";
     private final String startDateKey = "startDate";
     private final String textKey = "text";
@@ -135,6 +136,7 @@ public class SamlingarLogic {
     private int numPerPage = 10;
     private boolean isFuzzySearch;
     private String scientificName;
+    private String searchMode; 
     private String text;
     private String sort;
     private String startDate;
@@ -159,11 +161,11 @@ public class SamlingarLogic {
         return solr.autoCompleteSearch(text, field);
     }
     
-    public String scientificNameSearch(String text, boolean fuzzySearch, 
+    public String scientificNameSearch(String text, String searchMode, 
             int start, int numPerPage, String sort ) {
         log.info("scientificNameSearch : {}", text);
         
-        text = SolrSearchHelper.getInstance().buildSearchText(text, scientificNameKey, fuzzySearch);
+        text = SolrSearchHelper.getInstance().buildSearchText(text, scientificNameKey,  searchMode, false);
         log.info("text... {}", text);
         return solr.scientificNameSearch(start, numPerPage, text, sort);
     }
@@ -197,6 +199,9 @@ public class SamlingarLogic {
                 case fuzzySearch:
                     isFuzzySearch = Boolean.parseBoolean(queryParams.get(fuzzySearch).get(0));
                     break;
+                case searchModeKey: 
+                    searchMode = queryParams.get(searchModeKey).get(0); 
+                    break;
                 case sortKey:
                     sort =  queryParams.get(sortKey).get(0);
                     break;
@@ -210,9 +215,10 @@ public class SamlingarLogic {
         }
         
         
+        
         if(scientificName != null) {
             scientificName = SolrSearchHelper.getInstance().buildSearchText(
-                scientificName, scientificNameKey, isFuzzySearch);
+                scientificName, scientificNameKey, searchMode, isFuzzySearch);
         }
         if(text != null && !text.equals(wildCard)) {
             text = SolrSearchHelper.getInstance().buildSearchText(
@@ -237,15 +243,8 @@ public class SamlingarLogic {
             dateRange = null;
         }
         
-        
-        
-//        if(!StringUtils.isBlank(startDate) && !StringUtils.isBlank(endDate) ) {
-//            dateRange = leftBlacket + startDate + to + endDate + rightBlacket; 
-//        } else if(!StringUtils.isBlank(startDate)) {
-//            dateRange = leftBlacket + startDate + toWithStar; 
-//        } else {
-//            dateRange = null;
-//        } 
+        log.info("scientificName : {}", scientificName);
+          
         return solr.search(paramMap, text, scientificName, dateRange, facets,
                 start, numPerPage, sort);
         

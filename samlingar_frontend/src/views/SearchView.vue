@@ -26,8 +26,9 @@
   </div>
 </template>
 <script setup>
-import { defineAsyncComponent, onMounted, ref } from 'vue'
+import { defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter, useRoute } from 'vue-router'
 import Service from '../Service'
 
 import SearchRecords from '../components/SearchRecords.vue'
@@ -36,6 +37,8 @@ import Records from '../components/RecordsTabs.vue'
 const store = useStore()
 
 const service = new Service()
+const router = useRouter()
+const route = useRoute()
 
 const AsyncMap = defineAsyncComponent({
   loader: () => import('../components/MyMap.vue')
@@ -44,7 +47,23 @@ const AsyncMap = defineAsyncComponent({
 let loading = ref(true)
 
 onMounted(async () => {
-  search(0, 10, true)
+  const fullPath = route.fullPath // e.g. "/search?term=apple"
+  const queryParams = route.query
+  console.log('queryParams', queryParams)
+
+  const hasQuery =
+    queryParams && Object.keys(queryParams).length > 0 && queryParams.constructor === Object
+
+  if (hasQuery) {
+    if ('scientificName' in queryParams) {
+      let scientificName = queryParams.scientificName
+      console.log(scientificName)
+      store.commit('setScientificName', scientificName)
+      store.commit('setSearchMode', 'equals')
+      search(0, 10, true)
+    }
+  }
+
   setTimeout(() => {
     loading.value = false
   }, 2000)
@@ -94,8 +113,6 @@ async function search(start, numPerPage, saveData) {
           const geofacet = response.facets.map.buckets
           const collectionfacet = response.facets.dataResourceName.buckets
 
-          console.log('collectionfacet', collectionfacet)
-
           store.commit('setGeoData', geofacet)
           store.commit('setCollections', collectionfacet)
         } else {
@@ -118,6 +135,7 @@ function buildParams() {
   const fields = store.getters['fields']
 
   const scientificName = store.getters['scientificName']
+  const searchMode = store.getters['searchMode']
   const isFuzzy = store.getters['isFuzzySearch']
 
   const isType = store.getters['filterType']
@@ -140,6 +158,7 @@ function buildParams() {
 
   if (scientificName) {
     params.set('scientificName', scientificName)
+    params.set('searchMode', searchMode)
     params.set('fuzzySearch', isFuzzy)
   }
 
@@ -152,7 +171,7 @@ function buildParams() {
   }
 
   if (hasImages) {
-    params.set('hasImage', hasImages)
+    params.set('associatedMedia', '*')
   }
 
   if (hasCoordinates) {
