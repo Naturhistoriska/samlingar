@@ -247,7 +247,7 @@ public class Solr implements Serializable {
     }
 
     public String search(Map<String, String> paramMap, String text, String scientificName,
-            String dateRange, String facets, int start, int numPerPage, String sort) {
+            String locality, String dateRange, String facets, int start, int numPerPage, String sort) {
         
         sort = sort == null ? defaultSort : sort;
 
@@ -274,6 +274,11 @@ public class Solr implements Serializable {
         if (!StringUtils.isBlank(scientificName)) {
             jsonRequest.withFilter(scientificName);
         }
+        
+        if (!StringUtils.isBlank(locality)) {
+            jsonRequest.withFilter(locality);
+        }
+
 
         if (!StringUtils.isBlank(dateRange)) {
             jsonRequest.withFilter(dateRange);

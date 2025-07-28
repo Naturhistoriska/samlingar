@@ -97,6 +97,7 @@ public class SamlingarLogic {
     private final String startKey = "start";
     private final String startDateKey = "startDate";
     private final String textKey = "text";
+    private final String localityKey = "locality";
     private final String eventDateKey = "eventDate:";
 
     
@@ -124,6 +125,7 @@ public class SamlingarLogic {
     private final int downloadSize = 5000;
     private final int maxDownload = 50000;
     private final String numRowsKey = "numRows";
+    private final String contains = "contains";
     
     private final String wildCard = "*";
     private final String leftBlacket = "[";
@@ -136,6 +138,7 @@ public class SamlingarLogic {
     private int numPerPage = 10;
     private boolean isFuzzySearch;
     private String scientificName;
+    private String locality;
     private String searchMode; 
     private String text;
     private String sort;
@@ -181,6 +184,9 @@ public class SamlingarLogic {
                 case scientificNameKey: 
                     scientificName = queryParams.get(scientificNameKey).get(0); 
                     break;
+                case localityKey: 
+                    locality = queryParams.get(localityKey).get(0); 
+                    break;
                 case textKey: 
                     text = queryParams.get(textKey).get(0); 
                     break;
@@ -220,6 +226,10 @@ public class SamlingarLogic {
             scientificName = SolrSearchHelper.getInstance().buildSearchText(
                 scientificName, scientificNameKey, searchMode, isFuzzySearch);
         }
+        if(locality != null) {
+            locality = SolrSearchHelper.getInstance().buildSearchText(
+                locality, localityKey, contains, true);
+        }
         if(text != null && !text.equals(wildCard)) {
             text = SolrSearchHelper.getInstance().buildSearchText(
                 text, textKey, true);
@@ -243,9 +253,11 @@ public class SamlingarLogic {
             dateRange = null;
         }
         
-        log.info("scientificName : {}", scientificName);
+        log.info("scientificName : {} -- {}", scientificName, locality);
+        
+        
           
-        return solr.search(paramMap, text, scientificName, dateRange, facets,
+        return solr.search(paramMap, text, scientificName, locality, dateRange, facets,
                 start, numPerPage, sort);
         
     } 

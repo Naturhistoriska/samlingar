@@ -4,7 +4,7 @@
       <div class="spinner"></div>
     </div>
     <DataTable
-      inputId="recordDatatable"
+      ref="dt"
       :value="records"
       v-model:selection="selectedRecord"
       selectionMode="single"
@@ -96,8 +96,6 @@
         filterField="scientificName"
         :filter="true"
         :filterMatchModeOptions="nameFilterMatchModes"
-        :filterIcon="!filters.scientificName?.value ? 'pi pi-search' : null"
-        :filterClearIcon="filters.scientificName?.value ? 'pi pi-times' : null"
       >
         <template #body="{ data }">
           {{ data.scientificName }}
@@ -108,7 +106,7 @@
             type="text"
             size="small"
             class="small-placeholder w-full"
-            @input="filterCallback()"
+            @input="onScientificNameFilterInput($event, filterModel)"
             placeholder="Filter by scientificName"
           />
         </template>
@@ -129,13 +127,13 @@
         <template #body="{ data }">
           {{ data.catalogNumber }}
         </template>
-        <template #filter="{ filterModel, filterCallback }">
+        <template #filter="{ filterModel }">
           <InputText
             v-model="filterModel.value"
             type="text"
             size="small"
             class="small-placeholder w-full"
-            @input="filterCallback()"
+            @input="onCatalogNumberFilterInput($event, filterModel)"
             placeholder="Filter by catalogNumber"
             style="font-size: 0.8rem"
           />
@@ -153,6 +151,22 @@
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <InputText
+            type="text"
+            size="small"
+            class="small-placeholder w-full"
+            v-model="filterModel.value"
+            @input="onLocalityFilterInput($event, filterModel, filterCallback)"
+            placeholder="Search..."
+          />
+        </template>
+      </Column>
+
+      <!-- <Column field="locality" header="Locality" :showFilterMenu="false" style="min-width: 12rem">
+        <template #body="{ data }">
+          {{ data.locality }}
+        </template>
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText
             v-model="filterModel.value"
             type="text"
             size="small"
@@ -162,7 +176,7 @@
             style="font-size: 0.8rem"
           />
         </template>
-      </Column>
+      </Column> -->
 
       <Column class="w-24 !text-end">
         <template #body="{ data }">
@@ -206,6 +220,7 @@ const emits = defineEmits(['search'])
 const dialogVisible = ref(false)
 
 let columns = ref([])
+const dt = ref()
 
 const defaultColumns = ref([
   // { field: 'dataResourceName', header: 'Collection Name', minWidth: '150px', maxWidth: '150px' },
@@ -233,8 +248,6 @@ const filters = ref({
   catalogNumber: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
   locality: { value: null, matchMode: FilterMatchMode.CONTAINS }
 })
-
-const oldFilters = ref()
 
 const totalCount = computed(() => {
   return store.getters['totalRecords']
@@ -275,6 +288,32 @@ function getColumnStyle(col) {
   }
 }
 
+function onLocalityFilterInput(event, filterModel, filterCallback) {
+  const value = event.target.value
+
+  if (value.length >= 3 || value.length === 0) {
+    filters.value.locality.value = value
+    dt.value.filter(filters.value.locality.value, 'locality', 'contains')
+  }
+}
+
+function onCatalogNumberFilterInput(event, filterModel) {
+  const value = event.target.value
+
+  if (value.length >= 3 || value.length === 0) {
+    filters.value.catalogNumber.value = value
+    dt.value.filter(filters.value.catalogNumber.value, 'catalogNumber', 'startsWith')
+  }
+}
+
+function onScientificNameFilterInput(event, filterModel) {
+  const value = event.target.value
+  if (value.length >= 3 || value.length === 0) {
+    filters.value.scientificName.value = value
+    dt.value.filter(filters.value.scientificName.value, 'catalogNumber', 'equals')
+  }
+}
+
 function onFilterChange(filterModel, filterCallback) {
   filterModel.value = null
   filterCallback()
@@ -290,43 +329,7 @@ function onFilter(event) {
   const catalogNumber = filterMeta.catalogNumber
   const locality = filterMeta.locality
 
-  let filterSearch = false
-
-  if (oldFilters.value) {
-    console.log('here....')
-    if (oldFilters.value.dataResourceName.value !== filterMeta.dataResourceName.value) {
-      filterSearch = true
-    }
-
-    if (oldFilters.value.scientificName.value !== filterMeta.scientificName.value) {
-      if (!scientificName.value || scientificName.value.length >= 3) {
-        filterSearch = true
-      }
-    }
-
-    if (oldFilters.value.catalogNumber.value !== filterMeta.catalogNumber.value) {
-      if (!catalogNumber.value || catalogNumber.value.length >= 3) {
-        filterSearch = true
-      }
-    }
-  } else {
-    console.log('here1....')
-    if (dataResource.value) {
-      buildFilter(dataResource, 'dataResourceName', true)
-      filterSearch = true
-    }
-
-    console.log('scientificName', scientificName.value)
-    if (scientificName.value && scientificName.value.length >= 3) {
-      console.log('scientificName 1...', scientificName.value)
-      filterSearch = true
-    }
-
-    if (catalogNumber.value && catalogNumber.value.length >= 3) {
-      filterSearch = true
-    }
-  }
-
+  console.log('starts search')
   if (dataResource.value) {
     buildFilter(dataResource, 'dataResourceName', true)
   }
@@ -339,11 +342,11 @@ function onFilter(event) {
     buildFilter(catalogNumber, 'catalogNumber', false)
   }
 
-  if (filterSearch) {
-    console.log('start search...')
-    oldFilters.value = event.filters
-    loadRecordsLazy(first, rows)
+  if (locality.value) {
+    buildFilter(locality, 'locality', false)
   }
+
+  loadRecordsLazy(first, rows)
 }
 
 function buildFilter(data, filterKey, isArray) {
@@ -497,9 +500,31 @@ function buildParams() {
       })
   }
 
+  const hasLocality = filterArray.value.some((obj) => obj.key === 'locality')
+  if (hasLocality) {
+    const locality = filterArray.value.filter((item) => item.key === 'locality')[0].value
+
+    // const value = locality
+    //   .split(' ')
+    //   .map((word) => `+locality:*${word}*`)
+    //   .join(' ')
+
+    params.set('locality', locality)
+  } else {
+    fields
+      .filter((field) => field.value === 'locality')
+      .forEach((field) => {
+        if (field.text) {
+          params.set(field.value, field.text)
+        }
+      })
+  }
+
   if (fields) {
     fields
-      .filter((field) => field.text && field.value !== 'catalogNumber')
+      .filter(
+        (field) => field.text && field.value !== 'catalogNumber' && field.value !== 'locality'
+      )
       .forEach((field) => {
         params.set(field.value, field.text)
       })
