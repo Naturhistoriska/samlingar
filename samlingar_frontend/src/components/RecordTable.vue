@@ -1,5 +1,8 @@
 <template>
   <div class="card">
+    <div v-if="loading" class="spinner-overlay">
+      <div class="spinner"></div>
+    </div>
     <DataTable
       inputId="recordDatatable"
       :value="records"
@@ -14,7 +17,6 @@
       paginator
       @row-select="onSelect"
       @page="onPage($event)"
-      filterIcon="pi pi-search-plus"
       lazy
       :rows="10"
       :rowsPerPageOptions="[5, 10, 20]"
@@ -90,10 +92,12 @@
       <Column
         field="scientificName"
         header="Scientific Name"
-        style="min-width: 12rem"
+        style="min-width: 12rem; max-width: 12rem"
         filterField="scientificName"
         :filter="true"
         :filterMatchModeOptions="nameFilterMatchModes"
+        :filterIcon="!filters.scientificName?.value ? 'pi pi-search' : null"
+        :filterClearIcon="filters.scientificName?.value ? 'pi pi-times' : null"
       >
         <template #body="{ data }">
           {{ data.scientificName }}
@@ -103,65 +107,44 @@
             v-model="filterModel.value"
             type="text"
             size="small"
-            class="small-placeholder"
+            class="small-placeholder w-full"
             @input="filterCallback()"
             placeholder="Filter by scientificName"
           />
         </template>
-        <template #filtericon>
-          <i :class="filters.scientificName?.value ? 'pi pi-filter-fill' : 'pi pi-filter'" />
+        <!-- <template #filtericon>
+          <i :class="filters.scientificName?.value ? ' ' : 'pi pi-filter'" />
         </template>
         <template #filterclearicon>
-          <!-- render nothing -->
-        </template>
+          <i class="pi pi-filter-fill" />
+        </template> -->
       </Column>
 
       <Column
         field="catalogNumber"
         header="CatalogNumber"
         :showFilterMenu="false"
-        style="min-width: 8rem; max-width: 8rem"
+        style="min-width: 8rem; max-width: 10rem"
       >
         <template #body="{ data }">
           {{ data.catalogNumber }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
-          <!-- <InputText
+          <InputText
             v-model="filterModel.value"
             type="text"
             size="small"
-            class="small-placeholder"
+            class="small-placeholder w-full"
             @input="filterCallback()"
             placeholder="Filter by catalogNumber"
+            style="font-size: 0.8rem"
           />
-          <i
-            v-if="filterModel.value"
-            class="pi pi-times absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
-            @click="filterModel.value = ''"
-          /> -->
-
-          <InputGroup>
-            <InputText
-              v-model="filterModel.value"
-              type="text"
-              size="small"
-              class="small-placeholder"
-              @input="filterCallback()"
-              placeholder="Filter by catalogNumber"
-            />
-            <Button
-              v-if="filterModel.value"
-              icon="pi pi-times"
-              @click="onFilterChange(filterModel, filterCallback)"
-            />
-          </InputGroup>
         </template>
-        <template #filtericon>
+        <!-- <template #filtericon>
           <i :class="filters.catalogNumber?.value ? 'pi pi-filter-fill' : 'pi pi-filter'" />
         </template>
         <template #filterclearicon>
-          <!-- render nothing -->
-        </template>
+        </template> -->
       </Column>
 
       <Column field="locality" header="Locality" :showFilterMenu="false" style="min-width: 12rem">
@@ -169,21 +152,15 @@
           {{ data.locality }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
-          <InputGroup>
-            <InputText
-              v-model="filterModel.value"
-              type="text"
-              size="small"
-              class="small-placeholder"
-              @input="filterCallback()"
-              placeholder="Filter by locality"
-            />
-            <Button
-              v-if="filterModel.value"
-              icon="pi pi-times"
-              @click="onFilterChange(filterModel, filterCallback)"
-            />
-          </InputGroup>
+          <InputText
+            v-model="filterModel.value"
+            type="text"
+            size="small"
+            class="small-placeholder w-full"
+            @input="filterCallback()"
+            placeholder="Filter by locality"
+            style="font-size: 0.8rem"
+          />
         </template>
       </Column>
 
@@ -346,9 +323,6 @@ function onFilter(event) {
     }
 
     if (catalogNumber.value && catalogNumber.value.length >= 3) {
-      console.log('why...', !catalogNumber.value)
-
-      console.log('why.1..', catalogNumber.value.length >= 3)
       filterSearch = true
     }
   }
@@ -421,7 +395,9 @@ async function loadRecordsLazy(first, rows) {
     .catch((error) => {
       console.log('error', error)
     })
-    .finally(() => {})
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 function buildParams() {
@@ -503,8 +479,14 @@ function buildParams() {
 
   const hasCatalogNumber = filterArray.value.some((obj) => obj.key === 'catalogNumber')
   if (hasCatalogNumber) {
-    const catalogNumber = filterArray.value.filter((item) => item.key === 'catalogNumber')[0].value
-    params.set('catalogNumber', catalogNumber + '*')
+    const catalogNumber =
+      filterArray.value.filter((item) => item.key === 'catalogNumber')[0].value + '*'
+
+    const firstUpCatalogNumber = catalogNumber.charAt(0).toUpperCase() + catalogNumber.slice(1)
+    const upcaseCatalogNumber = catalogNumber.toUpperCase()
+    const value = `(${firstUpCatalogNumber} ${upcaseCatalogNumber} ${catalogNumber})`
+
+    params.set('catalogNumber', value)
   } else {
     fields
       .filter((field) => field.value === 'catalogNumber')
@@ -564,5 +546,33 @@ const onPage = async (event) => {
 
 ::v-deep .p-select {
   background: #ffffff !important;
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

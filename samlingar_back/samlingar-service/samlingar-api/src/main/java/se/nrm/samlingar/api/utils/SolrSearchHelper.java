@@ -263,20 +263,25 @@ public class SolrSearchHelper {
         } else {    
             fuzzySeachTextSb.append(key);
             fuzzySeachTextSb.append(colon);
-            fuzzySeachTextSb.append(text);
-            fuzzySeachTextSb.append(emptySpace);
-
-            fuzzySeachTextSb.append(key);
-            fuzzySeachTextSb.append(colon);
+            fuzzySeachTextSb.append(leftBracket);
             fuzzySeachTextSb.append(star);
             fuzzySeachTextSb.append(text);
             fuzzySeachTextSb.append(star);
             fuzzySeachTextSb.append(emptySpace);
 
-            fuzzySeachTextSb.append(key);
-            fuzzySeachTextSb.append(colon);
+//            fuzzySeachTextSb.append(key);
+//            fuzzySeachTextSb.append(colon);
+//            fuzzySeachTextSb.append(star);
+//            fuzzySeachTextSb.append(text);
+//            fuzzySeachTextSb.append(star);
+//            fuzzySeachTextSb.append(emptySpace);
+
+//            fuzzySeachTextSb.append(key);
+//            fuzzySeachTextSb.append(colon);
+            fuzzySeachTextSb.append(star);
             fuzzySeachTextSb.append(StringUtils.capitalize(text));
             fuzzySeachTextSb.append(star);
+            fuzzySeachTextSb.append(rightBracket);
         }
         return fuzzySeachTextSb.toString().trim();
     }
@@ -313,48 +318,48 @@ public class SolrSearchHelper {
         if (searchMode.equals(equals)) {
             return buildEqualsSearchText(text, key);
         }
-
+        return fuzzySeachTextSb.toString().trim();  
 
 
          
-        if (fuzzySearch) {
-            if (text.contains(emptySpace)) {
-                searchText = text.split(emptySpace);
-                for (String value : searchText) {  
-                    fuzzySeachTextSb.append(key);
-                    fuzzySeachTextSb.append(colon);
-                    fuzzySeachTextSb.append(star);
-                    fuzzySeachTextSb.append(value);
-                    fuzzySeachTextSb.append(star);
-                    fuzzySeachTextSb.append(emptySpace);
-                } 
-            } else {
-                fuzzySeachTextSb.append(key);
-                fuzzySeachTextSb.append(colon);
-                fuzzySeachTextSb.append(text); 
-                fuzzySeachTextSb.append(emptySpace);
-
-                fuzzySeachTextSb.append(key);
-                fuzzySeachTextSb.append(colon);
-                fuzzySeachTextSb.append(star);
-                fuzzySeachTextSb.append(text);
-                fuzzySeachTextSb.append(star);
-                fuzzySeachTextSb.append(emptySpace);
-
-                fuzzySeachTextSb.append(key);
-                fuzzySeachTextSb.append(colon);
-                fuzzySeachTextSb.append(StringUtils.capitalize(text));
-                fuzzySeachTextSb.append(star);
-            }
-        } else {
-            fuzzySeachTextSb.append(key);
-            fuzzySeachTextSb.append(colon);
-            fuzzySeachTextSb.append(quotationMark);
-            fuzzySeachTextSb.append(text);
-            fuzzySeachTextSb.append(quotationMark);
-        }
-
-        return fuzzySeachTextSb.toString().trim();
+//        if (fuzzySearch) {
+//            if (text.contains(emptySpace)) {
+//                searchText = text.split(emptySpace);
+//                for (String value : searchText) {  
+//                    fuzzySeachTextSb.append(key);
+//                    fuzzySeachTextSb.append(colon);
+//                    fuzzySeachTextSb.append(star);
+//                    fuzzySeachTextSb.append(value);
+//                    fuzzySeachTextSb.append(star);
+//                    fuzzySeachTextSb.append(emptySpace);
+//                } 
+//            } else {
+//                fuzzySeachTextSb.append(key);
+//                fuzzySeachTextSb.append(colon);
+//                fuzzySeachTextSb.append(text); 
+//                fuzzySeachTextSb.append(emptySpace);
+//
+//                fuzzySeachTextSb.append(key);
+//                fuzzySeachTextSb.append(colon);
+//                fuzzySeachTextSb.append(star);
+//                fuzzySeachTextSb.append(text);
+//                fuzzySeachTextSb.append(star);
+//                fuzzySeachTextSb.append(emptySpace);
+//
+//                fuzzySeachTextSb.append(key);
+//                fuzzySeachTextSb.append(colon);
+//                fuzzySeachTextSb.append(StringUtils.capitalize(text));
+//                fuzzySeachTextSb.append(star);
+//            }
+//        } else {
+//            fuzzySeachTextSb.append(key);
+//            fuzzySeachTextSb.append(colon);
+//            fuzzySeachTextSb.append(quotationMark);
+//            fuzzySeachTextSb.append(text);
+//            fuzzySeachTextSb.append(quotationMark);
+//        }
+//
+//        return fuzzySeachTextSb.toString().trim();
     }
  
 
