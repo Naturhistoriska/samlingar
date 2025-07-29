@@ -7,16 +7,18 @@
       ref="dt"
       :value="records"
       v-model:selection="selectedRecord"
-      selectionMode="single"
+      v-model:expandedRows="expandedRows"
       v-model:filters="filters"
+      selectionMode="single"
       filterDisplay="row"
       dataKey="id"
       stripedRows
       class="p-datatable-sm"
       tableStyle="min-width: 50rem"
       paginator
-      @row-select="onSelect"
       @page="onPage($event)"
+      @rowExpand="onRowExpand"
+      @rowCollapse="onRowCollapse"
       lazy
       :rows="10"
       :rowsPerPageOptions="[5, 10, 20]"
@@ -51,7 +53,7 @@
           </div>
         </template>
       </Column> -->
-
+      <Column expander style="width: 5rem" />
       <Column
         field="dataResourceName"
         header="Collection name"
@@ -81,12 +83,11 @@
             </template>
           </MultiSelect>
         </template>
-        <template #filtericon>
+        <!-- <template #filtericon>
           <i :class="filters.dataResourceName?.value ? 'pi pi-filter-fill' : 'pi pi-filter'" />
         </template>
         <template #filterclearicon>
-          <!-- render nothing -->
-        </template>
+        </template> -->
       </Column>
 
       <Column
@@ -110,12 +111,6 @@
             placeholder="Filter by scientificName"
           />
         </template>
-        <!-- <template #filtericon>
-          <i :class="filters.scientificName?.value ? ' ' : 'pi pi-filter'" />
-        </template>
-        <template #filterclearicon>
-          <i class="pi pi-filter-fill" />
-        </template> -->
       </Column>
 
       <Column
@@ -138,11 +133,6 @@
             style="font-size: 0.8rem"
           />
         </template>
-        <!-- <template #filtericon>
-          <i :class="filters.catalogNumber?.value ? 'pi pi-filter-fill' : 'pi pi-filter'" />
-        </template>
-        <template #filterclearicon>
-        </template> -->
       </Column>
 
       <Column
@@ -166,23 +156,6 @@
         </template>
       </Column>
 
-      <!-- <Column field="locality" header="Locality" :showFilterMenu="false" style="min-width: 12rem">
-        <template #body="{ data }">
-          {{ data.locality }}
-        </template>
-        <template #filter="{ filterModel, filterCallback }">
-          <InputText
-            v-model="filterModel.value"
-            type="text"
-            size="small"
-            class="small-placeholder w-full"
-            @input="filterCallback()"
-            placeholder="Filter by locality"
-            style="font-size: 0.8rem"
-          />
-        </template>
-      </Column> -->
-
       <Column class="w-24 !text-end">
         <template #body="{ data }">
           <Button
@@ -193,6 +166,15 @@
           ></Button>
         </template>
       </Column>
+      <template #expansion="slotProps">
+        <div class="p-2">
+          <b> {{ slotProps.data.scientificName }}<br /> </b>
+          {{ buildClassification(slotProps.data) }}<br />
+          {{ slotProps.data.locality }}<br />
+          {{ buildHighGeographigher(slotProps.data) }}<br />
+          {{ slotProps.data.decimalLatitude }}, {{ slotProps.data.decimalLongitude }}<br />
+        </div>
+      </template>
     </DataTable>
     <Dialog
       v-model:visible="dialogVisible"
@@ -209,6 +191,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
+import { useToast } from 'primevue/usetoast'
 import { FilterMatchMode } from '@primevue/core/api'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -219,6 +202,7 @@ const store = useStore()
 const router = useRouter()
 
 const service = new Service()
+const toast = useToast()
 
 const emits = defineEmits(['search'])
 
@@ -226,6 +210,8 @@ const dialogVisible = ref(false)
 
 let columns = ref([])
 const dt = ref()
+
+const params = ref()
 
 const defaultColumns = ref([
   // { field: 'dataResourceName', header: 'Collection Name', minWidth: '150px', maxWidth: '150px' },
@@ -241,6 +227,7 @@ const nameFilterMatchModes = [
 ]
 
 const selectedRecord = ref()
+const expandedRows = ref({})
 const records = ref()
 const collectionOptions = ref()
 let filterArray = ref([])
@@ -290,14 +277,30 @@ onMounted(async () => {
   columns.value = defaultColumns.value
 })
 
-function getColumnStyle(col) {
-  return {
-    minWidth: col.minWidth,
-    maxWidth: col.maxWidth,
-    width: col.width || 'auto',
-    overflow: 'visible',
-    whiteSpace: 'wrap'
-  }
+// function getColumnStyle(col) {
+//   return {
+//     minWidth: col.minWidth,
+//     maxWidth: col.maxWidth,
+//     width: col.width || 'auto',
+//     overflow: 'visible',
+//     whiteSpace: 'wrap'
+//   }
+// }
+
+function buildClassification(data) {
+  const { kingdom, phylum, order, family, genus, subgenus, scientificName } = data
+
+  const clazz = data.class
+  const higherClassification = new Array(kingdom, phylum, clazz, order, family, genus, subgenus)
+
+  return higherClassification.filter((str) => str !== undefined).join(' > ')
+}
+
+function buildHighGeographigher(data) {
+  const { continent, country, county, municipality, stateProvince } = data
+
+  const highGeographigher = new Array(continent, country, stateProvince, municipality, county)
+  return highGeographigher.filter((str) => str !== undefined).join(', ')
 }
 
 function onLocalityFilterInput(event, filterModel, filterCallback) {
@@ -326,10 +329,10 @@ function onScientificNameFilterInput(event, filterModel) {
   }
 }
 
-function onFilterChange(filterModel, filterCallback) {
-  filterModel.value = null
-  filterCallback()
-}
+// function onFilterChange(filterModel, filterCallback) {
+//   filterModel.value = null
+//   filterCallback()
+// }
 
 function onFilter(event) {
   filterArray.value = []
@@ -358,6 +361,7 @@ function onFilter(event) {
     buildFilter(locality, 'locality', false)
   }
 
+  params.value = buildParams()
   loadRecordsLazy(first, rows)
 }
 
@@ -384,10 +388,8 @@ function buildFilter(data, filterKey, isArray) {
 async function loadRecordsLazy(first, rows) {
   loading.value = true
 
-  const params = buildParams()
-
   await service
-    .apiSearch(params, first, rows)
+    .apiSearch(params.value, first, rows)
     .then((response) => {
       const total = response.facets.count
       const results = response.response
@@ -554,7 +556,22 @@ function selectRow(data) {
 
 const onPage = async (event) => {
   const { first, rows } = event
-  emits('search', first, rows, false)
+
+  console.log('onPage', first, rows)
+
+  loadRecordsLazy(first, rows)
+}
+
+const onRowExpand = (event) => {
+  toast.add({ severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000 })
+}
+const onRowCollapse = (event) => {
+  toast.add({
+    severity: 'success',
+    summary: 'Product Collapsed',
+    detail: event.data.name,
+    life: 3000
+  })
 }
 </script>
 <style scoped>

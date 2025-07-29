@@ -25,6 +25,8 @@ import Aura from '@primevue/themes/aura'
 
 import Ripple from 'primevue/ripple'
 
+import ToastService from 'primevue/toastservice'
+
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -103,6 +105,7 @@ app.provide('axios', app.config.globalProperties.axios) // provide 'axios'
 app.use(moment)
 app.use(VueLazyLoad)
 app.use(VueSpinnersPlugin)
+app.use(ToastService)
 
 app.use(PrimeVue, {
   theme: {
