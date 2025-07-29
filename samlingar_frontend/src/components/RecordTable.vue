@@ -145,7 +145,12 @@
         </template> -->
       </Column>
 
-      <Column field="locality" header="Locality" :showFilterMenu="false" style="min-width: 12rem">
+      <Column
+        field="locality"
+        header="Locality"
+        :showFilterMenu="false"
+        style="min-width: 12rem; max-width: 12rem"
+      >
         <template #body="{ data }">
           {{ data.locality }}
         </template>
@@ -252,6 +257,13 @@ const filters = ref({
 const totalCount = computed(() => {
   return store.getters['totalRecords']
 })
+
+watch(
+  () => filterArray.value,
+  (newValue, oldValue) => {
+    console.log('filters', newValue, oldValue)
+  }
+)
 
 watch(
   () => store.getters['results'],
@@ -372,7 +384,7 @@ function buildFilter(data, filterKey, isArray) {
 async function loadRecordsLazy(first, rows) {
   loading.value = true
 
-  let params = buildParams()
+  const params = buildParams()
 
   await service
     .apiSearch(params, first, rows)
@@ -503,11 +515,6 @@ function buildParams() {
   const hasLocality = filterArray.value.some((obj) => obj.key === 'locality')
   if (hasLocality) {
     const locality = filterArray.value.filter((item) => item.key === 'locality')[0].value
-
-    // const value = locality
-    //   .split(' ')
-    //   .map((word) => `+locality:*${word}*`)
-    //   .join(' ')
 
     params.set('locality', locality)
   } else {

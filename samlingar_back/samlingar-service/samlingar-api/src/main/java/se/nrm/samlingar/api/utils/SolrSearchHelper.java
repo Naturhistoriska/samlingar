@@ -195,6 +195,7 @@ public class SolrSearchHelper {
     private String buildStartsWithSearchText(String text, String key) { 
         if (text.contains(emptySpace)) {
             searchText = text.split(emptySpace);
+            
             fuzzySeachTextSb.append(plusSign);
             fuzzySeachTextSb.append(key);
             fuzzySeachTextSb.append(colon);
@@ -202,13 +203,13 @@ public class SolrSearchHelper {
             fuzzySeachTextSb.append(star);
             
             for(int i = 1; i < searchText.length; i++) {
+                fuzzySeachTextSb.append(emptySpace);
                 fuzzySeachTextSb.append(plusSign);
                 fuzzySeachTextSb.append(key);
                 fuzzySeachTextSb.append(colon);
                 fuzzySeachTextSb.append(star);
                 fuzzySeachTextSb.append(searchText[i]);
-                fuzzySeachTextSb.append(star);
-                fuzzySeachTextSb.append(emptySpace);
+                fuzzySeachTextSb.append(star); 
             } 
         } else {
             fuzzySeachTextSb.append(key);
@@ -222,25 +223,22 @@ public class SolrSearchHelper {
 
     private String buildContainsSearchText(String text, String key) {
 
-        boolean isUpperCase = Character.isUpperCase(text.charAt(0)); 
+        boolean isUpperCase = Character.isUpperCase(text.charAt(0));
+  
         if (text.contains(emptySpace)) { 
             searchText = text.split(emptySpace);
             
-            fuzzySeachTextSb.append(leftBracket);
-            for (String value : searchText) {
-               
-                fuzzySeachTextSb.append(plusSign);
-                fuzzySeachTextSb.append(key);
-                fuzzySeachTextSb.append(colon);
-                fuzzySeachTextSb.append(star);
-                fuzzySeachTextSb.append(value);
-                fuzzySeachTextSb.append(star);
-                fuzzySeachTextSb.append(emptySpace); 
-            }
-            fuzzySeachTextSb.append(rightBracket);
- 
-            if (!isUpperCase) {
-                fuzzySeachTextSb.append(emptySpace);
+            if (isUpperCase) {
+                for (String value : searchText) { 
+                    fuzzySeachTextSb.append(plusSign);
+                    fuzzySeachTextSb.append(key);
+                    fuzzySeachTextSb.append(colon);
+                    fuzzySeachTextSb.append(star);
+                    fuzzySeachTextSb.append(value);
+                    fuzzySeachTextSb.append(star);
+                    fuzzySeachTextSb.append(emptySpace);
+                }
+            } else {
                 fuzzySeachTextSb.append(leftBracket);
                 fuzzySeachTextSb.append(plusSign);
                 fuzzySeachTextSb.append(key);
@@ -259,7 +257,20 @@ public class SolrSearchHelper {
                     fuzzySeachTextSb.append(star);
                 }
                 fuzzySeachTextSb.append(rightBracket); 
-            }  
+                
+                fuzzySeachTextSb.append(emptySpace);
+                fuzzySeachTextSb.append(leftBracket);
+                for (String value : searchText) { 
+                    fuzzySeachTextSb.append(plusSign);
+                    fuzzySeachTextSb.append(key);
+                    fuzzySeachTextSb.append(colon);
+                    fuzzySeachTextSb.append(star);
+                    fuzzySeachTextSb.append(value);
+                    fuzzySeachTextSb.append(star);
+                    fuzzySeachTextSb.append(emptySpace);
+                }
+                fuzzySeachTextSb.append(rightBracket);
+            }   
         } else {    
             fuzzySeachTextSb.append(key);
             fuzzySeachTextSb.append(colon);
@@ -268,16 +279,7 @@ public class SolrSearchHelper {
             fuzzySeachTextSb.append(text);
             fuzzySeachTextSb.append(star);
             fuzzySeachTextSb.append(emptySpace);
-
-//            fuzzySeachTextSb.append(key);
-//            fuzzySeachTextSb.append(colon);
-//            fuzzySeachTextSb.append(star);
-//            fuzzySeachTextSb.append(text);
-//            fuzzySeachTextSb.append(star);
-//            fuzzySeachTextSb.append(emptySpace);
-
-//            fuzzySeachTextSb.append(key);
-//            fuzzySeachTextSb.append(colon);
+ 
             fuzzySeachTextSb.append(star);
             fuzzySeachTextSb.append(StringUtils.capitalize(text));
             fuzzySeachTextSb.append(star);

@@ -159,7 +159,7 @@ public class SamlingarLogic {
             
     public String autoCompleteSearch(String text, String field) {
         text = SolrSearchHelper.getInstance()
-                .buildSearchText(text, field, true);
+                .buildSearchText(text, field, contains, true);
       
         return solr.autoCompleteSearch(text, field);
     }
@@ -225,10 +225,12 @@ public class SamlingarLogic {
         if(scientificName != null) {
             scientificName = SolrSearchHelper.getInstance().buildSearchText(
                 scientificName, scientificNameKey, searchMode, isFuzzySearch);
+            log.info("scientificName : {}", scientificName);
         }
         if(locality != null) {
             locality = SolrSearchHelper.getInstance().buildSearchText(
                 locality, localityKey, contains, true);
+            log.info("locality : {}", locality);
         }
         if(text != null && !text.equals(wildCard)) {
             text = SolrSearchHelper.getInstance().buildSearchText(
