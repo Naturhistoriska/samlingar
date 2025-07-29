@@ -20,6 +20,7 @@ public class SolrSearchHelper {
     private final String colon = ":";
     private final String wildCard = "*"; 
     private final String plusSign = "+";
+    private final String colonEscap = "\\:";
     
     private final String leftBracket = "(";
     private final String rightBracket = ")";
@@ -309,6 +310,8 @@ public class SolrSearchHelper {
             return fuzzySeachTextSb.toString().trim(); 
         }
 
+        text = text.replaceAll("([+\\-!(){}\\[\\]^\"~*?:\\\\|&])", "\\\\$1");
+ 
         if (searchMode.equals(startsWith)) {
             return buildStartsWithSearchText(text, key);
         }

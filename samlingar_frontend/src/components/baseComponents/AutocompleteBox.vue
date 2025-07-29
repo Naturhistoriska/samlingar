@@ -31,7 +31,7 @@ const service = new Service()
 
 const store = useStore()
 
-const props = defineProps(['field', 'multiple'])
+const props = defineProps(['field'])
 
 const acwidth = ref()
 const items = ref([])
@@ -43,6 +43,10 @@ const placehold = computed(() => {
 
 const inputId = computed(() => {
   return props.field.label
+})
+
+const multiple = computed(() => {
+  return props.field.multiple
 })
 
 onMounted(() => {
@@ -80,6 +84,7 @@ function onItemRemove(event) {
 
 function onItemSelect() {
   itemsChanged()
+  items.value = []
 }
 
 function itemsChanged() {
@@ -88,12 +93,17 @@ function itemsChanged() {
   let fields = store.getters['fields']
   const field = fields.find(({ key }) => key === fieldKey)
 
-  const value = values.value
-    .map((str) => `"${str}"`) // Wrap each string in single quotes
-    .join(' ')
+  let value
+  if (multiple.value) {
+    value = values.value
+      .map((str) => `"${str}"`) // Wrap each string in single quotes
+      .join(' ')
+  } else {
+    value = values.value
+  }
 
   if (value.trim() !== '') {
-    field.text = `(${value})`
+    field.text = multiple.value ? `(${value})` : value
   } else {
     delete field.text
   }

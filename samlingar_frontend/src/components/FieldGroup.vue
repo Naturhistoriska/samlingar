@@ -2,7 +2,7 @@
   <div style="min-width: 100%; max-height: 200px; overflow-y: scroll">
     <template v-for="(field, index) in fields" :key="field">
       <!-- <input-box v-bind:field="field" @search="handleSearch" /> -->
-      <autocomplete-box v-bind:multiple="true" v-bind:field="field" />
+      <autocomplete-box v-bind:field="field" />
     </template>
   </div>
 </template>

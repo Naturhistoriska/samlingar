@@ -228,6 +228,7 @@ public class SamlingarLogic {
             log.info("scientificName : {}", scientificName);
         }
         if(locality != null) {
+            log.info("locality 1 : {}", locality);
             locality = SolrSearchHelper.getInstance().buildSearchText(
                 locality, localityKey, contains, true);
             log.info("locality : {}", locality);
