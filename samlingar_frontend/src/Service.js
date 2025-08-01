@@ -41,22 +41,60 @@ export default class Service {
   }
 
   async apiSearch(params, start, numPerPage) {
-    let url = `${samlingApi}/search?${params.toString()}`
+    let url = `${samlingApi}/search?${params.toString()}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
 
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
-    const response = await axios.get(url)
-    return response.data
-  }
-
-  async apiFreeTextSearch(searchText, start, numPerPage) {
-    let url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
-
+    // url += `&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
     const response = await axios.get(url)
     return response.data
   }
 
   async apiIdSearch(id) {
     const url = `${samlingApi}/id?id=${id}`
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiGeoFetch(params) {
+    let url = `${samlingApi}/geojson?${params.toString()}&fq={!geofilt sfield=location pt=59.0,15.0 d=100000}&wt=json&start=0&rows=100000`
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  async apiPreparaExport(params, total) {
+    let url = `${samlingApi}/download?${params.toString()}&numRows=${total}&sort=createdDate_dt desc`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  async apiFreeTextSearch(searchText, start, numPerPage) {
+    let url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
+
     const response = await axios.get(url)
     return response.data
   }
@@ -92,22 +130,10 @@ export default class Service {
     return response.data
   }
 
-  async apiFilterCollectionsSearch(
-    dataResource,
-    start,
-    numPerPage
-  ) {
+  async apiFilterCollectionsSearch(dataResource, start, numPerPage) {
     let url = `${samlingApi}/search?text=*&dataResourceName=${dataResource}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
 
     const response = await axios.get(url)
-    return response.data
-  }
-
-  async apiPreparaExport(params, total) {
-    let url = `${samlingApi}/download?${params.toString()}&numRows=${total}&sort=createdDate_dt desc`
-
-    const response = await axios.get(url)
-
     return response.data
   }
 

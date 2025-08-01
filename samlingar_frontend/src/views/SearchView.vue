@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div v-if="loading" class="spinner-overlay">
-      <div class="spinner"></div>
-    </div>
     <div class="grid">
       <div class="col-5" no-gutters>
         <search-records @search="search" />
+      </div>
+      <div v-if="loading" class="spinner-overlay">
+        <div class="spinner"></div>
       </div>
       <div class="col-7" no-gutters>
         <Suspense>
@@ -41,7 +41,7 @@ const router = useRouter()
 const route = useRoute()
 
 const AsyncMap = defineAsyncComponent({
-  loader: () => import('../components/MyMap.vue')
+  loader: () => import('../components/Map1.vue')
 })
 
 let loading = ref(true)

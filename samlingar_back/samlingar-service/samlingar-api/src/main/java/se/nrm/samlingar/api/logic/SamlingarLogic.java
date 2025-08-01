@@ -174,7 +174,7 @@ public class SamlingarLogic {
     }
     
     
-     public String search(MultivaluedMap<String, String> queryParams) {
+    public String search(MultivaluedMap<String, String> queryParams) {
          
         Map<String, String> paramMap = new HashMap<>();
         text = wildCard;
@@ -262,6 +262,97 @@ public class SamlingarLogic {
           
         return solr.search(paramMap, text, scientificName, locality, dateRange, facets,
                 start, numPerPage, sort);
+        
+    } 
+    
+     public String geoJson(MultivaluedMap<String, String> queryParams) {
+         
+        Map<String, String> paramMap = new HashMap<>();
+        text = wildCard;
+        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+             
+            switch (entry.getKey()) {
+                case scientificNameKey: 
+                    scientificName = queryParams.get(scientificNameKey).get(0); 
+                    break;
+                case localityKey: 
+                    locality = queryParams.get(localityKey).get(0); 
+                    break;
+                case textKey: 
+                    text = queryParams.get(textKey).get(0); 
+                    break;
+                case startDateKey: 
+                    startDate = queryParams.get(startDateKey).get(0); 
+                    break;
+                case endDateKey: 
+                    endDate = queryParams.get(endDateKey).get(0); 
+                    break;
+                case startKey:
+                    start = Integer.parseInt(queryParams.get(startKey).get(0)); 
+                    break;
+                case numPerPageKey:
+                    numPerPage = Integer.parseInt(queryParams.get(numPerPageKey).get(0));
+                    break;  
+                case fuzzySearch:
+                    isFuzzySearch = Boolean.parseBoolean(queryParams.get(fuzzySearch).get(0));
+                    break;
+                case searchModeKey: 
+                    searchMode = queryParams.get(searchModeKey).get(0); 
+                    break;
+                case sortKey:
+                    sort =  queryParams.get(sortKey).get(0);
+                    break;
+                case facetsKey:
+                    facets = queryParams.get(facetsKey).get(0);
+                    break;
+                default:
+                    paramMap.put(entry.getKey(), entry.getValue().get(0));
+                    break;
+            }
+        }
+        
+        
+        
+        if(scientificName != null) {
+            scientificName = SolrSearchHelper.getInstance().buildSearchText(
+                scientificName, scientificNameKey, searchMode, isFuzzySearch);
+            log.info("scientificName : {}", scientificName);
+        }
+        if(locality != null) {
+            log.info("locality 1 : {}", locality);
+            locality = SolrSearchHelper.getInstance().buildSearchText(
+                locality, localityKey, contains, true);
+            log.info("locality : {}", locality);
+        }
+        if(text != null && !text.equals(wildCard)) {
+            text = SolrSearchHelper.getInstance().buildSearchText(
+                text, textKey, true);
+        }  
+        
+        dateRangeSb = new StringBuilder();
+        if(!StringUtils.isBlank(startDate)) {
+            dateRangeSb.append(eventDateKey);
+            dateRangeSb.append(leftBlacket);
+            dateRangeSb.append(startDate);
+            
+            if(!StringUtils.isBlank(endDate)) {
+                dateRangeSb.append(to);
+                dateRangeSb.append(endDate);
+                dateRangeSb.append(rightBlacket);
+            } else {
+                dateRangeSb.append(toWithStar);
+            }
+            dateRange = dateRangeSb.toString().trim();
+        } else {
+            dateRange = null;
+        }
+        
+        log.info("scientificName : {} -- {}", scientificName, locality);
+        
+        
+          
+        return solr.geojson(paramMap, text, scientificName, locality, dateRange, "",  
+                start, numPerPage );
         
     } 
      

@@ -142,7 +142,9 @@
         style="min-width: 12rem; max-width: 12rem"
       >
         <template #body="{ data }">
-          {{ data.locality }}
+          {{ data.locality }}<br />
+          {{ data.continent }} {{ data.country }}
+          {{ data.stateProvince }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <InputText
@@ -168,9 +170,13 @@
       </Column>
       <template #expansion="slotProps">
         <div class="p-2">
-          <b> {{ slotProps.data.scientificName }}<br /> </b>
+          <b>
+            {{ slotProps.data.scientificName }}
+          </b>
+          ({{ slotProps.data.scientificNameAuthorship }})
+          <br />
           {{ buildClassification(slotProps.data) }}<br />
-          {{ slotProps.data.locality }}<br />
+          {{ slotProps.data.locality }}
           {{ buildHighGeographigher(slotProps.data) }}<br />
           {{ slotProps.data.decimalLatitude }}, {{ slotProps.data.decimalLongitude }}<br />
         </div>

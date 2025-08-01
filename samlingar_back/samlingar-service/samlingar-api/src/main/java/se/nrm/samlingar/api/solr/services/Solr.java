@@ -60,7 +60,11 @@ public class Solr implements Serializable {
     private final String typeStatusKey = "typeStatus";
     private final String collectionNameKey = "collectionName";
     private final String dataResourceNameKey = "dataResourceName";
- 
+    private final String idKey = "id";
+    private final String locationKey = "location";
+    private final String scientificNameKey = "scientificName";
+    private final String localityKey = "locality";
+    private final String catalogNumberKey = "catalogNumber";
 
     private final String mapKey = "map";
     private final String inSwedenKey = "inSweden";
@@ -309,7 +313,7 @@ public class Solr implements Serializable {
     } 
     
     
-     public String download(Map<String, String> paramMap, String text, String scientificName,
+    public String download(Map<String, String> paramMap, String text, String scientificName,
             String dateRange, int start, int rows, String sort) { 
 
         sort = sort == null ? defaultSort : sort;
@@ -345,6 +349,65 @@ public class Solr implements Serializable {
          
         try { 
             response = jsonRequest.process(client);
+//            response = request.process(client);
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        } 
+        return response.jsonStr();
+    }
+    
+    public String geojson(Map<String, String> paramMap, String text, String scientificName,
+            String locality, String dateRange, String bbox, int start, int rows ) { 
+        log.info("geojson...");
+        
+        double radiusKm = 10000.0;
+        String point = "55.7749,14.4194"; // San Francisco
+        
+        
+        query = new SolrQuery(text);
+        query.addField(idKey);
+        query.addField(scientificNameKey);
+        query.addField(locationKey);
+        query.addField(localityKey);
+        query.addField(catalogNumberKey); 
+        query.addFilterQuery("{!field f=location}(37.7749,-122.4194)");
+//        query.addFilterQuery("{!geofilt}");
+//        query.addFilterQuery("{!bbox}");
+//        query.setParam("sfield", "location");
+////        query.setParam("pt", point);
+//        query.setParam("bbox", "-48.33984375,43.197167282501276,78.22265625000001,69.90011762668541");
+//        query.set("sort", "geodist() asc");
+//        query.set("fl", "*,score,_dist_:geodist()");
+//        query.setParam("d", String.valueOf(radiusKm));
+        query.setStart(start);
+        query.setRows(rows); 
+        
+//         
+        if (!StringUtils.isBlank(scientificName)) {
+            query.addFilterQuery(scientificName); 
+        }
+        
+        if (!StringUtils.isBlank(locality)) {
+            query.addFilterQuery(locality);  
+        }
+
+
+        if (!StringUtils.isBlank(dateRange)) {
+            query.addFilterQuery(dateRange);  
+        }
+
+        paramMap.forEach((key, value) -> {
+            sb = new StringBuilder();
+            sb.append(key)
+                    .append(colon)
+                    .append(value); 
+            query.addFilterQuery(sb.toString());   
+        });
+
+ 
+        try { 
+            response = client.query(query);
 //            response = request.process(client);
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());

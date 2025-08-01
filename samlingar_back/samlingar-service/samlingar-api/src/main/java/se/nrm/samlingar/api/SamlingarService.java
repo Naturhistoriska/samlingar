@@ -133,7 +133,17 @@ public class SamlingarService {
                 .download(uriInfo.getQueryParameters())).build();
     }
     
-    
+    @GET
+    @Path("/geojson")
+    @ApiOperation(value = "geojson",
+            notes = "Return data in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response geojson(@Context UriInfo uriInfo ) {  
+        return Response.ok(logic
+                .geoJson(uriInfo.getQueryParameters())).build();
+    }
     
     
     
