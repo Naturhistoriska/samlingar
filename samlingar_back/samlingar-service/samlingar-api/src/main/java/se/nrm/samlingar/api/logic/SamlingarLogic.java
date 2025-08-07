@@ -99,6 +99,8 @@ public class SamlingarLogic {
     private final String textKey = "text";
     private final String localityKey = "locality";
     private final String eventDateKey = "eventDate:";
+    
+    private final String ptKey = "pt";
 
     
     
@@ -147,6 +149,8 @@ public class SamlingarLogic {
     private String facets;
     private String dateRange;
     private boolean yearChart;
+    
+    private String pt;
     
     private StringBuilder dateRangeSb;
         
@@ -204,7 +208,7 @@ public class SamlingarLogic {
                     break;  
                 case fuzzySearch:
                     isFuzzySearch = Boolean.parseBoolean(queryParams.get(fuzzySearch).get(0));
-                    break;
+                    break; 
                 case searchModeKey: 
                     searchMode = queryParams.get(searchModeKey).get(0); 
                     break;
@@ -218,9 +222,7 @@ public class SamlingarLogic {
                     paramMap.put(entry.getKey(), entry.getValue().get(0));
                     break;
             }
-        }
-        
-        
+        } 
         
         if(scientificName != null) {
             scientificName = SolrSearchHelper.getInstance().buildSearchText(
@@ -287,6 +289,9 @@ public class SamlingarLogic {
                 case endDateKey: 
                     endDate = queryParams.get(endDateKey).get(0); 
                     break;
+                case ptKey:
+                    pt = queryParams.get(ptKey).get(0); 
+                    break;
                 case startKey:
                     start = Integer.parseInt(queryParams.get(startKey).get(0)); 
                     break;
@@ -351,7 +356,7 @@ public class SamlingarLogic {
         
         
           
-        return solr.geojson(paramMap, text, scientificName, locality, dateRange, "",  
+        return solr.geojson(paramMap, text, scientificName, locality, dateRange, pt,
                 start, numPerPage );
         
     } 

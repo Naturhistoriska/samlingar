@@ -55,7 +55,7 @@ export default class Service {
   }
 
   async apiGeoFetch(params) {
-    let url = `${samlingApi}/geojson?${params.toString()}&fq={!geofilt sfield=location pt=59.0,15.0 d=100000}&wt=json&start=0&rows=100000`
+    let url = `${samlingApi}/geojson?${params.toString()}&start=0&numPerPage=100000`
     const response = await axios.get(url)
 
     return response.data
@@ -69,35 +69,35 @@ export default class Service {
     return response.data
   }
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
   async apiFreeTextSearch(searchText, start, numPerPage) {
     let url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
 
     const response = await axios.get(url)
     return response.data
   }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   async apiFilterSearch(
     filtCoordinates,

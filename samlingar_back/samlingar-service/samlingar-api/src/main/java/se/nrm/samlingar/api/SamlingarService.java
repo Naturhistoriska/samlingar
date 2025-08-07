@@ -140,9 +140,17 @@ public class SamlingarService {
             response = String.class
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response geojson(@Context UriInfo uriInfo ) {  
-        return Response.ok(logic
+    public Response geojson(@Context UriInfo uriInfo ) {
+        
+        
+        log.info("start....");
+        
+        Response res = Response.ok(logic
                 .geoJson(uriInfo.getQueryParameters())).build();
+        
+        
+        log.info("end.....");
+        return res;
     }
     
     

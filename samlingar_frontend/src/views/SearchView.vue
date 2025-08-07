@@ -41,7 +41,7 @@ const router = useRouter()
 const route = useRoute()
 
 const AsyncMap = defineAsyncComponent({
-  loader: () => import('../components/Map1.vue')
+  loader: () => import('../components/Map2.vue')
 })
 
 let loading = ref(true)
@@ -61,6 +61,7 @@ onMounted(async () => {
       store.commit('setScientificName', scientificName)
       store.commit('setSearchMode', 'equals')
       search(0, 10, true)
+    } else if ('id' in queryParams) {
     }
   }
 

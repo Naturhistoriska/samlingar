@@ -10,6 +10,9 @@ import RecordView from '../views/Record.vue'
 import SearchFilter from '../components/SearchFilter.vue'
 import MapView from '../components/Map.vue'
 
+
+let previousRoute = null
+
 const routes = [
   {
     path: '/',
@@ -130,5 +133,18 @@ const router = createRouter({
   // }
 })
 
+// router.beforeEach((to, from, next) => {
+//   previousRoute = from
+//   next()
+// })
+
+// Track previous route
+router.beforeEach((to, from, next) => {
+  previousRoute = from
+  next()
+})
+
+
+export { router, previousRoute }
 
 export default router

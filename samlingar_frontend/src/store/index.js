@@ -20,6 +20,8 @@ export default createStore({
     searchText: null,
     selectedRecord: null,
     startDate: null,
+    totalCount: 0,
+    totalRecords: 0,
 
     //
     //
@@ -87,9 +89,9 @@ export default createStore({
 
     startRecord: 0,
     synonym: null,
-    totalCount: 0,
+
     typeStatus: [],
-    totalRecords: 0,
+
     totalGeoData: 0,
     zooCollectionTotal: 0,
     year: null,
@@ -154,6 +156,12 @@ export default createStore({
     },
     startDate(state) {
       return state.startDate
+    },
+    totalCount(state) {
+      return state.totalCount
+    },
+    totalRecords(state) {
+      return state.totalRecords
     },
 
     //
@@ -267,9 +275,7 @@ export default createStore({
     hasCoordinatesCount(state) {
       return state.hasCoordinatesCount
     },
-    totalCount(state) {
-      return state.totalCount
-    },
+
     isAdvanceSearch(state) {
       return state.isAdvanceSearch
     },
@@ -336,9 +342,7 @@ export default createStore({
     totalGeoData(state) {
       return state.totalGeoData
     },
-    totalRecords(state) {
-      return state.totalRecords
-    },
+
     typeStatus(state) {
       return state.typeStatus
     },
@@ -373,7 +377,8 @@ export default createStore({
     setSelectedRecord: (state, payload) => (state.selectedRecord = payload),
     setShowDetail: (state, payload) => (state.showDetail = payload),
     setStartDate: (state, payload) => (state.startDate = payload),
-
+    setTotalCount: (state, payload) => (state.totalCount = payload),
+    setTotalRecords: (state, payload) => (state.totalRecords = payload),
     //
     //
     //
@@ -417,7 +422,7 @@ export default createStore({
     setInSwedenCount: (state, payload) => (state.inSwedenCount = payload),
     setIsTypeCount: (state, payload) => (state.isTypeCount = payload),
     setHasCoordinatesCount: (state, payload) => (state.hasCoordinatesCount = payload),
-    setTotalCount: (state, payload) => (state.totalCount = payload),
+
     setIsAdvanceSearch: (state, payload) => (state.isAdvanceSearch = payload),
     setIsType: (state, payload) => (state.isType = payload),
     setLatLong: (state, payload) => (state.latLong = payload),
@@ -442,7 +447,7 @@ export default createStore({
     setStartRecord: (state, payload) => (state.startRecord = payload),
     setSynonym: (state, payload) => (state.synonym = payload),
     setTotalGeoData: (state, payload) => (state.totalGeoData = payload),
-    setTotalRecords: (state, payload) => (state.totalRecords = payload),
+
     setTypeStatus: (state, payload) => (state.typeStatus = payload),
     setZooCollectionTotal: (state, payload) => (state.zooCollectionTotal = payload),
     setYear: (state, payload) => (state.year = payload),

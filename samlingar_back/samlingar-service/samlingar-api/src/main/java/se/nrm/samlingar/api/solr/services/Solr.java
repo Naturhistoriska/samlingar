@@ -1,13 +1,15 @@
 package se.nrm.samlingar.api.solr.services;
- 
-import java.io.IOException;
+  
+import java.io.IOException; 
+import java.io.InputStream;
 import java.io.Serializable;
-import java.io.StringReader;
+import java.io.StringReader; 
+import java.net.URLEncoder;
 import java.time.Instant; 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;  
+import java.util.Map;   
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -15,18 +17,26 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils; 
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.SolrQuery; 
+import org.apache.solr.client.solrj.SolrServerException; 
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest; 
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocumentList; 
+import org.apache.solr.client.solrj.response.QueryResponse; 
+import org.apache.solr.common.SolrDocumentList;   
 import se.nrm.samlingar.api.logic.InitialProperties; 
 import se.nrm.samlingar.api.utils.SolrSearchHelper;
+
+
+  
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients; 
+  
 
 /**
  *
@@ -48,6 +58,7 @@ public class Solr implements Serializable {
  
     private final String colon = ":";
     private final String searchAll = "*:*"; 
+    private final String utf_8 = "UTF-8";
 
     private final String geohashKey = "point-1";
     
@@ -57,8 +68,7 @@ public class Solr implements Serializable {
  
  
     private final String countryKey = "country"; 
-    private final String typeStatusKey = "typeStatus";
-    private final String collectionNameKey = "collectionName";
+    private final String typeStatusKey = "typeStatus"; 
     private final String dataResourceNameKey = "dataResourceName";
     private final String idKey = "id";
     private final String locationKey = "location";
@@ -83,8 +93,21 @@ public class Solr implements Serializable {
     private final String total = "total";
     
     private final String defaultSort = "createdDate_dt desc";
-
-
+    private final String bbox = "{!bbox}"; 
+    private final String sfield = "sfield";
+    
+    private final String radiusKm = "10000"; 
+    private final String ptKey = "pt";
+    private final String dKey = "d";
+    
+    private final String idSort = "id asc";
+    private final String returnFields = "id, catalogNumber, scientificName, lat_long, locality";
+    
+    private final String exportPath = "/export?q=";
+    private final String flKey = "&fl=";
+    private final String fqKey = "&fq=";
+    private final String sortKey = "&sort=";
+    
     private StringBuilder sb;
     private String gap;
     
@@ -114,6 +137,7 @@ public class Solr implements Serializable {
         log.info("init from search...");
 
         client = new HttpSolrClient.Builder(properties.getSolrURL()).build(); 
+         
     }
 
 
@@ -220,6 +244,8 @@ public class Solr implements Serializable {
             }
         } 
     }
+    
+    
 
     public String scientificNameSearch(int start, int numPerPage, String text, String sort) {
         log.info("scientificNameSearch: {} -- {}", text, sort);
@@ -353,37 +379,166 @@ public class Solr implements Serializable {
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
-        } 
+        }
         return response.jsonStr();
     }
+
+    public String geojson3(Map<String, String> paramMap, String text, String scientificName,
+            String locality, String dateRange, String pt, int start, int rows) {
+
+        StringBuilder urlSb = new StringBuilder();
+        try { 
+            String q = URLEncoder.encode(text, utf_8);
+            String fl = URLEncoder.encode(returnFields, utf_8);
+            String sort = URLEncoder.encode(idSort, utf_8);
+            
+            urlSb.append(properties.getSolrURL());
+            urlSb.append(exportPath);
+            urlSb.append(q);
+            urlSb.append(flKey);
+            urlSb.append(fl);
+            urlSb.append(sortKey);
+            urlSb.append(sort);
+            
+//            if (!StringUtils.isBlank(scientificName)) {
+//                urlSb.append(fqKey);
+//                urlSb.append(scientificName);
+//            }
+        
+             
+
+
+//    https://naturarv-stage.nrm.se/solrnew/biocache/select?fq=scientificName%3DCalymene&indent=true&q.op=OR&q=text%3A*
+
+//            String url = "https://naturarv-stage.nrm.se/solrnew/biocache/export?q=" + q + "&fl=" + fl + "&sort=" + sort;
+
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet req = new HttpGet(urlSb.toString());
+
+            CloseableHttpResponse resp = httpClient.execute(req);
+
+            InputStream content = resp.getEntity().getContent();
+            
+            String jsonString = SolrSearchHelper.getInstance().convertInputStreamToJsonString(content);
+            log.info(jsonString);
+//            try ( Scanner scanner = new Scanner(content, utf_8)) {
+//                while (scanner.hasNextLine()) {
+//                    System.out.println(scanner.nextLine());
+//                }
+//            }
+
+        } catch (IOException ex) { 
+            log.error(ex.getMessage());
+        }
+        return "";
+
+    }
+
+
     
-    public String geojson(Map<String, String> paramMap, String text, String scientificName,
-            String locality, String dateRange, String bbox, int start, int rows ) { 
-        log.info("geojson...");
+    
+    
+    public String geojson2(Map<String, String> paramMap, String text, String scientificName,
+            String locality, String dateRange, String pt, int start, int rows ) { 
+        log.info("geojson..."); 
         
-        double radiusKm = 10000.0;
-        String point = "55.7749,14.4194"; // San Francisco
-        
-        
-        query = new SolrQuery(text);
+        String cursorMark = "*";
+        boolean done = false;
+        int batchSize = 100000;
+ 
+        query = new SolrQuery(text); 
         query.addField(idKey);
         query.addField(scientificNameKey);
         query.addField(locationKey);
         query.addField(localityKey);
         query.addField(catalogNumberKey); 
-        query.addFilterQuery("{!field f=location}(37.7749,-122.4194)");
-//        query.addFilterQuery("{!geofilt}");
-//        query.addFilterQuery("{!bbox}");
-//        query.setParam("sfield", "location");
-////        query.setParam("pt", point);
-//        query.setParam("bbox", "-48.33984375,43.197167282501276,78.22265625000001,69.90011762668541");
-//        query.set("sort", "geodist() asc");
-//        query.set("fl", "*,score,_dist_:geodist()");
-//        query.setParam("d", String.valueOf(radiusKm));
-        query.setStart(start);
-        query.setRows(rows); 
+        query.setSort(idKey, SolrQuery.ORDER.asc);
+        query.setRows(batchSize);
+        query.set("cursorMark", cursorMark);
+
+        QueryResponse res = null;
+        try {
+            while (!done) {
+                query.set("cursorMark", cursorMark);
+                res = client.query(query);
+                SolrDocumentList docs = res.getResults();
+
+                // Process documents
+                docs.forEach(doc -> {
+                    // Handle each document
+                    log.info("id", doc.getFieldValue(idKey)); 
+                });
+
+                String nextCursorMark = res.getNextCursorMark();
+                if (cursorMark.equals(nextCursorMark)) {
+                    done = true;
+                }
+                cursorMark = nextCursorMark;
+            }
+            
         
-//         
+
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+       
+//        if (!StringUtils.isBlank(scientificName)) {
+//            query.addFilterQuery(scientificName); 
+//        }
+//        
+//        if (!StringUtils.isBlank(locality)) {
+//            query.addFilterQuery(locality);  
+//        }
+//
+//
+//        if (!StringUtils.isBlank(dateRange)) {
+//            query.addFilterQuery(dateRange);  
+//        }
+//
+//        paramMap.forEach((key, value) -> {
+//            sb = new StringBuilder();
+//            sb.append(key)
+//                    .append(colon)
+//                    .append(value); 
+//            query.addFilterQuery(sb.toString());   
+//        });
+//
+//        
+//        
+//        try { 
+//            request = new QueryRequest(query); 
+//            response = request.process(client);
+//        } catch (SolrServerException | IOException ex) {
+//            log.error(ex.getMessage());
+//            return null;
+//        }
+//        return res.jsonStr(); 
+        return ""; 
+    }
+   
+    public String geojson(Map<String, String> paramMap, String text, String scientificName,
+            String locality, String dateRange, String pt, int start, int rows ) { 
+        log.info("geojson..."); 
+        
+//        String cursorMark = "*";
+//        boolean done = false;
+//        int batchSize = 10000;
+ 
+        query = new SolrQuery(text); 
+        query.addField(idKey);
+        query.addField(scientificNameKey);
+        query.addField(locationKey);
+        query.addField(localityKey);
+        query.addField(catalogNumberKey); 
+        query.addFilterQuery(bbox);
+        query.setParam(sfield, locationKey);
+        query.setParam(ptKey, pt); 
+        query.setParam(dKey, radiusKm);
+        query.setStart(start);
+        query.setRows(rows);  
+        
+       
         if (!StringUtils.isBlank(scientificName)) {
             query.addFilterQuery(scientificName); 
         }
@@ -405,15 +560,17 @@ public class Solr implements Serializable {
             query.addFilterQuery(sb.toString());   
         });
 
- 
+        
+        
         try { 
-            response = client.query(query);
-//            response = request.process(client);
+            request = new QueryRequest(query); 
+            response = request.process(client);
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
-        } 
-        return response.jsonStr();
+        }
+        
+        
+        return response.jsonStr(); 
     }
 }
-

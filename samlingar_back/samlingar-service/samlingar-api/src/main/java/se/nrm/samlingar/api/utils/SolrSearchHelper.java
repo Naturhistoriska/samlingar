@@ -1,5 +1,10 @@
 package se.nrm.samlingar.api.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate; 
 import java.time.LocalTime;
 import java.time.OffsetDateTime; 
@@ -8,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -419,5 +425,17 @@ public class SolrSearchHelper {
         return fuzzySeachTextSb.toString().trim();
     }
  
-
+     
+    public String convertInputStreamToJsonString(InputStream inputStream) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
+            char[] buffer = new char[8192]; // 8KB buffer
+            int bytesRead;
+            while ((bytesRead = reader.read(buffer, 0, buffer.length)) != -1) {
+                sb.append(buffer, 0, bytesRead);
+            }
+        }
+        return sb.toString();
+    } 
+ 
 }
