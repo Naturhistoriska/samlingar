@@ -54,8 +54,8 @@ export default class Service {
     return response.data
   }
 
-  async apiGeoFetch(params) {
-    let url = `${samlingApi}/geojson?${params.toString()}&start=0&numPerPage=100000`
+  async apiGeoFetch(params, start, rows) {
+    let url = `${samlingApi}/geojson?${params.toString()}&start=${start}&numPerPage=${rows}`
     const response = await axios.get(url)
 
     return response.data

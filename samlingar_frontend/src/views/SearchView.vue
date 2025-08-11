@@ -10,7 +10,9 @@
       <div class="col-7" no-gutters>
         <Suspense>
           <template #default>
-            <async-map />
+            <keep-alive>
+              <async-map />
+            </keep-alive>
           </template>
           <template #fallback>
             <VueSpinnerDots size="20" color="red" />

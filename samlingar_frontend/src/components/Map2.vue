@@ -1,25 +1,26 @@
 <template>
-  <!-- <div ref="mapContainer" style="height: 400px"></div> -->
-  <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 80vh">
-    <l-tile-layer :url="tileUrl" />
-  </l-map>
-
-  <!-- <l-map ref="mapRef" style="height: 60vh" :zoom="zoom" :center="center"> -->
-  <!-- <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> -->
-  <!-- </l-map> -->
+  <div class="map-wrapper">
+    <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 80vh" @ready="onMapReady">
+      <l-tile-layer :url="tileUrl" />
+    </l-map>
+    <!-- Loader Overlay -->
+    <div v-if="loading" class="loading-overlay">
+      <span>Loading markers...</span>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { previousRoute } from '../router'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 import { LMap, LTileLayer } from '@vue-leaflet/vue-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import 'leaflet.markercluster'
 
-import { useStore } from 'vuex'
 import Service from '../Service'
 const service = new Service()
 
@@ -27,9 +28,10 @@ const store = useStore()
 const router = useRouter()
 
 const mapRef = ref(null)
-const mapContainer = ref(null)
 const center = ref([59.0, 15.0])
 const zoo = 5
+
+const loading = ref(false)
 
 const popupContent = ref('Loading...')
 
@@ -37,21 +39,23 @@ const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
 onMounted(async () => {
   console.log('onMounted')
+  const map = mapRef.value.leafletObject
+  console.log('map...', map)
 
   if (previousRoute && previousRoute.fullPath) {
     console.log('Previous route was:', previousRoute.fullPath)
+    if (!previousRoute.fullPath.includes('record')) {
+      await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
+    }
+
+    // else {
+    //   const map = mapRef.value.leafletObject
+
+    //   const markers = store.getters['clusterGroup']
+
+    //   map.addLayer(markers)
+    // }
   }
-
-  // if (mapRef.value) return // Prevent re-initialization
-
-  // console.log('init map....')
-  // mapRef.value = L.map(mapContainer.value).setView(center.value, 5)
-
-  // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //   attribution: '&copy; OpenStreetMap contributors'
-  // }).addTo(mapRef.value)
-
-  await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
 })
 
 watch(
@@ -73,8 +77,18 @@ watch(
   }
 )
 
+function onMapReady(mapInstance) {
+  const markers = store.getters['clusterGroup']
+
+  if (markers) {
+    mapInstance.addLayer(markers)
+  }
+}
+
 const fetchAndRender = async ({ lat, lng }) => {
   console.log('lat-lon', lat, lng)
+
+  loading.value = true
 
   const total = store.getters['totalRecords']
   console.log('total', total)
@@ -84,59 +98,73 @@ const fetchAndRender = async ({ lat, lng }) => {
     pt: `${lat},${lng}`
   })
 
-  if (total > 10000) {
-  }
-
   await service
-    .apiGeoFetch(params)
+    .apiGeoFetch(params, 0, total)
     .then((response) => {
       const docs = response.response
-      // geojson.value = solrToGeoJSON(docs)
 
-      buildMarkers(docs)
-      console.log('data fetched...')
+      if (docs) {
+        console.log('docs', docs.length)
+        buildMarkers(docs)
+      }
     })
     .catch()
     .finally(() => {})
+
+  // const batch = 100000
+  // const step = 99999
+  // if (total > 100000) {
+  //   for (let i = 0; i < total; i += batch) {
+  //     await service
+  //       .apiGeoFetch(params, i, i + step)
+  //       .then((response) => {
+  //         const docs = response.response
+
+  //         // buildMarkers(docs)
+  //       })
+  //       .catch()
+  //       .finally(() => {})
+
+  //     function delay(ms) {
+  //       return new Promise((resolve) => setTimeout(resolve, ms))
+  //     }
+
+  //     // Inside loop:
+  //     await delay(1000)
+
+  //   }
+  // }
 }
 
-function addMarkersInChunks(markers, clusterGroup, chunkSize = 5000) {
+function addMarkersInChunks(docs, clusterGroup, chunkSize = 50000) {
   let index = 0
 
   function processChunk() {
-    const chunk = markers.slice(index, index + chunkSize)
+    console.log('processChunk.....')
+    const chunk = docs.slice(index, index + chunkSize)
 
     chunk.forEach((doc) => {
       const [lat, lon] = doc.location.split(',').map(Number)
       const marker = L.marker([lat, lon])
 
-      let content = 'Loading...'
-      // marker.bindPopup('Loading...').openPopup()
       marker.on('click', async () => {
         await fetchRecord(doc.id, marker)
-
-        // if (response) {
-        //   const data = await response.response[0]
-
-        //   content = `<b>${data.id}</b><br>${data.locality}`
-        //   marker.setPopupContent(content)
-        //   console.log(data)
-        // }
       })
-      // marker.setPopupContent(content)
-      // marker.bindPopup(`<strong>${doc.locality}</strong>`)
       clusterGroup.addLayers(marker)
     })
-    // chunk.forEach((m) => clusterGroup.addLayer(L.marker([m.lat, m.lng])))
     index += chunkSize
 
-    if (index < markers.length) {
+    if (index < docs.length) {
+      console.log('index', index)
       setTimeout(processChunk, 0) // Allow UI thread to breathe
+    } else {
+      console.log('addMarkersInChunks done.....')
+      store.commit('setClusterGroup', clusterGroup)
     }
   }
 
-  if (index < markers.length) {
-    console.log('index...', index)
+  if (index < docs.length) {
+    console.log('index', index)
     processChunk()
   }
 }
@@ -188,8 +216,6 @@ async function fetchRecord(id, marker) {
         div.style.cssText = ' overflow-wrap: break-word;   '
         div.appendChild(button)
 
-        popupContent.value = `<b>${data.catalogNumber}</b><br>${data.locality}<br>${data.scientificName}<br>${data.locality}`
-
         marker.bindPopup(div).openPopup()
       }
       setTimeout(() => {}, 2000)
@@ -202,16 +228,48 @@ function displayDetail(id) {
   router.push(`/record/${id}`)
 }
 
-function buildMarkers(docs) {
+async function buildMarkers(docs) {
   console.log('buildMarkers')
+
+  loading.value = true
+  await nextTick()
+
   const map = mapRef.value.leafletObject
   console.log(map)
 
   const markers = L.markerClusterGroup()
 
-  addMarkersInChunks(docs, markers)
+  // addMarkersInChunks(docs, markers)
+  docs.forEach((doc) => {
+    const [lat, lon] = doc.location.split(',').map(Number)
+    const marker = L.marker([lat, lon])
+
+    marker.on('click', async () => {
+      await fetchRecord(doc.id, marker)
+    })
+    markers.addLayers(marker)
+  })
 
   map.addLayer(markers)
   console.log('mmarker s added')
+  loading.value = false
 }
 </script>
+<style scoped>
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 1.2em;
+  z-index: 1000;
+}
+.map-wrapper {
+  position: relative;
+}
+</style>

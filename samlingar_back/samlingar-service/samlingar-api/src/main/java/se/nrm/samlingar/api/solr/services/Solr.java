@@ -383,56 +383,7 @@ public class Solr implements Serializable {
         return response.jsonStr();
     }
 
-    public String geojson3(Map<String, String> paramMap, String text, String scientificName,
-            String locality, String dateRange, String pt, int start, int rows) {
-
-        StringBuilder urlSb = new StringBuilder();
-        try { 
-            String q = URLEncoder.encode(text, utf_8);
-            String fl = URLEncoder.encode(returnFields, utf_8);
-            String sort = URLEncoder.encode(idSort, utf_8);
-            
-            urlSb.append(properties.getSolrURL());
-            urlSb.append(exportPath);
-            urlSb.append(q);
-            urlSb.append(flKey);
-            urlSb.append(fl);
-            urlSb.append(sortKey);
-            urlSb.append(sort);
-            
-//            if (!StringUtils.isBlank(scientificName)) {
-//                urlSb.append(fqKey);
-//                urlSb.append(scientificName);
-//            }
-        
-             
-
-
-//    https://naturarv-stage.nrm.se/solrnew/biocache/select?fq=scientificName%3DCalymene&indent=true&q.op=OR&q=text%3A*
-
-//            String url = "https://naturarv-stage.nrm.se/solrnew/biocache/export?q=" + q + "&fl=" + fl + "&sort=" + sort;
-
-            CloseableHttpClient httpClient = HttpClients.createDefault();
-            HttpGet req = new HttpGet(urlSb.toString());
-
-            CloseableHttpResponse resp = httpClient.execute(req);
-
-            InputStream content = resp.getEntity().getContent();
-            
-            String jsonString = SolrSearchHelper.getInstance().convertInputStreamToJsonString(content);
-            log.info(jsonString);
-//            try ( Scanner scanner = new Scanner(content, utf_8)) {
-//                while (scanner.hasNextLine()) {
-//                    System.out.println(scanner.nextLine());
-//                }
-//            }
-
-        } catch (IOException ex) { 
-            log.error(ex.getMessage());
-        }
-        return "";
-
-    }
+   
 
 
     
@@ -440,7 +391,7 @@ public class Solr implements Serializable {
     
     public String geojson2(Map<String, String> paramMap, String text, String scientificName,
             String locality, String dateRange, String pt, int start, int rows ) { 
-        log.info("geojson..."); 
+        log.info("geojson... {} -- {}", start, rows); 
         
         String cursorMark = "*";
         boolean done = false;
@@ -519,7 +470,7 @@ public class Solr implements Serializable {
    
     public String geojson(Map<String, String> paramMap, String text, String scientificName,
             String locality, String dateRange, String pt, int start, int rows ) { 
-        log.info("geojson..."); 
+        log.info("geojson... {} -- {}", start, rows); 
         
 //        String cursorMark = "*";
 //        boolean done = false;
@@ -527,10 +478,10 @@ public class Solr implements Serializable {
  
         query = new SolrQuery(text); 
         query.addField(idKey);
-        query.addField(scientificNameKey);
+//        query.addField(scientificNameKey);
         query.addField(locationKey);
-        query.addField(localityKey);
-        query.addField(catalogNumberKey); 
+//        query.addField(localityKey);
+//        query.addField(catalogNumberKey); 
         query.addFilterQuery(bbox);
         query.setParam(sfield, locationKey);
         query.setParam(ptKey, pt); 

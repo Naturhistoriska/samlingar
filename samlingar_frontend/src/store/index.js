@@ -4,6 +4,7 @@ export default createStore({
   state: {
     collectionGroup: null,
     collections: null,
+    clusterGroup: null,
     dates: null,
     dataResource: null,
     endDate: null,
@@ -104,6 +105,9 @@ export default createStore({
     },
     collections(state) {
       return state.collections
+    },
+    clusterGroup(state) {
+      return state.clusterGroup
     },
     dates(state) {
       return state.dates
@@ -360,6 +364,7 @@ export default createStore({
   mutations: {
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
     setCollections: (state, payload) => (state.collections = payload),
+    setClusterGroup: (state, payload) => (state.clusterGroup = payload),
     setDates: (state, payload) => (state.dates = payload),
     setDataResource: (state, payload) => (state.dataResource = payload),
     setEndDate: (state, payload) => (state.endDate = payload),

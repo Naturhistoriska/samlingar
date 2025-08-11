@@ -7,8 +7,6 @@ import NotFound from '../views/NotFound.vue'
 import Results from '../views/Results.vue'
 import SearchView from '../views/SearchView.vue'
 import RecordView from '../views/Record.vue'
-import SearchFilter from '../components/SearchFilter.vue'
-import MapView from '../components/Map.vue'
 
 
 let previousRoute = null
@@ -22,66 +20,6 @@ const routes = [
       title: 'Home | Samlingar'
     }
   },
-  // {
-  //   path: '/advanceSearch',
-  //   name: 'AdvanceSearch',
-  //   component: Home,
-  //   meta: {
-  //     title: 'Home | Samlingar'
-  //   }
-  // },
-  // {
-  //   path: '/records',
-  //   name: 'Results',
-  //   component: Results,
-  //   meta: {
-  //     title: 'Results | Samlingar'
-  //   }
-  // },
-  // {
-  //   path: '/records',
-  //   component: Results,
-  //   children: [
-  //     {
-  //       path: 'filter/:filter',
-  //       name: 'filter',
-  //       component: SearchFilter
-  //     },
-  //     {
-  //       path: 'type/:filter',
-  //       name: 'type',
-  //       component: SearchFilter
-  //     }
-  //   ]
-  // },
-  {
-    path: '/map',
-    component: Results,
-    children: [
-      {
-        path: '',
-        name: 'Map',
-        component: MapView
-      }
-    ]
-  },
-  // {
-  //   path: '/record/:id',
-  //   component: Results,
-  //   children: [
-  //     {
-  //       path: '',
-  //       name: 'Result',
-  //       component: ResultDetail
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/result/:id',
-  //   name: 'Result',
-  //   component: Results
-  // },
   {
     path: '/search',
     name: 'Search',
@@ -115,28 +53,9 @@ const routes = [
 ]
 
 const router = createRouter({
-  // history: createMemoryHistory(),
-  // routes
   history: createWebHistory(import.meta.env.VITE_BASE_URL),
   routes
-  //  history: createWebHistory(import.meta.env.VITE_BASE_URL),
-  // history: createWebHistory(),
-  // mode: 'history',
-  // base: import.meta.env.BASE_URL,
-  // routes,
-  // scrollBehavior: function (to) {
-  //   if (to.hash) {
-  //     return {
-  //       selector: to.hash
-  //     }
-  //   }
-  // }
 })
-
-// router.beforeEach((to, from, next) => {
-//   previousRoute = from
-//   next()
-// })
 
 // Track previous route
 router.beforeEach((to, from, next) => {
