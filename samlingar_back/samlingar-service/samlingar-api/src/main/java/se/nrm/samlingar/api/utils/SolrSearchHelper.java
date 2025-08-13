@@ -307,6 +307,7 @@ public class SolrSearchHelper {
 
     public String buildSearchText(String text, String key, String searchMode, boolean fuzzySearch) {
 
+        searchMode = searchMode == null ? equals : searchMode;
         fuzzySeachTextSb = new StringBuilder();
         
         if(text == null || text.isEmpty() || text.equals(star)) {
@@ -318,6 +319,7 @@ public class SolrSearchHelper {
 
         text = text.replaceAll("([+\\-!(){}\\[\\]^\"~*?:\\\\|&])", "\\\\$1");
  
+        
         if (searchMode.equals(startsWith)) {
             return buildStartsWithSearchText(text, key);
         }
