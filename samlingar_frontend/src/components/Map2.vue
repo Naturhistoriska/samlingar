@@ -1,11 +1,11 @@
 <template>
   <div class="map-wrapper">
-    <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 80vh" @ready="onMapReady">
+    <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 60vh" @ready="onMapReady">
       <l-tile-layer :url="tileUrl" />
     </l-map>
     <!-- Loader Overlay -->
     <div v-if="loading" class="loading-overlay">
-      <span>Loading markers...</span>
+      <span>{{ loadingText }}</span>
     </div>
   </div>
 </template>
@@ -29,23 +29,34 @@ const router = useRouter()
 
 const mapRef = ref(null)
 const center = ref([59.0, 15.0])
-const zoo = 5
+const zoo = 4
 
 const loading = ref(false)
-
+let loadingText = ref()
 const popupContent = ref('Loading...')
 
 const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
 onMounted(async () => {
   console.log('onMounted')
-  const map = mapRef.value.leafletObject
-  console.log('map...', map)
+  // const map = mapRef.value.leafletObject
+  // console.log('map...', map)
 
   if (previousRoute && previousRoute.fullPath) {
     console.log('Previous route was:', previousRoute.fullPath)
     if (!previousRoute.fullPath.includes('record')) {
       await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
+    } else {
+      // loading.value = true
+      // const clusterGroup = store.getters['clusterGroup']
+      // const map = mapRef.value.leafletObject
+      // console.log('map 1...', map)
+      // if (map) {
+      //   console.log('map 1...', map)
+      //   map.addLayer(clusterGroup)
+      // }
+      // loadingText.value = 'Loading markers...'
+      // loading.value = false
     }
 
     // else {
@@ -88,15 +99,23 @@ function onMapReady(mapInstance) {
 const fetchAndRender = async ({ lat, lng }) => {
   console.log('lat-lon', lat, lng)
 
+  const params = store.getters['searchParams']
+  console.log('params', params)
+
+  if (params != null) {
+    params.set('pt', `${lat},${lng}`)
+  }
+
   loading.value = true
+  loadingText.value = 'Fetching data....'
 
   const total = store.getters['totalRecords']
   console.log('total', total)
 
-  const params = new URLSearchParams({
-    text: '*',
-    pt: `${lat},${lng}`
-  })
+  // const params = new URLSearchParams({
+  //   text: '*',
+  //   pt: `${lat},${lng}`
+  // })
 
   await service
     .apiGeoFetch(params, 0, total)
@@ -136,38 +155,38 @@ const fetchAndRender = async ({ lat, lng }) => {
   // }
 }
 
-function addMarkersInChunks(docs, clusterGroup, chunkSize = 50000) {
-  let index = 0
+// function addMarkersInChunks(docs, clusterGroup, chunkSize = 50000) {
+//   let index = 0
 
-  function processChunk() {
-    console.log('processChunk.....')
-    const chunk = docs.slice(index, index + chunkSize)
+//   function processChunk() {
+//     console.log('processChunk.....')
+//     const chunk = docs.slice(index, index + chunkSize)
 
-    chunk.forEach((doc) => {
-      const [lat, lon] = doc.location.split(',').map(Number)
-      const marker = L.marker([lat, lon])
+//     chunk.forEach((doc) => {
+//       const [lat, lon] = doc.location.split(',').map(Number)
+//       const marker = L.marker([lat, lon])
 
-      marker.on('click', async () => {
-        await fetchRecord(doc.id, marker)
-      })
-      clusterGroup.addLayers(marker)
-    })
-    index += chunkSize
+//       marker.on('click', async () => {
+//         await fetchRecord(doc.id, marker)
+//       })
+//       clusterGroup.addLayers(marker)
+//     })
+//     index += chunkSize
 
-    if (index < docs.length) {
-      console.log('index', index)
-      setTimeout(processChunk, 0) // Allow UI thread to breathe
-    } else {
-      console.log('addMarkersInChunks done.....')
-      store.commit('setClusterGroup', clusterGroup)
-    }
-  }
+//     if (index < docs.length) {
+//       console.log('index', index)
+//       setTimeout(processChunk, 0) // Allow UI thread to breathe
+//     } else {
+//       console.log('addMarkersInChunks done.....')
+//       store.commit('setClusterGroup', clusterGroup)
+//     }
+//   }
 
-  if (index < docs.length) {
-    console.log('index', index)
-    processChunk()
-  }
-}
+//   if (index < docs.length) {
+//     console.log('index', index)
+//     processChunk()
+//   }
+// }
 
 async function fetchRecord(id, marker) {
   popupContent.value = 'Loading...'
@@ -232,6 +251,8 @@ async function buildMarkers(docs) {
   console.log('buildMarkers')
 
   loading.value = true
+  loadingText.value = 'Loading markers...'
+
   await nextTick()
 
   const map = mapRef.value.leafletObject
@@ -252,6 +273,8 @@ async function buildMarkers(docs) {
 
   map.addLayer(markers)
   console.log('mmarker s added')
+
+  store.commit('setClusterGroup', markers)
   loading.value = false
 }
 </script>
