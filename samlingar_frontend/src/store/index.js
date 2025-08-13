@@ -19,6 +19,7 @@ export default createStore({
     scientificName: null,
     searchMode: 'contains',
     searchText: null,
+    searchParams: null,
     selectedRecord: null,
     startDate: null,
     totalCount: 0,
@@ -148,6 +149,9 @@ export default createStore({
     },
     searchText(state) {
       return state.searchText
+    },
+    searchParams(state) {
+      return state.searchParams
     },
     selectedRecord(state) {
       return state.selectedRecord
@@ -378,6 +382,7 @@ export default createStore({
     setResults: (state, payload) => (state.results = payload),
     setScientificName: (state, payload) => (state.scientificName = payload),
     setSearchMode: (state, payload) => (state.searchMode = payload),
+    setSearchParams: (state, payload) => (state.searchParams = payload),
     setSearchText: (state, payload) => (state.searchText = payload),
     setSelectedRecord: (state, payload) => (state.selectedRecord = payload),
     setShowDetail: (state, payload) => (state.showDetail = payload),
