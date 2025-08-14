@@ -86,7 +86,7 @@ import ScientificName from './ScientificName.vue'
 import SearchAll from './SearchAll.vue'
 
 const store = useStore()
-const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
+const emits = defineEmits(['freeTextSearch', 'resetSerch', 'scientificNameSearch'])
 
 const dialogVisible = ref(false)
 
@@ -128,13 +128,15 @@ function reset() {
   store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
 
+  store.commit('setSearchParams', null)
+
   store.commit('setFields', [])
   store.commit('setDataResource', null)
   search()
 }
 
 function search() {
-  emits('search', 0, 50, true)
+  emits('resetSerch')
 }
 </script>
 <style scoped>
