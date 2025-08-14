@@ -19,6 +19,11 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import { createApp } from 'vue'
 
 
+import router, { entryType, previousRoute, currentRoute } from './router'
+
+
+
+
 import i18n from './i18n'
 
 import PrimeVue from 'primevue/config'
@@ -31,7 +36,7 @@ import Ripple from 'primevue/ripple'
 import ToastService from 'primevue/toastservice'
 
 import App from './App.vue'
-import router from './router'
+// import router from './router'
 import store from './store'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -100,6 +105,17 @@ const app = createApp(App, {
   //   console.log('expand................')
   // }
 })
+
+
+// Optionally make tracker values globally available
+app.config.globalProperties.$entryType = entryType
+app.config.globalProperties.$previousRoute = previousRoute
+app.config.globalProperties.$currentRoute = currentRoute
+
+
+
+
+
 app.use(router)
 app.use(store)
 app.use(i18n)
@@ -185,4 +201,6 @@ app.component('Toolbar', Toolbar)
 app.component('downloadExcel', JsonExcel)
 
 app.directive('ripple', Ripple)
+
+
 app.mount('#app')
