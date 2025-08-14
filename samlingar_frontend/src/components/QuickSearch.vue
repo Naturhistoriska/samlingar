@@ -44,7 +44,6 @@ export default {
   methods: {
     ...mapMutations([
       'setCollections',
-      'setGeoData',
       'setIsFuzzySearch',
       'setResults',
       'setSearchMode',
@@ -61,9 +60,9 @@ export default {
       this.itemSelected = true
     },
 
-    onPressEnter() {
-      this.apiSearch()
-    },
+    // onPressEnter() {
+    //   this.apiSearch()
+    // },
 
     apiAutoComplete(event) {
       console.log('apiAutoComplete', event.query)
@@ -93,12 +92,8 @@ export default {
           const results = response.response
 
           if (total > 0) {
-            const geofacet = response.facets.map.buckets
-            this.setGeoData(geofacet)
-
             const collectionsfacet = response.facets.dataResourceName.buckets
             this.setCollections(collectionsfacet)
-            console.log(collectionsfacet)
           }
 
           this.setResults(results)
