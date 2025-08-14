@@ -313,7 +313,7 @@ public class SolrSearchHelper {
         if(text == null || text.isEmpty() || text.equals(star)) {
             fuzzySeachTextSb.append(key);
             fuzzySeachTextSb.append(colon);
-            fuzzySeachTextSb.append(star);
+            fuzzySeachTextSb.append(star);  
             return fuzzySeachTextSb.toString().trim(); 
         }
 

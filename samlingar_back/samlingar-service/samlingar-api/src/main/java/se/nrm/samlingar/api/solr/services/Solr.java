@@ -256,8 +256,8 @@ public class Solr implements Serializable {
                 .setOffset(start)
                 .setLimit(numPerPage)
                 .setSort(sort) 
-                .withFacet(dataResourceNameKey, datasourceFacet.setLimit(20))
-                .withFacet(mapKey, mapFacet.setLimit(20000));
+                .withFacet(dataResourceNameKey, datasourceFacet.setLimit(20));
+//                .withFacet(mapKey, mapFacet.setLimit(20000));
          
 
         try {
@@ -287,7 +287,7 @@ public class Solr implements Serializable {
                 .setOffset(start)
                 .setLimit(numPerPage)
                 .setSort(sort) 
-                .withFacet(mapKey, mapFacet.setLimit(20000))
+//                .withFacet(mapKey, mapFacet.setLimit(20000))
                 .withFacet(dataResourceNameKey, datasourceFacet.setLimit(20));
 
         if (facets != null) {
@@ -383,113 +383,21 @@ public class Solr implements Serializable {
         return response.jsonStr();
     }
 
-   
-
-
     
-    
-    
-    public String geojson2(Map<String, String> paramMap, String text, String scientificName,
-            String locality, String dateRange, String pt, int start, int rows ) { 
-        log.info("geojson... {} -- {}", start, rows); 
-        
-        String cursorMark = "*";
-        boolean done = false;
-        int batchSize = 100000;
- 
-        query = new SolrQuery(text); 
-        query.addField(idKey);
-        query.addField(scientificNameKey);
-        query.addField(locationKey);
-        query.addField(localityKey);
-        query.addField(catalogNumberKey); 
-        query.setSort(idKey, SolrQuery.ORDER.asc);
-        query.setRows(batchSize);
-        query.set("cursorMark", cursorMark);
-
-        QueryResponse res = null;
-        try {
-            while (!done) {
-                query.set("cursorMark", cursorMark);
-                res = client.query(query);
-                SolrDocumentList docs = res.getResults();
-
-                // Process documents
-                docs.forEach(doc -> {
-                    // Handle each document
-                    log.info("id", doc.getFieldValue(idKey)); 
-                });
-
-                String nextCursorMark = res.getNextCursorMark();
-                if (cursorMark.equals(nextCursorMark)) {
-                    done = true;
-                }
-                cursorMark = nextCursorMark;
-            }
-            
-        
-
-        } catch (SolrServerException | IOException ex) {
-            log.error(ex.getMessage());
-            return null;
-        }
-       
-//        if (!StringUtils.isBlank(scientificName)) {
-//            query.addFilterQuery(scientificName); 
-//        }
-//        
-//        if (!StringUtils.isBlank(locality)) {
-//            query.addFilterQuery(locality);  
-//        }
-//
-//
-//        if (!StringUtils.isBlank(dateRange)) {
-//            query.addFilterQuery(dateRange);  
-//        }
-//
-//        paramMap.forEach((key, value) -> {
-//            sb = new StringBuilder();
-//            sb.append(key)
-//                    .append(colon)
-//                    .append(value); 
-//            query.addFilterQuery(sb.toString());   
-//        });
-//
-//        
-//        
-//        try { 
-//            request = new QueryRequest(query); 
-//            response = request.process(client);
-//        } catch (SolrServerException | IOException ex) {
-//            log.error(ex.getMessage());
-//            return null;
-//        }
-//        return res.jsonStr(); 
-        return ""; 
-    }
-   
     public String geojson(Map<String, String> paramMap, String text, String scientificName,
             String locality, String dateRange, String pt, int start, int rows ) { 
         log.info("geojson... {} -- {}", start, rows); 
-        
-//        String cursorMark = "*";
-//        boolean done = false;
-//        int batchSize = 10000;
- 
+         
         query = new SolrQuery(text); 
-        query.addField(idKey);
-//        query.addField(scientificNameKey);
-        query.addField(locationKey);
-//        query.addField(localityKey);
-//        query.addField(catalogNumberKey); 
+        query.addField(idKey); 
+        query.addField(locationKey); 
         query.addFilterQuery(bbox);
         query.setParam(sfield, locationKey);
         query.setParam(ptKey, pt); 
         query.setParam(dKey, radiusKm);
         query.setStart(start);
         query.setRows(rows);  
-        
-       
+         
         if (!StringUtils.isBlank(scientificName)) {
             query.addFilterQuery(scientificName); 
         }
@@ -510,9 +418,7 @@ public class Solr implements Serializable {
                     .append(value); 
             query.addFilterQuery(sb.toString());   
         });
-
-        
-        
+  
         try { 
             request = new QueryRequest(query); 
             response = request.process(client);
