@@ -8,12 +8,12 @@ export default createStore({
     dates: null,
     dataResource: null,
     endDate: null,
+    isUrlPushed: false,
     fields: [],
     filterCoordinates: false,
     filterImage: false,
     filterInSweden: false,
     filterType: false,
-    geoData: [],
     isFuzzySearch: undefined,
     results: [],
     scientificName: null,
@@ -119,6 +119,9 @@ export default createStore({
     endDate(state) {
       return state.endDate
     },
+    isUrlPushed(state) {
+      return state.isUrlPushed
+    },
     fields(state) {
       return state.fields
     },
@@ -133,9 +136,6 @@ export default createStore({
     },
     filterCoordinates(state) {
       return state.filterCoordinates
-    },
-    geoData(state) {
-      return state.geoData
     },
     isFuzzySearch(state) {
       return state.isFuzzySearch
@@ -373,11 +373,11 @@ export default createStore({
     setDataResource: (state, payload) => (state.dataResource = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
     setFields: (state, payload) => (state.fields = payload),
+    setIsUrlPushed: (state, payload) => (state.isUrlPushed = payload),
     setFilterCoordinates: (state, payload) => (state.filterCoordinates = payload),
     setFilterImage: (state, payload) => (state.filterImage = payload),
     setFilterInSweden: (state, payload) => (state.filterInSweden = payload),
     setFilterType: (state, payload) => (state.filterType = payload),
-    setGeoData: (state, payload) => (state.geoData = payload),
     setIsFuzzySearch: (state, payload) => (state.isFuzzySearch = payload),
     setResults: (state, payload) => (state.results = payload),
     setScientificName: (state, payload) => (state.scientificName = payload),
