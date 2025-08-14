@@ -32,8 +32,10 @@
 import ImageFiltLink from './baseComponents/ImageFiltLink.vue'
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 const store = useStore()
+const router = useRouter()
 
 const botanicalCollection = ref('startPage.botanicalCollection')
 const botImageSource = ref('/paucidentatus.jpg')
@@ -93,7 +95,10 @@ function search(value, dataResource) {
   store.commit('setFields', [])
   store.commit('setDates', null)
 
-  emits('searchCollections', dataResource)
+  store.commit('setIsUrlPushed', true)
+  router.push('/search')
+
+  // emits('searchCollections', dataResource)
 }
 </script>
 <style scoped>

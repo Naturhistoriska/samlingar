@@ -145,13 +145,10 @@ async function filterSearch(
       store.commit('setTotalRecords', total)
 
       if (total > 0) {
-        const geofacet = response.facets.map.buckets
         const collectionfacet = response.facets.dataResourceName.buckets
 
-        store.commit('setGeoData', geofacet)
         store.commit('setCollections', collectionfacet)
       } else {
-        store.commit('setGeoData', null)
         store.commit('setCollections', null)
       }
     })
@@ -174,13 +171,10 @@ async function collectionsSearch(value, start, numPerPage) {
       store.commit('setTotalRecords', total)
 
       if (total > 0) {
-        const geofacet = response.facets.map.buckets
         const collectionfacet = response.facets.dataResourceName.buckets
 
-        store.commit('setGeoData', geofacet)
         store.commit('setCollections', collectionfacet)
       } else {
-        store.commit('setGeoData', null)
         store.commit('setCollections', null)
       }
     })
@@ -203,13 +197,10 @@ async function search(value, start, numPerPage) {
       store.commit('setTotalRecords', total)
 
       if (total > 0) {
-        const geofacet = response.facets.map.buckets
         const collectionfacet = response.facets.dataResourceName.buckets
 
-        store.commit('setGeoData', geofacet)
         store.commit('setCollections', collectionfacet)
       } else {
-        store.commit('setGeoData', null)
         store.commit('setCollections', null)
       }
     })

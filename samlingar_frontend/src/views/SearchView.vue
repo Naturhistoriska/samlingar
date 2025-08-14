@@ -2,16 +2,13 @@
   <div>
     <div class="grid">
       <div class="col-5" no-gutters>
-        <search-records @search="search" />
-      </div>
-      <div v-if="loading" class="spinner-overlay">
-        <div class="spinner"></div>
+        <search-records @resetSerch="resetSearch" />
       </div>
       <div class="col-7" no-gutters>
         <Suspense>
           <template #default>
             <keep-alive>
-              <async-map />
+              <async-map v-bind:total="totalCount" />
             </keep-alive>
           </template>
           <template #fallback>
@@ -20,6 +17,13 @@
         </Suspense>
       </div>
     </div>
+
+    <div>
+      <p>Entry Type: {{ entryType }}</p>
+      <p>Previous: {{ previousRoute?.fullPath || '(none)' }}</p>
+      <p>Current: {{ currentRoute?.fullPath }}</p>
+    </div>
+
     <div class="grid">
       <div class="col-12" no-gutters>
         <Records @download="download" @exportData="preparaDataExport" @search="search" />
@@ -28,43 +32,71 @@
   </div>
 </template>
 <script setup>
-import { defineAsyncComponent, onMounted, ref, watch } from 'vue'
+import { defineAsyncComponent, getCurrentInstance, onMounted, ref, toRaw, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter, useRoute } from 'vue-router'
 import Service from '../Service'
 
 import SearchRecords from '../components/SearchRecords.vue'
 import Records from '../components/RecordsTabs.vue'
 
+import { entryType, previousRoute, currentRoute } from '@/router'
+
 const store = useStore()
 
 const service = new Service()
-const router = useRouter()
-const route = useRoute()
 
 const AsyncMap = defineAsyncComponent({
   loader: () => import('../components/Map2.vue')
 })
 
 let loading = ref(true)
+let totalCount = ref()
 
 onMounted(async () => {
-  const fullPath = route.fullPath // e.g. "/search?term=apple"
-  const queryParams = route.query
-  console.log('queryParams', queryParams)
+  console.log('onMounted SearchView')
 
-  const hasQuery =
-    queryParams && Object.keys(queryParams).length > 0 && queryParams.constructor === Object
+  console.log('entryType', entryType.value)
+  console.log('previousRoute:', previousRoute.value?.fullPath)
+  console.log('currentRoute:', currentRoute.value?.fullPath)
+  console.log('query...:', currentRoute.value?.query)
 
-  if (hasQuery) {
-    if ('scientificName' in queryParams) {
-      let scientificName = queryParams.scientificName
-      console.log(scientificName)
-      store.commit('setScientificName', scientificName)
-      store.commit('setSearchMode', 'equals')
-      search(0, 10, true)
-    } else if ('id' in queryParams) {
+  const queries = toRaw(currentRoute.value?.query)
+
+  const from = previousRoute.value?.fullPath
+  const to = currentRoute.value?.fullPath
+
+  let params
+  let doSearch = false
+  if (entryType.value === 'back_forward' && from === '/') {
+    const isUrlPushed = store.getters['isUrlPushed']
+    store.commit('setIsUrlPushed', false)
+
+    console.log('here,..', isUrlPushed)
+
+    if (isUrlPushed) {
+      params = buildParams()
+      doSearch = true
     }
+  } else {
+    if (entryType.value === 'first-visit' || entryType.value === 'reload') {
+      params = new URLSearchParams({
+        text: '*'
+      })
+      if (queries) {
+        for (const [key, value] of Object.entries(queries)) {
+          params.set(key, value)
+        }
+      }
+      doSearch = true
+      store.commit('setSearchParams', params)
+    } else if (entryType.value === 'internal' && from === '/') {
+      params = buildParams()
+      doSearch = true
+    }
+  }
+
+  if (doSearch) {
+    search(params, 0, 10, true)
   }
 
   setTimeout(() => {
@@ -99,9 +131,18 @@ function preparaDataExport() {
     .finally(() => {})
 }
 
-async function search(start, numPerPage, saveData) {
+function resetSearch() {
+  const params = new URLSearchParams({
+    text: '*'
+  })
+  search(params, 0, 10, true)
+  store.commit('setSearchParams', params)
+}
+
+async function search(params, start, numPerPage, saveData) {
+  console.log('do search....')
   loading.value = true
-  const params = buildParams()
+  // const params = buildParams()
   await service
     .apiSearch(params, start, numPerPage)
     .then((response) => {
@@ -111,15 +152,13 @@ async function search(start, numPerPage, saveData) {
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
+      totalCount.value = total
+
       if (saveData) {
         if (total > 0) {
-          const geofacet = response.facets.map.buckets
           const collectionfacet = response.facets.dataResourceName.buckets
-
-          store.commit('setGeoData', geofacet)
           store.commit('setCollections', collectionfacet)
         } else {
-          store.commit('setGeoData', null)
           store.commit('setCollections', null)
         }
       }
@@ -205,6 +244,7 @@ function buildParams() {
         params.set(field.value, field.text)
       })
   }
+  store.commit('setSearchParams', params)
   return params
 }
 

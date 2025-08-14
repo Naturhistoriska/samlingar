@@ -48,6 +48,7 @@ function handleFreeTextSearch(value) {
   store.commit('setDataResource', null)
   store.commit('setDates', null)
 
+  store.commit('setIsUrlPushed', true)
   router.push('/search')
 
   // emits('freeTextSearch', searchText)

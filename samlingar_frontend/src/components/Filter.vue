@@ -44,11 +44,11 @@ import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 // import { useI18n } from 'vue-i18n'
 import FiltLink from './baseComponents/FiltLink.vue'
+import { useRouter } from 'vue-router'
 
 // const { t } = useI18n()
 
-const emits = defineEmits(['freeTextSearch', 'filterSearch'])
-
+const router = useRouter()
 const store = useStore()
 
 const props = defineProps(['filterSearchLoading'])
@@ -95,7 +95,8 @@ function handleFreeTextSearch() {
   store.commit('setDataResource', null)
   store.commit('setDates', null)
 
-  emits('freeTextSearch', searchText)
+  router.push('/search')
+  // emits('freeTextSearch', searchText)
 }
 
 function handleCoordinatesSearch() {
@@ -129,7 +130,9 @@ function search(filtCoordinates, filtImages, filtInSweden, filtTypeStatus) {
   store.commit('setDataResource', null)
   store.commit('setDates', null)
 
-  emits('filterSearch', filtCoordinates, filtImages, filtInSweden, filtTypeStatus)
+  store.commit('setIsUrlPushed', true)
+  router.push('/search')
+  // emits('filterSearch', filtCoordinates, filtImages, filtInSweden, filtTypeStatus)
 }
 </script>
 <style scoped></style>
