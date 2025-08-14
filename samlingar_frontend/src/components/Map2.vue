@@ -1,8 +1,11 @@
 <template>
   <div class="map-wrapper">
-    <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 60vh" @ready="onMapReady">
-      <l-tile-layer :url="tileUrl" />
-    </l-map>
+    <keep-alive>
+      <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 60vh" @ready="onMapReady">
+        <l-tile-layer :url="tileUrl" />
+      </l-map>
+    </keep-alive>
+
     <!-- Loader Overlay -->
     <div v-if="loading" class="loading-overlay">
       <span>{{ loadingText }}</span>
@@ -12,7 +15,10 @@
 
 <script setup>
 import { nextTick, onMounted, ref, watch } from 'vue'
-import { previousRoute } from '../router'
+// import { previousRoute } from '../router'
+
+import { entryType, previousRoute, currentRoute } from '@/router'
+
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -27,6 +33,8 @@ const service = new Service()
 const store = useStore()
 const router = useRouter()
 
+const props = defineProps(['total'])
+
 const mapRef = ref(null)
 const center = ref([59.0, 15.0])
 const zoo = 4
@@ -38,39 +46,63 @@ const popupContent = ref('Loading...')
 const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 
 onMounted(async () => {
-  console.log('onMounted')
-  // const map = mapRef.value.leafletObject
-  // console.log('map...', map)
+  console.log('onMounted', previousRoute, entryType, currentRoute)
 
-  if (previousRoute && previousRoute.fullPath) {
-    console.log('Previous route was:', previousRoute.fullPath)
-    if (!previousRoute.fullPath.includes('record')) {
-      await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
-    } else {
-      // loading.value = true
-      // const clusterGroup = store.getters['clusterGroup']
-      // const map = mapRef.value.leafletObject
-      // console.log('map 1...', map)
-      // if (map) {
-      //   console.log('map 1...', map)
-      //   map.addLayer(clusterGroup)
-      // }
-      // loadingText.value = 'Loading markers...'
-      // loading.value = false
+  console.log('total', props.total)
+
+  await new Promise((r) => setTimeout(r, 1500))
+
+  console.log('total 1', props.total)
+
+  if (entryType.value === 'first-visit' || entryType.value === 'reload') {
+    removeOldMarkers()
+    await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
+  } else {
+    if (previousRoute) {
+      const from = previousRoute.value?.fullPath
+      if (from === '/') {
+        removeOldMarkers()
+        await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
+      }
     }
-
-    // else {
-    //   const map = mapRef.value.leafletObject
-
-    //   const markers = store.getters['clusterGroup']
-
-    //   map.addLayer(markers)
-    // }
   }
+
+  // if (previousRoute) {
+  //   const from = previousRoute.value?.fullPathro
+  //   if (!from.includes('record')) {
+  //     await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
+  //   }
+  // }
+
+  // if (previousRoute && previousRoute.value?.fullPath) {
+  //   console.log('Previous route was:', previousRoute.fullPath)
+  //   if (!previousRoute.value?.fullPath.includes('record')) {
+  //     await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
+  //   } else {
+  //     // loading.value = true
+  //     // const clusterGroup = store.getters['clusterGroup']
+  //     // const map = mapRef.value.leafletObject
+  //     // console.log('map 1...', map)
+  //     // if (map) {
+  //     //   console.log('map 1...', map)
+  //     //   map.addLayer(clusterGroup)
+  //     // }
+  //     // loadingText.value = 'Loading markers...'
+  //     // loading.value = false
+  //   }
+
+  //   // else {
+  //   //   const map = mapRef.value.leafletObject
+
+  //   //   const markers = store.getters['clusterGroup']
+
+  //   //   map.addLayer(markers)
+  //   // }
+  // }
 })
 
 watch(
-  () => store.getters['geoData'],
+  () => store.getters['results'],
   () => {
     console.log('map data changed..')
     // initialMap.value.eachLayer((layer) => {
@@ -96,11 +128,17 @@ function onMapReady(mapInstance) {
   }
 }
 
+function removeOldMarkers() {
+  const groupMarkers = store.getters['clusterGroup']
+  if (groupMarkers) {
+    groupMarkers.clearLayers()
+  }
+}
+
 const fetchAndRender = async ({ lat, lng }) => {
   console.log('lat-lon', lat, lng)
 
   const params = store.getters['searchParams']
-  console.log('params', params)
 
   if (params != null) {
     params.set('pt', `${lat},${lng}`)
@@ -109,21 +147,20 @@ const fetchAndRender = async ({ lat, lng }) => {
   loading.value = true
   loadingText.value = 'Fetching data....'
 
-  const total = store.getters['totalRecords']
-  console.log('total', total)
-
   // const params = new URLSearchParams({
   //   text: '*',
   //   pt: `${lat},${lng}`
   // })
 
   await service
-    .apiGeoFetch(params, 0, total)
+    .apiGeoFetch(params, 0, props.total)
     .then((response) => {
       const docs = response.response
 
       if (docs) {
         console.log('docs', docs.length)
+
+        loadingText.value = 'Loading markers....'
         buildMarkers(docs)
       }
     })
@@ -256,7 +293,6 @@ async function buildMarkers(docs) {
   await nextTick()
 
   const map = mapRef.value.leafletObject
-  console.log(map)
 
   const markers = L.markerClusterGroup()
 
