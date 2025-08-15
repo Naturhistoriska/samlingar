@@ -1,14 +1,19 @@
 <template>
   <div class="map-wrapper">
-    <keep-alive>
+    <div id="map" style="height: 50vh" class="custom-popup"></div>
+    <!-- <keep-alive>
       <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 60vh" @ready="onMapReady">
         <l-tile-layer :url="tileUrl" />
       </l-map>
-    </keep-alive>
+    </keep-alive> -->
+
+    <!-- <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 60vh">
+      <l-tile-layer :url="tileUrl" />
+    </l-map> -->
 
     <!-- Loader Overlay -->
     <div v-if="loading" class="loading-overlay">
-      <span>{{ loadingText }}</span>
+      <span>{{ mapLoadingText }}</span>
     </div>
   </div>
 </template>
@@ -17,7 +22,7 @@
 import { nextTick, onMounted, ref, watch } from 'vue'
 // import { previousRoute } from '../router'
 
-import { entryType, previousRoute, currentRoute } from '@/router'
+// import { entryType, previousRoute, currentRoute } from '@/router'
 
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -33,78 +38,80 @@ const service = new Service()
 const store = useStore()
 const router = useRouter()
 
-const props = defineProps(['total'])
+const props = defineProps(['entry', 'from'])
 
-const mapRef = ref(null)
 const center = ref([59.0, 15.0])
 const zoo = 4
 
+const mapRef = ref(null)
+
 const loading = ref(false)
-let loadingText = ref()
+let isDataReady = ref(false)
 const popupContent = ref('Loading...')
 
+const mapLoadingText = ref('Fetch data....')
+
 const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+const attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+// const tileUrl = "'https://tile.openstreetmap.org/{z}/{x}/{y}.png'"
 
 onMounted(async () => {
-  console.log('onMounted', previousRoute, entryType, currentRoute)
+  console.log('onMounted', props.entry, props.from)
 
-  console.log('total', props.total)
+  mapRef.value = L.map('map', {
+    zoomControl: true,
+    zoomAnimation: false
+  })
+    .setView([59.0, 15.0], 6)
+    .setZoom(zoo)
+
+  L.tileLayer(tileUrl, {
+    minZoom: 0,
+    maxZoom: 7,
+    attribution
+  }).addTo(mapRef.value)
 
   await new Promise((r) => setTimeout(r, 1500))
 
-  console.log('total 1', props.total)
-
-  if (entryType.value === 'first-visit' || entryType.value === 'reload') {
-    removeOldMarkers()
-    await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
-  } else {
-    if (previousRoute) {
-      const from = previousRoute.value?.fullPath
-      if (from === '/') {
-        removeOldMarkers()
-        await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
-      }
+  const entryType = props.entry
+  if (entryType === 'first-visit' || entryType === 'reload') {
+    let params = new URLSearchParams({
+      text: '*'
+    })
+    await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+  } else if (props.from === '/') {
+    const isUrlPush = store.getters['isUrlPush']
+    if (isUrlPush) {
+      const params = buildParams()
+      await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
     }
+  } else {
+    onMapReady()
   }
-
-  // if (previousRoute) {
-  //   const from = previousRoute.value?.fullPathro
-  //   if (!from.includes('record')) {
-  //     await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
-  //   }
-  // }
-
-  // if (previousRoute && previousRoute.value?.fullPath) {
-  //   console.log('Previous route was:', previousRoute.fullPath)
-  //   if (!previousRoute.value?.fullPath.includes('record')) {
-  //     await fetchAndRender({ lat: center.value[0], lng: center.value[1] })
-  //   } else {
-  //     // loading.value = true
-  //     // const clusterGroup = store.getters['clusterGroup']
-  //     // const map = mapRef.value.leafletObject
-  //     // console.log('map 1...', map)
-  //     // if (map) {
-  //     //   console.log('map 1...', map)
-  //     //   map.addLayer(clusterGroup)
-  //     // }
-  //     // loadingText.value = 'Loading markers...'
-  //     // loading.value = false
-  //   }
-
-  //   // else {
-  //   //   const map = mapRef.value.leafletObject
-
-  //   //   const markers = store.getters['clusterGroup']
-
-  //   //   map.addLayer(markers)
-  //   // }
-  // }
 })
 
 watch(
-  () => store.getters['results'],
+  isDataReady,
+  (newValue, oldValue) => {
+    console.log(`count changed from ${oldValue} to ${newValue}`)
+
+    if (newValue) {
+      console.log('newValue is true')
+      mapLoadingText.value = 'Loading markers....'
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  () => store.getters['totalRecords'],
   () => {
     console.log('map data changed..')
+    const params = store.getters['searchParams']
+
+    removeOldMarkers()
+    fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+
     // initialMap.value.eachLayer((layer) => {
     //   if (layer instanceof L.Marker) {
     //     layer.remove()
@@ -120,12 +127,13 @@ watch(
   }
 )
 
-function onMapReady(mapInstance) {
+function onMapReady() {
   const markers = store.getters['clusterGroup']
 
   if (markers) {
-    mapInstance.addLayer(markers)
+    mapRef.value.addLayer(markers)
   }
+  mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
 }
 
 function removeOldMarkers() {
@@ -135,95 +143,35 @@ function removeOldMarkers() {
   }
 }
 
-const fetchAndRender = async ({ lat, lng }) => {
+const fetchAndRender = async (params, { lat, lng }) => {
   console.log('lat-lon', lat, lng)
 
-  const params = store.getters['searchParams']
+  // const params = store.getters['searchParams']
 
   if (params != null) {
     params.set('pt', `${lat},${lng}`)
   }
 
   loading.value = true
-  loadingText.value = 'Fetching data....'
+  isDataReady.value = false
 
-  // const params = new URLSearchParams({
-  //   text: '*',
-  //   pt: `${lat},${lng}`
-  // })
+  const totalRecords = store.getters['totalRecords']
 
   await service
-    .apiGeoFetch(params, 0, props.total)
+    .apiGeoFetch(params, 0, totalRecords)
     .then((response) => {
       const docs = response.response
 
       if (docs) {
         console.log('docs', docs.length)
 
-        loadingText.value = 'Loading markers....'
+        isDataReady.value = true
         buildMarkers(docs)
       }
     })
     .catch()
     .finally(() => {})
-
-  // const batch = 100000
-  // const step = 99999
-  // if (total > 100000) {
-  //   for (let i = 0; i < total; i += batch) {
-  //     await service
-  //       .apiGeoFetch(params, i, i + step)
-  //       .then((response) => {
-  //         const docs = response.response
-
-  //         // buildMarkers(docs)
-  //       })
-  //       .catch()
-  //       .finally(() => {})
-
-  //     function delay(ms) {
-  //       return new Promise((resolve) => setTimeout(resolve, ms))
-  //     }
-
-  //     // Inside loop:
-  //     await delay(1000)
-
-  //   }
-  // }
 }
-
-// function addMarkersInChunks(docs, clusterGroup, chunkSize = 50000) {
-//   let index = 0
-
-//   function processChunk() {
-//     console.log('processChunk.....')
-//     const chunk = docs.slice(index, index + chunkSize)
-
-//     chunk.forEach((doc) => {
-//       const [lat, lon] = doc.location.split(',').map(Number)
-//       const marker = L.marker([lat, lon])
-
-//       marker.on('click', async () => {
-//         await fetchRecord(doc.id, marker)
-//       })
-//       clusterGroup.addLayers(marker)
-//     })
-//     index += chunkSize
-
-//     if (index < docs.length) {
-//       console.log('index', index)
-//       setTimeout(processChunk, 0) // Allow UI thread to breathe
-//     } else {
-//       console.log('addMarkersInChunks done.....')
-//       store.commit('setClusterGroup', clusterGroup)
-//     }
-//   }
-
-//   if (index < docs.length) {
-//     console.log('index', index)
-//     processChunk()
-//   }
-// }
 
 async function fetchRecord(id, marker) {
   popupContent.value = 'Loading...'
@@ -288,11 +236,10 @@ async function buildMarkers(docs) {
   console.log('buildMarkers')
 
   loading.value = true
-  loadingText.value = 'Loading markers...'
 
   await nextTick()
 
-  const map = mapRef.value.leafletObject
+  // const map = mapRef.value.leafletObject
 
   const markers = L.markerClusterGroup()
 
@@ -307,11 +254,88 @@ async function buildMarkers(docs) {
     markers.addLayers(marker)
   })
 
-  map.addLayer(markers)
+  mapRef.value.addLayer(markers)
   console.log('mmarker s added')
+
+  mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
 
   store.commit('setClusterGroup', markers)
   loading.value = false
+}
+
+function buildParams() {
+  const fields = store.getters['fields']
+
+  const scientificName = store.getters['scientificName']
+  const searchMode = store.getters['searchMode']
+  const isFuzzy = store.getters['isFuzzySearch']
+
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
+  const hasCoordinates = store.getters['filterCoordinates']
+  const hasImages = store.getters['filterImage']
+  let searchText = store.getters['searchText']
+  searchText = searchText ? searchText : '*'
+
+  const dataResource = store.getters['dataResource']
+
+  const endDate = store.getters['endDate']
+  const startDate = store.getters['startDate']
+
+  // const collectionGroup = store.getters['collectionGroup']
+
+  const params = new URLSearchParams({
+    text: searchText
+  })
+
+  if (scientificName) {
+    params.set('scientificName', scientificName)
+    params.set('searchMode', searchMode)
+    params.set('fuzzySearch', isFuzzy)
+  }
+
+  if (isType) {
+    params.set('typeStatus', '*')
+  }
+
+  if (isInSweden) {
+    params.set('country', 'Sweden')
+  }
+
+  if (hasImages) {
+    params.set('associatedMedia', '*')
+  }
+
+  if (hasCoordinates) {
+    params.set('lat_long', '*')
+  }
+
+  // if (collectionGroup) {
+  //   params.set('collectionCode', collectionGroup)
+  // }
+
+  if (startDate) {
+    params.set('startDate', startDate)
+  }
+
+  if (endDate) {
+    params.set('endDate', endDate)
+  }
+
+  if (dataResource) {
+    let newValue = dataResource.replace(/'/g, '"')
+    params.set('dataResourceName', newValue)
+  }
+
+  if (fields) {
+    fields
+      .filter((field) => field.text)
+      .forEach((field) => {
+        params.set(field.value, field.text)
+      })
+  }
+  store.commit('setSearchParams', params)
+  return params
 }
 </script>
 <style scoped>

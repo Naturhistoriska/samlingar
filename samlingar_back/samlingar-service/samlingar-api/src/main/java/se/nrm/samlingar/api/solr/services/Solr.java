@@ -84,7 +84,9 @@ public class Solr implements Serializable {
 
     
     private final String createDateKey = "createdDate_dt";
+    
     private final String collectionCodeKey = "collectionCode";
+    
     
     
     
@@ -144,6 +146,8 @@ public class Solr implements Serializable {
 
     public String getChart(String collection, String startDate, String endDate, boolean isYearChart) {
         log.info("getChart : {} -- {}", startDate, endDate);
+        log.info("getChart collection : {} ",  collection);
+        
         gap = isYearChart ? yearGap : monthGap;
         
         try {

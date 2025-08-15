@@ -11,26 +11,9 @@
             <div class="grid">
               <div class="col-6" no-gutters>
                 <CollectionMonthChart v-bind:chart="getMonthData(tab)" />
-
-                <!-- <Suspense>
-                  <template #default>
-                    <async-month-char v-bind:chart="getMonthData(tab)" />
-                  </template>
-                  <template #fallback>
-                    <VueSpinnerDots size="20" color="red" />
-                  </template>
-                </Suspense> -->
               </div>
               <div class="col-6" no-gutters>
                 <CollectionYearChart v-bind:chart="getYearData(tab)" />
-                <!-- <Suspense>
-                  <template #default>
-                    <async-year-chart v-bind:chart="getYearData(tab)" />
-                  </template>
-                  <template #fallback>
-                    <VueSpinnerDots size="20" color="red" />
-                  </template>
-                </Suspense> -->
               </div>
             </div>
           </AccordionContent>
@@ -206,15 +189,18 @@ function getYearData(tab) {
 
 async function onTabClick(tab) {
   console.log('onTabClick tab :  ', tab)
+
   if (active.value.includes(tab)) {
-    getChartData(tab, false)
-    getChartData(tab, true)
+    const collection = `collectionCode: ${tab}`
+    getChartData(collection, tab, false)
+    getChartData(collection, tab, true)
   }
 }
 
-async function getChartData(tab, isYear) {
+async function getChartData(collection, tab, isYear) {
+  console.log('tab', collection, tab)
   await service
-    .apiChart(tab, isYear)
+    .apiChart(collection, isYear)
     .then((response) => {
       const counts = response.facet_counts.facet_ranges.createdDate_dt.counts
       if (isYear) {
@@ -229,6 +215,7 @@ async function getChartData(tab, isYear) {
 }
 
 function setMonthChartData(tab, monthData) {
+  console.log('tab..', tab)
   const cumulativeData = {}
   let key
   for (const [date, value] of Object.entries(monthData)) {
@@ -381,80 +368,11 @@ function setMonthData(tab, month) {
       break
   }
 }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-function buildMonthChartData(collection) {
-  const currentYear = moment().year()
-  const lastYear = currentYear - 1
-  const currentMonth = moment().month()
-
-  const currentYearData = collection.filter((year) => year.val === currentYear)
-  const lastYearData = collection.filter((year) => year.val === lastYear)
-
-  let lastYearMonthData
-  if (lastYearData[0].count > 0) {
-    lastYearMonthData = lastYearData[0].catalogedMonth.buckets
-  } else {
-    lastYearMonthData = new Array()
-  }
-
-  let monthLabel
-  let currentYearMonthData
-  if (currentYearData[0].count > 0) {
-    currentYearMonthData = currentYearData[0].catalogedMonth.buckets
-  } else {
-    currentYearMonthData = new Array()
-  }
-
-  let newMonthData = new Array()
-
-  for (let i = 0; i < 12; i++) {
-    const filterMonth = moment().month(i).format('MMMM').toUpperCase()
-
-    if (i <= currentMonth) {
-      monthLabel = moment().month(i).format('MMMM YYYY').toUpperCase()
-    } else {
-      monthLabel = filterMonth + ' ' + lastYear
-    }
-
-    const month =
-      currentMonth >= i
-        ? currentYearMonthData.filter((month) => month.val === filterMonth)
-        : lastYearMonthData.filter((month) => month.val === filterMonth)
-
-    if (!month || month.length === 0) {
-      newMonthData.push({ val: monthLabel, count: 0 })
-    } else {
-      newMonthData.push({ val: monthLabel, count: month[0].count })
-    }
-  }
-  newMonthData.sort((a, b) => moment(a.val, 'MMM-yy') - moment(b.val, 'MMM-yy'))
-  return newMonthData
-}
 </script>
 <style scoped>
 .p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
   background: var(--p-accordion-header-active-background);
-  color: #cbcad1;
+  color: #838282;
   font-size: 1rem;
 }
 </style>

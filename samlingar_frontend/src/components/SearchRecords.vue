@@ -86,7 +86,7 @@ import ScientificName from './ScientificName.vue'
 import SearchAll from './SearchAll.vue'
 
 const store = useStore()
-const emits = defineEmits(['freeTextSearch', 'resetSerch', 'scientificNameSearch'])
+const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
 
 const dialogVisible = ref(false)
 
@@ -136,7 +136,7 @@ function reset() {
 }
 
 function search() {
-  emits('resetSerch')
+  emits('search')
 }
 </script>
 <style scoped>

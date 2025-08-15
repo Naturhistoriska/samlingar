@@ -60,10 +60,6 @@ export default {
       this.itemSelected = true
     },
 
-    // onPressEnter() {
-    //   this.apiSearch()
-    // },
-
     apiAutoComplete(event) {
       console.log('apiAutoComplete', event.query)
       let searchText = event.query

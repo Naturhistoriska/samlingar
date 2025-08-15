@@ -2,22 +2,12 @@ import "primeicons/primeicons.css"
 import './assets/main.css'
 import '/node_modules/primeflex/primeflex.css'
 
-
-
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 
 
-
-// import 'leaflet.markercluster'
-
-// import 'vue-map-ui/dist/normalize.css'
-// import 'vue-map-ui/dist/style.css'
-// import 'vue-map-ui/dist/theme-all.css'
-
 import { createApp } from 'vue'
-
 
 import router, { entryType, previousRoute, currentRoute } from './router'
 
@@ -101,9 +91,6 @@ import Toolbar from 'primevue/toolbar'
 // })
 
 const app = createApp(App, {
-  // onFreeTextSearch() {
-  //   console.log('expand................')
-  // }
 })
 
 
@@ -161,9 +148,6 @@ app.component('Checkbox', Checkbox)
 app.component('Column', Column)
 app.component('DataTable', DataTable)
 app.component('DataView', DataView)
-
-
-
 
 
 app.component('Dialog', Dialog)

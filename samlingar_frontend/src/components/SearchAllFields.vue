@@ -19,13 +19,11 @@
 <script setup>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
 import InputWithIcon from './baseComponents/InputWithIcon.vue'
 
-// const emits = defineEmits(['freeTextSearch'])
+const emits = defineEmits(['freeTextSearch'])
 
 const store = useStore()
-const router = useRouter()
 
 const icon = ref('pi pi-search')
 const size = ref('small')
@@ -48,10 +46,9 @@ function handleFreeTextSearch(value) {
   store.commit('setDataResource', null)
   store.commit('setDates', null)
 
-  store.commit('setIsUrlPushed', true)
-  router.push('/search')
+  store.commit('setSearchParams', null)
 
-  // emits('freeTextSearch', searchText)
+  emits('freeTextSearch', searchText)
 }
 </script>
 <style scoped>

@@ -104,7 +104,7 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getChart(@QueryParam("collectionCode") String collectionCode, 
             @QueryParam("isYearChart") String isYearChart) { 
-        log.info("getYearChart");
+        log.info("getChart : {} -- {}", collectionCode, isYearChart);
         return Response.ok(logic.getChart(collectionCode, isYearChart)).build(); 
     }
     

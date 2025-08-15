@@ -110,6 +110,7 @@ public class SamlingarLogic {
     
     
     // Search field key 
+    private final String collectionCodeFieldKey = "collectionCode:";
  
     
 //    private int total;
@@ -363,9 +364,10 @@ public class SamlingarLogic {
      
     public String getChart(String collectionCode, String isYearChart) {
         
-        collectionCode = SolrSearchHelper.getInstance().buildSearchCollectionCode(
-                collectionCodeKey, collectionCode); 
-        
+//        collectionCode = SolrSearchHelper.getInstance().buildSearchCollectionCode(
+//                collectionCodeKey, collectionCode); 
+         
+//        collectionCode = collectionCodeFieldKey + collectionCode;
         yearChart = Boolean.parseBoolean(isYearChart);
         startDate = SolrSearchHelper.getInstance().getStartDate(yearChart);  
         endDate = SolrSearchHelper.getInstance().getEndDate();  

@@ -6,7 +6,7 @@
 
 <script setup>
 import Chart from 'primevue/chart'
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()

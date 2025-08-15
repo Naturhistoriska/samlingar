@@ -2,13 +2,17 @@
   <div>
     <div class="grid">
       <div class="col-5" no-gutters>
-        <search-records @resetSerch="resetSearch" />
+        <search-records @search="handleSearch" />
       </div>
       <div class="col-7" no-gutters>
         <Suspense>
           <template #default>
             <keep-alive>
-              <async-map v-bind:total="totalCount" />
+              <async-map
+                v-bind:total="totalCount"
+                v-bind:entry="entryType"
+                v-bind:from="previousRoute?.fullPath"
+              />
             </keep-alive>
           </template>
           <template #fallback>
@@ -32,7 +36,7 @@
   </div>
 </template>
 <script setup>
-import { defineAsyncComponent, getCurrentInstance, onMounted, ref, toRaw, watch } from 'vue'
+import { defineAsyncComponent, onMounted, ref, toRaw } from 'vue'
 import { useStore } from 'vuex'
 import Service from '../Service'
 
@@ -60,42 +64,21 @@ onMounted(async () => {
   console.log('currentRoute:', currentRoute.value?.fullPath)
   console.log('query...:', currentRoute.value?.query)
 
-  const queries = toRaw(currentRoute.value?.query)
-
   const from = previousRoute.value?.fullPath
   const to = currentRoute.value?.fullPath
 
-  let params
-  let doSearch = false
-  if (entryType.value === 'back_forward' && from === '/') {
-    const isUrlPushed = store.getters['isUrlPushed']
-    store.commit('setIsUrlPushed', false)
+  if (entryType.value === 'first-visit' || entryType.value === 'reload') {
+    const queries = toRaw(currentRoute.value?.query)
+    let params = new URLSearchParams({
+      text: '*'
+    })
 
-    console.log('here,..', isUrlPushed)
-
-    if (isUrlPushed) {
-      params = buildParams()
-      doSearch = true
-    }
-  } else {
-    if (entryType.value === 'first-visit' || entryType.value === 'reload') {
-      params = new URLSearchParams({
-        text: '*'
-      })
-      if (queries) {
-        for (const [key, value] of Object.entries(queries)) {
-          params.set(key, value)
-        }
+    if (queries) {
+      for (const [key, value] of Object.entries(queries)) {
+        params.set(key, value)
       }
-      doSearch = true
-      store.commit('setSearchParams', params)
-    } else if (entryType.value === 'internal' && from === '/') {
-      params = buildParams()
-      doSearch = true
     }
-  }
-
-  if (doSearch) {
+    store.commit('setSearchParams', params)
     search(params, 0, 10, true)
   }
 
@@ -131,10 +114,8 @@ function preparaDataExport() {
     .finally(() => {})
 }
 
-function resetSearch() {
-  const params = new URLSearchParams({
-    text: '*'
-  })
+function handleSearch() {
+  const params = buildParams()
   search(params, 0, 10, true)
   store.commit('setSearchParams', params)
 }
