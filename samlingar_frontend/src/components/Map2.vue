@@ -40,7 +40,7 @@ const router = useRouter()
 
 const props = defineProps(['entry', 'from'])
 
-const center = ref([59.0, 15.0])
+let center = ref([59.0, 15.0])
 const zoo = 4
 
 const mapRef = ref(null)
@@ -62,7 +62,7 @@ onMounted(async () => {
     zoomControl: true,
     zoomAnimation: false
   })
-    .setView([59.0, 15.0], 6)
+    .setView(center.value, 6)
     .setZoom(zoo)
 
   L.tileLayer(tileUrl, {
@@ -83,7 +83,7 @@ onMounted(async () => {
     const isUrlPush = store.getters['isUrlPush']
     if (isUrlPush) {
       const params = buildParams()
-      await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+      await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
     }
   } else {
     onMapReady()
@@ -110,20 +110,7 @@ watch(
     const params = store.getters['searchParams']
 
     removeOldMarkers()
-    fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
-
-    // initialMap.value.eachLayer((layer) => {
-    //   if (layer instanceof L.Marker) {
-    //     layer.remove()
-    //   } else if (layer instanceof L.Circle) {
-    //     layer.remove()
-    //   } else {
-    //     layer.remove()
-    //   }
-    // })
-    // resetMap()
-
-    // addClusterMarkers()
+    fetchAndRender(params, { lat: 59.0, lng: 15.0 })
   }
 )
 
@@ -133,7 +120,11 @@ function onMapReady() {
   if (markers) {
     mapRef.value.addLayer(markers)
   }
-  mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
+
+  const hasMarkers = hasMarkersInView(markers)
+  if (!hasMarkers) {
+    mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
+  }
 }
 
 function removeOldMarkers() {
@@ -257,10 +248,22 @@ async function buildMarkers(docs) {
   mapRef.value.addLayer(markers)
   console.log('mmarker s added')
 
-  mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
+  const hasMarkers = hasMarkersInView(markers)
+  if (!hasMarkers) {
+    mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
+  }
 
   store.commit('setClusterGroup', markers)
   loading.value = false
+}
+
+function hasMarkersInView(group) {
+  if (!mapRef || !group) return false
+
+  const mapBounds = mapRef.value.getBounds() // current map view bounds
+  const markersInView = group.getLayers().filter((marker) => mapBounds.contains(marker.getLatLng()))
+
+  return markersInView.length > 0
 }
 
 function buildParams() {
