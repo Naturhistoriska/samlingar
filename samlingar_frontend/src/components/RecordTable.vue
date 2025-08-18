@@ -403,14 +403,6 @@ async function loadRecordsLazy(first, rows) {
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
-      if (total > 0) {
-        const geofacet = response.facets.map.buckets
-
-        store.commit('setGeoData', geofacet)
-      } else {
-        store.commit('setGeoData', null)
-      }
-
       setTimeout(() => {
         loading.value = false
       }, 2000)
@@ -547,11 +539,11 @@ function buildParams() {
   return params
 }
 
-function onSelect() {
-  store.commit('setSelectedRecord', selectedRecord)
+// function onSelect() {
+//   store.commit('setSelectedRecord', selectedRecord)
 
-  router.push(`/record/${selectedRecord.value.id}`)
-}
+//   router.push(`/record/${selectedRecord.value.id}`)
+// }
 
 function selectRow(data) {
   selectedRecord.value = data
@@ -565,6 +557,7 @@ const onPage = async (event) => {
 
   console.log('onPage', first, rows)
 
+  params.value = buildParams()
   loadRecordsLazy(first, rows)
 }
 

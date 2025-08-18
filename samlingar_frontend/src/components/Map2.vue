@@ -104,7 +104,7 @@ watch(
 )
 
 watch(
-  () => store.getters['totalRecords'],
+  () => store.getters['searchParams'],
   () => {
     console.log('map data changed..')
     const params = store.getters['searchParams']
