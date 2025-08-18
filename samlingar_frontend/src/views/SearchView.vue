@@ -22,12 +22,6 @@
       </div>
     </div>
 
-    <div>
-      <p>Entry Type: {{ entryType }}</p>
-      <p>Previous: {{ previousRoute?.fullPath || '(none)' }}</p>
-      <p>Current: {{ currentRoute?.fullPath }}</p>
-    </div>
-
     <div class="grid">
       <div class="col-12" no-gutters>
         <Records @download="download" @exportData="preparaDataExport" @search="search" />

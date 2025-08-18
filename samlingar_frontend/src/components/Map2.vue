@@ -32,6 +32,10 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import 'leaflet.markercluster'
 
+import markerIconUrl from '/node_modules/leaflet/dist/images/marker-icon.png'
+import markerIconRetinaUrl from '/node_modules/leaflet/dist/images/marker-icon-2x.png'
+import markerShadowUrl from '/node_modules/leaflet/dist/images/marker-shadow.png'
+
 import Service from '../Service'
 const service = new Service()
 
@@ -67,9 +71,14 @@ onMounted(async () => {
 
   L.tileLayer(tileUrl, {
     minZoom: 0,
-    maxZoom: 7,
+    maxZoom: 17,
     attribution
   }).addTo(mapRef.value)
+
+  L.Icon.Default.prototype.options.iconUrl = markerIconUrl
+  L.Icon.Default.prototype.options.iconRetinaUrl = markerIconRetinaUrl
+  L.Icon.Default.prototype.options.shadowUrl = markerShadowUrl
+  L.Icon.Default.imagePath = '' // necessary to avoid Leaflet adds some prefix to image path.
 
   await new Promise((r) => setTimeout(r, 1500))
 
@@ -88,6 +97,7 @@ onMounted(async () => {
   } else {
     onMapReady()
   }
+  addClustringPopup()
 })
 
 watch(
@@ -113,6 +123,60 @@ watch(
     fetchAndRender(params, { lat: 59.0, lng: 15.0 })
   }
 )
+
+function addClustringPopup() {
+  console.log('addClustringPopup')
+
+  const SPIDERFY_THRESHOLD = 3
+
+  mapRef.value.eachLayer((layer) => {
+    if (layer instanceof L.MarkerClusterGroup) {
+      layer.on('clusterclick', (e) => {
+        // Get the actual cluster clicked
+        const cluster = e.propagatedFrom || e.target
+        const children = cluster.getAllChildMarkers()
+
+        const maxZoom = mapRef.value.getMaxZoom()
+        const childCount = children.length
+
+        if (childCount <= SPIDERFY_THRESHOLD) {
+          cluster.spiderfy()
+        } else {
+          mapRef.value.fitBounds(cluster.getBounds())
+
+          if (mapRef.value.getZoom() === maxZoom) {
+            const data = children[0]
+            const locality = data.myData.locality
+
+            const content =
+              `<b>Total: ${children.length} </b> <br> Locality: ${locality} [ ${data._latlng.lat}, ${data._latlng.lng} ]<br><br>` +
+              children.map((m, i) => `Scientific name:  ${m.myData.scientificName} `).join('<br>')
+
+            // Open popup at cluster position
+            L.popup().setLatLng(cluster.getLatLng()).setContent(content).openOn(mapRef.value)
+
+            e.originalEvent.preventDefault()
+            e.originalEvent.stopPropagation()
+          }
+        }
+      })
+    }
+  })
+}
+
+async function getDataById(id) {
+  await service
+    .apiIdSearch(id)
+    .then((response) => {
+      console.log(response)
+      if (response) {
+        return response.response[0]
+      }
+      setTimeout(() => {}, 2000)
+    })
+    .catch()
+    .finally(() => {})
+}
 
 function onMapReady() {
   const markers = store.getters['clusterGroup']
@@ -171,7 +235,6 @@ async function fetchRecord(id, marker) {
   await service
     .apiIdSearch(id)
     .then((response) => {
-      console.log(response)
       if (response) {
         const data = response.response[0]
 
@@ -230,14 +293,17 @@ async function buildMarkers(docs) {
 
   await nextTick()
 
-  // const map = mapRef.value.leafletObject
-
-  const markers = L.markerClusterGroup()
+  const markers = L.markerClusterGroup({
+    spiderfyOnMaxZoom: false,
+    showCoverageOnHover: true,
+    zoomToBoundsOnClick: false
+  })
 
   // addMarkersInChunks(docs, markers)
   docs.forEach((doc) => {
     const [lat, lon] = doc.location.split(',').map(Number)
     const marker = L.marker([lat, lon])
+    marker.myData = { id: doc.id, locality: doc.locality, scientificName: doc.scientificName }
 
     marker.on('click', async () => {
       await fetchRecord(doc.id, marker)
@@ -337,7 +403,7 @@ function buildParams() {
         params.set(field.value, field.text)
       })
   }
-  store.commit('setSearchParams', params)
+  //store.commit('setSearchParams', params)
   return params
 }
 </script>

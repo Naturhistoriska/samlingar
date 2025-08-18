@@ -395,6 +395,8 @@ public class Solr implements Serializable {
         query = new SolrQuery(text); 
         query.addField(idKey); 
         query.addField(locationKey); 
+        query.addField(localityKey); 
+        query.addField(scientificNameKey); 
         query.addFilterQuery(bbox);
         query.setParam(sfield, locationKey);
         query.setParam(ptKey, pt); 
