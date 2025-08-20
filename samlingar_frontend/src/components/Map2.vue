@@ -20,10 +20,6 @@
 
 <script setup>
 import { nextTick, onMounted, ref, watch } from 'vue'
-// import { previousRoute } from '../router'
-
-// import { entryType, previousRoute, currentRoute } from '@/router'
-
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -94,6 +90,7 @@ onMounted(async () => {
       const params = buildParams()
       await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
     }
+    store.commit('isUrlPush', false)
   } else {
     onMapReady()
   }
@@ -162,20 +159,6 @@ function addClustringPopup() {
       })
     }
   })
-}
-
-async function getDataById(id) {
-  await service
-    .apiIdSearch(id)
-    .then((response) => {
-      console.log(response)
-      if (response) {
-        return response.response[0]
-      }
-      setTimeout(() => {}, 2000)
-    })
-    .catch()
-    .finally(() => {})
 }
 
 function onMapReady() {
