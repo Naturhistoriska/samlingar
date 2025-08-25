@@ -24,7 +24,7 @@
 
     <div class="grid">
       <div class="col-12" no-gutters>
-        <Records @download="download" @exportData="preparaDataExport" @search="search" />
+        <records-tabs @download="download" @exportData="preparaDataExport" @search="search" />
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@ import { useStore } from 'vuex'
 import Service from '../Service'
 
 import SearchRecords from '../components/SearchRecords.vue'
-import Records from '../components/RecordsTabs.vue'
+import RecordsTabs from '../components/RecordsTabs.vue'
 
 import { entryType, previousRoute, currentRoute } from '@/router'
 
@@ -53,13 +53,8 @@ let totalCount = ref()
 onMounted(async () => {
   console.log('onMounted SearchView')
 
-  console.log('entryType', entryType.value)
-  console.log('previousRoute:', previousRoute.value?.fullPath)
-  console.log('currentRoute:', currentRoute.value?.fullPath)
-  console.log('query...:', currentRoute.value?.query)
-
-  const from = previousRoute.value?.fullPath
-  const to = currentRoute.value?.fullPath
+  // const from = previousRoute.value?.fullPath
+  // const to = currentRoute.value?.fullPath
 
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
     const queries = toRaw(currentRoute.value?.query)
@@ -91,7 +86,7 @@ function download() {
 function preparaDataExport() {
   loading.value = true
   const totalRecords = store.getters['totalRecords']
-  let params = buildParams()
+  let params = buildParams(false)
 
   service
     .apiPreparaExport(params, totalRecords)
@@ -109,7 +104,7 @@ function preparaDataExport() {
 }
 
 function handleSearch() {
-  const params = buildParams()
+  const params = buildParams(true)
   search(params, 0, 10, true)
   store.commit('setSearchParams', params)
 }
@@ -148,7 +143,7 @@ async function search(params, start, numPerPage, saveData) {
     .finally(() => {})
 }
 
-function buildParams() {
+function buildParams(saveParams) {
   const fields = store.getters['fields']
 
   const scientificName = store.getters['scientificName']
@@ -219,7 +214,11 @@ function buildParams() {
         params.set(field.value, field.text)
       })
   }
-  store.commit('setSearchParams', params)
+
+  if (saveParams) {
+    store.commit('setSearchParams', params)
+  }
+
   return params
 }
 

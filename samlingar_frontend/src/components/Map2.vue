@@ -90,7 +90,7 @@ onMounted(async () => {
       const params = buildParams()
       await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
     }
-    store.commit('isUrlPush', false)
+    store.commit('setIsUrlPush', false)
   } else {
     onMapReady()
   }
