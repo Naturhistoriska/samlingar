@@ -1,24 +1,29 @@
 package se.nrm.samlingar.api.logic;
-
-import ch.hsr.geohash.GeoHash; 
-import java.io.IOException; 
-import java.io.StringReader;
-import java.io.StringWriter;  
+ 
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringReader; 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import javax.json.JsonObject; 
 import javax.json.JsonReader; 
 import javax.ws.rs.core.MultivaluedMap;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j; 
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter; 
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils; 
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import se.nrm.samlingar.api.solr.services.Solr;
 import se.nrm.samlingar.api.solr.services.SolrService;
 import se.nrm.samlingar.api.utils.SolrSearchHelper;
@@ -107,6 +112,10 @@ public class SamlingarLogic {
     
     private final String sortKey = "sort";
     
+    private final String utf_8 = "UTF-8"; 
+    
+    private final String jsonName = "results.json";
+    private final String csvFileName = "results.csv";
     
     
     // Search field key 
@@ -475,91 +484,172 @@ public class SamlingarLogic {
         return array.toString();
     }
     
-    
-    
-    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    public String getMonthChart(String collectionCode) {
-//        collectionCode = SolrSearchHelper.getInstance().buildSearchCollectionCode(
-//                collectionCodeKey, collectionCode);
-//        
-//        startDate = SolrSearchHelper.getInstance().getFirstDayOfLastTwelveMohth();
-//        endDate = SolrSearchHelper.getInstance().getTomorrow();
-        
-//        return Boolean.parseBoolean(isYearChart) ? solr.getYearChart(collectionCode, startDate, endDate) :
-//                solr.getMonthChart(collectionCode, startDate, endDate);
-//    }
-    
-//    public String getYearChart(String collectionCode) { 
-//        collectionCode = SolrSearchHelper.getInstance().buildSearchCollectionCode(
-//                collectionCodeKey, collectionCode);
-//        
-//        startDate = SolrSearchHelper.getInstance().getFirstDayOfLastTenYears();  
-//        endDate = SolrSearchHelper.getInstance().getTomorrow();  
-//        
-//        return solr.getYearChart(collectionCode, startDate, endDate);
+    public String export(MultivaluedMap<String, String> queryParams) {
+        int numperOfRows = 0;
 
-//        
-//        return solr.getMonthChart(collectionCode, startDate, endDate);
-//    }
+        Map<String, String> paramMap = new HashMap<>();
+        text = wildCard;
+        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+             
+            switch (entry.getKey()) {
+                case scientificNameKey: 
+                    scientificName = queryParams.get(scientificNameKey).get(0); 
+                    break;
+                case textKey: 
+                    text = queryParams.get(textKey).get(0); 
+                    break;
+                case startDateKey: 
+                    startDate = queryParams.get(startDateKey).get(0); 
+                    break;
+                case endDateKey: 
+                    endDate = queryParams.get(endDateKey).get(0); 
+                    break;
+                case startKey:
+                    start = Integer.parseInt(queryParams.get(startKey).get(0)); 
+                    break;
+                case numRowsKey:
+                    numperOfRows = Integer.parseInt(queryParams.get(numRowsKey).get(0));
+                    break;  
+                case fuzzySearch:
+                    isFuzzySearch = Boolean.parseBoolean(queryParams.get(fuzzySearch).get(0));
+                    break;
+                case sortKey:
+                    sort =  queryParams.get(sortKey).get(0);
+                    break;
+    
+                default:
+                    paramMap.put(entry.getKey(), entry.getValue().get(0));
+                    break;
+            }
+        }
+        
+        
+        if(scientificName != null) {
+            scientificName = SolrSearchHelper.getInstance().buildSearchText(
+                scientificName, scientificNameKey, isFuzzySearch);
+        }
+        if(text != null && !text.equals(wildCard)) {
+            text = SolrSearchHelper.getInstance().buildSearchText(
+                text, textKey, true);
+        }  
+        
+        dateRangeSb = new StringBuilder();
+        if(!StringUtils.isBlank(startDate)) {
+            dateRangeSb.append(eventDateKey);
+            dateRangeSb.append(leftBlacket);
+            dateRangeSb.append(startDate);
+            
+            if(!StringUtils.isBlank(endDate)) {
+                dateRangeSb.append(to);
+                dateRangeSb.append(endDate);
+                dateRangeSb.append(rightBlacket);
+            } else {
+                dateRangeSb.append(toWithStar);
+            }
+            dateRange = dateRangeSb.toString().trim();
+        } else {
+            dateRange = null;
+        } 
+        
+//        String exportResult = solr.export(paramMap, text, scientificName, dateRange, 0, numperOfRows, sort); 
+
+//        return buildZipButes(exportResult);
+
+
+        return solr.export(paramMap, text, scientificName, dateRange, 0, numperOfRows, sort); 
+            
+    }
+    
+      public byte[] convertSolrDocsToCsvZip(SolrDocumentList docs) throws IOException {
+        if (docs == null || docs.isEmpty()) {
+            throw new IllegalArgumentException("SolrDocumentList is empty");
+        }
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(zipOut, "UTF-8"))) {
+
+            // Create a new entry for the CSV file inside the ZIP
+            ZipEntry zipEntry = new ZipEntry(csvFileName);
+            zipOut.putNextEntry(zipEntry);
+
+            // Extract header fields from the first document
+            Set<String> headers = (Set<String>) docs.get(0).getFieldNames();
+
+            // Create CSVPrinter for writing CSV
+            CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
+
+            // Write header row
+            csvPrinter.printRecord(headers);
+
+            // Write document rows
+            for (SolrDocument doc : docs) {
+                for (String header : headers) {
+                    Object value = doc.getFieldValue(header);
+                    csvPrinter.print(value != null ? value.toString() : "");
+                }
+                csvPrinter.println();
+            }
+
+            csvPrinter.flush();
+            zipOut.closeEntry();
+        }
+
+        return byteArrayOutputStream.toByteArray();
+    }
+
     
     
     
+    private byte[] buildZipButes(String jsonArrayString) {
+
+        // 🔹 3. Write JSON string to a ZIP in memory
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try ( ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream)) {
+            ZipEntry entry = new ZipEntry(jsonName);
+            zipOut.putNextEntry(entry);
+            zipOut.write(jsonArrayString.getBytes(utf_8));
+            zipOut.closeEntry();
+        } catch (IOException ex) {
+            log.error(ex.getMessage());
+        }
+
+        return byteArrayOutputStream.toByteArray(); 
+    }
+
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
     
     
      

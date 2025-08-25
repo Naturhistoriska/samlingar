@@ -127,10 +127,12 @@ public class SamlingarService {
             notes = "Return data in json",
             response = String.class
     )
-    @Produces(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON) 
     public Response download(@Context UriInfo uriInfo ) {  
+        log.info("download");
+          
         return Response.ok(logic
-                .download(uriInfo.getQueryParameters())).build();
+                .export(uriInfo.getQueryParameters())).build();
     }
     
     @GET
