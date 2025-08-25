@@ -20,6 +20,8 @@ public class InitialProperties implements Serializable {
     private String username;
     private String password;
 
+    private final String slash = "/";
+    
     public InitialProperties() {
     }
 
@@ -45,8 +47,15 @@ public class InitialProperties implements Serializable {
         if (solrPath == null || solrCore == null) {
             throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
         }
-        return solrPath + "/" + solrCore;
+        return solrPath + slash + solrCore;
     } 
+    
+    public String getCore() {
+        if (solrCore == null ) {
+            throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
+        }
+        return solrCore;
+    }
  
     public String getUsername() {
         if (username == null) {
