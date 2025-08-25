@@ -1,8 +1,17 @@
 <template>
   <div>
-    <div v-if="!dataPrepared" class="preparaDataLink" @click="exportData">
+    <div
+      v-if="!dataPrepared"
+      :class="exportCss"
+      @click="exportData"
+      :style="{
+        pointerEvents: isLoading ? 'none' : 'auto',
+        cursor: isLoading ? 'none' : 'pointer',
+        opacity: isLoading ? 0.5 : 1
+      }"
+    >
       <small>
-        <i>{{ $t('exportData.export') }}</i>
+        <i>{{ exportText }}</i>
       </small>
       <small style="padding-left: 10px"><i class="pi pi-file-export"></i></small>
     </div>
@@ -18,23 +27,20 @@
       :before-generate="startDownload"
       style="color: var(--p-emerald-500); font-size: 14px; cursor: pointer; padding-left: 8px"
     >
-      <small>Download Data</small>
+      <small>{{ downLoadText }}</small>
       <small style="padding-left: 10px"><i class="pi pi-download"></i></small>
     </downloadexcel>
-
-    <!-- <ProgressSpinner
-      v-if="isLoading"
-      aria-label="Loading"
-      style="width: 50px; height: 50px; position: fixed; padding-left: 20%; z-index: 200"
-      strokeWidth="8"
-      fill="transparent"
-    /> -->
+    <VueSpinnerDots v-if="isLoading" size="20" color="red" />
   </div>
 </template>
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import downloadexcel from 'vue-json-excel3'
 import { useStore } from 'vuex'
+
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const store = useStore()
 
@@ -54,6 +60,18 @@ watch(
     }, 2000)
   }
 )
+
+const downLoadText = computed(() => {
+  return isLoading.value ? t('exportData.downloading') : t('exportData.download')
+})
+
+const exportText = computed(() => {
+  return isLoading.value ? t('exportData.prepareData') : t('exportData.export')
+})
+
+const exportCss = computed(() => {
+  return isLoading.value ? 'fade-in-text' : 'preparaDataLink'
+})
 
 let json_fields = {
   'Collection Name': 'collectionName',
@@ -103,11 +121,26 @@ function downloadFile() {
 .preparaDataLink {
   font-size: 14px;
   text-decoration: underline;
-  cursor: pointer !important;
+  /* cursor: pointer !important; */
 }
 .preparaDataLink:hover {
   color: var(--p-emerald-500) !important;
   font-size: 15px;
   text-decoration: none;
+}
+
+.fade-in-text {
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

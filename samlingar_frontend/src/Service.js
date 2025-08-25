@@ -61,6 +61,15 @@ export default class Service {
     return response.data
   }
 
+    async apiPreparaExport(params, total) {
+    let url = `${samlingApi}/download?${params.toString()}&numRows=${total}`
+
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+
   async apiPreparaExport(params, total) {
     let url = `${samlingApi}/download?${params.toString()}&numRows=${total}&sort=createdDate_dt desc`
 
