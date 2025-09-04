@@ -198,7 +198,7 @@ const fetchAndRender = async (params, { lat, lng }) => {
   await service
     .apiGeoFetch(params, 0, totalRecords)
     .then((response) => {
-      const docs = response.response
+      const docs = response
 
       if (docs) {
         console.log('docs', docs.length)
