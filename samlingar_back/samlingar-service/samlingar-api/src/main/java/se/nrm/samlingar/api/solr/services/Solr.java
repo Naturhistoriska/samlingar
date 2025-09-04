@@ -1,23 +1,14 @@
 package se.nrm.samlingar.api.solr.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException; 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileWriter;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.time.Instant; 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;  
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -26,10 +17,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
-import javax.ws.rs.core.StreamingOutput;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -38,8 +26,8 @@ import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
-import org.apache.solr.client.solrj.response.QueryResponse;  
-import org.apache.solr.common.SolrDocumentList; 
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocumentList;
 import se.nrm.samlingar.api.logic.InitialProperties;
 import se.nrm.samlingar.api.utils.SolrSearchHelper;
 
@@ -64,7 +52,6 @@ public class Solr implements Serializable {
     private final String colon = ":";
     private final String searchAll = "*:*";
     private final String star = "*";
-  
 
     private final String geohashKey = "point-1";
 
@@ -102,22 +89,11 @@ public class Solr implements Serializable {
     private final String dKey = "d";
 
     private final String idSort = "id asc";
-    private final String returnFields = "id, catalogNumber, scientificName, lat_long, locality";
-
-    private final String exportPath = "/export?q=";
-    private final String flKey = "&fl=";
-    private final String fqKey = "&fq=";
-    private final String sortKey = "&sort=";
 
     private final String responseKey = "response";
 
     private final String cursorMarkKey = "cursorMark";
-    
-    private final String rowsKey = "rows";
-    private final String sort = "sort";
-    
 
-    
     private final int maxExport = 50000;
     private final int batchSize = 1000;
 
@@ -181,7 +157,6 @@ public class Solr implements Serializable {
                 client.close();
             } catch (IOException ex) {
                 log.error(ex.getMessage());
-
             }
         }
     }
@@ -281,7 +256,8 @@ public class Solr implements Serializable {
     }
 
     public String search(Map<String, String> paramMap, String text, String scientificName,
-            String locality, String dateRange, String facets, int start, int numPerPage, String sort) {
+            String locality, String dateRange, String facets,
+            int start, int numPerPage, String sort) {
 
         sort = sort == null ? defaultSort : sort;
 
@@ -341,49 +317,54 @@ public class Solr implements Serializable {
         }
     }
 
-    public String download(Map<String, String> paramMap, String text, String scientificName,
-            String dateRange, int start, int rows, String sort) {
-
-        sort = sort == null ? defaultSort : sort;
-        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)
-                .setOffset(start)
-                .setLimit(rows)
-                .setSort(sort);
-
-        if (!StringUtils.isBlank(scientificName)) {
-            jsonRequest.withFilter(scientificName);
-        }
-
-        if (!StringUtils.isBlank(dateRange)) {
-            jsonRequest.withFilter(dateRange);
-        }
-
-        paramMap.forEach((key, value) -> {
-            sb = new StringBuilder();
-            sb.append(key)
-                    .append(colon)
-                    .append(value);
-            jsonRequest.withFilter(sb.toString());
-        });
-
-        fields = SolrSearchHelper.getInstance().buildDataExportFields();
-
-        fields.stream()
-                .forEach(field -> {
-                    jsonRequest.returnFields(field);
-                });
-
-        try {
-            response = jsonRequest.process(client);
-//            response = request.process(client);
-        } catch (SolrServerException | IOException ex) {
-            log.error(ex.getMessage());
-            return null;
-        }
-        return response.jsonStr();
-    }
-
+//    public String download(Map<String, String> paramMap, String text, String scientificName,
+//            String dateRange, int start, int rows, String sort) {
+//
+//        sort = sort == null ? defaultSort : sort;
+//        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+//                .setQuery(text)
+//                .setOffset(start)
+//                .setLimit(rows)
+//                .setSort(sort);
+//
+//        if (!StringUtils.isBlank(scientificName)) {
+//            jsonRequest.withFilter(scientificName);
+//        }
+//
+//        if (!StringUtils.isBlank(dateRange)) {
+//            jsonRequest.withFilter(dateRange);
+//        }
+//
+//        paramMap.forEach((key, value) -> {
+//            sb = new StringBuilder();
+//            sb.append(key)
+//                    .append(colon)
+//                    .append(value);
+//            jsonRequest.withFilter(sb.toString());
+//        });
+//
+//        fields = SolrSearchHelper.getInstance().buildDataExportFields();
+//
+//        fields.stream()
+//                .forEach(field -> {
+//                    jsonRequest.returnFields(field);
+//                });
+//
+//        try {
+//            response = jsonRequest.process(client);
+////            response = request.process(client);
+//        } catch (SolrServerException | IOException ex) {
+//            log.error(ex.getMessage());
+//            return null;
+//        } finally {
+//            try {
+//                client.close();
+//            } catch (IOException ex) {
+//                log.error(ex.getMessage());
+//            }
+//        }
+//        return response.jsonStr();
+//    }
     private void buildDownloadJson(String jsonString, JsonArrayBuilder builder) {
 
         JsonReader jsonReader;
@@ -401,120 +382,173 @@ public class Solr implements Serializable {
 
         jsonReader.close();
     }
-    
-    
-//    public String export(Map<String, String> paramMap, String text,
-//            String scientificName, String dateRange, int start, int rows, String sort) throws SolrServerException, IOException {
-//        log.info("export : {}", text);
-//         
-//        try ( SolrClient solrClient = new HttpSolrClient.Builder(properties.getSolrURL()).build()) {
-//
-//            List<String> headerFields = new ArrayList<>();
-//        
-//            String cursorMark = CursorMarkParams.CURSOR_MARK_START;
-//            boolean done = false;
-//
-//            File outputFile = new File("solr-export.csv");
-//            try ( BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));  CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)) {
-// 
-//
-//                while (!done) {
-//                    // 🔍 Build JSON query with cursorMark
-//                    JsonQueryRequest jsonQuery = new JsonQueryRequest()
-//                            .setQuery(text)
-//                            .withParam(cursorMarkKey, cursorMark)
-//                            .setLimit(batchSize)
-//                            .setSort(idSort); 
-//
-//                    response = jsonQuery.process(solrClient);
-//                    SolrDocumentList docs = response.getResults();
-//
-//                     if (csvPrinter == null && !docs.isEmpty()) {
-//                        // Get headers from first doc
-//                        headerFields = new ArrayList<>(docs.get(0).getFieldNames());
-//                        csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headerFields.toArray(new String[0])));
-//                    }
-//
-//                    if (csvPrinter != null) {
-//                        for (SolrDocument doc : docs) {
-//                            List<String> row = new ArrayList<>();
-//                            for (String header : headerFields) {
-//                                Object value = doc.getFieldValue(header);
-//                                row.add(value != null ? value.toString() : "");
-//                            }
-//                            csvPrinter.printRecord(row);
-//                        }
-//                        csvPrinter.flush();
-//                    }
-//
-//                    String nextCursorMark = response.getNextCursorMark();
-//                    if (cursorMark.equals(nextCursorMark)) {
-//                        done = true;
-//                    }
-//                    cursorMark = nextCursorMark;
-//                }
-//
-//                System.out.println("Exported CSV to: " + outputFile.getAbsolutePath());
-//            }
-//        }
-//        return null;
-//    }
-    
-    
-  
+
     public String export(Map<String, String> paramMap, String text,
-            String scientificName, String dateRange, int start, int rows, String sort) {
+            String scientificName, String locality, String dateRange,
+            int start, int rows, String sort) {
         log.info("export : {}", text);
 
         JsonArrayBuilder builder = Json.createArrayBuilder();
         int totalRowsToExport = rows >= maxExport ? maxExport : rows;
-         
+
         int totalExported = 0;
-        
+
         String cursorMark = star;
         boolean done = false;
-         
-        fields = SolrSearchHelper.getInstance().buildDataExportFields();
-        
-        try {
-             final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)
-                .setOffset(start)
-                .setLimit(batchSize)
-                .setSort(idSort);
-  
-            fields.stream()
-                .forEach(field -> {
-                    jsonRequest.returnFields(field);
-                });
 
-            while (!done && totalExported < totalRowsToExport) { 
-                
+        fields = SolrSearchHelper.getInstance().buildDataExportFields();
+
+        try {
+            final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                    .setQuery(text)
+                    .setOffset(start)
+                    .setLimit(batchSize)
+                    .setSort(idSort);
+
+            if (!StringUtils.isBlank(scientificName)) {
+                jsonRequest.withFilter(scientificName);
+            }
+
+            if (!StringUtils.isBlank(locality)) {
+                jsonRequest.withFilter(locality);
+            }
+
+            if (!StringUtils.isBlank(dateRange)) {
+                jsonRequest.withFilter(dateRange);
+            }
+
+            paramMap.forEach((key, value) -> {
+                sb = new StringBuilder();
+                sb.append(key)
+                        .append(colon)
+                        .append(value);
+                jsonRequest.withFilter(sb.toString());
+            });
+
+            fields.stream()
+                    .forEach(field -> {
+                        jsonRequest.returnFields(field);
+                    });
+
+            while (!done && totalExported < totalRowsToExport) {
+
                 jsonRequest.withParam(cursorMarkKey, cursorMark);
-        
-                response = jsonRequest.process(client);  
+
+                response = jsonRequest.process(client);
                 buildDownloadJson(response.jsonStr(), builder);
- 
+
                 String nextCursorMark = response.getNextCursorMark();
 
                 totalExported += batchSize;
                 log.info("totalExported : {}", totalExported);
- 
+
                 if (cursorMark.equals(nextCursorMark)) {
                     done = true;
                 }
                 cursorMark = nextCursorMark;
 
-            } 
+            }
         } catch (JsonProcessingException ex) {
             log.error(ex.getMessage());
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
         }
         JsonArray array = builder.build();
         log.info("size : {}", array.size());
-         
+
+        return array.toString();
+    }
+
+    public String geojson1(Map<String, String> paramMap, String text, String scientificName,
+            String locality, String dateRange, String pt, int start, int rows) {
+        log.info("geojson... {} -- {}", start, rows);
+
+        int totalExported = 0;
+
+        String cursorMark = star;
+        boolean done = false;
         
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest();
+        jsonRequest.setQuery(text); 
+        jsonRequest.setLimit(batchSize);
+        jsonRequest.returnFields(idKey);
+        jsonRequest.returnFields(locationKey);
+        jsonRequest.returnFields(localityKey);
+        jsonRequest.returnFields(scientificNameKey);
+        jsonRequest.withParam(ptKey, pt);
+        jsonRequest.withParam(sfield, locationKey);
+        jsonRequest.withParam(dKey, radiusKm);
+        jsonRequest.withFilter(bbox);
+        jsonRequest.withParam("sort", "geodist() asc, id asc");
+
+        jsonRequest.setOffset(start);
+        jsonRequest.setLimit(rows);
+//        jsonRequest.setSort(idKey);
+
+        if (!StringUtils.isBlank(scientificName)) {
+            jsonRequest.withFilter(scientificName);
+        }
+
+        if (!StringUtils.isBlank(locality)) {
+            jsonRequest.withFilter(locality);
+        }
+
+        if (!StringUtils.isBlank(dateRange)) {
+            jsonRequest.withFilter(dateRange);
+        }
+
+        paramMap.forEach((key, value) -> {
+            sb = new StringBuilder();
+            sb.append(key)
+                    .append(colon)
+                    .append(value);
+            jsonRequest.withFilter(sb.toString());
+        });
+
+        try {
+            
+             while (!done) {
+
+                jsonRequest.withParam(cursorMarkKey, cursorMark);
+
+                response = jsonRequest.process(client);
+                buildDownloadJson(response.jsonStr(), builder);
+
+                String nextCursorMark = response.getNextCursorMark();
+
+                totalExported += batchSize;
+                log.info("totalExported : {}", totalExported);
+
+                if (cursorMark.equals(nextCursorMark)) {
+                    done = true;
+                }
+                cursorMark = nextCursorMark; 
+            }
+             
+//            response = jsonRequest.process(client);
+//            log.info("simplesearch what... {}", jsonResponse);
+//            return response.jsonStr();
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
+        }
+        JsonArray array = builder.build();
+        log.info("size : {}", array.size());
+
         return array.toString();
     }
 
@@ -560,6 +594,12 @@ public class Solr implements Serializable {
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
         }
 
         return response.jsonStr();
