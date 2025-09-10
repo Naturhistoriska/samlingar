@@ -8,13 +8,15 @@
         <Suspense>
           <template #default>
             <keep-alive>
-              <async-map
+              <async-map />
+            </keep-alive>
+          </template>
+
+          <!-- <async-map
                 v-bind:total="totalCount"
                 v-bind:entry="entryType"
                 v-bind:from="previousRoute?.fullPath"
-              />
-            </keep-alive>
-          </template>
+              /> -->
           <template #fallback>
             <VueSpinnerDots size="20" color="red" />
           </template>
@@ -44,7 +46,8 @@ const store = useStore()
 const service = new Service()
 
 const AsyncMap = defineAsyncComponent({
-  loader: () => import('../components/Map2.vue')
+  loader: () => import('../components/NewMap.vue')
+  // loader: () => import('../components/Map2.vue')
 })
 
 let loading = ref(true)

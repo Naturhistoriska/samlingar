@@ -1,4 +1,4 @@
-package se.nrm.samlingar.api.utils;
+    package se.nrm.samlingar.api.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

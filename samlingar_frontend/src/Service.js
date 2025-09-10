@@ -61,14 +61,20 @@ export default class Service {
     return response.data
   }
 
-    async apiPreparaExport(params, total) {
+  async apiHeatmap(params, start, rows) {
+    let url = `${samlingApi}/heatmap?${params.toString()}&start=${start}&numPerPage=${rows}`
+    const response = await axios.get(url)
+
+    return response.data
+  }
+
+  async apiPreparaExport(params, total) {
     let url = `${samlingApi}/download?${params.toString()}&numRows=${total}`
 
     const response = await axios.get(url)
 
     return response.data
   }
-
 
   async apiPreparaExport(params, total) {
     let url = `${samlingApi}/download?${params.toString()}&numRows=${total}&sort=createdDate_dt desc`
@@ -146,36 +152,33 @@ export default class Service {
     return response.data
   }
 
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   // SBDI
   async autoComplete(searchText, start, rows) {

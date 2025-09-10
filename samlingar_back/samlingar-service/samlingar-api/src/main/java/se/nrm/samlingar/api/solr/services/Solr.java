@@ -1,12 +1,16 @@
 package se.nrm.samlingar.api.solr.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -28,6 +32,7 @@ import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 import se.nrm.samlingar.api.logic.InitialProperties;
 import se.nrm.samlingar.api.utils.SolrSearchHelper;
 
@@ -58,6 +63,7 @@ public class Solr implements Serializable {
     private final String associatedMediaKey = "associatedMedia";
 
     private final String countryKey = "country";
+
     private final String typeStatusKey = "typeStatus";
     private final String dataResourceNameKey = "dataResourceName";
     private final String idKey = "id";
@@ -69,6 +75,39 @@ public class Solr implements Serializable {
     private final String mapKey = "map";
     private final String inSwedenKey = "inSweden";
     private final String facetKey = "facet";
+    private final String facetHeatMapKey = "facet.heatmap";
+    private final String facetHeatmapGeomKey = "facet.heatmap.geom";
+    private final String facetHeatmepGridLevelKey = "facet.heatmap.gridLevel";
+
+    private final String rowsKey = "rows";
+    private final String columnsKey = "columns";
+
+    private final String minXKey = "minX";
+    private final String maxXKey = "maxX";
+
+    private final String minYKey = "minY";
+    private final String maxYKey = "maxY";
+
+    private final String coordinatesKey = "coordinates";
+    private final String propertiesKey = "properties";
+    private final String featuresKey = "features";
+
+    private final String strTrue = "true";
+    private final String geohashField = "geohash";
+    private final String envelope = "ENVELOPE(-180,180,90,-90)";
+    private final String gridLevel = "3";
+
+    private final String facetCount = "facet_counts";
+    private final String facetHeatMap = "facet_heatmaps";
+    private final String countsInts2D = "counts_ints2D";
+    private final String countKey = "count";
+    private final String geometryKey = "geometry";
+
+    private final String typeKey = "type";
+    private final String featureKey = "Feature";
+    private final String polygonKey = "Polygon";
+
+    private final String featureCollectionKey = "FeatureCollection";
 
     private final String stringSweden = "Sweden";
 
@@ -102,6 +141,23 @@ public class Solr implements Serializable {
 
     private List<String> fields;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    private SimpleOrderedMap<Object> facetCounts;
+    private SimpleOrderedMap<Object> facetHeatmaps;
+
+    private SimpleOrderedMap<Object> heatmap;
+    
+    private List<List<Integer>> counts;
+    private Map<String, Object> geojson;
+    private List<Map<String, Object>> features;
+    
+    private double west;
+    private double east;
+    private double north;
+    private double south;
+
+    
     @Inject
     private InitialProperties properties;
 
@@ -317,54 +373,6 @@ public class Solr implements Serializable {
         }
     }
 
-//    public String download(Map<String, String> paramMap, String text, String scientificName,
-//            String dateRange, int start, int rows, String sort) {
-//
-//        sort = sort == null ? defaultSort : sort;
-//        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-//                .setQuery(text)
-//                .setOffset(start)
-//                .setLimit(rows)
-//                .setSort(sort);
-//
-//        if (!StringUtils.isBlank(scientificName)) {
-//            jsonRequest.withFilter(scientificName);
-//        }
-//
-//        if (!StringUtils.isBlank(dateRange)) {
-//            jsonRequest.withFilter(dateRange);
-//        }
-//
-//        paramMap.forEach((key, value) -> {
-//            sb = new StringBuilder();
-//            sb.append(key)
-//                    .append(colon)
-//                    .append(value);
-//            jsonRequest.withFilter(sb.toString());
-//        });
-//
-//        fields = SolrSearchHelper.getInstance().buildDataExportFields();
-//
-//        fields.stream()
-//                .forEach(field -> {
-//                    jsonRequest.returnFields(field);
-//                });
-//
-//        try {
-//            response = jsonRequest.process(client);
-////            response = request.process(client);
-//        } catch (SolrServerException | IOException ex) {
-//            log.error(ex.getMessage());
-//            return null;
-//        } finally {
-//            try {
-//                client.close();
-//            } catch (IOException ex) {
-//                log.error(ex.getMessage());
-//            }
-//        }
-//        return response.jsonStr();
-//    }
     private void buildDownloadJson(String jsonString, JsonArrayBuilder builder) {
 
         JsonReader jsonReader;
@@ -473,11 +481,11 @@ public class Solr implements Serializable {
 
         String cursorMark = star;
         boolean done = false;
-        
+
         JsonArrayBuilder builder = Json.createArrayBuilder();
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest();
-        jsonRequest.setQuery(text); 
+        jsonRequest.setQuery(text);
         jsonRequest.setLimit(batchSize);
         jsonRequest.returnFields(idKey);
         jsonRequest.returnFields(locationKey);
@@ -514,8 +522,8 @@ public class Solr implements Serializable {
         });
 
         try {
-            
-             while (!done) {
+
+            while (!done) {
 
                 jsonRequest.withParam(cursorMarkKey, cursorMark);
 
@@ -530,12 +538,8 @@ public class Solr implements Serializable {
                 if (cursorMark.equals(nextCursorMark)) {
                     done = true;
                 }
-                cursorMark = nextCursorMark; 
+                cursorMark = nextCursorMark;
             }
-             
-//            response = jsonRequest.process(client);
-//            log.info("simplesearch what... {}", jsonResponse);
-//            return response.jsonStr();
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
@@ -603,5 +607,130 @@ public class Solr implements Serializable {
         }
 
         return response.jsonStr();
+    }
+
+    public String getHeatmap(Map<String, String> paramMap, String text, String scientificName,
+            String locality, String dateRange, String pt, int start, int row) {
+        log.info("heatmap");
+
+        // Set query 
+        query = new SolrQuery(text);
+        query.setRows(0);
+        query.set(facetKey, strTrue);
+        query.set(facetHeatMapKey, geohashField);
+        query.set(facetHeatmapGeomKey, envelope);
+        query.set(facetHeatmepGridLevelKey, gridLevel);
+        
+         if (!StringUtils.isBlank(scientificName)) {
+            query.addFilterQuery(scientificName);
+        }
+
+        if (!StringUtils.isBlank(locality)) {
+            query.addFilterQuery(locality);
+        }
+
+        if (!StringUtils.isBlank(dateRange)) {
+            query.addFilterQuery(dateRange);
+        }
+
+        paramMap.forEach((key, value) -> {
+            sb = new StringBuilder();
+            sb.append(key)
+                    .append(colon)
+                    .append(value);
+            query.addFilterQuery(sb.toString());
+        });
+
+
+        try {
+            response = client.query(query);
+            return buildGeoJson(response); 
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
+        }
+    }
+
+    private String buildGeoJson(QueryResponse resp) throws JsonProcessingException {
+
+        facetCounts = (SimpleOrderedMap<Object>) resp.getResponse().get(facetCount);
+        facetHeatmaps = (SimpleOrderedMap<Object>) facetCounts.get(facetHeatMap);
+        heatmap = (SimpleOrderedMap<Object>) facetHeatmaps.get(geohashField);
+
+        counts = (List<List<Integer>>) heatmap.get(countsInts2D);
+
+        int rows = (Integer) heatmap.get(rowsKey);
+        int cols = (Integer) heatmap.get(columnsKey);
+        double minX = ((Number) heatmap.get(minXKey)).doubleValue();
+        double maxX = ((Number) heatmap.get(maxXKey)).doubleValue();
+        double minY = ((Number) heatmap.get(minYKey)).doubleValue();
+        double maxY = ((Number) heatmap.get(maxYKey)).doubleValue();
+
+        double cellWidth = (maxX - minX) / cols;
+        double cellHeight = (maxY - minY) / rows;
+
+        geojson = new HashMap<>();
+        geojson.put(typeKey, featureCollectionKey);
+
+        byte[] responseBytes;
+
+        features = new ArrayList<>();
+
+        for (int y = 0; y < counts.size(); y++) {
+            List<Integer> rowList = counts.get(y);
+            if (rowList == null) {
+                continue;
+            }
+
+            for (int x = 0; x < rowList.size(); x++) {
+                Integer count = rowList.get(x);
+                if (count == null || count == 0) {
+                    continue;
+                }
+
+                west = minX + x * cellWidth;
+                east = west + cellWidth;
+                north = maxY - y * cellHeight;
+                south = north - cellHeight;
+
+                Map<String, Object> feature = new HashMap<>();
+                feature.put(typeKey, featureKey);
+
+                Map<String, Object> geometry = new HashMap<>();
+                geometry.put(typeKey, polygonKey);
+
+                List<List<Double>> ring = new ArrayList<>();
+                ring.add(Arrays.asList(west, north));
+                ring.add(Arrays.asList(east, north));
+                ring.add(Arrays.asList(east, south));
+                ring.add(Arrays.asList(west, south));
+                ring.add(Arrays.asList(west, north)); // close the polygon
+
+                List<List<List<Double>>> coordinates = new ArrayList<>();
+                coordinates.add(ring);
+
+                geometry.put(coordinatesKey, coordinates);
+
+                feature.put(geometryKey, geometry);
+
+                Map<String, Object> property = new HashMap<>();
+                property.put(countKey, count);
+                feature.put(propertiesKey, property);
+
+                features.add(feature);
+            }
+        }
+        geojson.put(featuresKey, features);
+
+        responseBytes = mapper.writeValueAsBytes(geojson);
+
+        return new String(responseBytes, StandardCharsets.UTF_8);
+
     }
 }

@@ -155,7 +155,24 @@ public class SamlingarService {
         return res;
     }
     
-    
+        
+    @GET
+    @Path("/heatmap")  
+    @ApiOperation(value = "heatmap",
+            notes = "Return data in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response heatmap(@Context UriInfo uriInfo ) { 
+        log.info("start....");
+         
+        Response res = Response.ok(logic
+                .getHeatmap(uriInfo.getQueryParameters())).build();
+        
+        
+        log.info("end.....");
+        return res;
+    }
     
     
     

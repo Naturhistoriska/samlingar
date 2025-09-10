@@ -1,0 +1,302 @@
+<template>
+  <div class="map-container">
+    <l-map style="height: 500px; width: 100%" :center="center" :zoom="zoom">
+      <l-tile-layer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution="&copy; OpenStreetMap contributors"
+      />
+
+      <!-- Draw heatmap polygons -->
+      <l-geo-json
+        v-if="geojson"
+        :geojson="geojson"
+        :options-style="styleFeature"
+        :options-on-each-feature="onEachFeature"
+      />
+
+      <!-- Overlay count labels as divIcons -->
+      <!-- <l-marker
+      v-for="(marker, index) in countMarkers"
+      :key="index"
+      :lat-lng="marker.position"
+      :icon="marker.icon"
+    /> -->
+    </l-map>
+
+    <!-- ✅ Toggle Button -->
+    <button class="legend-toggle" @click="showLegend = !showLegend">
+      {{ showLegend ? 'Hide Legend' : 'Show Legend' }}
+    </button>
+
+    <div v-if="showLegend" class="legend">
+      <div><span style="background: #fed398"></span> 1-100</div>
+      <div><span style="background: #feb24c"></span> 100-500</div>
+      <div><span style="background: #fd8d3c"></span> 500–1000</div>
+      <div><span style="background: #fc4e2a"></span> 1000-2000</div>
+      <div><span style="background: #e31a1c"></span> 2000-5000</div>
+      <div><span style="background: #bd0026"></span> 5000-10000</div>
+      <div><span style="background: #800026"></span> 10000+</div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { computed, onMounted, ref } from 'vue'
+// import { LMap, LTileLayer, LGeoJson, LFeatureGroup } from '@vue-leaflet/vue-leaflet'
+// import { LMap, LTileLayer } from '@vue-leaflet/vue-leaflet'
+
+import { LMap, LTileLayer, LGeoJson, LMarker, LIcon } from '@vue-leaflet/vue-leaflet'
+
+const center = ref([59.0, 15.0]) // set to your area
+const zoom = ref(2)
+const geojson = ref(null)
+
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
+import 'leaflet.heat'
+
+import { useStore } from 'vuex'
+
+import Service from '../Service'
+const service = new Service()
+
+const store = useStore()
+
+const showLegend = ref(true)
+
+function getColor(count) {
+  // if (count === 0) return 'transparent'
+  // if (count <= 5) return '#ffffcc'
+  // if (count <= 10) return '#c2e699'
+  // if (count <= 20) return '#78c679'
+  // if (count <= 50) return '#31a354'
+  // if (count <= 100) return '#006837'
+  // return '#004529'
+
+  if (count > 10000) return '#800026'
+  if (count > 5000) return '#BD0026'
+  if (count > 2000) return '#E31A1C'
+  if (count > 1000) return '#FC4E2A'
+  if (count > 500) return '#FD8D3C'
+  if (count > 100) return '#FEB24C'
+  if (count > 0) return '#fed398'
+  return 'transparent'
+}
+
+function onEachFeature(feature, layer) {
+  console.log('Adding tooltip to feature:', feature)
+
+  layer.bindTooltip(`Count: ${feature.properties.count}`, {
+    sticky: true,
+    direction: 'auto'
+  })
+
+  layer.on('mouseover', () => {
+    layer.openTooltip()
+  })
+  layer.on('mouseout', () => {
+    layer.closeTooltip()
+  })
+}
+
+function styleFeature(feature) {
+  const count = feature.properties.count || 0
+  return {
+    fillColor: getColor(count),
+    color: 'transparent',
+    weight: 0.5,
+    fillOpacity: 0.6
+  }
+}
+
+// Compute the centroid of a polygon (rectangle in our case)
+function getCentroid(polygon) {
+  const coords = polygon[0] // outer ring
+  let x = 0,
+    y = 0
+  for (let i = 0; i < coords.length - 1; i++) {
+    x += coords[i][0]
+    y += coords[i][1]
+  }
+  const len = coords.length - 1
+  return [y / len, x / len] // [lat, lng]
+}
+
+// Prepare list of count labels as Leaflet markers
+const countMarkers = computed(() => {
+  if (!geojson.value) return []
+
+  return geojson.value.features
+    .filter((f) => f.properties.count > 0)
+    .map((f) => {
+      const coords = f.geometry.coordinates
+      const count = f.properties.count
+      const position = getCentroid(coords)
+      const icon = L.divIcon({
+        html: `<div style="font-size:12px;color:black;font-weight:bold;">${count}</div>`,
+        className: 'label-icon', // prevent default marker styling
+        iconSize: [30, 12],
+        iconAnchor: [15, 6]
+      })
+
+      return { position, icon }
+    })
+})
+
+async function fetchHeatmapData() {
+  // Your backend endpoint
+
+  const totalRecords = store.getters['totalRecords']
+  const params = buildParams()
+  await service
+    .apiHeatmap(params, 0, totalRecords)
+    .then(async (response) => {
+      const data = response
+
+      if (data) {
+        console.log('data', data)
+        geojson.value = data
+        // const data = await docs.json()
+
+        // const heatPoints = parseHeatmapToPoints(docs)
+        // L.heatLayer(heatPoints, { radius: 25 }).addTo(heatmapLayer.value.mapObject)
+
+        // isDataReady.value = true
+      }
+    })
+    .catch()
+    .finally(() => {})
+}
+
+onMounted(() => {
+  fetchHeatmapData()
+})
+
+function buildParams() {
+  const fields = store.getters['fields']
+
+  const scientificName = store.getters['scientificName']
+  const searchMode = store.getters['searchMode']
+  const isFuzzy = store.getters['isFuzzySearch']
+
+  const isType = store.getters['filterType']
+  const isInSweden = store.getters['filterInSweden']
+  const hasCoordinates = store.getters['filterCoordinates']
+  const hasImages = store.getters['filterImage']
+  let searchText = store.getters['searchText']
+  searchText = searchText ? searchText : '*'
+
+  const dataResource = store.getters['dataResource']
+
+  const endDate = store.getters['endDate']
+  const startDate = store.getters['startDate']
+
+  // const collectionGroup = store.getters['collectionGroup']
+
+  const params = new URLSearchParams({
+    text: searchText
+  })
+
+  if (scientificName) {
+    params.set('scientificName', scientificName)
+    params.set('searchMode', searchMode)
+    params.set('fuzzySearch', isFuzzy)
+  }
+
+  if (isType) {
+    params.set('typeStatus', '*')
+  }
+
+  if (isInSweden) {
+    params.set('country', 'Sweden')
+  }
+
+  if (hasImages) {
+    params.set('associatedMedia', '*')
+  }
+
+  if (hasCoordinates) {
+    params.set('lat_long', '*')
+  }
+
+  // if (collectionGroup) {
+  //   params.set('collectionCode', collectionGroup)
+  // }
+
+  if (startDate) {
+    params.set('startDate', startDate)
+  }
+
+  if (endDate) {
+    params.set('endDate', endDate)
+  }
+
+  if (dataResource) {
+    let newValue = dataResource.replace(/'/g, '"')
+    params.set('dataResourceName', newValue)
+  }
+
+  if (fields) {
+    fields
+      .filter((field) => field.text)
+      .forEach((field) => {
+        params.set(field.value, field.text)
+      })
+  }
+  //store.commit('setSearchParams', params)
+  return params
+}
+</script>
+<style>
+.map-container {
+  position: relative;
+}
+
+.legend {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  background: white;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #333;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  border-radius: 4px;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.legend span {
+  display: inline-block;
+  width: 16px;
+  height: 12px;
+  margin-right: 6px;
+  border: 1px solid #999;
+}
+
+/* ✅ Toggle button style */
+.legend-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1100;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+/* .label-icon {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+} */
+</style>
