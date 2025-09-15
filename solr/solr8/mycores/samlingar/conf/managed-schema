@@ -281,8 +281,8 @@
   <field name="endmonth" type="string" indexed="false" stored="true"/>
   <field name="endyear" type="string" indexed="false" stored="true"/>
   <field name="environment" type="text_general" indexed="false" stored="true"/>
-  <field name="exsiccat" type="string" indexed="false" stored="true"/>
-  <field name="exsiccatNumber" type="string" indexed="false" stored="true"/>
+  <field name="exsiccate" type="string" indexed="false" stored="true"/>
+  <field name="exsiccateNumber" type="string" indexed="false" stored="true"/>
   <field name="earliestAgeOrLowestStage" type="string" indexed="false" stored="true"/>
   <field name="earliestEpochOrLowestSeries" type="string" indexed="false" stored="true"/>
   <field name="earliestPeriodOrLowestSystem" type="string" indexed="false" stored="true"/>
@@ -300,7 +300,7 @@
 
   <field name="genus" type="string" indexed="true" stored="true"/>
   <field name="genericName" type="string" indexed="false" stored="true"/>
-  <field name="geo" type="location_rpt" indexed="true" stored="true" multiValued="true"  />
+  <field name="geo" type="location_rpt" indexed="true" stored="true"   />
   <field name="geodeticDatum" type="string" indexed="false" stored="true"/>
 
 

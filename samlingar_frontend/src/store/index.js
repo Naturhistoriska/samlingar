@@ -6,6 +6,8 @@ export default createStore({
 
     selectedCollection: null,
 
+    searchText: null,
+
     //
     //
     //
@@ -31,7 +33,7 @@ export default createStore({
     results: [],
     scientificName: null,
     searchMode: 'contains',
-    searchText: null,
+
     searchParams: null,
     selectedRecord: null,
     startDate: null,

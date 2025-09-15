@@ -213,11 +213,11 @@ function buildParams(saveParams) {
   }
 
   if (hasImages) {
-    params.set('associatedMedia', '*')
+    params.set('hasImage', '*')
   }
 
   if (hasCoordinates) {
-    params.set('lat_long', '*')
+    params.set('point-1', '*')
   }
 
   // if (collectionGroup) {

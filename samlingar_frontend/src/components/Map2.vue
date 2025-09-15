@@ -100,7 +100,7 @@ onMounted(async () => {
 watch(
   isDataReady,
   (newValue, oldValue) => {
-    console.log(`count changed from ${oldValue} to ${newValue}`)
+    // console.log(`count changed from ${oldValue} to ${newValue}`)
 
     if (newValue) {
       console.log('newValue is true')
@@ -198,7 +198,8 @@ const fetchAndRender = async (params, { lat, lng }) => {
   await service
     .apiGeoFetch(params, 0, totalRecords)
     .then((response) => {
-      const docs = response
+      console.log('response:', response)
+      const docs = response.response
 
       if (docs) {
         console.log('docs', docs.length)
@@ -284,7 +285,7 @@ async function buildMarkers(docs) {
 
   // addMarkersInChunks(docs, markers)
   docs.forEach((doc) => {
-    const [lat, lon] = doc.location.split(',').map(Number)
+    const [lat, lon] = doc.geo.split(',').map(Number)
     const marker = L.marker([lat, lon])
     marker.myData = { id: doc.id, locality: doc.locality, scientificName: doc.scientificName }
 
@@ -355,11 +356,11 @@ function buildParams() {
   }
 
   if (hasImages) {
-    params.set('associatedMedia', '*')
+    params.set('hasImage', '*')
   }
 
   if (hasCoordinates) {
-    params.set('lat_long', '*')
+    params.set('point-1', '*')
   }
 
   // if (collectionGroup) {

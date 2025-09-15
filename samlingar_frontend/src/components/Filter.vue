@@ -49,8 +49,6 @@ import FiltLink from './baseComponents/FiltLink.vue'
 
 const store = useStore()
 
-const props = defineProps(['filterSearchLoading'])
-
 const emits = defineEmits(['freeTextSearch', 'filterSearch'])
 
 const allSpecimensText = ref('startPage.allSpecimens')

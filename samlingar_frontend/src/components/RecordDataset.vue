@@ -1,6 +1,9 @@
 <template>
   <div style="font-size: 12px">
-    <GeoDataset v-if="isGeoCollection" />
+    <bird-dataset v-if="isBirdCollection" />
+    <bot-dataset v-else-if="isBotCollection" />
+    <fish-dataset v-else-if="isFishCollection" />
+    <GeoDataset v-else-if="isGeoCollection" />
     <invertebrate-dataset v-else-if="isInvertebrate" />
     <nhrs-dataset v-else-if="isNhrsCollection" />
     <pal-dataset v-else-if="isPalCollection" />
@@ -10,7 +13,11 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 
+import BirdDataset from './dataset/BirdAndMammlDataset.vue'
+import BotDataset from './dataset/BotDataset.vue'
+
 import CommonDataset from './dataset/CommonDataset.vue'
+import FishDataset from './dataset/FishDataset.vue'
 import GeoDataset from './dataset/GeoDataset.vue'
 import InvertebrateDataset from './dataset/InvertebrateDataset.vue'
 import NhrsDataset from './dataset/NhrsDataset.vue'
@@ -18,33 +25,27 @@ import PalDataset from './dataset/PalDataset.vue'
 
 const props = defineProps(['code'])
 
+const isBirdCollection = ref(false)
+const isBotCollection = ref(false)
+const isFishCollection = ref(false)
 const isGeoCollection = ref(false)
 const isInvertebrate = ref(false)
 
 const isNhrsCollection = ref(false)
 const isPalCollection = ref(false)
-const isCommonCollection = ref(false)
 
 onMounted(async () => {
   console.log('code...', props.code)
 
+  isBirdCollection.value = props.code === 'AV' || props.code === 'MA'
+  isBotCollection.value =
+    props.code === 'algae' || props.code === 'fungi' || props.code === 'mosses'
+  isFishCollection.value = props.code === 'PI'
   isGeoCollection.value =
     props.code === 'NRMMIN' || props.code === 'NRMNOD' || props.code === 'NRMLIG'
   isInvertebrate.value = props.code === 'ev' || props.code === 'et'
   isNhrsCollection.value = props.code === 'NHRS'
   isPalCollection.value = props.code === 'pb' || props.code === 'pz'
-
-  isCommonCollection.value =
-    !isNhrsCollection.value && !isPalCollection.value && !isInvertebrate.value
-
-  // console.log(
-  //   'code...',
-  //   props.code,
-  //   isNhrsCollection.value,
-  //   isPalCollection.value,
-  //   isInvertebrate.value,
-  //   isCommonCollection.value
-  // )
 })
 </script>
 <style scoped>

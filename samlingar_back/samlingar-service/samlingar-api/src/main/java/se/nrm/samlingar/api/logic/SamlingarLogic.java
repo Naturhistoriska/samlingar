@@ -274,11 +274,7 @@ public class SamlingarLogic {
                 locality, localityKey, contains, true);
             log.info("locality : {}", locality);
         }
-//        if(text != null && !text.equals(wildCard)) {
-//            text = SolrSearchHelper.getInstance().buildSearchText(
-//                text, textKey, true);
-//        }  
-
+ 
         text = SolrSearchHelper.getInstance().buildFreeTextSearch(text);
         
         dateRangeSb = new StringBuilder();
@@ -304,8 +300,7 @@ public class SamlingarLogic {
         
           
         return solr.search(paramMap, text, scientificName, locality, dateRange, facets,
-                start, numPerPage, sort);
-        
+                start, numPerPage, sort); 
     } 
     
     public String getHeatmap(MultivaluedMap<String, String> queryParams) {
@@ -322,6 +317,7 @@ public class SamlingarLogic {
                     break;
                 case textKey: 
                     text = queryParams.get(textKey).get(0); 
+                     log.info("why... {}", text);
                     break;
                 case startDateKey: 
                     startDate = queryParams.get(startDateKey).get(0); 
@@ -367,10 +363,12 @@ public class SamlingarLogic {
                 locality, localityKey, contains, true);
             log.info("locality : {}", locality);
         }
+         
         if(text != null && !text.equals(wildCard)) {
-            text = SolrSearchHelper.getInstance().buildSearchText(
-                text, textKey, true);
+            text = SolrSearchHelper.getInstance().buildFreeTextSearch(text);
         }  
+        
+        log.info("text.... {}", text);
         
         dateRangeSb = new StringBuilder();
         if(!StringUtils.isBlank(startDate)) {
@@ -451,6 +449,7 @@ public class SamlingarLogic {
                     break;
                 case textKey: 
                     text = queryParams.get(textKey).get(0); 
+                   
                     break;
                 case startDateKey: 
                     startDate = queryParams.get(startDateKey).get(0); 

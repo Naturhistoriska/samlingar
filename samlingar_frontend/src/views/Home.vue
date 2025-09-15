@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div v-if="loading" class="spinner-overlay">
+      <div class="spinner"></div>
+    </div>
     <div class="grid homePage">
       <start-page
         @filterSearch="filterSearch"
@@ -14,7 +17,7 @@
   </div>
 </template>
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { entryType } from '@/router'
@@ -31,6 +34,8 @@ const service = new Service()
 
 const store = useStore()
 const router = useRouter()
+
+const loading = ref(false)
 
 // const { t } = useI18n()
 
@@ -63,7 +68,7 @@ function fetchYearChartData(collectionCode) {
       const counts = response.facet_counts.facet_ranges.createdDate.counts
 
       const totalCount = response.total
-      // store.commit('setTotalCount', totalCount)
+      store.commit('setTotalCount', totalCount)
 
       setYearChartData(totalCount, counts)
     })
@@ -99,10 +104,11 @@ function fetchInitdata() {
   service
     .apiInitdata()
     .then((response) => {
-      const facets = response.facets
+      const facets = response.facet_counts.facet_queries
 
-      const totalCount = facets.count
-      store.commit('setTotalCount', totalCount)
+      console.log('what...', facets)
+      // const totalCount = facets.count
+      // store.commit('setTotalCount', totalCount)
 
       setSearchCommentFacet(facets)
 
@@ -117,20 +123,38 @@ function fetchInitdata() {
     .finally(() => {})
 }
 
-function setSearchCommentFacet(facets) {
-  const imageFacet = facets.associatedMedia.buckets
-  const imageCount = imageFacet.length > 0 ? imageFacet[0].count : 0
-  store.commit('setImageCount', imageCount)
+function setSearchCommentFacet(facetQueries) {
+  for (const [key, value] of Object.entries(facetQueries)) {
+    if (key === 'point-1: *') {
+      store.commit('setHasCoordinatesCount', value)
+    }
 
-  const typeStatus = facets.typeStatus.allBuckets.count
-  store.commit('setIsTypeCount', typeStatus)
+    if (key === 'country: Sweden') {
+      store.commit('setInSwedenCount', value)
+    }
 
-  const inSwedenFacet = facets.inSweden.buckets
-  const inSwedenCount = inSwedenFacet.length > 0 ? inSwedenFacet[0].count : 0
-  store.commit('setInSwedenCount', inSwedenCount)
+    if (key === 'typeStatus: *') {
+      store.commit('setIsTypeCount', value)
+    }
 
-  const mapCount = facets.coordinates.allBuckets.count
-  store.commit('setHasCoordinatesCount', mapCount)
+    if (key === 'hasImage: *') {
+      store.commit('setImageCount', value)
+    }
+  }
+
+  // const imageFacet = facets.associatedMedia.buckets
+  // const imageCount = imageFacet.length > 0 ? imageFacet[0].count : 0
+  // store.commit('setImageCount', imageCount)
+  //
+  // const typeStatus = facets.typeStatus.allBuckets.count
+  // store.commit('setIsTypeCount', typeStatus)
+  //
+  // const inSwedenFacet = facets.inSweden.buckets
+  // const inSwedenCount = inSwedenFacet.length > 0 ? inSwedenFacet[0].count : 0
+  // store.commit('setInSwedenCount', inSwedenCount)
+  //
+  // const mapCount = facets.coordinates.allBuckets.count
+  // store.commit('setHasCoordinatesCount', mapCount)
 }
 
 async function filterSearch(
@@ -141,6 +165,7 @@ async function filterSearch(
   start,
   numPerPage
 ) {
+  loading.value = true
   await service
     .apiFilterSearch(filtCoordinates, filtImages, filtInSweden, filtTypeStatus, start, numPerPage)
     .then((response) => {
@@ -153,9 +178,9 @@ async function filterSearch(
       if (total > 0) {
         const collectionfacet = response.facets.collectionName.buckets
 
-        store.commit('setCollections', collectionfacet)
+        store.commit('setCollectionGroup', collectionfacet)
       } else {
-        store.commit('setCollections', null)
+        store.commit('setCollectionGroup', null)
       }
     })
     .catch((error) => {
@@ -163,12 +188,13 @@ async function filterSearch(
     })
     .finally(() => {
       store.commit('setIsUrlPush', true)
+      loading.value = false
       router.push('/search')
     })
 }
 
 async function collectionsSearch(value, start, numPerPage) {
-  console.log('collectionsSearch', value)
+  loading.value = true
   await service
     .apiFilterCollectionsSearch(value, start, numPerPage)
     .then((response) => {
@@ -191,26 +217,29 @@ async function collectionsSearch(value, start, numPerPage) {
     })
     .finally(() => {
       store.commit('setIsUrlPush', true)
+      loading.value = true
       router.push('/search')
     })
 }
 
 async function search(value, start, numPerPage) {
+  loading.value = true
   await service
     .apiFreeTextSearch(value, start, numPerPage)
     .then((response) => {
       const total = response.facets.count
       const results = response.response
 
+      store.commit('setSearchText', value)
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
       if (total > 0) {
         const collectionfacet = response.facets.collectionName.buckets
 
-        store.commit('setCollections', collectionfacet)
+        store.commit('setCollectionGroup', collectionfacet)
       } else {
-        store.commit('setCollections', null)
+        store.commit('setCollectionGroup', null)
       }
     })
     .catch((error) => {
@@ -218,6 +247,7 @@ async function search(value, start, numPerPage) {
     })
     .finally(() => {
       store.commit('setIsUrlPush', true)
+      loading.value = true
       router.push('/search')
     })
 }
@@ -225,5 +255,33 @@ async function search(value, start, numPerPage) {
 <style scoped>
 .homePage {
   padding: 4rem 2rem;
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

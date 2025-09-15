@@ -32,7 +32,7 @@
         {{ modifiedDate }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.recordedType') }}</div>
+      <div class="col-3 reducePadding">{{ $t('results.recordType') }}</div>
       <div class="col-9 reducePadding">
         {{ recordType }}
       </div>
@@ -42,7 +42,7 @@
         {{ minerals }}
       </div>
 
-      <div class="col-3 reducePadding" v-if="isMineralCollection">{{ $t('results.Serie') }}</div>
+      <div class="col-3 reducePadding" v-if="isMineralCollection">{{ $t('results.serie') }}</div>
       <div class="col-9 reducePadding" v-if="isMineralCollection">
         {{ serieData }}
       </div>
@@ -66,7 +66,6 @@
       <div class="col-9 reducePadding">
         {{ specimenLicense }}
       </div>
-
       <div class="col-3 reducePadding">{{ $t('results.previousIdentifications') }}</div>
       <div class="col-9 reducePadding">
         {{ additionalDetermination }}
@@ -121,7 +120,8 @@ const serieData = ref()
 
 const isMineralCollection = computed(() => {
   const record = store.getters['selectedRecord']
-  return record.collectionCode === 'NRMLIG'
+
+  return record.collectionCode === 'NRMMIN'
 })
 
 onMounted(async () => {

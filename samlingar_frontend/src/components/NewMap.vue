@@ -184,6 +184,7 @@ function buildParams() {
   const hasCoordinates = store.getters['filterCoordinates']
   const hasImages = store.getters['filterImage']
   let searchText = store.getters['searchText']
+
   searchText = searchText ? searchText : '*'
 
   const endDate = store.getters['endDate']
@@ -211,7 +212,7 @@ function buildParams() {
   }
 
   if (hasImages) {
-    params.set('associatedMedia', '*')
+    params.set('hasImage', '*')
   }
 
   if (hasCoordinates) {

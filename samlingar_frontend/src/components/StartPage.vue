@@ -9,11 +9,7 @@
       </div>
 
       <div class="grid">
-        <Filter
-          style="padding-top: 2rem"
-          @filterSearch="filterSearch"
-          @freeTextSearch="searchCollections"
-        />
+        <Filter style="padding-top: 2rem" @filterSearch="filterSearch" @freeTextSearch="search" />
       </div>
     </div>
 

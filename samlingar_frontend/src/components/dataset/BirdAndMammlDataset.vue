@@ -77,7 +77,7 @@
         {{ maxElevation }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
+      <div class="col-4 reducePadding">{{ $t('results.recordNumber') }}</div>
       <div class="col-8 reducePadding">
         {{ recordNo }}
       </div>
