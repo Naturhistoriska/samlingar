@@ -71,11 +71,11 @@
             <version>4.5.14</version>
         </dependency>
       
-<!--        <dependency>
+        <dependency>
             <artifactId>solr-solrj</artifactId>
             <groupId>org.apache.solr</groupId>
-            <version>8.3.1</version>
-        </dependency>-->
+            <version>8.11.0</version>
+        </dependency>
     
         <dependency>
             <groupId>ch.hsr</groupId>
