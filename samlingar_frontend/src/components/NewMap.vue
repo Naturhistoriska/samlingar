@@ -186,12 +186,11 @@ function buildParams() {
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
 
-  const dataResource = store.getters['dataResource']
-
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
 
-  // const collectionGroup = store.getters['collectionGroup']
+  const selectedCollection = store.getters['selectedCollection']
+  console.log(selectedCollection)
 
   const params = new URLSearchParams({
     text: searchText
@@ -216,12 +215,12 @@ function buildParams() {
   }
 
   if (hasCoordinates) {
-    params.set('lat_long', '*')
+    params.set('point-1', '*')
   }
 
-  // if (collectionGroup) {
-  //   params.set('collectionCode', collectionGroup)
-  // }
+  if (selectedCollection) {
+    params.set('collectionCode', selectedCollection)
+  }
 
   if (startDate) {
     params.set('startDate', startDate)
@@ -231,10 +230,10 @@ function buildParams() {
     params.set('endDate', endDate)
   }
 
-  if (dataResource) {
-    let newValue = dataResource.replace(/'/g, '"')
-    params.set('dataResourceName', newValue)
-  }
+  // if (dataResource) {
+  //   let newValue = dataResource.replace(/'/g, '"')
+  //   params.set('dataResourceName', newValue)
+  // }
 
   if (fields) {
     fields

@@ -17,7 +17,17 @@
         {{ catNumber }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.recordedType') }}</div>
+      <div class="col-4 reducePadding">{{ $t('results.otherCatalogNumbers') }}</div>
+      <div class="col-8 reducePadding">
+        {{ otherCatNumbers }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.catalogedDate') }}</div>
+      <div class="col-8 reducePadding">
+        {{ dateCataloged }}
+      </div>
+
+      <div class="col-3 reducePadding">{{ $t('results.recordType') }}</div>
       <div class="col-9 reducePadding">
         {{ recordType }}
       </div>
@@ -25,11 +35,6 @@
       <div class="col-3 reducePadding">{{ $t('results.preparation') }}</div>
       <div class="col-9 reducePadding">
         {{ preparationString }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.identifiedBy') }}</div>
-      <div class="col-9 reducePadding">
-        {{ identifier }}
       </div>
 
       <div class="col-3 reducePadding">{{ $t('results.recordedBy') }}</div>
@@ -67,9 +72,9 @@
         {{ modifiedDate }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.dateIdentified') }}</div>
+      <div class="col-3 reducePadding">{{ $t('results.accession') }}</div>
       <div class="col-9 reducePadding">
-        {{ identifiedDate }}
+        {{ accession }}
       </div>
 
       <div class="col-3 reducePadding">{{ $t('results.previousIdentifications') }}</div>
@@ -92,32 +97,34 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+import moment from 'moment-timezone'
 
 const store = useStore()
 
 const accession = ref()
 const additionalDetermination = ref()
 const catNumber = ref()
+const dateCataloged = ref()
+
 const collection = ref()
 const collectors = ref()
 
 const recordType = ref()
 const preparationList = ref()
 const preparationString = ref()
-const identifier = ref()
 
 const specimenSex = ref()
 const stage = ref()
 const count = ref()
 const specimenLicense = ref()
 const modifiedDate = ref()
-const identifiedDate = ref()
+
 const institution = ref()
-const dataResource = ref()
+
 const occurrenceAttRemarks = ref()
+const otherCatNumbers = ref()
+
 const reproductCondition = ref()
 const remarks = ref()
 
@@ -131,8 +138,7 @@ onMounted(async () => {
     catalogNumber,
     collectionCode,
     collectionName,
-    dateIdentified,
-    identifiedBy,
+    catalogedDate,
     individualCount,
     institutionCode,
     institutionID,
@@ -141,6 +147,7 @@ onMounted(async () => {
     modified,
     occurrenceAttributeRemarks,
     occurrenceRemarks,
+    otherCatalogNumbers,
     preparations,
     prepCount,
     previousIdentifications,
@@ -149,27 +156,42 @@ onMounted(async () => {
     sex
   } = record
 
-  accession = accessionNumber
+  accession.value = accessionNumber
   additionalDetermination.value = previousIdentifications
-  collection.value = collectionName
+
   catNumber.value = catalogNumber
-  recordType.value = basisOfRecord
+  collection.value = collectionName
+  collectors.value = recordedBy ? recordedBy.toString() : ''
+  count.value = individualCount
+
+  if (catalogedDate) {
+    dateCataloged.value = moment
+      .tz(catalogedDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
+      .format('YYYY-MM-DD')
+  }
+
+  institution.value = institutionID + ' [ ' + institutionCode + ' ] '
+
+  if (modified) {
+    modifiedDate.value = moment
+      .tz(modified, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
+      .format('YYYY-MM-DD')
+  }
+
+  occurrenceAttRemarks.value = occurrenceAttributeRemarks
+  otherCatNumbers.value = otherCatalogNumbers
+
   preparationList.value =
     collectionCode == 'NHRS' ? (prepCount ? prepCount : '') : preparations ? preparations : ''
   preparationString.value = preparationList.value.join(', ')
-  identifier.value = identifiedBy
-  collectors.value = recordedBy ? recordedBy.toString() : ''
-  specimenSex.value = sex
-  stage.value = lifeStage
-  count.value = individualCount
-  specimenLicense.value = license
-  modifiedDate.value = modified
-  identifiedDate.value = dateIdentified
-  institution.value = institutionID + ' [ ' + institutionCode + ' ] '
-  dataResource.value = t('common.institution') + ' -' + collectionName
-  occurrenceAttRemarks.value = occurrenceAttributeRemarks
-  reproductCondition.value = reproductiveCondition
+
   remarks.value = occurrenceRemarks
+  recordType.value = basisOfRecord
+  reproductCondition.value = reproductiveCondition
+
+  specimenSex.value = sex
+  specimenLicense.value = license
+  stage.value = lifeStage
 })
 </script>
 <style scoped>

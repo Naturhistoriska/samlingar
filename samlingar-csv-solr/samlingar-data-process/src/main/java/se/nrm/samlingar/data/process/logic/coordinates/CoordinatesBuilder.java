@@ -103,20 +103,12 @@ public class CoordinatesBuilder implements Serializable {
  
     private void addGeoData(JsonObjectBuilder attBuilder, double latitude,
             double longitude) throws Exception {
-//        log.info("addGeoData : {} -- {}", latitude, longitude);
-         
-//        geoHash = createGeoHash(latitude, longitude); 
-//         
-        JsonHelper.getInstance().addCoordinates(attBuilder, latitude, longitude); 
-//        JsonHelper.getInstance().addGeoHash(attBuilder, geoHash);  
+ 
+        JsonHelper.getInstance().addCoordinates(attBuilder, latitude, longitude);  
         JsonHelper.getInstance().addPoint(attBuilder, latitude, longitude); 
         
         log.info("point added....");
         JsonHelper.getInstance().addLatAndLong(attBuilder, latitude, longitude); 
         log.info("latAndLong added....");
-    }
-
-//    private String createGeoHash(double latitude, double longitude) throws Exception {
-//        return GeoHash.withCharacterPrecision(latitude, longitude, numberOfCharacters).toBase32();
-//    } 
+    } 
 }

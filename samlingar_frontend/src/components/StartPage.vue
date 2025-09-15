@@ -36,6 +36,7 @@ function filterSearch(filtCoordinates, filtImages, filtInSweden, filtTypeStatus)
 
 function searchCollections(value) {
   let newValue = value.replace(/'/g, '"')
+  console.log('collections', newValue)
   emits('collectionsSearch', newValue, 0, 10, true)
 }
 

@@ -36,7 +36,7 @@ public class InitialProperties implements Serializable {
             @ConfigurationValue("swarm.update") boolean isUpdate,
             @ConfigurationValue("swarm.solr.username") String username,
             @ConfigurationValue("swarm.solr.password") String password, 
-            @ConfigurationValue("swarm.institution") String institutionCode, 
+            @ConfigurationValue("swarm.institution") String institutionCode,  
             @ConfigurationValue("swarm.mapping-files.path") String mappingFilesPath) {
         this.solrPath = solrPath; 
         this.collections = collections;

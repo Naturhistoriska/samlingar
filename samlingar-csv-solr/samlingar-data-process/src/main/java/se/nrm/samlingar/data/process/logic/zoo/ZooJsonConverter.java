@@ -11,7 +11,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder; 
+import javax.json.JsonObjectBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
@@ -26,41 +26,37 @@ import se.nrm.samlingar.data.process.logic.json.JsonHelper;
 public class ZooJsonConverter implements Serializable {
 
     private final int batchSize = 6000;
-    private final String birdCollection = "Bird"; 
-    
+    private final String birdCollection = "Bird";
+
     private final String eventDateKey = "eventDate";
     private final String eventEndDateKey = "eventEndDate";
-    
- 
-    private String catalogNumber;
-    private String collectionName; 
 
-    private JsonObject mappingJson; 
-    private JsonObject classificationJson; 
+    private String catalogNumber;
+    private String collectionName;
+
+    private JsonObject mappingJson;
+    private JsonObject classificationJson;
     private JsonObject coordinatesJson;
     private JsonObject eventDateJson;
     private JsonObject eventEndDateJson;
-  
-    private String csvEventDateKey;
+
     private String csvCatalogedDate;
-    private String csvCoordinatesKey;
     private String csvTypeStatusKey;
     private String csvCatalogNumberKey;
     private String csvDateIdentifiedKey;
 
     private String latitude;
     private String longitude;
-
+ 
+    
     private List<JsonArray> list;
 //    private List<String> classificationKeys;
 
     private JsonObjectBuilder attBuilder;
     private JsonArrayBuilder arrayBuilder;
-  
-    private boolean isStringCoordinates; 
-    private boolean isStringEventdate;
-    private boolean hasSynonyms; 
-        
+
+    private boolean hasSynonyms;
+
     @Inject
     private CoordinatesBuilder coordinatesBuilder;
 
@@ -80,48 +76,28 @@ public class ZooJsonConverter implements Serializable {
         log.info("mappingJosn : {}", mappingJson);
 
         classificationJson = JsonHelper.getInstance().getClassificationJson(json);
-//        classificationKeys = new ArrayList();
-//        if (classificationJson != null) {
-//            classificationJson.keySet()
-//                    .stream().forEach(key -> {
-//                        classificationKeys.add(classificationJson.getString(key));
-//                    });
-//        }
- 
+
         if (json.containsKey(eventDateKey)) {
-            isStringEventdate = JsonHelper.getInstance().isStringEventDate(json);
-            log.info("isStringEventdate : {}", isStringEventdate);
-            if (isStringEventdate) {
-                csvEventDateKey = JsonHelper.getInstance().getEventDateCsvKey(json);
-            } else {
-                eventDateJson = JsonHelper.getInstance().getEventDateJson(json); 
-                log.info("eventDateJson : {}", eventDateJson);
-            }
+            eventDateJson = JsonHelper.getInstance().getEventDateJson(json);
+            log.info("eventDateJson : {}", eventDateJson);
         }
 
-        if(json.containsKey(eventEndDateKey)) {
-            eventEndDateJson = JsonHelper.getInstance().getEventEndDateJson(json); 
+        if (json.containsKey(eventEndDateKey)) {
+            eventEndDateJson = JsonHelper.getInstance().getEventEndDateJson(json);
         }
-        
 
-//        isStringCoordinates = JsonHelper.getInstance().isStringCoordinates(json);
-//        if (isStringCoordinates) {
-//            csvCoordinatesKey = JsonHelper.getInstance().getCoordinatesCsvKey(json);
-//        } else {
-//            coordinatesJson = JsonHelper.getInstance().getCoordinatesJson(json);
-//        } 
         coordinatesJson = JsonHelper.getInstance().getCoordinatesJson(json);
 
         csvCatalogNumberKey = JsonHelper.getInstance().getCatalogNumberCsvKey(json);
-        
-        csvCatalogedDate = JsonHelper.getInstance().getCatalogedDateCsvKey(json); 
+
+        csvCatalogedDate = JsonHelper.getInstance().getCatalogedDateCsvKey(json);
         csvTypeStatusKey = JsonHelper.getInstance().getTypeStatusCsvKey(json);
-        
+
         csvDateIdentifiedKey = JsonHelper.getInstance().getDateIdentifiedCsvKey(json);
-        
-        hasSynonyms = JsonHelper.getInstance().hasSynonyms(json); 
-          
-        AtomicInteger counter = new AtomicInteger(0);
+
+        hasSynonyms = JsonHelper.getInstance().hasSynonyms(json);
+
+        AtomicInteger counter = new AtomicInteger(0); 
 
         records.stream()
                 .filter(isValid)
@@ -130,16 +106,15 @@ public class ZooJsonConverter implements Serializable {
                     try {
                         counter.getAndIncrement();
                         catalogNumber = record.get(csvCatalogNumberKey).trim();
-//                        log.info("catalogNumber : {} -- {}", catalogNumber, record.getRecordNumber() );
-                        log.info("catalogNumber : {}  ", catalogNumber  );
-                        
+//                        log.info("catalogNumber : {}  ", catalogNumber  );
+
                         if (isBirdCollection()) {
                             JsonHelper.getInstance().addIdForBird(attBuilder, record.getRecordNumber(), collectionId);
                         } else {
                             JsonHelper.getInstance().addId(attBuilder, catalogNumber, collectionId);
                         }
 //                        log.info("addCatalognumber" );
- 
+
                         JsonHelper.getInstance().addCollectionName(attBuilder, collectionName);
 ////                        log.info("add CollectionName : {}",  collectionName);
                         JsonHelper.getInstance().addCollectionCode(attBuilder, collectionId);
@@ -148,87 +123,52 @@ public class ZooJsonConverter implements Serializable {
 //
                         JsonHelper.getInstance().addMappingValue(attBuilder, mappingJson, record);
 //                        log.info("add mappingJson  " );
-                        
-                        if (imageMap != null && !imageMap.isEmpty()) { 
+
+                        if (imageMap != null && !imageMap.isEmpty()) {
                             JsonHelper.getInstance().addImages(attBuilder,
                                     imageMap.get(catalogNumber));
-                        } 
-                     
-                        if (classificationJson != null) {  
-                            JsonHelper.getInstance().addClassification(attBuilder, classificationJson, record);  
                         }
-//                        if (classificationJson != null) { 
-//                            if(isBirdOrMammalCollection) {
-//                                JsonHelper.getInstance().addClassification(attBuilder, classificationJson, record);
-//                            } else {
-//                                JsonHelper.getInstance().addClassification(attBuilder, classificationKeys, record);
-//                            } 
-//                        }
-//                        log.info("add classification: {}", classificationKeys);
-                         
-//                        if (isStringCoordinates) {
-//                            coordinatesBuilder.build(attBuilder, record.get(csvCoordinatesKey));
-//                        } else {
-//                            latitude = record.get(JsonHelper.getInstance()
-//                                    .getLatitudeCsvKey(coordinatesJson)).trim();
-//                            longitude = record.get(JsonHelper
-//                                    .getInstance().getLongitudeCsvKey(coordinatesJson)).trim();
-//                            coordinatesBuilder.build(attBuilder, latitude, longitude);
-//                        }
 
-                        if(coordinatesJson != null) {
-                            latitude = record.get(JsonHelper.getInstance()
-                                    .getLatitudeCsvKey(coordinatesJson)).trim();
-                            longitude = record.get(JsonHelper
-                                    .getInstance().getLongitudeCsvKey(coordinatesJson)).trim();
-                            coordinatesBuilder.build(attBuilder, latitude, longitude);
+                        if (classificationJson != null) {
+                            JsonHelper.getInstance().addClassification(attBuilder, classificationJson, record);
                         }
+
+                        latitude = record.get(JsonHelper.getInstance()
+                                .getLatitudeCsvKey(coordinatesJson)).trim();
+                        longitude = record.get(JsonHelper
+                                .getInstance().getLongitudeCsvKey(coordinatesJson)).trim();
+                        coordinatesBuilder.build(attBuilder, latitude, longitude);
+
                         log.info("coordinates added...");
 
-                        if (json.containsKey(eventDateKey)) {
-//                            if (isStringEventdate) {
-//                                JsonHelper.getInstance().addEventDate(attBuilder, record.get(csvEventDateKey));
-//                            } else {
-//                                JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
-//                            }
-                            JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
-                            log.info("eventDate added...");
-                        }
+                        JsonHelper.getInstance().addEventDate(attBuilder, eventDateJson, record);
+                        log.info("eventDate added...");
 
-
-                        if(eventEndDateJson != null) {
+                        if (eventEndDateJson != null) {
                             JsonHelper.getInstance().addEventEndDate(attBuilder, eventEndDateJson, record);
                         }
-                        
-                        if(csvCatalogedDate != null) {
+
+                        if (csvCatalogedDate != null) {
                             JsonHelper.getInstance().addCatalogDate(attBuilder, record.get(csvCatalogedDate));
                         }
-                        
-                        if(csvDateIdentifiedKey != null) {
+
+                        if (csvDateIdentifiedKey != null) {
                             JsonHelper.getInstance().addDateIdentified(attBuilder, record.get(csvDateIdentifiedKey));
-                        } 
-//                        log.info("catalogedDate added...");
-                        
-//                        log.info("add cataloged date " );
-//                        if (hasDeterminedDate) {
-//                            JsonHelper.getInstance().addDeterminedDate(attBuilder,
-//                                    record.get(csvDeterminedDateKey));
-//                        }
-// 
-                        if(csvTypeStatusKey != null) { 
-                            JsonHelper.getInstance().addTypeStatus(attBuilder, 
-                                    record.get(csvTypeStatusKey)); 
-                        } 
+                        }
+//        
+                        if (csvTypeStatusKey != null) {
+                            JsonHelper.getInstance().addTypeStatus(attBuilder,
+                                    record.get(csvTypeStatusKey));
+                        }
 //                        log.info("typestatus added...");
- 
-                        if(hasSynonyms) {
+
+                        if (hasSynonyms) {
                             JsonHelper.getInstance().addSynonyms(attBuilder, json, record);
                         }
-                          
-                        JsonHelper.getInstance().addCountry(attBuilder, json, record); 
-                        log.info("add coutry " );
-                        
-                        
+
+                        JsonHelper.getInstance().addCountry(attBuilder, json, record);
+                        log.info("add coutry ");
+
                         arrayBuilder.add(attBuilder);
 
                         if (counter.get() % batchSize == 0) {
@@ -244,11 +184,8 @@ public class ZooJsonConverter implements Serializable {
         return list;
     }
 
-    
 //    private final Predicate<CSVRecord> isValid1 = record
 //            ->  StringUtils.isBlank(record.get(csvCatalogNumberKey));
-    
-    
     private final Predicate<CSVRecord> isValid = record
             -> isBirdCollection()
             || !StringUtils.isBlank(record.get(csvCatalogNumberKey));
@@ -256,7 +193,7 @@ public class ZooJsonConverter implements Serializable {
     private boolean isBirdCollection() {
         return collectionName.equals(birdCollection);
     }
- 
+
 //            s != null && !s.trim().isEmpty();
 //    private final Predicate<CSVRecord> isValid = record
 //            -> isBirdCollection()

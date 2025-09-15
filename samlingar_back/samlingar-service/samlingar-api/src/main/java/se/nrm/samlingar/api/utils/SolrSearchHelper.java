@@ -1,20 +1,33 @@
-    package se.nrm.samlingar.api.utils;
+package se.nrm.samlingar.api.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate; 
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.OffsetDateTime; 
-import java.time.ZoneOffset; 
-import java.time.format.DateTimeFormatter; 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.util.SimpleOrderedMap;
 
 /**
  *
@@ -24,25 +37,23 @@ import org.apache.commons.lang3.StringUtils;
 public class SolrSearchHelper {
 
     private final String colon = ":";
-    private final String wildCard = "*"; 
+    
     private final String plusSign = "+";
     private final String colonEscap = "\\:";
-    
+
     private final String leftBracket = "(";
     private final String rightBracket = ")";
 
     private final String emptySpace = " ";
-    private final String star = "*";
-    private final String quotationMark = "\"";
- 
-
-    private StringBuilder fuzzySeachTextSb;
-    private StringBuilder collectionCodeSearchSb;
     
+    private final String quotationMark = "\"";
+
+    
+    private StringBuilder collectionCodeSearchSb;
+
     private LocalDate firstDayOfYear;
     private LocalDate tomorrow;
- 
-    
+
     private final String basisOfRecordKey = "basisOfRecord";
     private final String catalogNumberKey = "catalogNumber";
     private final String collectionNameKey = "collectionName";
@@ -54,8 +65,8 @@ public class SolrSearchHelper {
     private final String licenseKey = "license";
     private final String individualCountKey = "individualCount";
     private final String occurrenceRemarksKey = "occurrenceRemarks";
-    private final String sexKey = "sex"; 
- 
+    private final String sexKey = "sex";
+
     private final String countryKey = "country";
     private final String stateProvinceKey = "stateProvince";
     private final String continentKey = "continent";
@@ -71,7 +82,7 @@ public class SolrSearchHelper {
     private final String fieldNumberKey = "fieldNumber";
     private final String habitatKey = "habitat";
     private final String typeStatusKey = "typeStatus";
-    
+
     private final String kingdomKey = "kingdom";
     private final String phylumKey = "phylum";
     private final String classKey = "class";
@@ -80,14 +91,13 @@ public class SolrSearchHelper {
     private final String genusKey = "genus";
     private final String subgenusKey = "subgenus";
     private final String speciesKey = "species";
-    private final String scientificNameKey = "scientificName";
+
     private final String scientificNameAuthorshipKey = "scientificNameAuthorship";
     private final String specificEpithetKey = "specificEpithet";
     private final String synonymsKey = "dynamicProperties_synonyms";
     private final String vernacularNameKey = "vernacularName";
-    
+
 //    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm zzzz");
- 
     private final String startsWith = "startsWith";
     private final String contains = "contains";
     private final String equals = "equals";
@@ -98,6 +108,33 @@ public class SolrSearchHelper {
 
     private static SolrSearchHelper instance = null;
 
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    private final String catchallKey = "catchall:";
+    private final String scientificNameKey = "scientificName";
+    
+    private StringBuilder fuzzySeachTextSb;
+    private StringBuilder freeTextSearchSb;
+    
+    private final String star = "*";
+    
+
     public static SolrSearchHelper getInstance() {
         synchronized (SolrSearchHelper.class) {
             if (instance == null) {
@@ -106,6 +143,99 @@ public class SolrSearchHelper {
         }
         return instance;
     }
+
+    public String buildFreeTextSearch(String text) {
+        
+        freeTextSearchSb = new StringBuilder();
+         
+        if(text == null || text.isEmpty() || text.equals(star)) {
+            log.info("here....");
+            freeTextSearchSb.append(catchallKey); 
+            freeTextSearchSb.append(star);  
+            return freeTextSearchSb.toString().trim(); 
+        } 
+         
+        if (text.contains(emptySpace)) {
+            searchText = text.split(emptySpace);
+            for (String value : searchText) {
+                freeTextSearchSb.append(catchallKey); 
+                freeTextSearchSb.append(star);
+                freeTextSearchSb.append(value);
+                freeTextSearchSb.append(star);
+                freeTextSearchSb.append(emptySpace);
+            }
+        } else {
+            freeTextSearchSb.append(catchallKey); 
+            freeTextSearchSb.append(star);
+            freeTextSearchSb.append(text);
+            freeTextSearchSb.append(star); 
+        } 
+        return freeTextSearchSb.toString();
+    }
+
+    public String buildScientificName(String text, boolean fuzzySearch) {
+        fuzzySeachTextSb = new StringBuilder();
+        if (fuzzySearch) {
+            if (text.contains(emptySpace)) {
+                searchText = text.split(emptySpace);
+                for (String value : searchText) {  
+                    fuzzySeachTextSb.append(scientificNameKey);
+                    fuzzySeachTextSb.append(colon);
+                    fuzzySeachTextSb.append(star);
+                    fuzzySeachTextSb.append(value);
+                    fuzzySeachTextSb.append(star);
+                    fuzzySeachTextSb.append(emptySpace);
+                } 
+            } else {
+                fuzzySeachTextSb.append(scientificNameKey);
+                fuzzySeachTextSb.append(colon);
+                fuzzySeachTextSb.append(text); 
+                fuzzySeachTextSb.append(emptySpace);
+
+                fuzzySeachTextSb.append(scientificNameKey);
+                fuzzySeachTextSb.append(colon);
+                fuzzySeachTextSb.append(star);
+                fuzzySeachTextSb.append(text);
+                fuzzySeachTextSb.append(star);
+                fuzzySeachTextSb.append(emptySpace);
+
+                fuzzySeachTextSb.append(scientificNameKey);
+                fuzzySeachTextSb.append(colon);
+                fuzzySeachTextSb.append(StringUtils.capitalize(text));
+                fuzzySeachTextSb.append(star);
+            }
+        } else {
+            fuzzySeachTextSb.append(scientificNameKey);
+            fuzzySeachTextSb.append(colon);
+            fuzzySeachTextSb.append(quotationMark);
+            fuzzySeachTextSb.append(text);
+            fuzzySeachTextSb.append(quotationMark);
+        }
+
+        return fuzzySeachTextSb.toString().trim();
+    }
+    
+        
+    
+
+    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
     
     public List<String> buildDataExportFields() {
         fields = new ArrayList();
@@ -191,7 +321,7 @@ public class SolrSearchHelper {
      
     public String buildSearchCollectionCode(String collectionCodeKey, String collectionCodeValue) {
         
-        collectionCodeValue = collectionCodeValue == null ? wildCard : collectionCodeValue;
+        collectionCodeValue = collectionCodeValue == null ? star : collectionCodeValue;
         collectionCodeSearchSb = new StringBuilder(); 
         collectionCodeSearchSb.append(collectionCodeKey);
         collectionCodeSearchSb.append(colon); 
@@ -428,16 +558,18 @@ public class SolrSearchHelper {
     }
  
      
-    public String convertInputStreamToJsonString(InputStream inputStream) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
-            char[] buffer = new char[8192]; // 8KB buffer
-            int bytesRead;
-            while ((bytesRead = reader.read(buffer, 0, buffer.length)) != -1) {
-                sb.append(buffer, 0, bytesRead);
-            }
-        }
-        return sb.toString();
-    } 
+//    public String convertInputStreamToJsonString(InputStream inputStream) throws IOException {
+//        StringBuilder sb = new StringBuilder();
+//        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
+//            char[] buffer = new char[8192]; // 8KB buffer
+//            int bytesRead;
+//            while ((bytesRead = reader.read(buffer, 0, buffer.length)) != -1) {
+//                sb.append(buffer, 0, bytesRead);
+//            }
+//        }
+//        return sb.toString();
+//    } 
+
+
  
 }

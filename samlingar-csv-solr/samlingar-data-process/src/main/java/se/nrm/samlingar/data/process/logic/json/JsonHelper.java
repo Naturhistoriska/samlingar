@@ -159,6 +159,10 @@ public class JsonHelper {
     private StringBuilder dateSb;
     private String[] dateArray;
     private List<String> synonymsList;
+    
+    
+    private JsonArrayBuilder synonymsArrayBuilder;
+    private JsonArrayBuilder synonymAuthorsArrayBuilder;
 
     private static JsonHelper instance = null;
 
@@ -308,10 +312,7 @@ public class JsonHelper {
                         attBuilder.add(key, taxon);
                         if (isScientificNameSet) {
                             classificationList.add(taxon);
-                        } else {
-//                            addAttValue(attBuilder, scientificNameKey, taxon);
-//                            addAttValue(attBuilder, taxonRankKey, key); 
-//                            addAttValue(attBuilder, scientificNameKey, taxon);
+                        } else { 
                             addAttValue(attBuilder, taxonRankKey, key);
                             isScientificNameSet = true;
                         }
@@ -471,6 +472,23 @@ public class JsonHelper {
             attBuilder.add(synonymsKey, synomysBuilder);
         }  
     }
+    
+    
+    public void addSynonyms(JsonObjectBuilder attBuilder, List<String> synonyms) {
+
+        if (synonyms != null && !synonyms.isEmpty()) {
+            log.info("addSynonyms : {}", synonyms.size());
+            synonymsArrayBuilder = Json.createArrayBuilder();
+            synonymAuthorsArrayBuilder = Json.createArrayBuilder();
+            synonyms.stream()
+                    .forEach(synomy -> {
+                        synonymsArrayBuilder.add(synomy.trim());
+                        synonymAuthorsArrayBuilder.add(synomy.trim());
+                    });
+            attBuilder.add(synonymsKey, synonymsArrayBuilder);
+            attBuilder.add(synonymAuthorKey, synonymAuthorsArrayBuilder);
+        }
+    }
 
     private String buildDate(String year, String month, String day) {
         log.info("buildDate : {} -- {}", year, month + " -- " + day);
@@ -573,7 +591,7 @@ public class JsonHelper {
         year = record.get(eventDateJson.getString(yearKey));  
         month = record.get(eventDateJson.getString(monthKey));  
         day = record.get(eventDateJson.getString(dayKey)); 
-         
+           
         log.info("addEventDate : {} -- {}", year, month + " -- " + day);
         if (!StringUtils.isBlank(year)) {
             addEventDate(attBuilder, year, month, day);
@@ -743,5 +761,9 @@ public class JsonHelper {
         }
     }
     
-   
+    public void addAttValue(JsonObjectBuilder attBuilder, String key, int value) {
+        if (value != 0) {
+            attBuilder.add(key, value);
+        }
+    }
 }

@@ -38,6 +38,8 @@ public class ZooDataProcessor implements Serializable {
     private JsonObject imageJson; 
     private String imageFileName;
     
+    private final String av = "av";
+    
     
     @Inject
     private CSVFileProcessor fileProcessor;
@@ -71,7 +73,7 @@ public class ZooDataProcessor implements Serializable {
                             records = fileProcessor.read(filePath, fileName, delimiter, encoding);
                              
                             collectionId = JsonHelper.getInstance().getIdPrefix(json);
-                             
+             
                             if (records != null) {
                                 log.info("records size : {}", records.size());
                                 if (delete) {
@@ -104,6 +106,9 @@ public class ZooDataProcessor implements Serializable {
         } 
     }  
     
+    private boolean isBirdCollection(String id) {
+        return id.equals(av);
+    }
     
     private JsonObject getImageMappingJson(JsonArray imageArray) {
         log.info("getImageMappingJson" ); 

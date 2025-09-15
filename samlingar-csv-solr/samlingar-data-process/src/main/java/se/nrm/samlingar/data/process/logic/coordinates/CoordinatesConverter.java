@@ -126,25 +126,32 @@ public class CoordinatesConverter implements Serializable {
         
         try {
             if (lat.matches(latRex1) || lat.matches(latRex2)) {
-                return Util.getInstance().stringToDouble(lat); 
+                dblLat = Util.getInstance().stringToDouble(lat);  
+                if(dblLat >= -90.0 && dblLat <= 90.0) {
+                    return dblLat;
+                } else { 
+                    throw new SamlingarException(ErrorMsg.getInstance().getInvalidCoordinatesErrorMsg() + lat);
+                } 
             } else if(lat.matches(latRex3)) {
-                return Util.getInstance().stringToDouble(
+                dblLat = Util.getInstance().stringToDouble(
                         StringUtils.replace(lat, comma, dot));
+                if(dblLat >= -90.0 && dblLat <= 90.0) {
+                    return dblLat;
+                } else { 
+                    throw new SamlingarException(ErrorMsg.getInstance().getInvalidCoordinatesErrorMsg() + lat);
+                } 
             } else if(lat.matches(rex1)) {
                 // 63.43
                 dblLat = Util.getInstance().stringToDouble(StringUtils.substringBefore(lat, degreeSign));
                 if(dblLat >= -90.0 && dblLat <= 90.0) {
                     return dblLat;
-                } else {
-                    log.error("what...{}", lat);
+                } else { 
                     throw new SamlingarException(ErrorMsg.getInstance().getInvalidCoordinatesErrorMsg() + lat);
                 } 
             } else {
                 log.error("what...{}", lat);
                 throw new SamlingarException(ErrorMsg.getInstance().getInvalidCoordinatesErrorMsg() + lat);
-            }
-           
-            
+            } 
         } catch (NumberFormatException e) {
             log.error("NumberFormatException: {} ", e.getMessage());
             throw new SamlingarException(e.getMessage());
@@ -446,6 +453,10 @@ public class CoordinatesConverter implements Serializable {
 ////                } 
 //                throw new SamlingarException(invalidCoordinatesErrorMsg + latOrLong);
 //            }
+    }
+    
+    private boolean isValidLatitude(double latitude) {
+        return latitude >= -90.0 && latitude <= 90.0;
     }
 
     private double convert(int degrees, int minutes, double seconds) {

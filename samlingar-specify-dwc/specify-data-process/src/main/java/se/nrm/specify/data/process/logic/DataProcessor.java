@@ -85,7 +85,9 @@ public class DataProcessor implements Serializable {
 
         collections = Arrays.asList(propeties.getCollections().split(slash));
         log.info("collections.... {}", collections);
-
+     
+         
+        isUpdate = propeties.isUpdate();
         jpql = buildJpql();
 
         institution = crud.getInstitutionByCode(propeties.getInstitutionCode());
@@ -100,8 +102,10 @@ public class DataProcessor implements Serializable {
 
                             int count = ids.size();
                             
-                            solr.deleteCollection(collectionCode);
-
+                            if(!isUpdate) {
+                                solr.deleteCollection(collectionCode);
+                            }
+                             
                             for (int i = 0; i < count; i += max) {
                                 end = i + max <= count ? i + max : count;
 

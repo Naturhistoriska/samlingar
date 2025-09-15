@@ -17,8 +17,8 @@ import se.nrm.samlingar.api.logic.InitialProperties;
  *
  * @author idali
  */
-@ApplicationScoped 
-@Startup
+//@ApplicationScoped 
+//@Startup
 @Slf4j
 public class SolrClientProducer implements Serializable {
 

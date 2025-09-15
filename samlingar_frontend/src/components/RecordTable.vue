@@ -26,14 +26,14 @@
       :filters="filters"
       @filter="onFilter"
     >
-      <template #header>
+      <!-- <template #header>
         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
           <span class="text-xl text-900 font-bold"> </span>
           <div style="text-align: right" clss="grid justify-end">
             <Button type="button" :label="$t('btnLabel.columns')" @click="dialogVisible = true" />
           </div>
         </div>
-      </template>
+      </template> -->
       <template #empty>{{ $t('search.noResultsFound') }}</template>
       <template #loading>{{ $t('search.loadingData') }}</template>
 
@@ -55,13 +55,13 @@
       </Column> -->
       <Column expander style="width: 5rem" />
       <Column
-        field="dataResourceName"
+        field="collectionName"
         header="Collection name"
         :showFilterMenu="false"
         style="min-width: 14rem; max-width: 14rem"
       >
         <template #body="{ data }">
-          {{ data.dataResourceName }}
+          {{ data.collectionName }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <MultiSelect
@@ -241,7 +241,7 @@ let filterArray = ref([])
 const loading = ref(false)
 
 const filters = ref({
-  dataResourceName: { value: null, matchMode: FilterMatchMode.EQUALS },
+  collectionName: { value: null, matchMode: FilterMatchMode.EQUALS },
   scientificName: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
   catalogNumber: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
   locality: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -266,9 +266,10 @@ watch(
 )
 
 watch(
-  () => store.getters['collections'],
+  () => store.getters['collectionGroup'],
   (newValue, oldValue) => {
     const data = newValue
+    console.log('collections', newValue)
     if (data) {
       collectionOptions.value = data.map((item) => item.val)
     }
@@ -277,8 +278,9 @@ watch(
 
 onMounted(async () => {
   records.value = store.getters['results']
-  const collections = store.getters['collections']
+  const collections = store.getters['collectionGroup']
 
+  console.log('collections:', collections)
   collectionOptions.value = collections ? collections.map((item) => item.val) : []
   columns.value = defaultColumns.value
 })
@@ -341,18 +343,23 @@ function onScientificNameFilterInput(event, filterModel) {
 // }
 
 function onFilter(event) {
+  console.log('event', event)
   filterArray.value = []
 
   const { filters: filterMeta, first, rows } = event
 
-  const dataResource = filterMeta.dataResourceName
+  const collectionName = filterMeta.collectionName
+
+  console.log('collection name', collectionName)
   const scientificName = filterMeta.scientificName
   const catalogNumber = filterMeta.catalogNumber
   const locality = filterMeta.locality
 
   console.log('starts search')
-  if (dataResource.value) {
-    buildFilter(dataResource, 'dataResourceName', true)
+  console.log(collectionName.value)
+
+  if (collectionName.value && collectionName.value.length > 0) {
+    buildFilter(collectionName, 'collectionName', true)
   }
 
   if (scientificName.value) {
@@ -373,8 +380,8 @@ function onFilter(event) {
 
 function buildFilter(data, filterKey, isArray) {
   let value
-
-  if (isArray) {
+  console.log('data', data.value.length)
+  if (isArray && data.value.length > 0) {
     const string = data.value.map((val) => `'${val}'`).join(' ')
     value = `(${string})`
   } else {
@@ -458,16 +465,16 @@ function buildParams() {
     params.set('endDate', endDate)
   }
 
-  const hasDataResource = filterArray.value.some((obj) => obj.key === 'dataResourceName')
+  const hasCollection = filterArray.value.some((obj) => obj.key === 'collectionName')
   let dataResource
-  if (hasDataResource) {
-    dataResource = filterArray.value.filter((item) => item.key === 'dataResourceName')[0].value
+  if (hasCollection) {
+    dataResource = filterArray.value.filter((item) => item.key === 'collectionName')[0].value
   } else {
-    dataResource = store.getters['dataResource']
+    dataResource = store.getters['collection']
   }
   if (dataResource) {
     let newValue = dataResource.replace(/'/g, '"')
-    params.set('dataResourceName', newValue)
+    params.set('collectionName', newValue)
   }
 
   let scientificName

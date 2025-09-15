@@ -30,7 +30,7 @@ public class JsonConverter implements Serializable {
 
     private final String licenseKey = "license";
     private final String accessRightsKey = "accessRights";
-    private final String institutionIDKey = "institutionID";
+    private final String institutionNameKey = "institutionName";
     private final String institutionCodeKey = "institutionCode";
 
     @Inject
@@ -103,7 +103,7 @@ public class JsonConverter implements Serializable {
 
     private void addInstitution() {
         attBuilder.add(licenseKey, copyright);
-        attBuilder.add(institutionIDKey, altName);
+        attBuilder.add(institutionNameKey, altName);
         attBuilder.add(institutionCodeKey, code);
     }
 

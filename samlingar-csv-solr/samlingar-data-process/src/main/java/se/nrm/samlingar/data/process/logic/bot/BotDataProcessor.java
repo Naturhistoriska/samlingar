@@ -42,7 +42,7 @@ public class BotDataProcessor implements Serializable {
     private String nameCsvFilePath;
     private String determinationCsvFilePath;
     private String exsiccateCsvFilePath;
-    
+
     private String taxonCsvFilePath;
 
     private char delimiter;
@@ -64,7 +64,7 @@ public class BotDataProcessor implements Serializable {
     private List<CSVRecord> imageRecords;
 
     private List<CSVRecord> taxonRecords;
-    
+
     private JsonObject imageJson;
 
     private JsonObject mappingJson;
@@ -92,7 +92,8 @@ public class BotDataProcessor implements Serializable {
 
     }
 
-    public void process(InitialProperties properties, JsonArray array, JsonArray imageArray, boolean delete) {
+    public void process(InitialProperties properties, JsonArray array,
+            JsonArray imageArray, boolean delete) {
         log.info("process");
 
         try {
@@ -129,43 +130,68 @@ public class BotDataProcessor implements Serializable {
                                     determinationRecords, json.getJsonObject(determinationkey));
                             log.info("determinationMap : {}", determinationMap.size());
 
-                            if (fileName.equals(vascularPlants)) {
+                            imageRecords = getImageCsvRecord(imageArray,
+                                    properties.getImageKboCsvPath(), kboDateset);
+                            log.info("image records : {}", imageRecords.size());
 
-                            } else {
-                                imageRecords = getImageCsvRecord(imageArray,
-                                        properties.getImageKboCsvPath(), kboDateset);
-                                log.info("image records : {}", imageRecords.size());
+                            imageMap = imageData.kboExtract(imageRecords,
+                                    JsonHelper.getInstance().getMappingJson(imageJson));
 
-                                imageMap = imageData.kboExtract(imageRecords,
-                                        JsonHelper.getInstance().getMappingJson(imageJson));
+                            catalogRecords = fileProcessor.read(catalogCsvFilePath, delimiter, encoding);
+                            nameMap = extractor.extractName(nameRecords, catalogRecords);
 
-                                catalogRecords = fileProcessor.read(catalogCsvFilePath, delimiter, encoding);
-                                nameMap = extractor.extractName(nameRecords, catalogRecords);
+                            log.info("done.....");
 
-                                log.info("done.....");
+                            exsiccateRecords = fileProcessor.read(exsiccateCsvFilePath, delimiter, encoding);
+                            exisccateMap = extractor.extractExsiccate(exsiccateRecords);
 
-                                exsiccateRecords = fileProcessor.read(exsiccateCsvFilePath, delimiter, encoding);
-                                exisccateMap = extractor.extractExsiccate(exsiccateRecords);
+                            records = fileProcessor.read(mainCsvFilePath, delimiter, encoding);
+                            log.info("records size : {}", records.size());
 
-                                records = fileProcessor.read(mainCsvFilePath, delimiter, encoding);
-                                log.info("records size : {}", records.size());
+                            list = converter.convert(records, nameMap, exisccateMap, determinationMap,
+                                    imageMap, collectionName, idPrefix, json);
 
-                                if (fileName.equals(fungi)) {
-                                    log.info("fungi...");
-                                    taxonRecords = fileProcessor.read(taxonCsvFilePath, delimiter, encoding);
-                                    log.info("taxonRecords : {}", taxonRecords.size());
-                                } else {
-
-                                    list = converter.convert(records, nameMap, exisccateMap, determinationMap,
-                                            imageMap, collectionName, idPrefix, json);
-
-                                    list.stream()
-                                            .forEach(l -> {
-                                                status = solr.postToSolr(l.toString().trim());
-                                                log.info("status : {}", status);
-                                            });
-                                }
-                            }
+                            list.stream()
+                                    .forEach(l -> {
+                                        status = solr.postToSolr(l.toString().trim());
+                                        log.info("status : {}", status);
+                                    });
+//                            if (fileName.equals(vascularPlants)) {
+//                                imageMap = imageData.fboExtract(imageRecords,
+//                                        JsonHelper.getInstance().getMappingJson(imageJson));
+//                                vascularPlantsProcess.process(mainCsvFilePath,
+//                                        mappingJson, submappingJson, delimiter, encoding, idPrefix,
+//                                        collectionName, nameRecords, determinationMap, imageMap);
+//                            } else {
+//                                imageRecords = getImageCsvRecord(imageArray,
+//                                        properties.getImageKboCsvPath(), kboDateset);
+//                                log.info("image records : {}", imageRecords.size());
+//
+//                                imageMap = imageData.kboExtract(imageRecords,
+//                                        JsonHelper.getInstance().getMappingJson(imageJson));
+//
+//                                catalogRecords = fileProcessor.read(catalogCsvFilePath, delimiter, encoding);
+//                                nameMap = extractor.extractName(nameRecords, catalogRecords);
+//
+//                                log.info("done.....");
+//
+//                                exsiccateRecords = fileProcessor.read(exsiccateCsvFilePath, delimiter, encoding);
+//                                exisccateMap = extractor.extractExsiccate(exsiccateRecords);
+//
+//                                records = fileProcessor.read(mainCsvFilePath, delimiter, encoding);
+//                                log.info("records size : {}", records.size());
+//
+//                                list = converter.convert(records, nameMap, exisccateMap, determinationMap,
+//                                        imageMap, collectionName, idPrefix, json);
+//
+//                                list.stream()
+//                                        .forEach(l -> {
+//                                            status = solr.postToSolr(l.toString().trim());
+//                                            log.info("status : {}", status);
+//                                        });
+//
+////                              
+//                            }
 
 //                            if (fileName.equals(vascularPlants)) {
 //                                imageMap = imageExtractor.fboExtract(imageRecords,

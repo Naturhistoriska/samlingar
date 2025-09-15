@@ -4,19 +4,25 @@
       <div class="col-5" no-gutters>
         <search-records @search="handleSearch" />
       </div>
-      <div class="col-7" no-gutters>
+      <div class="col-7" no-gutters v-if="isLargeMap">
         <Suspense>
           <template #default>
             <keep-alive>
               <async-map />
             </keep-alive>
           </template>
-
-          <!-- <async-map
-                v-bind:total="totalCount"
-                v-bind:entry="entryType"
-                v-bind:from="previousRoute?.fullPath"
-              /> -->
+          <template #fallback>
+            <VueSpinnerDots size="20" color="red" />
+          </template>
+        </Suspense>
+      </div>
+      <div class="col-7" no-gutters v-else>
+        <Suspense>
+          <template #default>
+            <keep-alive>
+              <async-map />
+            </keep-alive>
+          </template>
           <template #fallback>
             <VueSpinnerDots size="20" color="red" />
           </template>
@@ -32,7 +38,7 @@
   </div>
 </template>
 <script setup>
-import { defineAsyncComponent, onMounted, ref, toRaw } from 'vue'
+import { defineAsyncComponent, onMounted, ref, toRaw, watch } from 'vue'
 import { useStore } from 'vuex'
 import Service from '../Service'
 
@@ -46,18 +52,29 @@ const store = useStore()
 const service = new Service()
 
 const AsyncMap = defineAsyncComponent({
-  loader: () => import('../components/NewMap.vue')
+  loader: () => import('../components/MapSwitch.vue')
+  // loader: () => import('../components/NewMap.vue')
   // loader: () => import('../components/Map2.vue')
 })
 
 let loading = ref(true)
-let totalCount = ref()
+let isLargeMap = ref(true)
+// let totalCount = ref()
+
+watch(
+  () => store.getters['totalRecords'],
+  (newValue, oldValue) => {
+    console.log('TotalRecord', newValue)
+  }
+)
 
 onMounted(async () => {
   console.log('onMounted SearchView')
 
-  // const from = previousRoute.value?.fullPath
-  // const to = currentRoute.value?.fullPath
+  const from = previousRoute.value?.fullPath
+  const to = currentRoute.value?.fullPath
+
+  console.log('entryType.value', entryType.value, from)
 
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
     const queries = toRaw(currentRoute.value?.query)
@@ -72,11 +89,22 @@ onMounted(async () => {
     }
     store.commit('setSearchParams', params)
     search(params, 0, 10, true)
+  } else if (entryType.value === 'internal') {
+    const isPushed = store.getters['isUrlPush']
+
+    console.log(isPushed, entryType.value)
+    if (!isPushed) {
+      let params = new URLSearchParams({
+        text: '*'
+      })
+      store.commit('setSearchParams', params)
+      search(params, 0, 10, true)
+    }
   }
 
-  setTimeout(() => {
-    loading.value = false
-  }, 2000)
+  // setTimeout(() => {
+  //   loading.value = false
+  // }, 2000)
 })
 
 function download() {
@@ -113,7 +141,7 @@ function handleSearch() {
 }
 
 async function search(params, start, numPerPage, saveData) {
-  console.log('do search....')
+  console.log('do search....', saveData)
   loading.value = true
   // const params = buildParams()
   await service
@@ -125,14 +153,12 @@ async function search(params, start, numPerPage, saveData) {
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
-      totalCount.value = total
-
       if (saveData) {
         if (total > 0) {
-          const collectionfacet = response.facets.dataResourceName.buckets
-          store.commit('setCollections', collectionfacet)
+          const collectionfacet = response.facets.collectionName.buckets
+          store.commit('setCollectionGroup', collectionfacet)
         } else {
-          store.commit('setCollections', null)
+          store.commit('setCollectionGroup', null)
         }
       }
 
@@ -159,8 +185,9 @@ function buildParams(saveParams) {
   const hasImages = store.getters['filterImage']
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
+  const selectedCollection = store.getters['selectedCollection']
 
-  const dataResource = store.getters['dataResource']
+  // const dataResource = store.getters['dataResource']
 
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
@@ -205,9 +232,13 @@ function buildParams(saveParams) {
     params.set('endDate', endDate)
   }
 
-  if (dataResource) {
-    let newValue = dataResource.replace(/'/g, '"')
-    params.set('dataResourceName', newValue)
+  // if (dataResource) {
+  //   let newValue = dataResource.replace(/'/g, '"')
+  //   params.set('dataResourceName', newValue)
+  // }
+
+  if (selectedCollection) {
+    params.set('collectionCode', selectedCollection)
   }
 
   if (fields) {

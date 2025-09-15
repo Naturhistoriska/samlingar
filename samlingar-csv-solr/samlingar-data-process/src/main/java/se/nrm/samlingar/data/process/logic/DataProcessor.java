@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.json.JsonArray;
+import javax.json.JsonValue;
 import lombok.extern.slf4j.Slf4j; 
 import org.wildfly.swarm.Swarm;
 import se.nrm.samlingar.data.process.config.InitialProperties;
 import se.nrm.samlingar.data.process.logic.bot.BotDataProcessor; 
+import se.nrm.samlingar.data.process.logic.bot.VascularPlantsDataProcess;
 import se.nrm.samlingar.data.process.logic.files.JsonFileHandler;
 import se.nrm.samlingar.data.process.logic.paleo.PaleoDataProcessor;
 import se.nrm.samlingar.data.process.logic.zoo.ZooDataProcessor;
@@ -22,6 +24,7 @@ public class DataProcessor implements Serializable  {
     private final String botCollection = "bot"; 
     private final String paleoCollection = "paleo"; 
     private final String zooCollection = "zoo";
+    private final String fboCollection = "fbo";
      
     private JsonArray array; 
     private String collection;
@@ -42,8 +45,10 @@ public class DataProcessor implements Serializable  {
     @Inject
     private ZooDataProcessor zoo;
     @Inject
+    private VascularPlantsDataProcess fbo;
+    @Inject
     private JsonFileHandler jsonFileHander;
-    
+  
     public DataProcessor() {
         
     }
@@ -68,6 +73,8 @@ public class DataProcessor implements Serializable  {
             case botCollection:  
                 bot.process(propeties, array, imageArray, deleteData);
                 break;
+            case fboCollection:
+                fbo.process(propeties, array, imageArray, deleteData);
             default: 
                 break;
         }  

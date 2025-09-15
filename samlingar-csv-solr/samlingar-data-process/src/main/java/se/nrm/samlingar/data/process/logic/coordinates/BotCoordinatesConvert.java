@@ -3,6 +3,7 @@ package se.nrm.samlingar.data.process.logic.coordinates;
 import com.peertopark.java.geocalc.DMSCoordinate;
 import java.io.Serializable;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.data.process.logic.exception.ErrorMsg;
 import se.nrm.samlingar.data.process.logic.exception.SamlingarException;
@@ -46,9 +47,47 @@ public class BotCoordinatesConvert implements Serializable {
     private double dblMinuts;
     private double dblLatOrLong;
 
+    private String strDegree;
+    private String strMinute;
+    private String strSeconds;
+    private String direction;
+    private int degree;
+    private int minute;
+    private double latLngDouble;
+    
+    private final double double200 = 200.0;
+    
+    private final String north = "N";
+    private final String east = "E";
     
     public BotCoordinatesConvert() {
         
+    }
+    
+    public double  convertVascularPlantsLatLng(String degreeKey, String minuteKey,
+            String secondKey, String directionKey, CSVRecord record) { 
+        
+        strDegree = record.get(degreeKey).trim();
+        strMinute = record.get(minuteKey).trim();
+        strSeconds = record.get(secondKey).trim();
+        strSeconds = StringUtils.replace(strSeconds, comma, dot);
+        direction = record.get(directionKey).trim();
+        
+        if(StringUtils.isAnyEmpty(strDegree, strMinute, strSeconds)) {
+            return double200;
+        }
+        try {
+            degree = Util.getInstance().stringToInt(strDegree);
+            minute = Util.getInstance().stringToInt(strMinute);
+            seconds = Util.getInstance().stringToDouble(strSeconds); 
+           
+            latLngDouble = convert(degree, minute, seconds); 
+            return direction.equals(north) || direction.equals(east)
+                                ? latLngDouble : (-1) * latLngDouble; 
+        } catch (Exception e) {
+            log.error(e.getMessage()); 
+        }
+        return double200;
     }
     
     public double convert(String latOrLong, boolean isLatitude) {

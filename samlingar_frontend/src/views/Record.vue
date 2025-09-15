@@ -12,7 +12,7 @@
     <div class="grid" v-if="hasData">
       <div class="col-7" no-gutters>
         <div class="col-12" no-gutters>
-          <record-dataset />
+          <record-dataset v-bind:code="code" />
         </div>
         <div class="col-12" no-gutters>
           <record-event />
@@ -61,6 +61,8 @@ const name = ref()
 const hasData = ref(false)
 const clazz = ref()
 
+const code = ref()
+
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
@@ -89,8 +91,10 @@ function fetchRecord(id) {
 }
 
 function buildRecordData(record) {
-  const { kingdom, phylum, order, family, genus, subgenus, scientificName } = record
+  const { collectionCode, kingdom, phylum, order, family, genus, subgenus, scientificName } = record
   clazz.value = record.class
+
+  code.value = collectionCode
 
   const higherClassification = new Array(
     kingdom,

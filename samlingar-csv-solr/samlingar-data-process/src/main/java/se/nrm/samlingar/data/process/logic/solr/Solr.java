@@ -79,8 +79,7 @@ public class Solr {
         entity = new StringEntity(sb.toString().trim(), utf8);
         entity.setContentType(applicationJson);
         post.setEntity(entity);
-         
-        
+          
         return authAndPost(post); 
     }
      
@@ -112,7 +111,6 @@ public class Solr {
         } catch (IOException ex) {
             log.error(ex.getMessage());
             return 500;
-        }
-    }
-    
+        }  
+    } 
 }

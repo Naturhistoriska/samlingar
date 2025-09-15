@@ -95,7 +95,7 @@ const scientificNamePanelNotVisible = computed(() => {
 })
 
 const collectionGroupPanelNotVisible = computed(() => {
-  return store.getters['dataResource'] === null
+  return store.getters['collectionName'] === null
 })
 
 const eventDatePanelNotVisible = computed(() => {

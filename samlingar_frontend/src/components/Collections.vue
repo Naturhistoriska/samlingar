@@ -33,102 +33,95 @@
 </template>
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-
+import { useI18n } from 'vue-i18n'
 import { useStore } from 'vuex'
+
 const store = useStore()
+const { t } = useI18n()
 
 const selectedItems = ref([])
 const multiSelectRef = ref(null)
 
 const groupedSelections = ref([
   {
-    label: 'Botanical and mycological collections',
+    label: t('collectionLabel.botCollection'),
     code: 'bot',
     items: [
-      { label: 'Algae Collection', value: 'Algae (S)' },
-      { label: 'Fungi Collection', value: 'Fungi (S)' },
-      { label: 'Moss Collection', value: 'Mosses (S)' },
+      { label: t('collectionLabel.algae'), value: 'Algae' },
+      { label: t('collectionLabel.fungi'), value: 'Fungi/Lichens' },
+      { label: t('collectionLabel.mosses'), value: 'Mosses' },
       {
-        label: 'Phanerogamic Botanical Collections',
-        value: 'Phanerogamic Botanical Collections (S)'
+        label: t('collectionLabel.phanerogamic'),
+        value: 'Vascular Plants'
       }
     ]
   },
   {
-    label: 'Zoological collections',
+    label: t('collectionLabel.zooCollection'),
     code: 'zoo',
     items: [
       {
-        label: 'Entomological Collections (NRM)',
-        value: 'Entomological Collections (NHRS), Swedish Museum of Natural History (NRM)'
+        label: t('collectionLabel.ent'),
+        value: 'NRM Entomology Collection Objects'
       },
       {
-        label: 'Invertebrates Collection NRM',
-        value: 'Invertebrates Collection of the Swedish Museum of Natural History'
+        label: t('collectionLabel.smtpObj'),
+        value: 'Swedish Malaise Trap Project (SMTP) Collection Obj'
       },
       {
-        label: 'Invertebrates Type Specimen Collection NRM',
-        value: 'Invertebrates (Type Specimens) of the Swedish Museum of Natural History'
+        label: t('collectionLabel.smtpList'),
+        value: 'Swedish Malaise Trap Project (SMTP) Species Lists'
       },
-      { label: 'Fish Collection NRM', value: 'Fish Collection NRM' },
+      {
+        label: t('collectionLabel.ev'),
+        value: 'Invertebrate main collection'
+      },
+      {
+        label: t('collectionLabel.et'),
+        value: 'Invertebrate type collection'
+      },
+      { label: t('collectionLabel.fish'), value: 'Fish' },
 
-      { label: 'Ornithology Collection NRM', value: 'Ornithology Collection NRM' },
-      { label: 'NRM-Mammals', value: 'NRM-Mammals' },
-      { label: 'Herpetology Collection NRM', value: 'Herpetology Collection NRM' }
+      { label: t('collectionLabel.bird'), value: 'Bird' },
+      { label: t('collectionLabel.mammal'), value: 'Mammals' },
+      { label: t('collectionLabel.herp'), value: 'Amphibians and reptiles' }
     ]
   },
   {
-    label: 'Paleontological collections',
+    label: t('collectionLabel.palCollection'),
     code: 'paleo',
     items: [
       {
-        label: 'Palaeobotanical Collections (PB)',
-        value: 'Palaeozoological Collections (PZ), Swedish Museum of Natural History (NRM)'
+        label: t('collectionLabel.pz'),
+        value: 'Paleozoology'
       },
       {
-        label: 'Palaeozoological Collections (PZ)',
-        value: 'Palaeobotanical Collections (PB), Swedish Museum of Natural History (NRM)'
+        label: t('collectionLabel.pb'),
+        value: 'Paleobotany'
       }
     ]
   },
   {
-    label: 'Geological collections',
+    label: t('collectionLabel.geoCollection'),
     code: 'geo',
     items: [
-      { label: 'NRM Isotope Geology', value: 'NRM Isotope Geology' },
-      { label: 'NRM Mineralogy', value: 'NRM Mineralogy' },
-      { label: 'NRM Nodules', value: 'NRM Nodules' }
+      { label: t('collectionLabel.nrmlig'), value: 'NRM Isotope Geology' },
+      { label: t('collectionLabel.nrmmin'), value: 'NRM Mineralogy' },
+      { label: t('collectionLabel.nrmnod'), value: 'NRM Nodules' }
     ]
   }
 ])
 
 const itemSelected = computed(() => {
-  return store.getters['dataResource'] !== null
+  return store.getters['collectionGroup'] !== null
 })
 
 onMounted(() => {
-  // const group = store.getters['collectionGroup']
-  const dataResource = store.getters['dataResource']
+  const group = store.getters['collectionGroup']
+  const dataSet = store.getters['dataResource']
 
-  const botany = import.meta.env.VITE_BOTANY_DATARESOURCE
-  const zoo = import.meta.env.VITE_ZOO_DATARESOURCE
-  const geo = import.meta.env.VITE_GEO_DATARESOURCE
-  const paleao = import.meta.env.VITE_PALEA_DATARESOURCE
-
-  let key
-  if (dataResource) {
-    if (botany === dataResource) {
-      key = 'bot'
-    } else if (zoo === dataResource) {
-      key = 'zoo'
-    } else if (paleao === dataResource) {
-      key = 'paleo'
-    } else if (geo === dataResource) {
-      key = 'geo'
-    }
-  }
   selectedItems.value = groupedSelections.value
-    .filter((group) => group.code === key)
+    .filter((group) => group.code === dataSet)
     .map((item) => item.items)[0]
 })
 

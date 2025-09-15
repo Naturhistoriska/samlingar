@@ -2,19 +2,14 @@
   <div style="font-size: 12px">
     <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
-      <div class="col-3 reducePadding">{{ $t('results.dataResource') }}</div>
-      <div class="col-9 reducePadding">
-        {{ dataResource }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.institiution') }}</div>
-      <div class="col-9 reducePadding">
-        {{ institution }}
-      </div>
-
       <div class="col-3 reducePadding">{{ $t('results.collectionName') }}</div>
       <div class="col-9 reducePadding">
         {{ collection }}
+      </div>
+
+      <div class="col-3 reducePadding">{{ $t('results.institiutionCode') }}</div>
+      <div class="col-9 reducePadding">
+        {{ institution }}
       </div>
 
       <div class="col-3 reducePadding">{{ $t('results.catalogNumber') }}</div>
@@ -29,7 +24,7 @@
 
       <div class="col-3 reducePadding">{{ $t('results.preparation') }}</div>
       <div class="col-9 reducePadding">
-        {{ preparationList }}
+        {{ preparationString }}
       </div>
 
       <div class="col-3 reducePadding">{{ $t('results.identifiedBy') }}</div>
@@ -103,18 +98,15 @@ const { t } = useI18n()
 
 const store = useStore()
 
+const accession = ref()
 const additionalDetermination = ref()
-
 const catNumber = ref()
-const code = ref()
 const collection = ref()
 const collectors = ref()
-const catalogedDate = ref()
-
-const dataResource = ref()
 
 const recordType = ref()
 const preparationList = ref()
+const preparationString = ref()
 const identifier = ref()
 
 const specimenSex = ref()
@@ -124,7 +116,7 @@ const specimenLicense = ref()
 const modifiedDate = ref()
 const identifiedDate = ref()
 const institution = ref()
-
+const dataResource = ref()
 const occurrenceAttRemarks = ref()
 const reproductCondition = ref()
 const remarks = ref()
@@ -135,24 +127,15 @@ onMounted(async () => {
 
   const {
     accessionNumber,
-    accessionRemarks,
     basisOfRecord,
     catalogNumber,
     collectionCode,
     collectionName,
-
-    dataResourceName,
-
-    dynamicProperties_createdDate,
     dateIdentified,
-
-    earliestAgeOrLowestStage,
-
     identifiedBy,
     individualCount,
     institutionCode,
-    institutionName,
-
+    institutionID,
     license,
     lifeStage,
     modified,
@@ -166,27 +149,14 @@ onMounted(async () => {
     sex
   } = record
 
+  accession = accessionNumber
   additionalDetermination.value = previousIdentifications
-
-  catNumber.value = catalogNumber
-  catalogedDate = dynamicProperties_createdDate
   collection.value = collectionName
-  code.value = collectionCode
-
-  // dataResource.value = t('common.institution') + ' -' + collectionName
-  dataResource.value = dataResourceName
-  institution.value = institutionName + ' [ ' + institutionCode + ' ] '
-
+  catNumber.value = catalogNumber
   recordType.value = basisOfRecord
   preparationList.value =
-    collectionCode == 'NHRS'
-      ? prepCount
-        ? prepCount.toString()
-        : ''
-      : preparations
-        ? preparations.toString()
-        : ''
-
+    collectionCode == 'NHRS' ? (prepCount ? prepCount : '') : preparations ? preparations : ''
+  preparationString.value = preparationList.value.join(', ')
   identifier.value = identifiedBy
   collectors.value = recordedBy ? recordedBy.toString() : ''
   specimenSex.value = sex
@@ -195,9 +165,8 @@ onMounted(async () => {
   specimenLicense.value = license
   modifiedDate.value = modified
   identifiedDate.value = dateIdentified
-
-  // institution.value = institutionID + ' [ ' + institutionCode + ' ] '
-  // dataResource.value = institutionID + ' -' + collectionName
+  institution.value = institutionID + ' [ ' + institutionCode + ' ] '
+  dataResource.value = t('common.institution') + ' -' + collectionName
   occurrenceAttRemarks.value = occurrenceAttributeRemarks
   reproductCondition.value = reproductiveCondition
   remarks.value = occurrenceRemarks

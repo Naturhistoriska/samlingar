@@ -25,6 +25,16 @@ public class CSVFileProcessor implements Serializable {
     public CSVFileProcessor() {
 
     }
+    
+    public List<CSVRecord> read(File file, char delimiter, String encoding) {
+        if (file.exists()) {
+            log.info("file exist...{}.", file.getName());
+            return processFile(file, delimiter, encoding);
+        } else {
+            log.error("file not exist : {}", file.getName());
+        }
+        return null;
+    }
  
     public List<CSVRecord> read(String filePath, String fileName, char delimiter, String encoding) {
         File file = new File(Util.getInstance().buildCsvFilePath(filePath, fileName));
@@ -36,25 +46,6 @@ public class CSVFileProcessor implements Serializable {
         }
         return null;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     public List<CSVRecord> read(String filePath, char delimiter, String encoding) {

@@ -37,6 +37,8 @@ public class SamlingarService {
   
     @Inject
     private SamlingarLogic logic;
+    
+        
       
     @GET
     @Path("/initialData")
@@ -49,6 +51,98 @@ public class SamlingarService {
         log.info("getInitalData");
         return Response.ok(logic.getInitalData()).build();
     }
+    
+        
+    @GET
+    @Path("/chart")
+    @ApiOperation(value = "Search",
+            notes = "Return search results in json",
+            response = String.class
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getChart(@QueryParam("collectionCode") String collectionCode, 
+            @QueryParam("isYearChart") String isYearChart) { 
+        log.info("getChart : {} -- {}", collectionCode, isYearChart);
+        return Response.ok(logic.getChart(collectionCode, isYearChart)).build(); 
+    }
+    
+    @GET
+    @Path("/scientificname")
+    @ApiOperation(value = "scientificname",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response scientificname(@QueryParam("text") String text,
+            @QueryParam("searchMode") String searchMode,
+            @QueryParam("fuzzySearch") boolean fuzzySearch,
+            @QueryParam("start") int start, 
+            @QueryParam("numPerPage") int numPerPage,
+            @QueryParam("sort") String sort) {
+        log.info("scientificname  {} -- {}", text, searchMode + " -- " + sort);
+ 
+        return Response.ok(logic.scientificNameSearch(text, searchMode, 
+                fuzzySearch, start, numPerPage, sort)).build();
+    }
+     
+        
+    @GET
+    @Path("/search")
+    @ApiOperation(value = "Search",
+            notes = "Return search results in json",
+            response = String.class
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSearchResults(@Context UriInfo uriInfo) { 
+        log.info("getSearchResults");
+        return Response.ok(logic.search(uriInfo.getQueryParameters())).build(); 
+    }
+    
+    @GET
+    @Path("/heatmap")  
+    @ApiOperation(value = "heatmap",
+            notes = "Return data in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response heatmap(@Context UriInfo uriInfo ) { 
+        log.info("start....");
+         
+        Response res = Response.ok(logic
+                .getHeatmap(uriInfo.getQueryParameters())).build();
+        
+        
+        log.info("end.....");
+        return res;
+    }
+    
+    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    
+    
+
+    
+    
+    
+
     
     @GET
     @Path("/autocomplete")
@@ -65,49 +159,9 @@ public class SamlingarService {
     } 
      
             
-    @GET
-    @Path("/scientificname")
-    @ApiOperation(value = "scientificname",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response scientificname(@QueryParam("text") String text,
-            @QueryParam("searchMode") String searchMode,
-            @QueryParam("start") int start, 
-            @QueryParam("numPerPage") int numPerPage,
-            @QueryParam("sort") String sort) {
-        log.info("scientificname  {} -- {}", text, searchMode + " -- " + sort);
- 
-        return Response.ok(logic.scientificNameSearch(text, searchMode,
-                start, numPerPage, sort)).build();
-    }
-    
-    @GET
-    @Path("/search")
-    @ApiOperation(value = "Search",
-            notes = "Return search results in json",
-            response = String.class
-    ) 
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getSearchResults(@Context UriInfo uriInfo) { 
-        log.info("getSearchResults");
-        return Response.ok(logic.search(uriInfo.getQueryParameters())).build(); 
-    }
-    
-    @GET
-    @Path("/chart")
-    @ApiOperation(value = "Search",
-            notes = "Return search results in json",
-            response = String.class
-    ) 
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getChart(@QueryParam("collectionCode") String collectionCode, 
-            @QueryParam("isYearChart") String isYearChart) { 
-        log.info("getChart : {} -- {}", collectionCode, isYearChart);
-        return Response.ok(logic.getChart(collectionCode, isYearChart)).build(); 
-    }
-    
+
+
+
             
     @GET
     @Path("/id")
@@ -156,23 +210,7 @@ public class SamlingarService {
     }
     
         
-    @GET
-    @Path("/heatmap")  
-    @ApiOperation(value = "heatmap",
-            notes = "Return data in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response heatmap(@Context UriInfo uriInfo ) { 
-        log.info("start....");
-         
-        Response res = Response.ok(logic
-                .getHeatmap(uriInfo.getQueryParameters())).build();
-        
-        
-        log.info("end.....");
-        return res;
-    }
+    
     
     
     

@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="grid collectionDivLink"
-    @click="searchCollection"
-    :style="group === 'geo' ? 'pointer-events: none; opacity: 0.5' : ''"
-  >
+  <div class="grid collectionDivLink" @click="searchCollection">
     <div class="col-4">
       <Image :src="imageSource" alt="Image" width="180" />
     </div>
@@ -17,12 +13,12 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue'
-const props = defineProps(['group', 'imageSource', 'text'])
+// import { ref } from 'vue'
+const props = defineProps(['imageSource', 'text'])
 
 const emits = defineEmits(['searchCollection'])
 
-const isDisabled = ref(true)
+// const isDisabled = ref(true)
 
 function searchCollection() {
   emits('searchCollection')

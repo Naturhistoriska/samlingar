@@ -3,6 +3,19 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     collectionGroup: null,
+
+    selectedCollection: null,
+
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
     collections: null,
     clusterGroup: null,
     dates: null,
@@ -79,7 +92,6 @@ export default createStore({
     resetPaging: false,
     paleaCollectionTotal: 0,
 
-    selectedCollection: null,
     selectedDataset: null,
     selectedFamily: null,
     selectedResult: null,
@@ -104,6 +116,21 @@ export default createStore({
     collectionGroup(state) {
       return state.collectionGroup
     },
+
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+
     collections(state) {
       return state.collections
     },

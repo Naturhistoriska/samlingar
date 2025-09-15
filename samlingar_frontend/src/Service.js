@@ -25,6 +25,82 @@ export default class Service {
     return response.data
   }
 
+  async apiScientificnameSearch(searchText, searchMode, fuzzySearch, start, rows) {
+    searchText = searchText.replace(/&/g, '%26')
+
+    const url = `${samlingApi}/scientificname?text=${searchText}&searchMode=${searchMode}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=createdDate desc`
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiFreeTextSearch(searchText, start, numPerPage) {
+    let url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${numPerPage}&sort=createdDate desc`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiFilterSearch(
+    filtCoordinates,
+    filtImages,
+    filtInSweden,
+    filtTypeStatus,
+    start,
+    numPerPage
+  ) {
+    let url = `${samlingApi}/search?text=*`
+
+    if (filtCoordinates) {
+      url += '&point-1=*'
+    }
+
+    if (filtImages) {
+      url += '&hasImage=*'
+    }
+
+    if (filtTypeStatus) {
+      url += '&typeStatus=*'
+    }
+
+    if (filtInSweden) {
+      url += '&country=Sweden'
+    }
+    url += `&start=${start}&numPerPage=${numPerPage}&sort=createdDate desc`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+
+  async apiFilterCollectionsSearch(value, start, numPerPage) {
+    let url = `${samlingApi}/search?text=*&collectionCode=${value}&start=${start}&numPerPage=${numPerPage}&sort=createdDate desc`
+
+    const response = await axios.get(url)
+    return response.data
+  }
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
   async apiAutoCompleteSearch(searchText, field) {
     const url = `${samlingApi}/autocomplete?text=${searchText}&field=${field}`
 
@@ -32,18 +108,9 @@ export default class Service {
     return response.data
   }
 
-  async apiScientificnameSearch(searchText, searchMode, fuzzySearch, start, rows) {
-    searchText = searchText.replace(/&/g, '%26')
-
-    const url = `${samlingApi}/scientificname?text=${searchText}&searchMode=${searchMode}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=createdDate_dt desc`
-    const response = await axios.get(url)
-    return response.data
-  }
-
   async apiSearch(params, start, numPerPage) {
-    let url = `${samlingApi}/search?${params.toString()}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
+    let url = `${samlingApi}/search?${params.toString()}&start=${start}&numPerPage=${numPerPage}&sort=createdDate desc`
 
-    // url += `&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
     const response = await axios.get(url)
     return response.data
   }
@@ -68,29 +135,22 @@ export default class Service {
     return response.data
   }
 
+  // async apiPreparaExport(params, total) {
+  //   let url = `${samlingApi}/download?${params.toString()}&numRows=${total}`
+
+  //   const response = await axios.get(url)
+
+  //   return response.data
+  // }
+
   async apiPreparaExport(params, total) {
-    let url = `${samlingApi}/download?${params.toString()}&numRows=${total}`
+    let url = `${samlingApi}/download?${params.toString()}&numRows=${total}&sort=createdDate desc`
 
     const response = await axios.get(url)
 
     return response.data
   }
 
-  async apiPreparaExport(params, total) {
-    let url = `${samlingApi}/download?${params.toString()}&numRows=${total}&sort=createdDate_dt desc`
-
-    const response = await axios.get(url)
-
-    return response.data
-  }
-
-  async apiFreeTextSearch(searchText, start, numPerPage) {
-    let url = `${samlingApi}/search?text=${searchText}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
-
-    const response = await axios.get(url)
-    return response.data
-  }
-
   //
   //
   //
@@ -113,44 +173,6 @@ export default class Service {
   //
   //
   //
-
-  async apiFilterSearch(
-    filtCoordinates,
-    filtImages,
-    filtInSweden,
-    filtTypeStatus,
-    start,
-    numPerPage
-  ) {
-    let url = `${samlingApi}/search?text=*`
-
-    if (filtCoordinates) {
-      url += '&lat_long=*'
-    }
-
-    if (filtImages) {
-      url += '&associatedMedia=*'
-    }
-
-    if (filtTypeStatus) {
-      url += '&typeStatus=*'
-    }
-
-    if (filtInSweden) {
-      url += '&country=Sweden'
-    }
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
-
-    const response = await axios.get(url)
-    return response.data
-  }
-
-  async apiFilterCollectionsSearch(dataResource, start, numPerPage) {
-    let url = `${samlingApi}/search?text=*&dataResourceName=${dataResource}&start=${start}&numPerPage=${numPerPage}&sort=createdDate_dt desc`
-
-    const response = await axios.get(url)
-    return response.data
-  }
 
   //
   //

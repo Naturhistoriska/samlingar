@@ -790,8 +790,7 @@ public class EntityToJson implements Serializable {
      
     private void addAccession(JsonObjectBuilder attBuilder, Accession accession) { 
         if (accession != null) {
-            addAttValue(attBuilder, accessionNumberKey, accession.getAccessionNumber());
-            addAttValue(attBuilder, accessionRemarksKey, accession.getRemarks());
+            addAttValue(attBuilder, accessionNumberKey, accession.getAccessionNumber()); 
         } 
     }
     

@@ -17,6 +17,8 @@
 import { onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { entryType } from '@/router'
+
 import StartPage from '../components/StartPage.vue'
 import StatisticCharts from '../components/StatisticCharts.vue'
 
@@ -33,17 +35,20 @@ const router = useRouter()
 // const { t } = useI18n()
 
 onMounted(() => {
-  const collectionCode = 'collectionCode: *'
-  fetchInitdata()
-  fetchYearChartData(collectionCode)
-  fetchMonthChartData(collectionCode)
+  console.log('type visit', entryType.value)
+  if (entryType.value === 'first-visit' || entryType.value === 'reload') {
+    const collectionCode = 'collectionCode: *'
+    fetchInitdata()
+    fetchYearChartData(collectionCode)
+    fetchMonthChartData(collectionCode)
+  }
 })
 
 function fetchMonthChartData(collectionCode) {
   service
     .apiChart(collectionCode, false)
     .then((response) => {
-      const counts = response.facet_counts.facet_ranges.createdDate_dt.counts
+      const counts = response.facet_counts.facet_ranges.createdDate.counts
 
       setMonthChartData(counts)
     })
@@ -55,10 +60,10 @@ function fetchYearChartData(collectionCode) {
   service
     .apiChart(collectionCode, true)
     .then((response) => {
-      const counts = response.facet_counts.facet_ranges.createdDate_dt.counts
+      const counts = response.facet_counts.facet_ranges.createdDate.counts
 
       const totalCount = response.total
-      store.commit('setTotalCount', totalCount)
+      // store.commit('setTotalCount', totalCount)
 
       setYearChartData(totalCount, counts)
     })
@@ -124,7 +129,7 @@ function setSearchCommentFacet(facets) {
   const inSwedenCount = inSwedenFacet.length > 0 ? inSwedenFacet[0].count : 0
   store.commit('setInSwedenCount', inSwedenCount)
 
-  const mapCount = facets.map.allBuckets.count
+  const mapCount = facets.coordinates.allBuckets.count
   store.commit('setHasCoordinatesCount', mapCount)
 }
 
@@ -146,7 +151,7 @@ async function filterSearch(
       store.commit('setTotalRecords', total)
 
       if (total > 0) {
-        const collectionfacet = response.facets.dataResourceName.buckets
+        const collectionfacet = response.facets.collectionName.buckets
 
         store.commit('setCollections', collectionfacet)
       } else {
@@ -163,6 +168,7 @@ async function filterSearch(
 }
 
 async function collectionsSearch(value, start, numPerPage) {
+  console.log('collectionsSearch', value)
   await service
     .apiFilterCollectionsSearch(value, start, numPerPage)
     .then((response) => {
@@ -171,13 +177,13 @@ async function collectionsSearch(value, start, numPerPage) {
 
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
+      store.commit('setSelectedCollection', value)
 
       if (total > 0) {
-        const collectionfacet = response.facets.dataResourceName.buckets
-
-        store.commit('setCollections', collectionfacet)
+        const collectionfacet = response.facets.collectionName.buckets
+        store.commit('setCollectionGroup', collectionfacet)
       } else {
-        store.commit('setCollections', null)
+        store.commit('setCollectionGroup', null)
       }
     })
     .catch((error) => {
@@ -200,7 +206,7 @@ async function search(value, start, numPerPage) {
       store.commit('setTotalRecords', total)
 
       if (total > 0) {
-        const collectionfacet = response.facets.dataResourceName.buckets
+        const collectionfacet = response.facets.collectionName.buckets
 
         store.commit('setCollections', collectionfacet)
       } else {
