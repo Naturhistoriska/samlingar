@@ -296,9 +296,7 @@ public class SamlingarLogic {
         }
         
         log.info("scientificName : {} -- {}", scientificName, locality);
-        
-        
-          
+         
         return solr.search(paramMap, text, scientificName, locality, dateRange, facets,
                 start, numPerPage, sort); 
     } 
@@ -498,8 +496,7 @@ public class SamlingarLogic {
             log.info("locality : {}", locality);
         }
         if(text != null && !text.equals(wildCard)) {
-            text = SolrSearchHelper.getInstance().buildSearchText(
-                text, textKey, true);
+            text = SolrSearchHelper.getInstance().buildFreeTextSearch(text);
         }  
         
         dateRangeSb = new StringBuilder();

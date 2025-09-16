@@ -72,13 +72,18 @@ function search(value, dataResource) {
   store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
 
-  store.commit('setCollectionGroup', value)
+  store.commit('setSelectedCollection', value)
   store.commit('setDataResource', dataResource)
 
   store.commit('setFields', [])
   store.commit('setDates', null)
 
-  store.commit('setSearchParams', null)
+  const params = new URLSearchParams({
+    text: searchText,
+    collectionCode: value
+  })
+
+  store.commit('setSearchParams', params)
 
   emits('searchCollections', value)
 }

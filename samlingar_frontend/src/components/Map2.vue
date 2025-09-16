@@ -38,7 +38,7 @@ const service = new Service()
 const store = useStore()
 const router = useRouter()
 
-const props = defineProps(['entry', 'from'])
+const props = defineProps(['entry', 'from', 'reloadData'])
 
 let center = ref([59.0, 15.0])
 const zoo = 4
@@ -56,7 +56,7 @@ const attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">Ope
 // const tileUrl = "'https://tile.openstreetmap.org/{z}/{x}/{y}.png'"
 
 onMounted(async () => {
-  console.log('onMounted', props.entry, props.from)
+  console.log('onMounted', props.entry, props.from, props.reloadData)
 
   mapRef.value = L.map('map', {
     zoomControl: true,
@@ -87,7 +87,8 @@ onMounted(async () => {
   } else if (props.from === '/') {
     const isUrlPush = store.getters['isUrlPush']
     if (isUrlPush) {
-      const params = buildParams()
+      // const params = buildParams()
+      const params = store.getters['searchParams']
       await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
     }
     store.commit('setIsUrlPush', false)
@@ -114,10 +115,14 @@ watch(
   () => store.getters['searchParams'],
   () => {
     console.log('map data changed..')
-    const params = store.getters['searchParams']
 
-    removeOldMarkers()
-    fetchAndRender(params, { lat: 59.0, lng: 15.0 })
+    if (store.getters['totalRecords'] > 50000) {
+      const params = store.getters['searchParams']
+      removeOldMarkers()
+      fetchAndRender(params, { lat: 59.0, lng: 15.0 })
+    }
+
+    //
   }
 )
 
@@ -201,7 +206,7 @@ const fetchAndRender = async (params, { lat, lng }) => {
       console.log('response:', response)
       const docs = response.response
 
-      if (docs) {
+      if (docs && docs.length > 0) {
         console.log('docs', docs.length)
 
         isDataReady.value = true
@@ -330,7 +335,7 @@ function buildParams() {
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
 
-  const dataResource = store.getters['dataResource']
+  const selectedCollection = store.getters['selectedCollection']
 
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
@@ -375,9 +380,9 @@ function buildParams() {
     params.set('endDate', endDate)
   }
 
-  if (dataResource) {
-    let newValue = dataResource.replace(/'/g, '"')
-    params.set('dataResourceName', newValue)
+  if (selectedCollection) {
+    // let newValue = dataResource.replace(/'/g, '"')
+    params.set('collectionCode', selectedCollection)
   }
 
   if (fields) {

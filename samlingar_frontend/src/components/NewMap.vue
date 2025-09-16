@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 // import { LMap, LTileLayer, LGeoJson, LFeatureGroup } from '@vue-leaflet/vue-leaflet'
 // import { LMap, LTileLayer } from '@vue-leaflet/vue-leaflet'
 
@@ -63,6 +63,19 @@ const service = new Service()
 const store = useStore()
 
 const showLegend = ref(true)
+
+const props = defineProps(['entry', 'from', 'reloadData'])
+
+watch(
+  () => store.getters['searchParams'],
+  () => {
+    console.log('map data changed..')
+
+    if (store.getters['totalRecords'] > 50000) {
+      fetchHeatmapData()
+    }
+  }
+)
 
 function getColor(count) {
   // if (count === 0) return 'transparent'
@@ -147,7 +160,9 @@ async function fetchHeatmapData() {
   // Your backend endpoint
 
   const totalRecords = store.getters['totalRecords']
-  const params = buildParams()
+  // const params = buildParams()
+  const params = store.getters['searchParams']
+
   await service
     .apiHeatmap(params, 0, totalRecords)
     .then(async (response) => {
@@ -156,12 +171,6 @@ async function fetchHeatmapData() {
       if (data) {
         console.log('data', data)
         geojson.value = data
-        // const data = await docs.json()
-
-        // const heatPoints = parseHeatmapToPoints(docs)
-        // L.heatLayer(heatPoints, { radius: 25 }).addTo(heatmapLayer.value.mapObject)
-
-        // isDataReady.value = true
       }
     })
     .catch()
@@ -169,6 +178,7 @@ async function fetchHeatmapData() {
 }
 
 onMounted(() => {
+  console.log('onMounted', props.entry, props.from, props.reloadData)
   fetchHeatmapData()
 })
 

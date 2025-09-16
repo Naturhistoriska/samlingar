@@ -430,6 +430,8 @@ public class Solr implements Serializable {
         request.setBasicAuthCredentials(username, password);
         try {
             response = request.process(client);
+            
+//            log.info("resp...{}", response.jsonStr());
             return SolrSearchBuildGeoJson.getInstance().buildGeoJson(response);
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());

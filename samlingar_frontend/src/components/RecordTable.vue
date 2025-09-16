@@ -350,7 +350,8 @@ function onFilter(event) {
 
   const collectionName = filterMeta.collectionName
 
-  console.log('collection name', collectionName)
+  console.log('collection name...', collectionName)
+
   const scientificName = filterMeta.scientificName
   const catalogNumber = filterMeta.catalogNumber
   const locality = filterMeta.locality
@@ -408,7 +409,9 @@ async function loadRecordsLazy(first, rows) {
       const results = response.response
 
       store.commit('setResults', results)
+
       store.commit('setTotalRecords', total)
+      store.commit('setSearchParams', params)
 
       setTimeout(() => {
         loading.value = false
@@ -465,16 +468,17 @@ function buildParams() {
     params.set('endDate', endDate)
   }
 
+  console.log('filterArray.value', filterArray.value)
   const hasCollection = filterArray.value.some((obj) => obj.key === 'collectionName')
+  console.log('hasCollection', hasCollection)
   let dataResource
   if (hasCollection) {
     dataResource = filterArray.value.filter((item) => item.key === 'collectionName')[0].value
-  } else {
-    dataResource = store.getters['collection']
-  }
-  if (dataResource) {
     let newValue = dataResource.replace(/'/g, '"')
     params.set('collectionName', newValue)
+  } else {
+    dataResource = store.getters['selectedCollection']
+    params.set('collectionCode', dataResource)
   }
 
   let scientificName

@@ -201,11 +201,10 @@ async function collectionsSearch(value, start, numPerPage) {
       const total = response.facets.count
       const results = response.response
 
-      store.commit('setResults', results)
       store.commit('setTotalRecords', total)
-      store.commit('setSelectedCollection', value)
 
       if (total > 0) {
+        store.commit('setResults', results)
         const collectionfacet = response.facets.collectionName.buckets
         store.commit('setCollectionGroup', collectionfacet)
       } else {

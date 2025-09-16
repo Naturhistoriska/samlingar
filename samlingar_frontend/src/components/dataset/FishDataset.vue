@@ -54,7 +54,7 @@
 
       <div class="col-4 reducePadding">{{ $t('results.sex') }}</div>
       <div class="col-8 reducePadding">
-        {{ sex }}
+        {{ sexData }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.recordNumber') }}</div>
@@ -140,7 +140,6 @@ onMounted(async () => {
 
   expeditionNameData.value = expeditionName
 
-  habitatData.value = habitat
   institution.value = t('common.institution') + ' [ ' + institutionCode + ' ]'
 
   stage.value = lifeStage
