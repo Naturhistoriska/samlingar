@@ -65,8 +65,13 @@ function fetchMonthChartData(collectionCode) {
   service
     .apiChart(collectionCode, false)
     .then((response) => {
-      const counts = response.facet_counts.facet_ranges.createdDate.counts
+      // const counts = response.facet_counts.facet_ranges.createdDate.counts
 
+      let facet = response.facet_counts.facet_ranges.catalogedDate
+      if (facet === undefined) {
+        facet = response.facet_counts.facet_ranges.createdDate
+      }
+      const counts = facet.counts
       setMonthChartData(counts)
     })
     .catch()
@@ -77,8 +82,12 @@ function fetchYearChartData(collectionCode) {
   service
     .apiChart(collectionCode, true)
     .then((response) => {
-      const counts = response.facet_counts.facet_ranges.createdDate.counts
-
+      // const counts = response.facet_counts.facet_ranges.createdDate.counts
+      let facet = response.facet_counts.facet_ranges.catalogedDate
+      if (facet === undefined) {
+        facet = response.facet_counts.facet_ranges.createdDate
+      }
+      const counts = facet.counts
       const totalCount = response.total
       setYearChartData(totalCount, counts)
     })

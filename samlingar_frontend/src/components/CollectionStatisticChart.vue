@@ -92,7 +92,6 @@ let noduleYear = ref()
 const props = defineProps(['dataset', 'dataGroup', 'dataResource'])
 
 const tabs = computed(() => {
-  console.log('props.dataset', props.dataset)
   return props.dataset.split(':')
   // const data = props.dataset.split(':')
   // return data
@@ -100,8 +99,6 @@ const tabs = computed(() => {
 
 function getMonthData(tab) {
   const { dataGroup, dataResource } = props
-
-  console.log('getMonthData tab', tab, dataResource, dataGroup)
 
   if (dataResource === 'bot') {
     if (tab === 'algae') {
@@ -151,7 +148,6 @@ function getMonthData(tab) {
 }
 
 function getYearData(tab) {
-  console.log('getYearData', tab)
   const { dataGroup, dataResource } = props
   if (dataResource === 'bot') {
     if (tab === 'algae') {
@@ -201,10 +197,6 @@ function getYearData(tab) {
 }
 
 async function onTabClick(tab) {
-  console.log('onTabClick tab :  ', tab)
-
-  console.log('active.value', active.value)
-
   if (active.value.includes(tab)) {
     const collection = `collectionCode: ${tab}`
     getChartData(collection, tab, false)
@@ -213,19 +205,15 @@ async function onTabClick(tab) {
 }
 
 async function getChartData(collection, tab, isYear) {
-  console.log('getChartData tab', collection, tab)
-
   await service
     .apiChart(collection, isYear)
     .then((response) => {
       let facet = response.facet_counts.facet_ranges.catalogedDate
-      console.log('facet..', facet)
       if (facet === undefined) {
         facet = response.facet_counts.facet_ranges.createdDate
       }
 
       const counts = facet.counts
-      console.log('counts..', counts)
       if (isYear) {
         const totalCount = response.total
         setYearChartData(tab, totalCount, counts)
@@ -238,7 +226,6 @@ async function getChartData(collection, tab, isYear) {
 }
 
 function setMonthChartData(tab, monthData) {
-  console.log('tab..', tab)
   const cumulativeData = {}
   let key
   for (const [date, value] of Object.entries(monthData)) {
@@ -265,7 +252,6 @@ function setYearChartData(tab, total, years) {
 }
 
 function setYearData(tab, year) {
-  console.log('setYearData', tab, year)
   switch (tab) {
     case 'HE':
       herpYear.value = year
@@ -327,7 +313,6 @@ function setYearData(tab, year) {
 }
 
 function setMonthData(tab, month) {
-  console.log('setMonthData tab', tab)
   switch (tab) {
     case 'HE':
       herpMonth.value = month
