@@ -90,7 +90,6 @@ onMounted(async () => {
     catalogNumber,
     collectionCode,
     collectionName,
-    habitat,
     modified,
     preparations,
     recordedBy,
@@ -109,7 +108,6 @@ onMounted(async () => {
   collection.value = collectionName
   collectors.value = recordedBy ? recordedBy.toString() : ''
 
-  habitat
   institution.value = t('common.institution') + ' [  NRM  ]'
 
   if (modified) {

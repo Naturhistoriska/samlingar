@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div v-if="loading" class="spinner-overlay">
+      <div class="spinner"></div>
+    </div>
     <div class="grid">
       <div class="col-5" no-gutters>
         <search-records @search="handleSearch" />
@@ -57,7 +60,7 @@ const AsyncMap = defineAsyncComponent({
   // loader: () => import('../components/Map2.vue')
 })
 
-let loading = ref(true)
+let loading = ref(false)
 let isLargeMap = ref(true)
 // let totalCount = ref()
 
@@ -71,10 +74,9 @@ watch(
 onMounted(async () => {
   console.log('onMounted SearchView')
 
-  const from = previousRoute.value?.fullPath
-  const to = currentRoute.value?.fullPath
-
-  console.log('entryType.value', entryType.value, from)
+  // const from = previousRoute.value?.fullPath
+  // const to = currentRoute.value?.fullPath
+  // console.log('entryType.value', entryType.value, from)
 
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
     const queries = toRaw(currentRoute.value?.query)
@@ -88,11 +90,12 @@ onMounted(async () => {
       }
     }
     store.commit('setSearchParams', params)
+    console.log('here...')
     search(params, 0, 10, true)
   } else if (entryType.value === 'internal') {
     const isPushed = store.getters['isUrlPush']
 
-    console.log(isPushed, entryType.value)
+    // console.log(isPushed, entryType.value)
     if (!isPushed) {
       let params = new URLSearchParams({
         text: '*'
@@ -137,7 +140,7 @@ function preparaDataExport() {
 function handleSearch() {
   const params = buildParams(true)
   search(params, 0, 10, true)
-  store.commit('setSearchParams', params)
+  // store.commit('setSearchParams', params)
 }
 
 async function search(params, start, numPerPage, saveData) {
@@ -156,9 +159,12 @@ async function search(params, start, numPerPage, saveData) {
       if (saveData) {
         if (total > 0) {
           const collectionfacet = response.facets.collectionName.buckets
-          store.commit('setCollectionGroup', collectionfacet)
+          store.commit('setSelectedCollectionGroup', collectionfacet)
+          const collectionCodefacet = response.facets.collectionCode.buckets
+          store.commit('setSelectedCollection', collectionCodefacet)
         } else {
-          store.commit('setCollectionGroup', null)
+          store.commit('setSelectedCollectionGroup', null)
+          store.commit('setSelectedCollection', null)
         }
       }
 
@@ -169,10 +175,13 @@ async function search(params, start, numPerPage, saveData) {
     .catch((error) => {
       console.log('error', error)
     })
-    .finally(() => {})
+    .finally(() => {
+      store.commit('setSearchParams', params)
+      loading.value = false
+    })
 }
 
-function buildParams(saveParams) {
+function buildParams() {
   const fields = store.getters['fields']
 
   const scientificName = store.getters['scientificName']
@@ -183,11 +192,11 @@ function buildParams(saveParams) {
   const isInSweden = store.getters['filterInSweden']
   const hasCoordinates = store.getters['filterCoordinates']
   const hasImages = store.getters['filterImage']
+
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
-  const selectedCollection = store.getters['selectedCollection']
 
-  // const dataResource = store.getters['dataResource']
+  const selectedCollection = store.getters['selectedCollection']
 
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
@@ -232,13 +241,18 @@ function buildParams(saveParams) {
     params.set('endDate', endDate)
   }
 
-  // if (dataResource) {
-  //   let newValue = dataResource.replace(/'/g, '"')
-  //   params.set('dataResourceName', newValue)
+  // if (selectedCollectionName !== null) {
+  //   const names = selectedCollectionName ? selectedCollectionName.map((item) => item.val) : []
+
+  //   const list = `(${names.map((item) => `"${item}"`).join(' ')})`
+  //   console.log('selectedCollectionName', list)
+  //   let newValue = list.replace(/'/g, '"')
+  //   params.set('collectionName', newValue)
   // }
 
-  if (selectedCollection) {
-    params.set('collectionCode', selectedCollection)
+  if (selectedCollection !== null) {
+    const newValue = selectedCollection.replace(/'/g, '"')
+    params.set('collectionCode', newValue)
   }
 
   if (fields) {
@@ -248,11 +262,6 @@ function buildParams(saveParams) {
         params.set(field.value, field.text)
       })
   }
-
-  if (saveParams) {
-    store.commit('setSearchParams', params)
-  }
-
   return params
 }
 

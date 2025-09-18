@@ -70,6 +70,7 @@ let columns = ref([
 
 onMounted(() => {
   console.log('onMounted')
+
   // const searchText = store.getters['searchText']
   // let value = searchText == null ? '*' : searchText
 

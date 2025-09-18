@@ -31,6 +31,7 @@ const size = ref('small')
 const label = ref('search.searchAll')
 
 function handleFreeTextSearch(value) {
+  console.log('is here...')
   const searchText = value ? value : '*'
   store.commit('setSearchText', searchText)
 
@@ -38,7 +39,7 @@ function handleFreeTextSearch(value) {
 
   store.commit('setFilterCoordinates', false)
   store.commit('setFilterInSweden', false)
-  store.commit('setFilterImage', false)
+  // store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
 
   store.commit('setCollectionGroup', null)

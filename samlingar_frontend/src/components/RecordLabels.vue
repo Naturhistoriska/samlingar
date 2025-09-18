@@ -61,6 +61,9 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import Service from '../Service'
+
+const service = new Service()
 
 const store = useStore()
 const router = useRouter()
@@ -70,6 +73,8 @@ const emits = defineEmits(['search'])
 let records = ref(Array.from({ length: 50 }))
 
 let windowWidth = ref(window.innerWidth)
+
+const loading = ref(false)
 
 const totalCount = computed(() => {
   return store.getters['totalRecords']
@@ -100,17 +105,45 @@ watch(
 onMounted(async () => {
   console.log('RecordLabel')
   window.addEventListener('resize', onWidthChange)
-  emits('search', 0, rows.value, false)
+  records.value = store.getters['results']
 })
 
 const onWidthChange = () => {
   windowWidth.value = window.innerWidth
-  emits('search', 0, rows.value, false)
+  // emits('search', 0, rows.value, false)
 }
 
 const onPage = async (event) => {
   const { first, rows } = event
-  emits('search', first, rows, false)
+  const params = store.getters['searchParams']
+  loadRecordsLazy(params, first, rows)
+}
+
+async function loadRecordsLazy(params, first, rows) {
+  loading.value = true
+
+  console.log('params', params.toString())
+  await service
+    .apiSearch(params, first, rows)
+    .then((response) => {
+      const total = response.facets.count
+      const results = response.response
+
+      store.commit('setResults', results)
+
+      store.commit('setTotalRecords', total)
+
+      setTimeout(() => {
+        loading.value = false
+      }, 2000)
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {
+      loading.value = false
+      store.commit('setSearchParams', params)
+    })
 }
 
 function view(data) {

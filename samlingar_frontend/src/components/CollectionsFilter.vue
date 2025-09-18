@@ -63,6 +63,8 @@ function handleGeoCollectionSearch() {
 }
 
 function search(value, dataResource) {
+  // value collections code, dataResource is collection group: zoo, bot, pal, geo
+  console.log('is here ...')
   const searchText = '*'
   store.commit('setSearchText', searchText)
   store.commit('setScientificName', null)
@@ -78,14 +80,13 @@ function search(value, dataResource) {
   store.commit('setFields', [])
   store.commit('setDates', null)
 
+  const newValue = value.replace(/'/g, '"')
   const params = new URLSearchParams({
     text: searchText,
-    collectionCode: value
+    collectionCode: newValue
   })
 
-  store.commit('setSearchParams', params)
-
-  emits('searchCollections', value)
+  emits('searchCollections', params)
 }
 </script>
 <style scoped>

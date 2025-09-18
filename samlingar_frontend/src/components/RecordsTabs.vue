@@ -18,7 +18,7 @@
       </TabList>
       <TabPanels>
         <TabPanel value="0" v-if="isListView">
-          <RecordTable @search="handleSearch" />
+          <RecordTable />
         </TabPanel>
         <TabPanel value="1" v-if="isLableView">
           <RecordLabels @search="handleSearch" />

@@ -1,159 +1,60 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.taxonomy') }}</p>
-    <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.scientificName') }}</div>
-      <div class="col-8 reducePadding">{{ taxonName }}</div>
+    <nhrs-taxonomy v-if="isNhrsCollection" />
+    <pal-taxonomy v-else-if="isPalCollection" />
+    <common-taxonomy v-else />
+    <!-- <ev-location v-if="isEvCollection" />
 
-      <div class="col-4 reducePadding">{{ $t('results.scientificNameAuthorship') }}</div>
-      <div class="col-8 reducePadding">
-        {{ scientificNameAuthorshipData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.rank') }}</div>
-      <div class="col-8 reducePadding">
-        {{ rank }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.kingdom') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theKingdom }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.phylum') }}</div>
-      <div class="col-8 reducePadding">
-        {{ thePhylum }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.class') }}</div>
-      <div class="col-8 reducePadding">
-        {{ clazz }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.order') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theOrder }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.family') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theFamily }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.genus') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theGenus }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.subgenus') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theSubgenus }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.species') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theSpecies }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.vernacularName') }}</div>
-      <div class="col-8 reducePadding">
-        {{ commonName }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.synonyms') }}</div>
-      <div class="col-8 reducePadding">
-        {{ synonyms }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.infragenericEpithet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ infragenericEpithet }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.infraspecificEpithet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ infraspecificEpithetData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.specificEpithet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ specificEpithetData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.taxonRemarks') }}</div>
-      <div class="col-8 reducePadding">
-        {{ remarks }}
-      </div>
-    </div>
+    <pal-location v-else-if="isPalCollection" />
+    <bird-location v-else-if="isBirdAndMammalCollection" />
+    <fish-location v-else-if="isFishAndHerpCollection" />
+    <bot-location v-else-if="isBotCollection" />
+    <common-location v-else /> -->
   </div>
 </template>
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
 
-const store = useStore()
+import CommonTaxonomy from './taxonomy/CommonTaxonomy.vue'
+import NhrsTaxonomy from './taxonomy/NhrsTaxonomy.vue'
+import PalTaxonomy from './taxonomy/PalTaxonomy.vue'
 
-const taxonName = ref()
-const rank = ref()
-const theKingdom = ref()
-const thePhylum = ref()
-const clazz = ref()
-const theOrder = ref()
-const theFamily = ref()
-const theGenus = ref()
-const theSubgenus = ref()
-const theSpecies = ref()
-const commonName = ref()
-const infraspecificEpithetData = ref()
-const infragenericEpithet = ref()
-const specificEpithetData = ref()
-const scientificNameAuthorshipData = ref()
-const synonyms = ref()
-const remarks = ref()
+// import BirdLocation from './taxonomy/BirdLocation.vue'
+// import BotLocation from './location/BotLocation.vue'
+//
+// import EvLocation from './location/EvLocation.vue'
+// import FishLocation from './location/FishLocation.vue'
+//
+//
+
+const props = defineProps(['code'])
+
+const isBirdAndMammalCollection = ref(false)
+const isEvCollection = ref(false)
+const isFishAndHerpCollection = ref(false)
+
+const isBotCollection = ref(false)
+
+const isNhrsCollection = ref(false)
+const isPalCollection = ref(false)
 
 onMounted(async () => {
-  const record = store.getters['selectedRecord']
+  isBirdAndMammalCollection.value = props.code === 'AV' || props.code === 'MA'
+  isEvCollection.value = props.code === 'ev' || props.code === 'et'
+  isFishAndHerpCollection.value = props.code === 'PI' || props.code === 'HE'
 
-  const {
-    family,
-    genus,
-    kingdom,
-    phylum,
-    order,
-    scientificName,
-    species,
-    subgenus,
-    taxonRank,
-    dynamicProperties_infragenericEpithet,
-    infraspecificEpithet,
-    specificEpithet,
+  isNhrsCollection.value =
+    props.code === 'NHRS' ||
+    props.code === 'SMTP_INV' ||
+    props.code === 'SMTP_SPPLST' ||
+    props.code === 'NRMLIG' ||
+    props.code === 'NRMMIN' ||
+    props.code === 'NRMNOD'
 
-    dynamicProperties_synonyms,
+  isPalCollection.value = props.code === 'pb' || props.code === 'pz'
 
-    scientificNameAuthorship,
-    vernacularName,
-    taxonRemarks
-  } = record
-
-  clazz.value = record.class
-
-  commonName.value = vernacularName
-  theKingdom.value = kingdom
-  thePhylum.value = phylum
-  theOrder.value = order
-  theFamily.value = family
-  theGenus.value = genus
-  theSpecies.value = species
-  theSubgenus.value = subgenus
-  infraspecificEpithetData.value = infraspecificEpithet
-  specificEpithetData.value = specificEpithet
-  scientificNameAuthorshipData.value = scientificNameAuthorship
-
-  infragenericEpithet.value = dynamicProperties_infragenericEpithet
-  synonyms.value = dynamicProperties_synonyms
-  taxonName.value = scientificName
-  rank.value = taxonRank
-  remarks.value = taxonRemarks
+  isBotCollection.value =
+    props.code === 'algae' || props.code === 'fungi' || props.code === 'mosses'
 })
 </script>
 <style scoped>

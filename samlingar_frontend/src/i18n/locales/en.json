@@ -65,29 +65,29 @@
     "nrmnod": "NRM Nodules"
   },
   "collectionName": {
-    "NRM-Herps": {
+    "HE": {
       "name": "Amphibians and reptiles",
-      "code": "NRM-Herps"
+      "code": "HE"
     },
-    "Birds": {
+    "AV": {
       "name": "Bird",
-      "code": "Birds"
+      "code": "AV"
     },
-    "NRM-Fish": {
+    "PI": {
       "name": "Fish",
-      "code": "NRM-Fish"
+      "code": "PI"
     },
-    "EVmain": {
+    "ev": {
       "name": "Invertebrate main collection",
-      "code": "EVmain"
+      "code": "ev"
     },
-    "EVtype": {
+    "et": {
       "name": "Invertebrate type collection",
-      "code": "EVtype"
+      "code": "et"
     },
-    "Mammals": {
+    "MA": {
       "name": "Mammals",
-      "code": "Mammals"
+      "code": "MA"
     },
     "NHRS": {
       "name": "NRM Entomology Collection Objects",
@@ -113,21 +113,21 @@
       "name": "Paleontological collection",
       "code": "PAL"
     },
-    "Algae": {
+    "algae": {
       "name": "Algae",
-      "code": "Algae"
+      "code": "algae"
     },
-    "S-Bryophytes": {
+    "mosses": {
       "name": "Mosses",
-      "code": "S-Bryohpytes"
+      "code": "mosses"
     },
-    "S-Fungi": {
+    "vp": {
+      "name": "Vascular plants",
+      "code": "vp"
+    },
+    "fungi": {
       "name": "Fungi/Lichens",
-      "code": "S-Fungi"
-    },
-    "VascularPlants": {
-      "name": "Vascular Plants",
-      "code": "VascularPlants"
+      "code": "fungi"
     },
     "NRMMIN": {
       "name": "NRM Mineralogy",
@@ -248,17 +248,21 @@
     "county": "County",
     "dataset": "Dataset",
     "dataResource": "Data resource",
+    "dateIdentified": "Date identified",
     "description": "Description",
+    "district": "district",
     "earliestAgeOrLowestStage": "Earliest age or lowest stage",
     "earliestEpochOrLowestSeries": "Earliest epoch or lowest series",
     "earliestPeriodOrLowestSystem": "Earliest period or lowest system",
     "element": "Element",
+    "expeditionName": "Expedition name",
     "endEventDate": "Event date end",
     "event": "Event",
     "eventDayOfYear": "End day of year",
     "eventRemarks": "Event remarks",
-    "expeditionName": "Expedition name",
-    "dateIdentified": "Date identified",
+    "eventEndDay": "End day",
+    "eventEndMonth": "End month",
+    "eventEndYear": "End year",
     "eventDate": "Event date",
     "eventTime": "Event time",
     "family": "Family",
@@ -266,6 +270,7 @@
     "genus": "Genus",
     "geodeticDatum": "Geodetic datum",
     "georeferencedDate": "Georeferenced date",
+    "geologicalContext": "Geological context",
     "habitat": "Habitat",
     "highClassification": "High Classification",
     "higherGeography": "Higher geography",
@@ -274,6 +279,7 @@
     "identificationQualifier": "Identification qualifier",
     "identificationVerificationStatus": "Identification verification status",
     "identificationRemarks": "Identification remarks",
+    "identifiedYear": "Identified year",
     "island": "Island",
     "islandGroup": "Island group",
     "individualCount": "Individual count",
@@ -282,7 +288,7 @@
     "institiution": "Institution",
     "institiutionCode": "Institution code",
     "kingdom": "Kingdom",
-    "latestAgeOrHighestStage": "Latest period or highest system",
+    "latestAgeOrHighestStage": "Latest age or highest stage",
     "latestEpochOrHighestSeries": "Latest epoch or highest series",
     "latestPeriodOrHighestSystem": "Latest period or highest system",
     "lithostratigraphy": "Lithostratigraphy",

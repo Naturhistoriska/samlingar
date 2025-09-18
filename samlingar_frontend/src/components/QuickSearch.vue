@@ -76,6 +76,12 @@ function apiSearch() {
   const fuzzySearch = !itemSelected.value
   const searchMode = fuzzySearch ? 'contains' : 'equals'
 
+  const params = new URLSearchParams({
+    scientificName: searchText,
+    searchMode,
+    fuzzySearch
+  })
+
   service
     .apiScientificnameSearch(searchText, searchMode, fuzzySearch, 0, 50)
     .then((response) => {
@@ -83,9 +89,19 @@ function apiSearch() {
       const results = response.response
 
       if (total > 0) {
-        const collectionsfacet = response.facets.dataResourceName.buckets
-        store.commit('setCollections', collectionsfacet)
+        const collectionCodefacet = response.facets.collectionCode.buckets
+        const collectionNamefacet = response.facets.collectionName.buckets
+
+        store.commit('setSelectedCollectionGroup', collectionNamefacet)
+        store.commit('setSelectedCollection', collectionCodefacet)
       }
+
+      store.commit('setFilterCoordinates', false)
+      store.commit('setFilterInSweden', false)
+      store.commit('setFilterImage', false)
+      store.commit('setFilterType', false)
+
+      store.commit('setSelectedCollection', null)
 
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
@@ -93,12 +109,15 @@ function apiSearch() {
       store.commit('setIsFuzzySearch', fuzzySearch)
       store.commit('setSearchMode', searchMode)
       store.commit('setSearchText', null)
+
+      store.commit('setSearchParams', params)
     })
     .catch()
     .finally(() => {
       console.log('currentUrl....', currentUrl.value)
       search.value = undefined
       store.commit('setIsUrlPush', true)
+
       // if (currentUrl.value !== '/search') {
       //   router.push('/search')
       // }

@@ -26,14 +26,13 @@ import Filter from './Filter.vue'
 
 const emits = defineEmits(['filterSearch', 'search', 'collectionsSearch'])
 
-function filterSearch(filtCoordinates, filtImages, filtInSweden, filtTypeStatus) {
-  emits('filterSearch', filtCoordinates, filtImages, filtInSweden, filtTypeStatus, 0, 10, true)
+function filterSearch(params) {
+  console.log('params', params.toString())
+  emits('filterSearch', params, 0, 10, true)
 }
 
-function searchCollections(value) {
-  let newValue = value.replace(/'/g, '"')
-  console.log('collections', newValue)
-  emits('collectionsSearch', newValue, 0, 10, true)
+function searchCollections(params) {
+  emits('collectionsSearch', params, 0, 10, true)
 }
 
 function search(value) {

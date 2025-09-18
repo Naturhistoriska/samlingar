@@ -73,7 +73,7 @@ public class SamlingarService {
             response = String.class
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response scientificname(@QueryParam("text") String text,
+    public Response scientificname(@QueryParam("scientificname") String text,
             @QueryParam("searchMode") String searchMode,
             @QueryParam("fuzzySearch") boolean fuzzySearch,
             @QueryParam("start") int start, 
@@ -197,8 +197,7 @@ public class SamlingarService {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public Response geojson(@Context UriInfo uriInfo ) {
-        
-        
+         
         log.info("start....");
         
         Response res = Response.ok(logic

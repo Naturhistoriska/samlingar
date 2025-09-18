@@ -2,12 +2,29 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    collectionGroup: null,
+    collectionGroup: null, // group collection code
 
-    selectedCollection: null,
+    dataResource: null, // group: zoo, pal, bot, geo
 
-    searchParams: null,
+    filterCoordinates: false,
+    filterImage: false,
+    filterInSweden: false,
+    filterType: false,
+
+    hasCoordinatesCount: 0,
+
+    imageCount: 0,
+    inSwedenCount: 0,
+    isTypeCount: 0,
+
+    scientificName: null,
+    selectedCollection: null, // selectedCollections Code
+    selectedCollectionGroup: null, // selectedCollections name
+
+    searchParams: null, // saved search params
     searchText: null,
+
+    totalRecords: 0,
 
     //
     //
@@ -22,23 +39,19 @@ export default createStore({
     collections: null,
     clusterGroup: null,
     dates: null,
-    dataResource: null,
+
     endDate: null,
     fields: [],
-    filterCoordinates: false,
-    filterImage: false,
-    filterInSweden: false,
-    filterType: false,
+
     isFuzzySearch: undefined,
     isUrlPush: false,
     results: [],
-    scientificName: null,
+
     searchMode: 'contains',
 
     selectedRecord: null,
     startDate: null,
     totalCount: 0,
-    totalRecords: 0,
 
     //
     //
@@ -79,10 +92,7 @@ export default createStore({
     genus: [],
 
     geoCollectionTotal: 0,
-    imageCount: 0,
-    inSwedenCount: 0,
-    isTypeCount: 0,
-    hasCoordinatesCount: 0,
+
     isAdvanceSearch: false,
     isType: false,
     latLong: [],
@@ -117,6 +127,10 @@ export default createStore({
   getters: {
     collectionGroup(state) {
       return state.collectionGroup
+    },
+
+    selectedCollectionGroup(state) {
+      return state.selectedCollectionGroup
     },
 
     //
@@ -396,6 +410,17 @@ export default createStore({
 
   mutations: {
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
+    setSelectedCollectionGroup: (state, payload) => (state.selectedCollectionGroup = payload),
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+
     setCollections: (state, payload) => (state.collections = payload),
     setClusterGroup: (state, payload) => (state.clusterGroup = payload),
     setDates: (state, payload) => (state.dates = payload),

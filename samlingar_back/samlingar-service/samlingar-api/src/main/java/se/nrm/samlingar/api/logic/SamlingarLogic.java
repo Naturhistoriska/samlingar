@@ -109,10 +109,7 @@ public class SamlingarLogic {
     private final String textKey = "text";
     private final String localityKey = "locality";
     private final String eventDateKey = "eventDate:";
-    
-    private final String ptKey = "pt";
-
-    
+     
     
     
     private final String sortKey = "sort";
@@ -322,10 +319,7 @@ public class SamlingarLogic {
                     break;
                 case endDateKey: 
                     endDate = queryParams.get(endDateKey).get(0); 
-                    break;
-                case ptKey:
-                    pt = queryParams.get(ptKey).get(0); 
-                    break;
+                    break; 
                 case startKey:
                     start = Integer.parseInt(queryParams.get(startKey).get(0)); 
                     break;
@@ -385,7 +379,7 @@ public class SamlingarLogic {
         } else {
             dateRange = null;
         }
-        
+  
         
         return  solr.getHeatmap(paramMap, text, scientificName, locality, dateRange, pt, start, start);
     }
@@ -454,10 +448,7 @@ public class SamlingarLogic {
                     break;
                 case endDateKey: 
                     endDate = queryParams.get(endDateKey).get(0); 
-                    break;
-                case ptKey:
-                    pt = queryParams.get(ptKey).get(0); 
-                    break;
+                    break; 
                 case startKey:
                     start = Integer.parseInt(queryParams.get(startKey).get(0)); 
                     break;
@@ -519,7 +510,7 @@ public class SamlingarLogic {
         
         log.info("scientificName : {} -- {}", scientificName, locality);
          
-        return solr.geojson(paramMap, text, scientificName, locality, dateRange, pt,
+        return solr.geojson(paramMap, text, scientificName, locality, dateRange,  
                 start, numPerPage );
         
     } 

@@ -79,32 +79,37 @@ onMounted(async () => {
   await new Promise((r) => setTimeout(r, 1500))
 
   const entryType = props.entry
-  if (entryType === 'first-visit' || entryType === 'reload') {
-    let params = new URLSearchParams({
-      text: '*'
-    })
-    await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
-  } else if (props.from === '/') {
-    const isUrlPush = store.getters['isUrlPush']
-    if (isUrlPush) {
-      // const params = buildParams()
-      const params = store.getters['searchParams']
-      await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
+
+  const total = store.getters['totalRecords']
+
+  if (total) {
+    if (entryType === 'first-visit' || entryType === 'reload') {
+      console.log('entryType 1', entryType)
+      let params = new URLSearchParams({
+        text: '*'
+      })
+      await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+    } else if (props.from === '/') {
+      console.log('entryType 2', entryType)
+      const isUrlPush = store.getters['isUrlPush']
+      if (isUrlPush) {
+        // const params = buildParams()
+        const params = store.getters['searchParams']
+        await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
+      }
+      store.commit('setIsUrlPush', false)
+    } else {
+      console.log('entryType 3', entryType)
+      onMapReady()
     }
-    store.commit('setIsUrlPush', false)
-  } else {
-    onMapReady()
+    addClustringPopup()
   }
-  addClustringPopup()
 })
 
 watch(
   isDataReady,
   (newValue, oldValue) => {
-    // console.log(`count changed from ${oldValue} to ${newValue}`)
-
     if (newValue) {
-      console.log('newValue is true')
       mapLoadingText.value = 'Loading markers....'
     }
   },
@@ -116,13 +121,11 @@ watch(
   () => {
     console.log('map data changed..')
 
-    if (store.getters['totalRecords'] > 50000) {
+    if (store.getters['totalRecords'] < 50000) {
       const params = store.getters['searchParams']
       removeOldMarkers()
       fetchAndRender(params, { lat: 59.0, lng: 15.0 })
     }
-
-    //
   }
 )
 
@@ -191,14 +194,19 @@ const fetchAndRender = async (params, { lat, lng }) => {
 
   // const params = store.getters['searchParams']
 
-  if (params != null) {
-    params.set('pt', `${lat},${lng}`)
+  if (params !== null) {
+    // params.set('pt', `${lat},${lng}`)
+  } else {
+    params = buildParams()
+    // params.set('pt', `${lat},${lng}`)
   }
 
   loading.value = true
   isDataReady.value = false
 
   const totalRecords = store.getters['totalRecords']
+
+  console.log('params', params)
 
   await service
     .apiGeoFetch(params, 0, totalRecords)
@@ -214,7 +222,9 @@ const fetchAndRender = async (params, { lat, lng }) => {
       }
     })
     .catch()
-    .finally(() => {})
+    .finally(() => {
+      isDataReady.value = true
+    })
 }
 
 async function fetchRecord(id, marker) {
@@ -332,6 +342,7 @@ function buildParams() {
   const isInSweden = store.getters['filterInSweden']
   const hasCoordinates = store.getters['filterCoordinates']
   const hasImages = store.getters['filterImage']
+
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
 
@@ -339,8 +350,6 @@ function buildParams() {
 
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
-
-  // const collectionGroup = store.getters['collectionGroup']
 
   const params = new URLSearchParams({
     text: searchText

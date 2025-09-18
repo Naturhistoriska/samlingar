@@ -15,16 +15,17 @@
           <record-dataset v-bind:code="code" />
         </div>
         <div class="col-12" no-gutters>
-          <record-event />
+          <record-event v-bind:code="code" />
         </div>
         <div class="col-12" no-gutters>
-          <Location />
+          <Location v-bind:code="code" />
+        </div>
+        <geological-context v-if="isPalCollection" />
+        <div class="col-12" no-gutters>
+          <record-identification v-bind:code="code" />
         </div>
         <div class="col-12" no-gutters>
-          <record-identification />
-        </div>
-        <div class="col-12" no-gutters>
-          <Taxonomy />
+          <Taxonomy v-bind:code="code" />
         </div>
       </div>
       <div class="col-5" no-gutters>
@@ -39,11 +40,12 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Service from '../Service'
 
+import GeologicalContext from '../components/GeologicalContext.vue'
 import Images from '../components/Images.vue'
 import Location from '../components/Location.vue'
 import SingleMap from '../components/SingleMap.vue'
@@ -62,6 +64,12 @@ const hasData = ref(false)
 const clazz = ref()
 
 const code = ref()
+
+const isPalCollection = computed(() => {
+  const record = store.getters['selectedRecord']
+  const collectionCode = record.collectionCode
+  return collectionCode === 'pz' || collectionCode == 'pb'
+})
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -91,20 +99,14 @@ function fetchRecord(id) {
 }
 
 function buildRecordData(record) {
-  const { collectionCode, kingdom, phylum, order, family, genus, subgenus, scientificName } = record
-  clazz.value = record.class
+  console.log('record', record)
+  const { collectionCode, kingdom, phylum, clazz, order, family, genus, subgenus, scientificName } =
+    record
 
   code.value = collectionCode
 
-  const higherClassification = new Array(
-    kingdom,
-    phylum,
-    clazz.value,
-    order,
-    family,
-    genus,
-    subgenus
-  )
+  const higherClassification = new Array(kingdom, phylum, clazz, order, family, genus, subgenus)
+  console.log(higherClassification)
 
   classification.value = higherClassification.filter((str) => str !== undefined).join(' > ')
 

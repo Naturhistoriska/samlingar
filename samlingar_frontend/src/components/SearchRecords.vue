@@ -122,6 +122,7 @@ function reset() {
   store.commit('setScientificName', null)
   store.commit('setSearchMode', 'contains')
   store.commit('setCollectionGroup', null)
+  store.commit('setSelectedCollection', null)
 
   store.commit('setFilterCoordinates', false)
   store.commit('setFilterInSweden', false)

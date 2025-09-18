@@ -126,6 +126,8 @@ public class Solr implements Serializable {
     private final String coordinatesKey = "coordinates";
     private final String point1Key = "point-1";
     private final String typeStatusKey = "typeStatus";
+    
+    private final String pt ="59,15";
 
     final TermsFacetMap mapFacet;
     final TermsFacetMap imageFacet;
@@ -133,14 +135,17 @@ public class Solr implements Serializable {
     final TermsFacetMap typeFacet;
 //    final TermsFacetMap datasourceFacet;
     final TermsFacetMap collectionFacet;
+    final TermsFacetMap collectionCodeFacet;
     
     
     
     
-    private final String mapFacetQuery = "point-1: *";
-    private final String imageFacetQuery = "hasImage: *";
-    private final String typeStatusFacetQuery = "typeStatus: *";
-    private final String inSwedenFacetQuery = "country: Sweden";
+    
+//    
+//    private final String mapFacetQuery = "point-1: *";
+//    private final String imageFacetQuery = "hasImage: *";
+//    private final String typeStatusFacetQuery = "typeStatus: *";
+//    private final String inSwedenFacetQuery = "country: Sweden";
 
     @Inject
     private InitialProperties properties;
@@ -152,13 +157,15 @@ public class Solr implements Serializable {
         imageFacet = new TermsFacetMap(hasImageKey);
 
         inSwedenFacet = new TermsFacetMap(countryKey)
-                .setTermPrefix(stringSweden);
+                .setTermPrefix(stringSweden)
+                .includeAllBucketsUnionBucket(true);
 
         typeFacet = new TermsFacetMap(typeStatusKey)
                 .includeAllBucketsUnionBucket(true);
 
         collectionFacet = new TermsFacetMap(collectionNameKey);
-
+        
+        collectionCodeFacet = new TermsFacetMap(collectionCodeKey); 
     }
 
     @PostConstruct
@@ -173,33 +180,17 @@ public class Solr implements Serializable {
 
     public String getInitalData() {
         log.info("getInitalData");
-
-        SolrQuery query = new SolrQuery("*:*");
-        query.setRows(0); // no need to fetch actual documents
-        query.setFacet(true);
-
-        query.addFacetQuery(mapFacetQuery);
-        query.addFacetQuery(inSwedenFacetQuery);
-        query.addFacetQuery(typeStatusFacetQuery);
-        query.addFacetQuery(imageFacetQuery);
-         
-
-//        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-//                .setQuery(searchAll) 
-//                .withFacet(associatedMediaKey, imageFacet)
-//                .withFacet(coordinatesKey, mapFacet.setLimit(1))
-//                .withFacet(inSwedenKey, inSwedenFacet)
-//                .withFacet(typeStatusKey, typeFacet.setLimit(1))
-//                .setLimit(1);
-//        jsonRequest.setBasicAuthCredentials(username, password);
-//                
-        try {
-
-            request = new QueryRequest(query);
-
-            request.setBasicAuthCredentials(username, password);
-            response = request.process(client);
-
+ 
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(searchAll) 
+                .withFacet(associatedMediaKey, imageFacet)
+                .withFacet(coordinatesKey, mapFacet.setLimit(1))
+                .withFacet(inSwedenKey, inSwedenFacet)
+                .withFacet(typeStatusKey, typeFacet.setLimit(1))
+                .setLimit(1);
+        jsonRequest.setBasicAuthCredentials(username, password); 
+        try {  
+            response = jsonRequest.process(client);
 //            log.info("json: {}", response.jsonStr()); 
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
@@ -220,14 +211,31 @@ public class Solr implements Serializable {
         log.info("getChart collection : {} ", collection);
 
         gap = isYearChart ? yearGap : monthGap;
+        
 
+        String dateKey = "catalogedDate";
+        if(collection.contains("NHRS")) {
+            dateKey = "createdDate";
+        }
+        if(collection.contains("NRMLIG")) {
+            dateKey = "createdDate";
+        }
+         if(collection.contains("NRMNOD")) {
+            dateKey = "createdDate";
+        }
+           if(collection.contains("NRMMIN")) {
+            dateKey = "createdDate";
+        }
+        
+           
         try {
-            query = new SolrQuery(collection);
+            query = new SolrQuery(collection); 
             query.setFacet(true);
             query.setFields(collectionCodeKey);
             query.setRows(1);
 
-            query.addDateRangeFacet(createDateKey,
+            
+            query.addDateRangeFacet(dateKey,
                     Date.from(Instant.parse(startDate)),
                     Date.from(Instant.parse(endDate)),
                     gap);
@@ -259,7 +267,8 @@ public class Solr implements Serializable {
                 .setOffset(start)
                 .setLimit(numPerPage)
                 .setSort(sort)
-                .withFacet(collectionCodeKey, collectionFacet.setLimit(20));
+                .withFacet(collectionNameKey, collectionCodeFacet.setLimit(20))
+                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20));
         jsonRequest.setBasicAuthCredentials(username, password);
         try {
             response = jsonRequest.process(client);
@@ -289,7 +298,7 @@ public class Solr implements Serializable {
                 .setOffset(start)
                 .setLimit(numPerPage)
                 .setSort(sort)
-                //                .withFacet(mapKey, mapFacet.setLimit(20000))
+                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
                 .withFacet(collectionNameKey, collectionFacet.setLimit(20));
 
         if (facets != null) {
@@ -341,16 +350,17 @@ public class Solr implements Serializable {
     }
     
       public String geojson(Map<String, String> paramMap, String text, String scientificName,
-            String locality, String dateRange, String pt, int start, int rows) {
+            String locality, String dateRange,  int start, int rows) {
         log.info("geojson... {} -- {}", start, rows);
 
+        
         query = new SolrQuery(text);
         query.addField(idKey);
-        query.addField("geo");
+        query.addField(geoKey);
         query.addField(localityKey);
         query.addField(scientificNameKey);
         query.addFilterQuery(bbox);
-        query.setParam(sfield, "geo");
+        query.setParam(sfield, geoKey);
         query.setParam(ptKey, pt);
         query.setParam(dKey, radiusKm);
         query.setStart(start);
@@ -430,8 +440,7 @@ public class Solr implements Serializable {
         request.setBasicAuthCredentials(username, password);
         try {
             response = request.process(client);
-            
-//            log.info("resp...{}", response.jsonStr());
+             
             return SolrSearchBuildGeoJson.getInstance().buildGeoJson(response);
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());

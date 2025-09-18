@@ -25,14 +25,14 @@
       </div>
     </template>
   </MultiSelect>
-  <ul v-if="itemSelected">
+  <ul>
     <li v-for="val in selectedItems" :key="val">
       <small>{{ val.label }}</small>
     </li>
   </ul>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from 'vuex'
 
@@ -47,12 +47,13 @@ const groupedSelections = ref([
     label: t('collectionLabel.botCollection'),
     code: 'bot',
     items: [
-      { label: t('collectionLabel.algae'), value: 'Algae' },
-      { label: t('collectionLabel.fungi'), value: 'Fungi/Lichens' },
-      { label: t('collectionLabel.mosses'), value: 'Mosses' },
+      { label: t('collectionLabel.algae'), value: 'Algae', code: 'algae' },
+      { label: t('collectionLabel.fungi'), value: 'Fungi/Lichens', code: 'fungi' },
+      { label: t('collectionLabel.mosses'), value: 'Mosses', code: 'mosses' },
       {
         label: t('collectionLabel.phanerogamic'),
-        value: 'Vascular Plants'
+        value: 'Vascular Plants',
+        code: 'vp'
       }
     ]
   },
@@ -62,42 +63,49 @@ const groupedSelections = ref([
     items: [
       {
         label: t('collectionLabel.ent'),
-        value: 'NRM Entomology Collection Objects'
+        value: 'NRM Entomology Collection Objects',
+        code: 'NHRS'
       },
       {
         label: t('collectionLabel.smtpObj'),
-        value: 'Swedish Malaise Trap Project (SMTP) Collection Obj'
+        value: 'Swedish Malaise Trap Project (SMTP) Collection Obj',
+        code: 'SMTP_INV'
       },
       {
         label: t('collectionLabel.smtpList'),
-        value: 'Swedish Malaise Trap Project (SMTP) Species Lists'
+        value: 'Swedish Malaise Trap Project (SMTP) Species Lists',
+        code: 'SMTP_SPPLST'
       },
       {
         label: t('collectionLabel.ev'),
-        value: 'Invertebrate main collection'
+        value: 'Invertebrate main collection',
+        code: 'ev'
       },
       {
         label: t('collectionLabel.et'),
-        value: 'Invertebrate type collection'
+        value: 'Invertebrate type collection',
+        code: 'et'
       },
-      { label: t('collectionLabel.fish'), value: 'Fish' },
+      { label: t('collectionLabel.fish'), value: 'Fish', code: 'PI' },
 
-      { label: t('collectionLabel.bird'), value: 'Bird' },
-      { label: t('collectionLabel.mammal'), value: 'Mammals' },
-      { label: t('collectionLabel.herp'), value: 'Amphibians and reptiles' }
+      { label: t('collectionLabel.bird'), value: 'Bird', code: 'AV' },
+      { label: t('collectionLabel.mammal'), value: 'Mammals', code: 'MA' },
+      { label: t('collectionLabel.herp'), value: 'Amphibians and reptiles', code: 'HE' }
     ]
   },
   {
     label: t('collectionLabel.palCollection'),
-    code: 'paleo',
+    code: 'pal',
     items: [
       {
         label: t('collectionLabel.pz'),
-        value: 'Paleozoology'
+        value: 'Paleozoology',
+        code: 'pz'
       },
       {
         label: t('collectionLabel.pb'),
-        value: 'Paleobotany'
+        value: 'Paleobotany',
+        code: 'pb'
       }
     ]
   },
@@ -105,36 +113,53 @@ const groupedSelections = ref([
     label: t('collectionLabel.geoCollection'),
     code: 'geo',
     items: [
-      { label: t('collectionLabel.nrmlig'), value: 'NRM Isotope Geology' },
-      { label: t('collectionLabel.nrmmin'), value: 'NRM Mineralogy' },
-      { label: t('collectionLabel.nrmnod'), value: 'NRM Nodules' }
+      { label: t('collectionLabel.nrmlig'), value: 'NRM Isotope Geology', code: 'NRMLIG' },
+      { label: t('collectionLabel.nrmmin'), value: 'NRM Mineralogy', code: 'NRMMIN' },
+      { label: t('collectionLabel.nrmnod'), value: 'NRM Nodules', code: 'NRMNOD' }
     ]
   }
 ])
 
-const itemSelected = computed(() => {
-  return store.getters['collectionGroup'] !== null
-})
+watch(
+  () => store.getters['selectedCollection'],
+  (newValue, oldValue) => {
+    if (store.getters['selectedCollection'] === null) {
+      selectedItems.value = null
+    }
+  }
+)
 
 onMounted(() => {
-  const group = store.getters['collectionGroup']
   const dataSet = store.getters['dataResource']
+  console.log('dataset', dataSet)
 
   selectedItems.value = groupedSelections.value
     .filter((group) => group.code === dataSet)
     .map((item) => item.items)[0]
+
+  if (selectedItems.value && selectedItems.value.length > 0) {
+    const value = selectedItems.value.map((obj) => `'${obj.code}'`).join(' ')
+    const codes = `(${value})`
+    store.commit('setSelectedCollection', codes)
+  } else {
+    store.commit('setSelectedCollection', null)
+  }
 })
 
 function onSelect(event) {
+  console.log('onSelect...')
   if (multiSelectRef.value) {
     multiSelectRef.value.hide() // This closes the panel
   }
+
+  store.commit('setDataResource', null)
   if (selectedItems.value && selectedItems.value.length > 0) {
-    const value = selectedItems.value.map((obj) => `'${obj.value}'`).join(' ')
-    const names = `(${value})`
-    store.commit('setDataResource', names)
+    const value = selectedItems.value.map((obj) => `'${obj.code}'`).join(' ')
+    const codes = `(${value})`
+    console.log('names...', codes)
+    store.commit('setSelectedCollection', codes)
   } else {
-    store.commit('setDataResource', null)
+    store.commit('setSelectedCollection', null)
   }
 }
 </script>

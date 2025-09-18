@@ -1,109 +1,51 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.event') }}</p>
-    <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.eventDate') }}</div>
-      <div class="col-8 reducePadding">
-        {{ eventStartDate }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.startDayOfYear') }}</div>
-      <div class="col-8 reducePadding">
-        {{ dayOfYear }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.eventDayOfYear') }}</div>
-      <div class="col-8 reducePadding">
-        {{ enddayOfYearData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.eventTime') }}</div>
-      <div class="col-8 reducePadding">
-        {{ eventStartTime }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.eventDayOfYear') }}</div>
-      <div class="col-8 reducePadding">
-        {{ eventEndDayOfYear }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.verbatimEventDate') }}</div>
-      <div class="col-8 reducePadding">
-        {{ verbatimEventDateData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.fieldNumber') }}</div>
-      <div class="col-8 reducePadding">
-        {{ eventFieldNumber }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.habitat') }}</div>
-      <div class="col-8 reducePadding">
-        {{ habitatData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.eventRemarks') }}</div>
-      <div class="col-8 reducePadding">
-        {{ remarks }}
-      </div>
-    </div>
+    <zoo-event-data v-if="isZooCollection" />
+    <bot-event-data v-else-if="isBotCollection" />
+    <ev-event-data v-else-if="isEvCollection" />
+    <nhrs-event-data v-else-if="isNhrsCollection" />
+    <pal-event-data v-else-if="isPalCollection" />
+    <common-event-data v-else />
   </div>
 </template>
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
-import moment from 'moment-timezone'
 
-const store = useStore()
+import BotEventData from './event/BotEventData.vue'
+import ZooEventData from './event/ZooEventData.vue'
+import CommonEventData from './event/CommonEventData.vue'
+import EvEventData from './event/EvEventData.vue'
+import NhrsEventData from './event/NhrsEventData.vue'
+import PalEventData from './event/PalEventData.vue'
 
-const eventStartDate = ref()
-const remarks = ref()
+const props = defineProps(['code'])
 
-const eventEndDayOfYear = ref()
+const isZooCollection = ref(false)
+const isEvCollection = ref(false)
 
-const eventStartTime = ref()
+const isBotCollection = ref(false)
 
-const eventFieldNumber = ref()
-const enddayOfYearData = ref()
-
-const dayOfYear = ref()
-
-const habitatData = ref()
-const verbatimEventDateData = ref()
+const isNhrsCollection = ref(false)
+const isPalCollection = ref(false)
 
 onMounted(async () => {
-  const record = store.getters['selectedRecord']
+  console.log('code...', props.code)
 
-  const {
-    eventDate,
-    endDayOfYear,
-    eventRemarks,
-    eventTime,
-    fieldNumber,
-    habitat,
-    startDayOfYear,
-    verbatimEventDate
-  } = record
+  isZooCollection.value =
+    props.code === 'AV' || props.code === 'MA' || props.code === 'PI' || props.code === 'HE'
+  isEvCollection.value = props.code === 'ev' || props.code === 'et'
+  isNhrsCollection.value =
+    props.code === 'NHRS' ||
+    props.code === 'SMTP_INV' ||
+    props.code === 'SMTP_SPPLST' ||
+    props.code === 'NRMLIG' ||
+    props.code === 'NRMMIN' ||
+    props.code === 'NRMNOD'
 
-  if (eventDate) {
-    eventStartDate.value = moment
-      .tz(eventDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
-      .format('YYYY-MM-DD')
-  }
-  dayOfYear.value = startDayOfYear
-  enddayOfYearData.value = endDayOfYear
+  isPalCollection.value = props.code === 'pb' || props.code === 'pz'
 
-  remarks.value = eventRemarks
-  eventStartTime.value = eventTime
-  eventFieldNumber.value = fieldNumber
-
-  habitatData.value = habitat
-
-  verbatimEventDateData.value = verbatimEventDate
-
-  // const endDate = moment.tz(eventDateEnd, 'ddd MMM DD HH:mm:ss z YYYY', 'CET').format('YYYY-MM-DD')
-
-  // console.log(endDate)
+  isBotCollection.value =
+    props.code === 'algae' || props.code === 'fungi' || props.code === 'mosses'
 })
 </script>
 <style scoped>

@@ -47,7 +47,7 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
@@ -57,7 +57,37 @@ let coordinates = ref(false)
 let type = ref(false)
 let sweden = ref(false)
 
+watch(
+  () => store.getters['filterImage'],
+  (newValue, oldValue) => {
+    image.value = newValue
+  }
+)
+
+watch(
+  () => store.getters['filterCoordinates'],
+  (newValue, oldValue) => {
+    coordinates.value = newValue
+  }
+)
+
+watch(
+  () => store.getters['filterInSweden'],
+  (newValue, oldValue) => {
+    sweden.value = newValue
+  }
+)
+
+watch(
+  () => store.getters['filterType'],
+  (newValue, oldValue) => {
+    type.value = newValue
+  }
+)
+
 onMounted(() => {
+  console.log('onMounted')
+
   image.value = store.getters['filterImage']
   coordinates.value = store.getters['filterCoordinates']
   type.value = store.getters['filterType']

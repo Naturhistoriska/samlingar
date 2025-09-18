@@ -28,7 +28,7 @@ export default class Service {
   async apiScientificnameSearch(searchText, searchMode, fuzzySearch, start, rows) {
     searchText = searchText.replace(/&/g, '%26')
 
-    const url = `${samlingApi}/scientificname?text=${searchText}&searchMode=${searchMode}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=createdDate desc`
+    const url = `${samlingApi}/scientificname?scientificname=${searchText}&searchMode=${searchMode}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=createdDate desc`
     const response = await axios.get(url)
     return response.data
   }
@@ -41,38 +41,37 @@ export default class Service {
   }
 
   async apiFilterSearch(
-    filtCoordinates,
-    filtImages,
-    filtInSweden,
-    filtTypeStatus,
+    params,
     start,
     numPerPage
   ) {
-    let url = `${samlingApi}/search?text=*`
+  let url = `${samlingApi}/search?${params.toString()}&start=${start}&numPerPage=${numPerPage}&sort=createdDate desc`
 
-    if (filtCoordinates) {
-      url += '&point-1=*'
-    }
+    // let url = `${samlingApi}/search?text=*`
 
-    if (filtImages) {
-      url += '&hasImage=*'
-    }
+    // if (filtCoordinates) {
+    //   url += '&point-1=*'
+    // }
 
-    if (filtTypeStatus) {
-      url += '&typeStatus=*'
-    }
+    // if (filtImages) {
+    //   url += '&hasImage=*'
+    // }
 
-    if (filtInSweden) {
-      url += '&country=Sweden'
-    }
-    url += `&start=${start}&numPerPage=${numPerPage}&sort=createdDate desc`
+    // if (filtTypeStatus) {
+    //   url += '&typeStatus=*'
+    // }
+
+    // if (filtInSweden) {
+    //   url += '&country=Sweden'
+    // }
+    // url += `&start=${start}&numPerPage=${numPerPage}&sort=createdDate desc`
 
     const response = await axios.get(url)
     return response.data
   }
 
-  async apiFilterCollectionsSearch(value, start, numPerPage) {
-    let url = `${samlingApi}/search?text=*&collectionCode=${value}&start=${start}&numPerPage=${numPerPage}&sort=createdDate desc`
+  async apiFilterCollectionsSearch(params, start, numPerPage) {
+    const url = `${samlingApi}/search?${params.toString()}&start=${start}&numPerPage=${numPerPage}&sort=createdDate desc`
 
     const response = await axios.get(url)
     return response.data

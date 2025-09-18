@@ -79,7 +79,6 @@ const inSwedenCount = computed(() => {
 
 function handleFreeTextSearch() {
   const searchText = '*'
-
   store.commit('setSearchText', searchText)
   store.commit('setScientificName', null)
   store.commit('setCollectionGroup', null)
@@ -91,43 +90,124 @@ function handleFreeTextSearch() {
 
   store.commit('setFields', [])
   store.commit('setDataResource', null)
+  store.commit('setSelectedCollectionGroup', null)
+  store.commit('setSelectedCollection', null)
   store.commit('setDates', null)
 
   emits('freeTextSearch', searchText)
 }
 
 function handleCoordinatesSearch() {
+  store.commit('setScientificName', null)
+
+  store.commit('setFilterCoordinates', true)
+  store.commit('setFilterInSweden', false)
+  store.commit('setFilterImage', false)
+  store.commit('setFilterType', false)
+
+  store.commit('setFields', [])
+  store.commit('setDataResource', null)
+  store.commit('setCollectionGroup', null)
+
+  store.commit('setSelectedCollectionGroup', null)
+  store.commit('setSelectedCollection', null)
+  store.commit('setDates', null)
   search(true, false, false, false)
 }
 
 function handleInSwedenSearch() {
+  store.commit('setScientificName', null)
+
+  store.commit('setFilterCoordinates', false)
+  store.commit('setFilterInSweden', true)
+  store.commit('setFilterImage', false)
+  store.commit('setFilterType', false)
+
+  store.commit('setFields', [])
+  store.commit('setDataResource', null)
+  store.commit('setCollectionGroup', null)
+
+  store.commit('setSelectedCollectionGroup', null)
+  store.commit('setSelectedCollection', null)
+  store.commit('setDates', null)
+
   search(false, false, true, false)
 }
 
 function handleHasImageSearch() {
+  store.commit('setScientificName', null)
+
+  store.commit('setFilterCoordinates', false)
+  store.commit('setFilterInSweden', false)
+  store.commit('setFilterImage', true)
+  store.commit('setFilterType', false)
+
+  store.commit('setFields', [])
+  store.commit('setDataResource', null)
+  store.commit('setCollectionGroup', null)
+
+  store.commit('setSelectedCollectionGroup', null)
+  store.commit('setSelectedCollection', null)
+  store.commit('setDates', null)
   search(false, true, false, false)
 }
 
 function handleTypeStatusSearch() {
+  store.commit('setScientificName', null)
+
+  store.commit('setFilterCoordinates', false)
+  store.commit('setFilterInSweden', false)
+  store.commit('setFilterImage', false)
+  store.commit('setFilterType', true)
+
+  store.commit('setFields', [])
+  store.commit('setDataResource', null)
+  store.commit('setCollectionGroup', null)
+
+  store.commit('setSelectedCollectionGroup', null)
+  store.commit('setSelectedCollection', null)
+  store.commit('setDates', null)
   search(false, false, false, true)
 }
 
 function search(filtCoordinates, filtImages, filtInSweden, filtTypeStatus) {
+  console.log('why....', filtCoordinates, filtImages, filtInSweden, filtTypeStatus)
+
   const searchText = '*'
   store.commit('setSearchText', searchText)
   store.commit('setScientificName', null)
-  store.commit('setCollectionGroup', null)
-
-  store.commit('setFilterCoordinates', filtCoordinates)
-  store.commit('setFilterInSweden', filtInSweden)
-  store.commit('setFilterImage', filtImages)
-  store.commit('setFilterType', filtTypeStatus)
 
   store.commit('setFields', [])
   store.commit('setDataResource', null)
+  store.commit('setCollectionGroup', null)
+
+  store.commit('setSelectedCollectionGroup', null)
+  store.commit('setSelectedCollection', null)
   store.commit('setDates', null)
 
-  emits('filterSearch', filtCoordinates, filtImages, filtInSweden, filtTypeStatus)
+  const images = store.getters['filterImage']
+  console.log('oh...', images)
+
+  const params = new URLSearchParams({
+    text: searchText
+  })
+  if (filtCoordinates) {
+    params.set('geo', '*')
+  }
+
+  if (filtImages) {
+    params.set('hasImage', '*')
+  }
+
+  if (filtInSweden) {
+    params.set('country', 'Sweden*')
+  }
+
+  if (filtTypeStatus) {
+    params.set('typeStatus', '*')
+  }
+
+  emits('filterSearch', params)
 }
 </script>
 <style scoped></style>

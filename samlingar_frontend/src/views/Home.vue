@@ -5,9 +5,9 @@
     </div>
     <div class="grid homePage">
       <start-page
+        @collectionsSearch="collectionsSearch"
         @filterSearch="filterSearch"
         @search="search"
-        @collectionsSearch="collectionsSearch"
       />
     </div>
 
@@ -25,9 +25,10 @@ import { entryType } from '@/router'
 import StartPage from '../components/StartPage.vue'
 import StatisticCharts from '../components/StatisticCharts.vue'
 
-// import { useI18n } from 'vue-i18n'
-
 import moment from 'moment'
+
+// import { useI18n } from 'vue-i18n'
+// const { t } = useI18n()
 
 import Service from '../Service'
 const service = new Service()
@@ -36,12 +37,23 @@ const store = useStore()
 const router = useRouter()
 
 const loading = ref(false)
-
-// const { t } = useI18n()
+const initData = ref(false)
 
 onMounted(() => {
   console.log('type visit', entryType.value)
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
+    const collectionCode = 'collectionCode: *'
+    fetchInitdata()
+    fetchYearChartData(collectionCode)
+    fetchMonthChartData(collectionCode)
+    initData.value = true
+  } else {
+    const totalCount = store.getters['totalCount']
+    if (totalCount === 0) {
+      initData.value = true
+    }
+  }
+  if (initData.value) {
     const collectionCode = 'collectionCode: *'
     fetchInitdata()
     fetchYearChartData(collectionCode)
@@ -68,8 +80,6 @@ function fetchYearChartData(collectionCode) {
       const counts = response.facet_counts.facet_ranges.createdDate.counts
 
       const totalCount = response.total
-      store.commit('setTotalCount', totalCount)
-
       setYearChartData(totalCount, counts)
     })
     .catch()
@@ -104,11 +114,9 @@ function fetchInitdata() {
   service
     .apiInitdata()
     .then((response) => {
-      const facets = response.facet_counts.facet_queries
-
-      console.log('what...', facets)
-      // const totalCount = facets.count
-      // store.commit('setTotalCount', totalCount)
+      const facets = response.facets
+      const totalCount = facets.count
+      store.commit('setTotalCount', totalCount)
 
       setSearchCommentFacet(facets)
 
@@ -117,57 +125,31 @@ function fetchInitdata() {
       store.commit('setFilterInSweden', false)
       store.commit('setFilterType', false)
 
-      store.commit('setCollectionGroup', null)
+      store.commit('setSelectedCollection', null)
+      store.commit('setSelectedCollectionGroup', null)
+      store.commit('setDataResource', null)
     })
     .catch()
     .finally(() => {})
 }
 
-function setSearchCommentFacet(facetQueries) {
-  for (const [key, value] of Object.entries(facetQueries)) {
-    if (key === 'point-1: *') {
-      store.commit('setHasCoordinatesCount', value)
-    }
+function setSearchCommentFacet(facets) {
+  const inSweden = facets.inSweden.allBuckets.count
+  const typeStatus = facets.typeStatus.allBuckets.count
+  const hasImages = facets.associatedMedia.buckets[0].count
+  const hasCoordinates = facets.coordinates.allBuckets.count
 
-    if (key === 'country: Sweden') {
-      store.commit('setInSwedenCount', value)
-    }
-
-    if (key === 'typeStatus: *') {
-      store.commit('setIsTypeCount', value)
-    }
-
-    if (key === 'hasImage: *') {
-      store.commit('setImageCount', value)
-    }
-  }
-
-  // const imageFacet = facets.associatedMedia.buckets
-  // const imageCount = imageFacet.length > 0 ? imageFacet[0].count : 0
-  // store.commit('setImageCount', imageCount)
-  //
-  // const typeStatus = facets.typeStatus.allBuckets.count
-  // store.commit('setIsTypeCount', typeStatus)
-  //
-  // const inSwedenFacet = facets.inSweden.buckets
-  // const inSwedenCount = inSwedenFacet.length > 0 ? inSwedenFacet[0].count : 0
-  // store.commit('setInSwedenCount', inSwedenCount)
-  //
-  // const mapCount = facets.coordinates.allBuckets.count
-  // store.commit('setHasCoordinatesCount', mapCount)
+  store.commit('setHasCoordinatesCount', hasCoordinates)
+  store.commit('setInSwedenCount', inSweden)
+  store.commit('setIsTypeCount', typeStatus)
+  store.commit('setImageCount', hasImages)
 }
 
-async function filterSearch(
-  filtCoordinates,
-  filtImages,
-  filtInSweden,
-  filtTypeStatus,
-  start,
-  numPerPage
-) {
+async function filterSearch(params, start, numPerPage) {
   loading.value = true
+  console.log('why 1...', params.toString())
   await service
-    .apiFilterSearch(filtCoordinates, filtImages, filtInSweden, filtTypeStatus, start, numPerPage)
+    .apiFilterSearch(params, start, numPerPage)
     .then((response) => {
       const total = response.facets.count
       const results = response.response
@@ -175,12 +157,20 @@ async function filterSearch(
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
+      store.commit('setFilterImage', false)
+      store.commit('setFilterCoordinates', false)
+      store.commit('setFilterInSweden', false)
+      store.commit('setFilterType', false)
+
       if (total > 0) {
         const collectionfacet = response.facets.collectionName.buckets
+        store.commit('setSelectedCollectionGroup', collectionfacet)
 
-        store.commit('setCollectionGroup', collectionfacet)
+        const collectionCodefacet = response.facets.collectionCode.buckets
+        store.commit('setSelectedCollection', collectionCodefacet)
       } else {
-        store.commit('setCollectionGroup', null)
+        store.commit('setSelectedCollectionGroup', null)
+        store.commit('setSelectedCollection', null)
       }
     })
     .catch((error) => {
@@ -188,27 +178,34 @@ async function filterSearch(
     })
     .finally(() => {
       store.commit('setIsUrlPush', true)
+      store.commit('setSearchParams', params)
       loading.value = false
       router.push('/search')
     })
 }
 
-async function collectionsSearch(value, start, numPerPage) {
+async function collectionsSearch(params, start, numPerPage) {
   loading.value = true
+  console.log('params', params)
+
   await service
-    .apiFilterCollectionsSearch(value, start, numPerPage)
+    .apiFilterCollectionsSearch(params, start, numPerPage)
     .then((response) => {
       const total = response.facets.count
       const results = response.response
 
       store.commit('setTotalRecords', total)
-
       if (total > 0) {
         store.commit('setResults', results)
         const collectionfacet = response.facets.collectionName.buckets
-        store.commit('setCollectionGroup', collectionfacet)
+        store.commit('setSelectedCollectionGroup', collectionfacet)
+
+        const collectionCodefacet = response.facets.collectionCode.buckets
+        store.commit('setSelectedCollection', collectionCodefacet)
       } else {
-        store.commit('setCollectionGroup', null)
+        store.commit('setSelectedCollectionGroup', null)
+        store.commit('setSelectedCollection', null)
+        store.commit('setResults', null)
       }
     })
     .catch((error) => {
@@ -216,6 +213,7 @@ async function collectionsSearch(value, start, numPerPage) {
     })
     .finally(() => {
       store.commit('setIsUrlPush', true)
+      store.commit('setSearchParams', params)
       loading.value = true
       router.push('/search')
     })
@@ -223,6 +221,9 @@ async function collectionsSearch(value, start, numPerPage) {
 
 async function search(value, start, numPerPage) {
   loading.value = true
+  const params = new URLSearchParams({
+    text: value
+  })
   await service
     .apiFreeTextSearch(value, start, numPerPage)
     .then((response) => {
@@ -235,10 +236,12 @@ async function search(value, start, numPerPage) {
 
       if (total > 0) {
         const collectionfacet = response.facets.collectionName.buckets
+        const collectionCodefacet = response.facets.collectionCode.buckets
 
-        store.commit('setCollectionGroup', collectionfacet)
+        store.commit('setSelectedCollection', collectionCodefacet)
+        store.commit('setSelectedCollectionGroup', collectionfacet)
       } else {
-        store.commit('setCollectionGroup', null)
+        store.commit('setSelectedCollectionGroup', null)
       }
     })
     .catch((error) => {
@@ -246,7 +249,8 @@ async function search(value, start, numPerPage) {
     })
     .finally(() => {
       store.commit('setIsUrlPush', true)
-      loading.value = true
+      store.commit('setSearchParams', params)
+      loading.value = false
       router.push('/search')
     })
 }

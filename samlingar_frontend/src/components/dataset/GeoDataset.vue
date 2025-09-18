@@ -150,7 +150,8 @@ onMounted(async () => {
   } = record
 
   additionalDetermination.value = previousIdentifications
-  minerals.value = associeradeMineral
+
+  minerals.value = associeradeMineral ? associeradeMineral.join(', ') : ''
 
   catNumber.value = catalogNumber
   collection.value = collectionName
@@ -172,7 +173,7 @@ onMounted(async () => {
   }
 
   occurrenceAttRemarks.value = occurrenceAttributeRemarks
-  otherCatNumbers.value = otherCatalogNumbers
+  otherCatNumbers.value = otherCatalogNumbers ? otherCatalogNumbers.join(', ') : ''
 
   preparationList.value = prepCount ? prepCount : ''
   preparationString.value = preparationList.value.join(', ')

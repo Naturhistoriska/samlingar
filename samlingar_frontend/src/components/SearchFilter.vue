@@ -404,9 +404,10 @@ function removeCoordinatesFilter() {
 }
 
 function removeImageFilter() {
+  console.log('is herere...')
   store.commit('setStartRecord', 0)
   store.commit('setNumPerPage', 10)
-  store.commit('setFilterImage', false)
+  // store.commit('setFilterImage', false)
   emits('filterSearch')
 }
 </script>

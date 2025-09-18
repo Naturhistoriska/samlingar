@@ -31,13 +31,13 @@ import AccordionContent from 'primevue/accordioncontent'
 import CollectionMonthChart from '../components/CollectionMonthChart.vue'
 import CollectionYearChart from '../components/CollectionYearChart.vue'
 
-const AsyncMonthChart = defineAsyncComponent({
-  loader: () => import('../components/CollectionMonthChart.vue')
-})
+// const AsyncMonthChart = defineAsyncComponent({
+//   loader: () => import('../components/CollectionMonthChart.vue')
+// })
 
-const AsyncYearChart = defineAsyncComponent({
-  loader: () => import('../components/CollectionYearChart.vue')
-})
+// const AsyncYearChart = defineAsyncComponent({
+//   loader: () => import('../components/CollectionYearChart.vue')
+// })
 import Service from '../Service'
 const service = new Service()
 
@@ -89,29 +89,31 @@ let isotopeYear = ref()
 let mineralYear = ref()
 let noduleYear = ref()
 
-const props = defineProps(['dataset', 'dataGroup'])
+const props = defineProps(['dataset', 'dataGroup', 'dataResource'])
 
 const tabs = computed(() => {
+  console.log('props.dataset', props.dataset)
   return props.dataset.split(':')
   // const data = props.dataset.split(':')
   // return data
 })
 
 function getMonthData(tab) {
-  const { dataGroup } = props
-  if (dataGroup === 'startPage.palaeCollection') {
-    return palMonth.value
-  } else if (dataGroup === 'startPage.botanicalCollection') {
-    if (tab === 'Algae') {
+  const { dataGroup, dataResource } = props
+
+  console.log('getMonthData tab', tab, dataResource, dataGroup)
+
+  if (dataResource === 'bot') {
+    if (tab === 'algae') {
       return algaeMonth.value
-    } else if (tab === 'S-Fungi') {
+    } else if (tab === 'fungi') {
       return fungiMonth.value
-    } else if (tab === 'S-Bryophytes') {
+    } else if (tab === 'mosses') {
       return mossesMonth.value
     } else {
       return vpMonth.value
     }
-  } else if (dataGroup === 'startPage.geoCollection') {
+  } else if (dataResource === 'geo') {
     if (tab === 'NRMLIG') {
       return isotopeMonth.value
     } else if (tab === 'NRMMIN') {
@@ -119,18 +121,24 @@ function getMonthData(tab) {
     } else {
       return noduleMonth.value
     }
-  } else if (dataGroup === 'startPage.zooCollection') {
-    if (tab === 'NRM-Herps') {
+  } else if (dataResource === 'pal') {
+    if (tab === 'pb') {
+      return pbMonth.value
+    } else if (tab === 'pz') {
+      return pzMonth.value
+    }
+  } else if (dataResource === 'zoo') {
+    if (tab === 'HE') {
       return herpMonth.value
-    } else if (tab === 'Birds') {
+    } else if (tab === 'AV') {
       return birdMonth.value
-    } else if (tab === 'NRM-Fish') {
+    } else if (tab === 'PI') {
       return fishMonth.value
-    } else if (tab === 'EVmain') {
+    } else if (tab === 'ev') {
       return evMonth.value
-    } else if (tab === 'EVtype') {
+    } else if (tab === 'et') {
       return etMonth.value
-    } else if (tab === 'Mammals') {
+    } else if (tab === 'MA') {
       return mammalMonth.value
     } else if (tab === 'NHRS') {
       return entomologyMonth.value
@@ -143,20 +151,19 @@ function getMonthData(tab) {
 }
 
 function getYearData(tab) {
-  const { dataGroup } = props
-  if (dataGroup === 'startPage.palaeCollection') {
-    return palYear.value
-  } else if (dataGroup === 'startPage.botanicalCollection') {
-    if (tab === 'Algae') {
+  console.log('getYearData', tab)
+  const { dataGroup, dataResource } = props
+  if (dataResource === 'bot') {
+    if (tab === 'algae') {
       return algaeYear.value
-    } else if (tab === 'S-Fungi') {
+    } else if (tab === 'fungi') {
       return fungiYear.value
-    } else if (tab === 'S-Bryophytes') {
+    } else if (tab === 'mosses') {
       return mossesYear.value
     } else {
       return vpYear.value
     }
-  } else if (dataGroup === 'startPage.geoCollection') {
+  } else if (dataResource === 'geo') {
     if (tab === 'NRMLIG') {
       return isotopeYear.value
     } else if (tab === 'NRMMIN') {
@@ -164,18 +171,24 @@ function getYearData(tab) {
     } else {
       return noduleYear.value
     }
-  } else if (dataGroup === 'startPage.zooCollection') {
-    if (tab === 'NRM-Herps') {
+  } else if (dataResource === 'pal') {
+    if (tab === 'pb') {
+      return pbYear.value
+    } else if (tab === 'pz') {
+      return pzYear.value
+    }
+  } else if (dataResource === 'zoo') {
+    if (tab === 'HE') {
       return herpYear.value
-    } else if (tab === 'Birds') {
+    } else if (tab === 'AV') {
       return birdYear.value
-    } else if (tab === 'NRM-Fish') {
+    } else if (tab === 'PI') {
       return fishYear.value
-    } else if (tab === 'EVmain') {
+    } else if (tab === 'ev') {
       return evYear.value
-    } else if (tab === 'EVtype') {
+    } else if (tab === 'et') {
       return etYear.value
-    } else if (tab === 'Mammals') {
+    } else if (tab === 'MA') {
       return mammalYear.value
     } else if (tab === 'NHRS') {
       return entomologyYear.value
@@ -190,6 +203,8 @@ function getYearData(tab) {
 async function onTabClick(tab) {
   console.log('onTabClick tab :  ', tab)
 
+  console.log('active.value', active.value)
+
   if (active.value.includes(tab)) {
     const collection = `collectionCode: ${tab}`
     getChartData(collection, tab, false)
@@ -198,11 +213,19 @@ async function onTabClick(tab) {
 }
 
 async function getChartData(collection, tab, isYear) {
-  console.log('tab', collection, tab)
+  console.log('getChartData tab', collection, tab)
+
   await service
     .apiChart(collection, isYear)
     .then((response) => {
-      const counts = response.facet_counts.facet_ranges.createdDate_dt.counts
+      let facet = response.facet_counts.facet_ranges.catalogedDate
+      console.log('facet..', facet)
+      if (facet === undefined) {
+        facet = response.facet_counts.facet_ranges.createdDate
+      }
+
+      const counts = facet.counts
+      console.log('counts..', counts)
       if (isYear) {
         const totalCount = response.total
         setYearChartData(tab, totalCount, counts)
@@ -242,23 +265,24 @@ function setYearChartData(tab, total, years) {
 }
 
 function setYearData(tab, year) {
+  console.log('setYearData', tab, year)
   switch (tab) {
-    case 'NRM-Herps':
+    case 'HE':
       herpYear.value = year
       break
-    case 'Birds':
+    case 'AV':
       birdYear.value = year
       break
-    case 'NRM-Fish':
+    case 'PI':
       fishYear.value = year
       break
-    case 'EVmain':
+    case 'ev':
       evYear.value = year
       break
-    case 'EVtype':
+    case 'et':
       etYear.value = year
       break
-    case 'Mammals':
+    case 'MA':
       mammalYear.value = year
       break
     case 'NHRS':
@@ -270,25 +294,22 @@ function setYearData(tab, year) {
     case 'SMTP_SPPLST':
       smtpListYear.value = year
       break
-    case 'PAL':
-      palYear.value = year
-      break
     case 'pz':
       pzYear.value = year
       break
     case 'pb':
       pbYear.value = year
       break
-    case 'Algae':
+    case 'algae':
       algaeYear.value = year
       break
-    case 'S-Fungi':
+    case 'fungi':
       fungiYear.value = year
       break
-    case 'S-Bryophytes':
+    case 'mosses':
       mossesYear.value = year
       break
-    case 'VascularPlants':
+    case 'vp':
       vpYear.value = year
       break
     case 'NRMLIG':
@@ -306,23 +327,24 @@ function setYearData(tab, year) {
 }
 
 function setMonthData(tab, month) {
+  console.log('setMonthData tab', tab)
   switch (tab) {
-    case 'NRM-Herps':
+    case 'HE':
       herpMonth.value = month
       break
-    case 'Birds':
+    case 'AV':
       birdMonth.value = month
       break
-    case 'NRM-Fish':
+    case 'PI':
       fishMonth.value = month
       break
-    case 'EVmain':
+    case 'ev':
       evMonth.value = month
       break
-    case 'EVtype':
+    case 'et':
       etMonth.value = month
       break
-    case 'Mammals':
+    case 'MA':
       mammalMonth.value = month
       break
     case 'NHRS':
@@ -334,25 +356,22 @@ function setMonthData(tab, month) {
     case 'SMTP_SPPLST':
       smtpListMonth.value = month
       break
-    case 'PAL':
-      palMonth.value = month
-      break
     case 'pz':
       pzMonth.value = month
       break
     case 'pb':
       pbMonth.value = month
       break
-    case 'Algae':
+    case 'algae':
       algaeMonth.value = month
       break
-    case 'S-Fungi':
+    case 'fungi':
       fungiMonth.value = month
       break
-    case 'S-Bryophytes':
+    case 'mosses':
       mossesMonth.value = month
       break
-    case 'VascularPlants':
+    case 'vp':
       vpMonth.value = month
       break
     case 'NRMLIG':

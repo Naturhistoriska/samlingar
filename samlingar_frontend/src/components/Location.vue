@@ -1,201 +1,53 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.locality') }}</p>
-    <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.locality') }}</div>
-      <div class="col-8 reducePadding">
-        {{ localityName }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.continet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theContinent }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.country') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theCountry }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.stateProvince') }}</div>
-      <div class="col-8 reducePadding">
-        {{ state }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.municipality') }}</div>
-      <div class="col-8 reducePadding">
-        {{ municipalityData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.county') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theCounty }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.higherGeography') }}</div>
-      <div class="col-8 reducePadding">
-        {{ highGeo }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.latitude') }}</div>
-      <div class="col-8 reducePadding">
-        {{ latitude }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.longitude') }}</div>
-      <div class="col-8 reducePadding">
-        {{ longigude }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.coordinateUncertaintyInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ uncertaintyInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.geodeticDatum') }}</div>
-      <div class="col-8 reducePadding">
-        {{ datum }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.minElevationInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ minElevationInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.maxElevationInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ maxElevationInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.minimumDepthInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ minDepthInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.maximumDepthInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ maxDepthInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.waterBody') }}</div>
-      <div class="col-8 reducePadding">
-        {{ water }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.island') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theIsland }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.islandGroup') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theIslandGroup }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.georeferencedDate') }}</div>
-      <div class="col-8 reducePadding">
-        {{ georeferencedDateData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.locationRemarks') }}</div>
-      <div class="col-8 reducePadding">
-        {{ remarks }}
-      </div>
-    </div>
+    <ev-location v-if="isEvCollection" />
+    <nhrs-location v-else-if="isNhrsCollection" />
+    <pal-location v-else-if="isPalCollection" />
+    <bird-location v-else-if="isBirdAndMammalCollection" />
+    <fish-location v-else-if="isFishAndHerpCollection" />
+    <bot-location v-else-if="isBotCollection" />
+    <common-location v-else />
   </div>
 </template>
 <script setup>
-import { geoJSON } from 'leaflet'
 import { onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
 
-const store = useStore()
+import BirdLocation from './location/BirdLocation.vue'
+import BotLocation from './location/BotLocation.vue'
+import CommonLocation from './location/CommonLocation.vue'
+import EvLocation from './location/EvLocation.vue'
+import FishLocation from './location/FishLocation.vue'
+import NhrsLocation from './location/NhrsLocation.vue'
+import PalLocation from './location/PalLocation.vue'
 
-const theCountry = ref()
-const theCounty = ref()
-const theContinent = ref()
-const datum = ref()
-const georeferencedDateData = ref()
-const highGeo = ref()
-const latitude = ref()
-const longigude = ref()
-const localityName = ref()
-const minElevationInMeters = ref()
-const maxElevationInMeters = ref()
+const props = defineProps(['code'])
 
-const minDepthInMeters = ref()
-const maxDepthInMeters = ref()
+const isBirdAndMammalCollection = ref(false)
+const isEvCollection = ref(false)
+const isFishAndHerpCollection = ref(false)
 
-const municipalityData = ref()
+const isBotCollection = ref(false)
 
-const remarks = ref()
-const state = ref()
-const theIsland = ref()
-const theIslandGroup = ref()
-const water = ref()
-const uncertaintyInMeters = ref()
+const isNhrsCollection = ref(false)
+const isPalCollection = ref(false)
 
 onMounted(async () => {
-  const record = store.getters['selectedRecord']
+  isBirdAndMammalCollection.value = props.code === 'AV' || props.code === 'MA'
+  isEvCollection.value = props.code === 'ev' || props.code === 'et'
+  isFishAndHerpCollection.value = props.code === 'PI' || props.code === 'HE'
 
-  const {
-    continent,
-    country,
-    county,
-    coordinateUncertaintyInMeters,
+  isNhrsCollection.value =
+    props.code === 'NHRS' ||
+    props.code === 'SMTP_INV' ||
+    props.code === 'SMTP_SPPLST' ||
+    props.code === 'NRMLIG' ||
+    props.code === 'NRMMIN' ||
+    props.code === 'NRMNOD'
 
-    decimalLongitude,
-    decimalLatitude,
+  isPalCollection.value = props.code === 'pb' || props.code === 'pz'
 
-    geodeticDatum,
-    georeferencedDate,
-
-    island,
-    locality,
-    locationRemarks,
-
-    minimumElevationInMeters,
-    maximumElevationInMeters,
-    minimumDepthInMeters,
-    maximumDepthInMeters,
-
-    municipality,
-
-    stateProvince,
-
-    higherGeography,
-
-    islandGroup,
-
-    waterBody
-  } = record
-
-  theCountry.value = country
-  theCounty.value = county
-  state.value = stateProvince
-  theContinent.value = continent
-
-  highGeo.value = higherGeography
-  datum.value = geodeticDatum
-  theIsland.value = island
-  theIslandGroup.value = islandGroup
-  latitude.value = decimalLatitude
-  longigude.value = decimalLongitude
-  localityName.value = locality
-
-  georeferencedDateData.value = georeferencedDate
-
-  minElevationInMeters.value = minimumElevationInMeters
-  maxElevationInMeters.value = maximumElevationInMeters
-
-  minDepthInMeters.value = minimumDepthInMeters
-  maxDepthInMeters.value = maximumDepthInMeters
-
-  municipalityData.value = municipality
-
-  remarks.value = locationRemarks
-  water.value = waterBody
-  uncertaintyInMeters.value = coordinateUncertaintyInMeters
+  isBotCollection.value =
+    props.code === 'algae' || props.code === 'fungi' || props.code === 'mosses'
 })
 </script>
 <style scoped>

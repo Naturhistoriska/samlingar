@@ -1,81 +1,53 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.identification') }}</p>
-    <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.dateIdentified') }}</div>
-      <div class="col-8 reducePadding">
-        {{ identifyDate }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.identifiedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ identifiedByData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.identificationQualifier') }}</div>
-      <div class="col-8 reducePadding">
-        {{ identificationQualifierData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.typeStatus') }}</div>
-      <div class="col-8 reducePadding">
-        {{ typeStatusData }}
-      </div>
-
-      <div class="col-4 reducePadding">Original Name Usage</div>
-      <div class="col-8 reducePadding">
-        {{ originalName }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.identificationVerificationStatus') }}</div>
-      <div class="col-8 reducePadding">
-        {{ status }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.identificationRemarks') }}</div>
-      <div class="col-8 reducePadding">
-        {{ remarks }}
-      </div>
-    </div>
+    <zoo-identification v-if="isZooCollection" />
+    <bot-identification v-else-if="isBotCollection" />
+    <pal-identification v-else-if="isPalCollection" />
+    <nhrs-identification v-else-if="isNhrsCollection" />
+    <common-identification v-else />
   </div>
 </template>
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
 
-const store = useStore()
+import ZooIdentification from './identification/ZooIndentification.vue'
+import CommonIdentification from './identification/CommonIdentification.vue'
+import PalIdentification from './identification/PalIdentification.vue'
+import NhrsIdentification from './identification/NhrsIdentification.vue'
 
-const identifyDate = ref()
-const identifiedByData = ref()
-const identificationQualifierData = ref()
-const originalName = ref()
-const typeStatusData = ref()
+import BotIdentification from './identification/BotIdentification.vue'
 
-const status = ref()
-const remarks = ref()
+const props = defineProps(['code'])
+
+const isZooCollection = ref(false)
+const isEvCollection = ref(false)
+
+const isBotCollection = ref(false)
+
+const isNhrsCollection = ref(false)
+const isPalCollection = ref(false)
 
 onMounted(async () => {
-  const record = store.getters['selectedRecord']
+  isZooCollection.value =
+    props.code === 'AV' ||
+    props.code === 'MA' ||
+    props.code === 'PI' ||
+    props.code === 'HE' ||
+    props.code === 'ev' ||
+    props.code === 'et'
 
-  const {
-    dateIdentified,
-    identificationQualifier,
-    identifiedBy,
-    identificationVerificationStatus,
-    originalNameUsage,
-    typeStatus,
-    identificationRemarks
-  } = record
+  isNhrsCollection.value =
+    props.code === 'NHRS' ||
+    props.code === 'SMTP_INV' ||
+    props.code === 'SMTP_SPPLST' ||
+    props.code === 'NRMLIG' ||
+    props.code === 'NRMMIN' ||
+    props.code === 'NRMNOD'
 
-  identifyDate.value = dateIdentified
-  identifiedByData.value = identifiedBy
-  identificationQualifierData.value = identificationQualifier
+  isPalCollection.value = props.code === 'pb' || props.code === 'pz'
 
-  originalName.value = originalNameUsage
-  typeStatusData.value = typeStatus
-
-  status.value = identificationVerificationStatus
-  remarks.value = identificationRemarks
+  isBotCollection.value =
+    props.code === 'algae' || props.code === 'fungi' || props.code === 'mosses'
 })
 </script>
 <style scoped>

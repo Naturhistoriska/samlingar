@@ -210,14 +210,14 @@ const router = useRouter()
 const service = new Service()
 const toast = useToast()
 
-const emits = defineEmits(['search'])
+// const emits = defineEmits(['search'])
 
 const dialogVisible = ref(false)
 
 let columns = ref([])
 const dt = ref()
 
-const params = ref()
+// const params = ref()
 
 const defaultColumns = ref([
   // { field: 'dataResourceName', header: 'Collection Name', minWidth: '150px', maxWidth: '150px' },
@@ -266,10 +266,9 @@ watch(
 )
 
 watch(
-  () => store.getters['collectionGroup'],
+  () => store.getters['selectedCollectionGroup'],
   (newValue, oldValue) => {
     const data = newValue
-    console.log('collections', newValue)
     if (data) {
       collectionOptions.value = data.map((item) => item.val)
     }
@@ -277,10 +276,10 @@ watch(
 )
 
 onMounted(async () => {
+  console.log('record table onMounted')
   records.value = store.getters['results']
-  const collections = store.getters['collectionGroup']
+  const collections = store.getters['selectedCollectionGroup']
 
-  console.log('collections:', collections)
   collectionOptions.value = collections ? collections.map((item) => item.val) : []
   columns.value = defaultColumns.value
 })
@@ -349,15 +348,9 @@ function onFilter(event) {
   const { filters: filterMeta, first, rows } = event
 
   const collectionName = filterMeta.collectionName
-
-  console.log('collection name...', collectionName)
-
   const scientificName = filterMeta.scientificName
   const catalogNumber = filterMeta.catalogNumber
   const locality = filterMeta.locality
-
-  console.log('starts search')
-  console.log(collectionName.value)
 
   if (collectionName.value && collectionName.value.length > 0) {
     buildFilter(collectionName, 'collectionName', true)
@@ -375,8 +368,9 @@ function onFilter(event) {
     buildFilter(locality, 'locality', false)
   }
 
-  params.value = buildParams()
-  loadRecordsLazy(first, rows)
+  const params = buildParams()
+  store.commit('setSearchParams', params)
+  loadRecordsLazy(params, first, rows)
 }
 
 function buildFilter(data, filterKey, isArray) {
@@ -399,11 +393,12 @@ function buildFilter(data, filterKey, isArray) {
   console.log('filterArray', filterArray.value)
 }
 
-async function loadRecordsLazy(first, rows) {
+async function loadRecordsLazy(params, first, rows) {
   loading.value = true
 
+  console.log('params', params.toString())
   await service
-    .apiSearch(params.value, first, rows)
+    .apiSearch(params, first, rows)
     .then((response) => {
       const total = response.facets.count
       const results = response.response
@@ -411,7 +406,6 @@ async function loadRecordsLazy(first, rows) {
       store.commit('setResults', results)
 
       store.commit('setTotalRecords', total)
-      store.commit('setSearchParams', params)
 
       setTimeout(() => {
         loading.value = false
@@ -422,6 +416,7 @@ async function loadRecordsLazy(first, rows) {
     })
     .finally(() => {
       loading.value = false
+      store.commit('setSearchParams', params)
     })
 }
 
@@ -457,7 +452,7 @@ function buildParams() {
   }
 
   if (hasCoordinates) {
-    params.set('lat_long', '*')
+    params.set('geo', '*')
   }
 
   if (startDate) {
@@ -474,11 +469,14 @@ function buildParams() {
   let dataResource
   if (hasCollection) {
     dataResource = filterArray.value.filter((item) => item.key === 'collectionName')[0].value
-    let newValue = dataResource.replace(/'/g, '"')
+    const newValue = dataResource.replace(/'/g, '"')
     params.set('collectionName', newValue)
   } else {
-    dataResource = store.getters['selectedCollection']
-    params.set('collectionCode', dataResource)
+    const selectedCollection = store.getters['selectedCollection']
+    if (selectedCollection !== null) {
+      const newValue = selectedCollection.replace(/'/g, '"')
+      params.set('collectionCode', newValue)
+    }
   }
 
   let scientificName
@@ -566,10 +564,9 @@ function selectRow(data) {
 const onPage = async (event) => {
   const { first, rows } = event
 
-  console.log('onPage', first, rows)
+  const params = store.getters['searchParams']
 
-  params.value = buildParams()
-  loadRecordsLazy(first, rows)
+  loadRecordsLazy(params, first, rows)
 }
 
 const onRowExpand = (event) => {

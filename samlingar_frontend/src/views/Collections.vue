@@ -8,21 +8,25 @@
         id="zoo"
         v-bind:dataset="zooCollections"
         v-bind:dataGroup="zooDataGroup"
+        v-bind:dataResource="zooResource"
       />
       <CollectionStatisticChart
         id="botany"
         v-bind:dataset="botanyCollections"
         v-bind:dataGroup="botanyDataGroup"
+        v-bind:dataResource="botResource"
       />
       <CollectionStatisticChart
         id="paleo"
         v-bind:dataset="paleoCollections"
         v-bind:dataGroup="paleoDataGroup"
+        v-bind:dataResource="palResource"
       />
       <CollectionStatisticChart
         id="geo"
         v-bind:dataset="geoCollections"
         v-bind:dataGroup="geoDataGroup"
+        v-bind:dataResource="geoResource"
       />
     </template>
   </Card>
@@ -55,6 +59,19 @@ const paleoDataGroup = computed(() => {
 })
 const geoDataGroup = computed(() => {
   return 'startPage.geoCollection'
+})
+
+const zooResource = computed(() => {
+  return 'zoo'
+})
+const botResource = computed(() => {
+  return 'bot'
+})
+const palResource = computed(() => {
+  return 'pal'
+})
+const geoResource = computed(() => {
+  return 'geo'
 })
 </script>
 <style scoped>

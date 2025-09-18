@@ -22,29 +22,29 @@
     "DECEMBER": "dec"
   },
   "collectionName": {
-    "NRM-Herps": {
+    "HE": {
       "name": "Grod och kräldjur",
-      "code": "NRM-Herps"
+      "code": "HE"
     },
-    "Birds": {
+    "AV": {
       "name": "Fågel",
-      "code": "Birds"
+      "code": "AV"
     },
-    "NRM-Fish": {
+    "PI": {
       "name": "Fisk",
-      "code": "NRM-Fish"
+      "code": "PI"
     },
-    "EVmain": {
+    "ev": {
       "name": "Evertebrater",
-      "code": "EVmain"
+      "code": "ev"
     },
-    "EVtype": {
+    "et": {
       "name": "Evertebrater typsamling",
-      "code": "EVtype"
+      "code": "et"
     },
-    "Mammals": {
+    "MA": {
       "name": "Däggdjur",
-      "code": "Mammals"
+      "code": "MA"
     },
     "NHRS": {
       "name": "Entomologisk",
@@ -70,21 +70,21 @@
       "name": "Paleontologiska samlingar",
       "code": "PAL"
     },
-    "Algae": {
+    "algae": {
       "name": "Alger",
       "code": "algae"
     },
-    "S-Bryophytes": {
-      "name": "Mossor",
-      "code": "S-Bryophytes"
+    "mosses": {
+      "name": "Mosses",
+      "code": "mosses"
     },
-    "S-Fungi": {
-      "name": "Svampar/Lavar",
-      "code": "S-Fungi"
-    },
-    "VascularPlants": {
+    "vp": {
       "name": "Kärlväxter",
-      "code": "VascularPlants"
+      "code": "vp"
+    },
+    "fungi": {
+      "name": "Svampar/Lavar",
+      "code": "fungi"
     },
     "NRMMIN": {
       "name": "Mineralogisk",
@@ -240,12 +240,16 @@
     "dataset": "Dataset",
     "dataResource": "Data resource",
     "description": "Description",
+    "district": "district",
     "earliestAgeOrLowestStage": "Earliest age or lowest stage",
     "earliestEpochOrLowestSeries": "Earliest epoch or lowest series",
     "earliestPeriodOrLowestSystem": "Earliest period or lowest system",
     "element": "Element",
     "endEventDate": "Event date end",
     "event": "Event",
+    "eventEndDay": "End day",
+    "eventEndMonth": "End month",
+    "eventEndYear": "End year",
     "eventDayOfYear": "End day of year",
     "dateIdentified": "Date identified",
     "eventDate": "Event date",
@@ -257,6 +261,7 @@
     "genus": "Genus",
     "geodeticDatum": "Geodetic datum",
     "georeferencedDate": "Georeferenced date",
+    "geologicalContext": "Geological context",
     "habitat": "Habitat",
     "highClassification": "Högre klassifikation",
     "higherGeography": "Higher geography",
@@ -265,13 +270,14 @@
     "identificationQualifier": "Identification qualifier",
     "identificationVerificationStatus": "Identification verification status",
     "identificationRemarks": "Identification remarks",
+    "identifiedYear": "Identified year",
     "infragenericEpithet": "Infrageneric epithet",
     "infraspecificEpithet": "Infraspecific Epithet",
     "individualCount": "Individual count",
     "institiution": "Institution",
     "institiutionCode": "Institution code",
     "kingdom": "Kingdom",
-    "latestAgeOrHighestStage": "Latest period or highest system",
+    "latestAgeOrHighestStage": "Latest age or highest stage",
     "latestEpochOrHighestSeries": "Latest epoch or highest series",
     "latestPeriodOrHighestSystem": "Latest period or highest system",
     "lithostratigraphy": "Lithostratigraphy",

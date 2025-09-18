@@ -2,8 +2,8 @@
   <div style="font-size: 12px">
     <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
-      <div class="col-3 reducePadding">{{ $t('results.collectionName') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.collectionName') }}</div>
+      <div class="col-8 reducePadding">
         {{ collection }}
       </div>
 
@@ -27,49 +27,14 @@
         {{ preservations }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.preservedSpecimen') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.preservedSpecimen') }}</div>
+      <div class="col-8 reducePadding">
         {{ preservedSpecimenData }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.earliestAgeOrLowestStage') }}</div>
+      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
       <div class="col-8 reducePadding">
-        {{ lowStage }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.latestAgeOrHighestStage') }}</div>
-      <div class="col-8 reducePadding">
-        {{ highestStage }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.earliestEpochOrLowestSeries') }}</div>
-      <div class="col-8 reducePadding">
-        {{ lowSeries }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.latestEpochOrHighestSeries') }}</div>
-      <div class="col-8 reducePadding">
-        {{ highestSeries }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.earliestPeriodOrLowestSystem') }}</div>
-      <div class="col-8 reducePadding">
-        {{ lowSystem }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.latestPeriodOrHighestSystem') }}</div>
-      <div class="col-8 reducePadding">
-        {{ highestSystem }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-9 reducePadding">
         {{ collectors }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.lithostratigraphy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ lithostratigraphy }}
       </div>
 
       <div class="col-4 reducePadding" v-if="isPbCollection">{{ $t('results.element') }}</div>
@@ -104,19 +69,9 @@ const collectors = ref()
 const descriptionData = ref()
 const elementData = ref()
 
-const highestStage = ref()
-const highestSeries = ref()
-const highestSystem = ref()
-
 const institution = ref()
 
 let isPbCollection = ref(false)
-
-const lithostratigraphy = ref()
-
-const lowStage = ref()
-const lowSeries = ref()
-const lowSystem = ref()
 
 const preservations = ref()
 const preservedSpecimenData = ref()
@@ -129,15 +84,8 @@ onMounted(async () => {
     catalogNumber,
     collectionCode,
     collectionName,
-    earliestAgeOrLowestStage,
-    earliestEpochOrLowestSeries,
-    earliestPeriodOrLowestSystem,
     element,
     description,
-    latestAgeOrHighestStage,
-    latestEpochOrHighestSeries,
-    latestPeriodOrHighestSystem,
-    lithostratigraphicTerms,
     preservation,
     preservedSpecimen,
     recordedBy
@@ -148,6 +96,7 @@ onMounted(async () => {
       .tz(catalogedDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
       .format('YYYY-MM-DD')
   }
+
   catNumber.value = catalogNumber
 
   code.value = collectionCode
@@ -158,18 +107,9 @@ onMounted(async () => {
 
   descriptionData.value = description
 
-  highestSeries.value = latestEpochOrHighestSeries
-  highestSystem.value = latestPeriodOrHighestSystem
-  highestStage.value = latestAgeOrHighestStage
-
   institution.value = t('common.institution') + ' [  NRM  ]'
 
   isPbCollection.value = collectionCode === 'pb'
-
-  lithostratigraphy.value = lithostratigraphicTerms
-  lowSeries.value = earliestEpochOrLowestSeries
-  lowStage.value = earliestAgeOrLowestStage
-  lowSystem.value = earliestPeriodOrLowestSystem
 
   preservations.value = preservation
   preservedSpecimenData.value = preservedSpecimen
