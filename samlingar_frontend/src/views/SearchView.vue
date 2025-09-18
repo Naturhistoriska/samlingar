@@ -160,8 +160,8 @@ async function search(params, start, numPerPage, saveData) {
         if (total > 0) {
           const collectionfacet = response.facets.collectionName.buckets
           store.commit('setSelectedCollectionGroup', collectionfacet)
-          const collectionCodefacet = response.facets.collectionCode.buckets
-          store.commit('setSelectedCollection', collectionCodefacet)
+          // const collectionCodefacet = response.facets.collectionCode.buckets
+          // store.commit('setSelectedCollection', collectionCodefacet)
         } else {
           store.commit('setSelectedCollectionGroup', null)
           store.commit('setSelectedCollection', null)
@@ -250,6 +250,7 @@ function buildParams() {
   //   params.set('collectionName', newValue)
   // }
 
+  console.log('selectedCollection', selectedCollection)
   if (selectedCollection !== null) {
     const newValue = selectedCollection.replace(/'/g, '"')
     params.set('collectionCode', newValue)

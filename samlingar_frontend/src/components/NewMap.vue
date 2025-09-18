@@ -161,7 +161,12 @@ async function fetchHeatmapData() {
 
   const totalRecords = store.getters['totalRecords']
   // const params = buildParams()
-  const params = store.getters['searchParams']
+  let params = store.getters['searchParams']
+  if (params === null) {
+    params = new URLSearchParams({
+      text: '*'
+    })
+  }
 
   await service
     .apiHeatmap(params, 0, totalRecords)

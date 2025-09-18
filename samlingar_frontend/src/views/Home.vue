@@ -11,7 +11,7 @@
       />
     </div>
 
-    <div class="grid" style="margin-top: 10px">
+    <div class="grid" style="margin-top: 10px" v-if="false">
       <StatisticCharts />
     </div>
   </div>

@@ -137,6 +137,7 @@ onMounted(() => {
     .filter((group) => group.code === dataSet)
     .map((item) => item.items)[0]
 
+  console.log('selectedItems', selectedItems)
   if (selectedItems.value && selectedItems.value.length > 0) {
     const value = selectedItems.value.map((obj) => `'${obj.code}'`).join(' ')
     const codes = `(${value})`

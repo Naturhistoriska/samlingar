@@ -5,8 +5,8 @@ const baseUrl = import.meta.env.VITE_SBDI_API
 // const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
 const resultsPerPage = 10
 
-// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
-const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
+const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
+// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
 
 const fiedList =
   'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'

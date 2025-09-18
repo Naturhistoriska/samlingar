@@ -89,7 +89,7 @@ onMounted(async () => {
         text: '*'
       })
       await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
-    } else if (props.from === '/') {
+    } else {
       console.log('entryType 2', entryType)
       const isUrlPush = store.getters['isUrlPush']
       if (isUrlPush) {
@@ -98,9 +98,6 @@ onMounted(async () => {
         await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
       }
       store.commit('setIsUrlPush', false)
-    } else {
-      console.log('entryType 3', entryType)
-      onMapReady()
     }
     addClustringPopup()
   }
@@ -213,17 +210,21 @@ const fetchAndRender = async (params, { lat, lng }) => {
     .then((response) => {
       console.log('response:', response)
       const docs = response.response
+      console.log('docs', docs.length)
 
       if (docs && docs.length > 0) {
         console.log('docs', docs.length)
 
         isDataReady.value = true
         buildMarkers(docs)
+      } else {
+        loading.value = false
       }
     })
     .catch()
     .finally(() => {
       isDataReady.value = true
+      loading.value = false
     })
 }
 
