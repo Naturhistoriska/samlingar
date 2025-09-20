@@ -42,7 +42,8 @@
 
       <div class="col-4 reducePadding">{{ $t('results.synonyms') }}</div>
       <div class="col-8 reducePadding">
-        {{ synonymsData }}
+        <!-- {{ synonymsData }} -->
+        <span v-for="(item, index) in synonymsData" :key="index"> {{ item }}<br /> </span>
       </div>
     </div>
   </div>
@@ -75,12 +76,17 @@ onMounted(async () => {
     scientificName,
     scientificNameAuthorship,
     species,
-    synonyms
+    synonyms,
+    synonymAuthor
   } = record
 
   theClazz.value = clazz
   scientificNameAuthorshipData.value = scientificNameAuthorship
-  synonymsData.value = synonyms
+
+  synonymsData.value = synonymAuthor
+  // if (synonymAuthor) {
+  //   synonymsData.value = synonymAuthor.join(' | ')
+  // }
   thePhylum.value = phylum
   theOrder.value = order
   theFamily.value = family

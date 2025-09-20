@@ -62,9 +62,9 @@ const apiAutoComplete = (event) => {
   const field = props.field.value
   let value = event.query
 
-  if (field === 'typeStatus') {
-    value = value.toUpperCase()
-  }
+  // if (field === 'typeStatus') {
+  //   value = value.toUpperCase()
+  // }
 
   service
     .apiAutoCompleteSearch(value, field)

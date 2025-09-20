@@ -375,7 +375,7 @@ function buildParams() {
   }
 
   if (hasCoordinates) {
-    params.set('point-1', '*')
+    params.set('geo', '*')
   }
 
   // if (collectionGroup) {

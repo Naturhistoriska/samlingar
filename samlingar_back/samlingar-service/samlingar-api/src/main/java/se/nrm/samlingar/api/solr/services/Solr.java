@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -96,6 +98,8 @@ public class Solr implements Serializable {
     private String gap;
 
     private List<String> fields;
+    
+    
 
 //
 //    
@@ -113,11 +117,15 @@ public class Solr implements Serializable {
     private final String searchAll = "*:*";
 
     private final String associatedMediaKey = "associatedMedia";
-    private final String createDateKey = "createdDate";
+//    private final String createDateKey = "createdDate";
     private final String collectionCodeKey = "collectionCode";
     private final String collectionNameKey = "collectionName";
 
-    private final String defaultSort = "createdDate desc";
+    private final String defaultSort = "catalogedDate desc";
+    private final int defaultStart = 0;
+    private final int defaultRows = 10;
+    
+    private final String catalogedDateKey = "catalogedDate";
 
     private final String geoKey = "geo";
 
@@ -210,38 +218,19 @@ public class Solr implements Serializable {
         log.info("getChart : {} -- {}", startDate, endDate);
         log.info("getChart collection : {} ", collection);
 
-        gap = isYearChart ? yearGap : monthGap;
-        
-
-        String dateKey = "catalogedDate";
-        if(collection.contains("NHRS")) {
-            dateKey = "createdDate";
-        }
-        if(collection.contains("NRMLIG")) {
-            dateKey = "createdDate";
-        }
-         if(collection.contains("NRMNOD")) {
-            dateKey = "createdDate";
-        }
-           if(collection.contains("NRMMIN")) {
-            dateKey = "createdDate";
-        }
-        
-           
+        gap = isYearChart ? yearGap : monthGap; 
         try {
             query = new SolrQuery(collection); 
             query.setFacet(true);
             query.setFields(collectionCodeKey);
             query.setRows(1);
-
-            
-            query.addDateRangeFacet(dateKey,
+ 
+            query.addDateRangeFacet(catalogedDateKey,
                     Date.from(Instant.parse(startDate)),
                     Date.from(Instant.parse(endDate)),
                     gap);
 
-            request = new QueryRequest(query);
-
+            request = new QueryRequest(query); 
             request.setBasicAuthCredentials(username, password);
             response = request.process(client);
             return isYearChart
@@ -257,8 +246,34 @@ public class Solr implements Serializable {
             }
         }
     }
+    
+    public String autoCompleteSearch(String text, String field) {
+        log.info("autoCompleteSearch: {} -- {}", text, field);
+        
+        final TermsFacetMap facet = new TermsFacetMap(field).setLimit(50);
 
-    public String scientificNameSearch(int start, int numPerPage, String text, String sort) {
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .withFacet(facetKey, facet);
+
+        jsonRequest.setBasicAuthCredentials(username, password);
+        try {
+            response = jsonRequest.process(client);
+            return response.jsonStr();
+//            log.info("json: {}", response.jsonStr()); 
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
+        }
+    }
+    
+     public String scientificNameSearch(int start, int numPerPage, String text, String sort) {
         log.info("scientificNameSearch: {} -- {}", text, sort);
 
         sort = sort == null ? defaultSort : sort;
@@ -285,6 +300,101 @@ public class Solr implements Serializable {
             }
         }
     }
+    
+    public String simpleSearch(Map<String, String> paramMap) { 
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(searchAll)
+                .setOffset(defaultStart)
+                .setLimit(defaultRows)
+                .setSort(defaultSort)
+                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
+                .withFacet(collectionNameKey, collectionFacet.setLimit(20));
+
+     
+        paramMap.forEach((key, value) -> {
+            sb = new StringBuilder();
+            sb.append(key)
+                    .append(colon)
+                    .append(value);
+            jsonRequest.withFilter(sb.toString());
+        });
+
+        jsonRequest.setBasicAuthCredentials(username, password);
+        try {
+            response = jsonRequest.process(client);
+//            log.info("simplesearch what... {}", jsonResponse);
+            return response.jsonStr();
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
+        } 
+    }
+    
+    public String freeTextSearch(String text) {
+
+        query = new SolrQuery();
+        query.set("defType", "edismax");
+        query.set("q", text);
+        query.set("qf", "catchall");  // Fields to search
+        query.set("mm", "2<75%"); // Minimum number of terms that must match
+        query.setStart(0);
+        query.setRows(10);
+        query.setSort(catalogedDateKey, SolrQuery.ORDER.desc);
+        
+        try {
+            response = client.query(query);
+ 
+            return response.jsonStr(); 
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
+        }
+    }
+
+    
+    public String searchWithId(String id) {
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(idKey + id)    
+                .setLimit(1);
+        jsonRequest.setBasicAuthCredentials(username, password); 
+        try {
+            response = jsonRequest.process(client); 
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
+
+        return response.jsonStr(); 
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+   
 
     public String search(Map<String, String> paramMap, String text, String scientificName,
             String locality, String dateRange, String facets,
@@ -480,30 +590,7 @@ public class Solr implements Serializable {
 //    
 //    
 //    
-    public String autoCompleteSearch(String text, String field) {
-        log.info("autoCompleteSearch: {} -- {}", text, field);
-        final TermsFacetMap facet = new TermsFacetMap(field).setLimit(50);
-
-        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)
-                .withFacet(facetKey, facet);
-
-        jsonRequest.setBasicAuthCredentials(username, password);
-        try {
-            response = jsonRequest.process(client);
-            return response.jsonStr();
-//            log.info("json: {}", response.jsonStr()); 
-        } catch (SolrServerException | IOException ex) {
-            log.error(ex.getMessage());
-            return null;
-        } finally {
-            try {
-                client.close();
-            } catch (IOException ex) {
-                log.error(ex.getMessage());
-            }
-        }
-    }
+   
 
     private void buildDownloadJson(String jsonString, JsonArrayBuilder builder) {
 

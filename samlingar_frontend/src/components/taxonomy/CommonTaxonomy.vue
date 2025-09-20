@@ -141,7 +141,9 @@ onMounted(async () => {
   rank.value = taxonRank
   remarks.value = taxonRemarks
 
-  synonymsData.value = synonyms
+  if (synonyms) {
+    synonymsData.value = synonyms.join(' | ')
+  }
 
   specificEpithetData.value = specificEpithet
   scientificNameAuthorshipData.value = scientificNameAuthorship

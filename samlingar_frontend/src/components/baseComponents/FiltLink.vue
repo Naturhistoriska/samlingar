@@ -1,9 +1,9 @@
 <template>
   <div class="grid divLink" @click="doSearch" @mouseover="onHover" @mouseleave="unHover">
-    <div class="col-6" no-gutters>
+    <div class="col-8" no-gutters>
       <Button text :label="$t(text)" :class="{ hover: isHover }" />
     </div>
-    <div class="col-2">
+    <!-- <div class="col-2">
       <Button
         v-if="loading"
         text
@@ -11,7 +11,7 @@
         aria-label="loading"
         title="loading"
       />
-    </div>
+    </div> -->
     <div class="col-4">
       <Button text :class="{ hover: isHover }">
         {{ total }}
@@ -22,7 +22,7 @@
 <script setup>
 import { ref } from 'vue'
 
-const props = defineProps(['loading', 'text', 'total'])
+const props = defineProps(['text', 'total'])
 const emits = defineEmits(['doSearch'])
 
 const isHover = ref(false)

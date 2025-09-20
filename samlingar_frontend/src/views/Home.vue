@@ -5,9 +5,9 @@
     </div>
     <div class="grid homePage">
       <start-page
-        @collectionsSearch="collectionsSearch"
+        @collectionsSearch="filterSearch"
         @filterSearch="filterSearch"
-        @search="search"
+        @freeTextSearch="freeTextSearch"
       />
     </div>
 
@@ -68,11 +68,11 @@ function fetchMonthChartData(collectionCode) {
       // const counts = response.facet_counts.facet_ranges.createdDate.counts
 
       let facet = response.facet_counts.facet_ranges.catalogedDate
-      if (facet === undefined) {
-        facet = response.facet_counts.facet_ranges.createdDate
-      }
-      const counts = facet.counts
-      setMonthChartData(counts)
+      // if (facet === undefined) {
+      //   facet = response.facet_counts.facet_ranges.createdDate
+      // }
+      // const counts = facet.counts
+      setMonthChartData(facet.counts)
     })
     .catch()
     .finally(() => {})
@@ -154,11 +154,10 @@ function setSearchCommentFacet(facets) {
   store.commit('setImageCount', hasImages)
 }
 
-async function filterSearch(params, start, numPerPage) {
+async function filterSearch(params) {
   loading.value = true
-  console.log('why 1...', params.toString())
   await service
-    .apiFilterSearch(params, start, numPerPage)
+    .apiFilterSearch(params)
     .then((response) => {
       const total = response.facets.count
       const results = response.response
@@ -166,10 +165,10 @@ async function filterSearch(params, start, numPerPage) {
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
-      store.commit('setFilterImage', false)
-      store.commit('setFilterCoordinates', false)
-      store.commit('setFilterInSweden', false)
-      store.commit('setFilterType', false)
+      // store.commit('setFilterImage', false)
+      // store.commit('setFilterCoordinates', false)
+      // store.commit('setFilterInSweden', false)
+      // store.commit('setFilterType', false)
 
       if (total > 0) {
         const collectionfacet = response.facets.collectionName.buckets
@@ -193,48 +192,48 @@ async function filterSearch(params, start, numPerPage) {
     })
 }
 
-async function collectionsSearch(params, start, numPerPage) {
-  loading.value = true
-  console.log('params', params)
+// async function collectionsSearch(params) {
+//   loading.value = true
+//   console.log('params', params)
 
-  await service
-    .apiFilterCollectionsSearch(params, start, numPerPage)
-    .then((response) => {
-      const total = response.facets.count
-      const results = response.response
+//   await service
+//     .apiFilterSearch(params)
+//     .then((response) => {
+//       const total = response.facets.count
+//       const results = response.response
 
-      store.commit('setTotalRecords', total)
-      if (total > 0) {
-        store.commit('setResults', results)
-        const collectionfacet = response.facets.collectionName.buckets
-        store.commit('setSelectedCollectionGroup', collectionfacet)
+//       store.commit('setTotalRecords', total)
+//       if (total > 0) {
+//         store.commit('setResults', results)
+//         const collectionfacet = response.facets.collectionName.buckets
+//         store.commit('setSelectedCollectionGroup', collectionfacet)
 
-        const collectionCodefacet = response.facets.collectionCode.buckets
-        store.commit('setSelectedCollection', collectionCodefacet)
-      } else {
-        store.commit('setSelectedCollectionGroup', null)
-        store.commit('setSelectedCollection', null)
-        store.commit('setResults', null)
-      }
-    })
-    .catch((error) => {
-      console.log('error', error)
-    })
-    .finally(() => {
-      store.commit('setIsUrlPush', true)
-      store.commit('setSearchParams', params)
-      loading.value = true
-      router.push('/search')
-    })
-}
+//         const collectionCodefacet = response.facets.collectionCode.buckets
+//         store.commit('setSelectedCollection', collectionCodefacet)
+//       } else {
+//         store.commit('setSelectedCollectionGroup', null)
+//         store.commit('setSelectedCollection', null)
+//         store.commit('setResults', null)
+//       }
+//     })
+//     .catch((error) => {
+//       console.log('error', error)
+//     })
+//     .finally(() => {
+//       store.commit('setIsUrlPush', true)
+//       store.commit('setSearchParams', params)
+//       loading.value = true
+//       router.push('/search')
+//     })
+// }
 
-async function search(value, start, numPerPage) {
+async function freeTextSearch(value) {
   loading.value = true
   const params = new URLSearchParams({
-    text: value
+    catchall: value
   })
   await service
-    .apiFreeTextSearch(value, start, numPerPage)
+    .apiFreeTextSearch(value)
     .then((response) => {
       const total = response.facets.count
       const results = response.response

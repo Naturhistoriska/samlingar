@@ -47,7 +47,7 @@ public class EntityToJson implements Serializable {
     
     private final String associeradeMineralKey = "associeradeMineral";
     private final String accessionNumberKey = "accessionNumber";
-    private final String accessionRemarksKey = "accessionRemarks";
+//    private final String accessionRemarksKey = "accessionRemarks";
     private final String additionalDeterminationKey = "additionalDetermination";
     private final String associatedMediaKey = "associatedMedia";
     
@@ -63,7 +63,7 @@ public class EntityToJson implements Serializable {
     private final String countryKey = "country";
     private final String countyKey = "county";
     private final String continentKey = "continent";
-    private final String createdDateKey = "createdDate";
+    private final String createdDateKey = "catalogedDate";
     
     private final String coordinateUncertaintyInMetersKey = "coordinateUncertaintyInMeters";
     
@@ -117,10 +117,10 @@ public class EntityToJson implements Serializable {
     private final String occurrenceRemarksKey = "occurrenceRemarks";
     
 //    private final String pointKey = "point"; 
-    private final String point1Key = "point-1"; 
-    private final String point01Key = "point-0.1"; 
-    private final String point001Key = "point-0.01"; 
-    private final String point0001Key = "point-0.001"; 
+//    private final String point1Key = "point-1"; 
+//    private final String point01Key = "point-0.1"; 
+//    private final String point001Key = "point-0.01"; 
+//    private final String point0001Key = "point-0.001"; 
     private final String preparationsKey = "preparations";
     private final String prepartionCountKey = "prepCount";
     
@@ -145,18 +145,18 @@ public class EntityToJson implements Serializable {
     
     private final String verbatimEventDateKey = "verbatimEventDate";
 
-    private final String verbatimCoordinatesKey = "verbatimCoordinates";
+//    private final String verbatimCoordinatesKey = "verbatimCoordinates";
     private final String vernacularNameKey = "vernacularName"; 
     
     private final String waterBodyKey = "waterBody";
     
     private final String yearKey = "year";
     
-    private final String doubleFormat1 = "%.1f";
-    private final String doubleFormat2 = "%.2f";
-    private final String doubleFormat3 = "%.3f";
-    
-    private final int numberOfCharacters = 5; 
+//    private final String doubleFormat1 = "%.1f";
+//    private final String doubleFormat2 = "%.2f";
+//    private final String doubleFormat3 = "%.3f";
+//    
+//    private final int numberOfCharacters = 5; 
     private final String comma = ",";
     private final String underScore = "_";
     private final String leftParentheses = "(";
@@ -196,16 +196,16 @@ public class EntityToJson implements Serializable {
     
     private String country;
     
-    private String formattedLat;
-    private String formattedLong;
-    private int intLat;
-    private int intLong;
-    private String format;
+//    private String formattedLat;
+//    private String formattedLong;
+//    private int intLat;
+//    private int intLong;
+//    private String format;
     
-    private String geoHash; 
+//    private String geoHash; 
     private StringBuilder coordinatesSb; 
-    private StringBuilder geoHashSb;
-    private StringBuilder pointSb; 
+//    private StringBuilder geoHashSb;
+//    private StringBuilder pointSb; 
     private StringBuilder imageSb;
     private StringBuilder preparationsSb;
     private StringBuilder synonymAuthSb;
@@ -250,15 +250,15 @@ public class EntityToJson implements Serializable {
     private String isIsland;
     private String islandGroup;
     
-    private String locationRemarksKey = "locationRemarks";
+    private final String locationRemarksKey = "locationRemarks";
     
     private final String possibleType = "possibletype";
     private final String possibleTypeConvert = "Possible type";
     
     private JsonArrayBuilder collectorsArrayBuilder;
     private JsonArrayBuilder commonNameArrayBuilder;
-    private JsonArrayBuilder georHashArrayBuilder;
-    private JsonArrayBuilder pointArrayBuilder;
+//    private JsonArrayBuilder georHashArrayBuilder;
+//    private JsonArrayBuilder pointArrayBuilder;
      
     private JsonArrayBuilder imageViewArrayBuilder;
     
@@ -343,7 +343,7 @@ public class EntityToJson implements Serializable {
         addAttValue(attBuilder, otherCatalogNumbersKey, bean.getAltCatalogNumber());
  
          
-        addCatalogedDate(attBuilder, (java.sql.Date) bean.getCatalogedDate());
+//        addCatalogedDate(attBuilder, (java.sql.Date) bean.getCatalogedDate());
         addAccession(attBuilder, bean.getAccession());
          
         addModifiedDate(attBuilder, 
@@ -648,7 +648,7 @@ public class EntityToJson implements Serializable {
         log.info("addGeoData : {} -- {}", latitude, longitude);
           
         addCoordinates(attBuilder, latitude, longitude); 
-        addPoint(attBuilder, latitude, longitude);  
+//        addPoint(attBuilder, latitude, longitude);  
     }
     
     private void addCoordinates(JsonObjectBuilder attBuilder, double latitude, double longitude) {
@@ -661,47 +661,47 @@ public class EntityToJson implements Serializable {
         attBuilder.add(geoKey, coordinatesSb.toString().trim());
     }
     
-    private void addPoint(JsonObjectBuilder attBuilder, int i, String key,
-            double latitude, double longtude) {
-        format = getDoubleFormat(i);
-        formattedLat = String.format(format, latitude);
-        formattedLong = String.format(format, longtude);
-
-        pointSb = new StringBuilder();
-        pointSb.append(formattedLat);
-        pointSb.append(comma);
-        pointSb.append(formattedLong);
-        attBuilder.add(key, pointSb.toString());
-    }
+//    private void addPoint(JsonObjectBuilder attBuilder, int i, String key,
+//            double latitude, double longtude) {
+//        format = getDoubleFormat(i);
+//        formattedLat = String.format(format, latitude);
+//        formattedLong = String.format(format, longtude);
+//
+//        pointSb = new StringBuilder();
+//        pointSb.append(formattedLat);
+//        pointSb.append(comma);
+//        pointSb.append(formattedLong);
+//        attBuilder.add(key, pointSb.toString());
+//    }
     
-    private void addPoint(JsonObjectBuilder attBuilder, double latitude, double longtude) {
-        log.info("addPoint : {} -- {}", latitude, longtude);
-         
-        intLat = (int) latitude;
-        intLong = (int) longtude;
-
-        pointSb = new StringBuilder(); 
-        pointSb.append(intLat);
-        pointSb.append(comma);
-        pointSb.append(intLong);
-        attBuilder.add(point1Key, pointSb.toString());
-         
-        addPoint(attBuilder, 1, point01Key, latitude, longtude);
-        addPoint(attBuilder, 2, point001Key, latitude, longtude);
-        addPoint(attBuilder, 3, point0001Key, latitude, longtude);
-    }
+//    private void addPoint(JsonObjectBuilder attBuilder, double latitude, double longtude) {
+//        log.info("addPoint : {} -- {}", latitude, longtude);
+//         
+//        intLat = (int) latitude;
+//        intLong = (int) longtude;
+//
+//        pointSb = new StringBuilder(); 
+//        pointSb.append(intLat);
+//        pointSb.append(comma);
+//        pointSb.append(intLong);
+//        attBuilder.add(point1Key, pointSb.toString());
+//         
+//        addPoint(attBuilder, 1, point01Key, latitude, longtude);
+//        addPoint(attBuilder, 2, point001Key, latitude, longtude);
+//        addPoint(attBuilder, 3, point0001Key, latitude, longtude);
+//    }
     
         
-    private String getDoubleFormat(int i) {
-        switch (i) {
-            case 1:
-                return doubleFormat1;
-            case 2:
-                return doubleFormat2;
-            default:
-                return doubleFormat3;
-        }
-    }
+//    private String getDoubleFormat(int i) {
+//        switch (i) {
+//            case 1:
+//                return doubleFormat1;
+//            case 2:
+//                return doubleFormat2;
+//            default:
+//                return doubleFormat3;
+//        }
+//    }
  
     
     private void addLocality(JsonObjectBuilder attBuilder, Locality locality) {
@@ -800,17 +800,17 @@ public class EntityToJson implements Serializable {
  
     
      
-    private void addCatalogedDate(JsonObjectBuilder attBuilder, Date catalogedDate) {
-
-        if (catalogedDate != null) { 
-            attBuilder.add(catalogedDateKey,
-                    Util.getInstance().dateToString(catalogedDate));
-             
-            localDate = catalogedDate.toLocalDate();
-            attBuilder.add(catalogedYearKey, localDate.getYear());
-            attBuilder.add(catalogedMonthKey, localDate.getMonth().name()); 
-        }
-    }
+//    private void addCatalogedDate(JsonObjectBuilder attBuilder, Date catalogedDate) {
+//
+//        if (catalogedDate != null) { 
+//            attBuilder.add(catalogedDateKey,
+//                    Util.getInstance().dateToString(catalogedDate));
+//             
+//            localDate = catalogedDate.toLocalDate();
+//            attBuilder.add(catalogedYearKey, localDate.getYear());
+//            attBuilder.add(catalogedMonthKey, localDate.getMonth().name()); 
+//        }
+//    }
     
     public void addAttValue(JsonObjectBuilder attBuilder, String key, String value) {
         if(!StringUtils.isBlank(value)) {

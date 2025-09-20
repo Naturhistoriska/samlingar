@@ -63,10 +63,11 @@ function handleGeoCollectionSearch() {
 }
 
 function search(value, dataResource) {
-  // value collections code, dataResource is collection group: zoo, bot, pal, geo
-  console.log('is here ...')
+  // value - collections code, dataResource is collection group: zoo, bot, pal, geo
+
   const searchText = '*'
   store.commit('setSearchText', searchText)
+
   store.commit('setScientificName', null)
 
   store.commit('setFilterCoordinates', false)
@@ -82,7 +83,7 @@ function search(value, dataResource) {
 
   const newValue = value.replace(/'/g, '"')
   const params = new URLSearchParams({
-    text: searchText,
+    catchall: searchText,
     collectionCode: newValue
   })
 

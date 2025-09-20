@@ -96,16 +96,27 @@ public class BotJsonConverter implements Serializable {
                                 record.get(JsonHelper.getInstance().getCatalogedDateCsvKey(json)));
 //                        log.info("catalogDate added...");
                          
+                        JsonHelper.getInstance().addModifedDate(attBuilder, 
+                                record.get(JsonHelper.getInstance().getModifiedDateCsvKey(json)));
+                        log.info("modified data added...");
+
+
+                        String coordinates = record.get(JsonHelper.getInstance().getCoordinatesCsvKey(json));
+                        log.info("coordinates : {}", coordinates);
                         coordinatesBuilder.buildBotCoordinates(attBuilder, 
-                                record.get(JsonHelper.getInstance().getCoordinatesCsvKey(json)).trim());
-      
+                                record.get("webbkoordinat").trim());
+                        log.info("coordinate added");
                         
-                        convert.addImage(attBuilder, imageMap, catalogNumber);   
+                        convert.addImage(attBuilder, imageMap, catalogNumber); 
+                        log.info("image added");
                         
                         convert.convertDetermination(attBuilder, determinationMap, catalogNumber);  
-                         
+                        log.info("convertDetermination added");
+                        
+                        
                         exsiccat = exisccateMap.get(record.get(csvExsiccatKey));
                         JsonHelper.getInstance().addExsiccat(attBuilder, exsiccat); 
+                        log.info("exsiccat added");
                                 
                         nameSynonyms = nameMap.get(record.get(csvCatalogIdKey));
                         convert.addSynonyms(attBuilder, nameSynonyms);  

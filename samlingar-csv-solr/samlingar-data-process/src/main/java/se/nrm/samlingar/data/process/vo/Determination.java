@@ -8,27 +8,31 @@ public class Determination {
     
     private final String currentDetermination;
     private final String identifiedBy;
-    private final String identifiedYear; 
+//    private final String identifiedYear; 
+    private final String dateIdentified;
     
-    public Determination(String currentDetermination, String identifiedBy, 
-            String identifiedYear ) { 
+    public Determination(String currentDetermination, String identifiedBy, String dateIdentified) { 
         this.currentDetermination = currentDetermination;
-        this.identifiedBy = identifiedBy;
-        this.identifiedYear = identifiedYear; 
+        this.identifiedBy = identifiedBy; 
+        this.dateIdentified = dateIdentified;
     }
 
     public String getCurrentDetermination() {
         return currentDetermination;
     }
 
+    public String getDateIdentified() {
+        return dateIdentified;
+    }
+
     public String getIdentifiedBy() {
         return identifiedBy;
     }
 
-    public String getIdentifiedYear() {
-        return identifiedYear;
-    }
- 
+//    public String getIdentifiedYear() {
+//        return identifiedYear;
+//    }
+// 
     
     @Override
     public String toString() {

@@ -18,8 +18,6 @@ const props = defineProps(['imageSource', 'text'])
 
 const emits = defineEmits(['searchCollection'])
 
-// const isDisabled = ref(true)
-
 function searchCollection() {
   emits('searchCollection')
 }

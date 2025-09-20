@@ -39,7 +39,7 @@ function handleFreeTextSearch(value) {
 
   store.commit('setFilterCoordinates', false)
   store.commit('setFilterInSweden', false)
-  // store.commit('setFilterImage', false)
+  store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
 
   store.commit('setCollectionGroup', null)

@@ -20,7 +20,7 @@
       @rowExpand="onRowExpand"
       @rowCollapse="onRowCollapse"
       lazy
-      :rows="10"
+      :rows="20"
       :rowsPerPageOptions="[5, 10, 20]"
       :totalRecords="totalCount"
       :filters="filters"
@@ -95,6 +95,7 @@
         header="Scientific Name"
         style="min-width: 12rem; max-width: 12rem"
         filterField="scientificName"
+        sortable
         :filter="true"
         :filterMatchModeOptions="nameFilterMatchModes"
       >

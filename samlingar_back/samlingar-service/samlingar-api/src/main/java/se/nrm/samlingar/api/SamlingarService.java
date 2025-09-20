@@ -34,6 +34,8 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class SamlingarService {
+    
+    private final String star = "*";
   
     @Inject
     private SamlingarLogic logic;
@@ -51,8 +53,7 @@ public class SamlingarService {
         log.info("getInitalData");
         return Response.ok(logic.getInitalData()).build();
     }
-    
-        
+     
     @GET
     @Path("/chart")
     @ApiOperation(value = "Search",
@@ -67,6 +68,20 @@ public class SamlingarService {
     }
     
     @GET
+    @Path("/autocomplete")
+    @ApiOperation(value = "autocomplete",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response autoCompleteSearch(@QueryParam("text") String text,
+            @QueryParam("field") String field) {
+        log.info("autoCompleteSearch: {} -- {} ", text, field);
+         
+        return Response.ok(logic.autoCompleteSearch(text, field)).build();
+    }
+     
+    @GET
     @Path("/scientificname")
     @ApiOperation(value = "scientificname",
             notes = "Return search results in json",
@@ -74,18 +89,16 @@ public class SamlingarService {
     )
     @Produces(MediaType.APPLICATION_JSON)
     public Response scientificname(@QueryParam("scientificname") String text,
-            @QueryParam("searchMode") String searchMode,
-            @QueryParam("fuzzySearch") boolean fuzzySearch,
+            @QueryParam("searchMode") String searchMode, 
             @QueryParam("start") int start, 
             @QueryParam("numPerPage") int numPerPage,
             @QueryParam("sort") String sort) {
         log.info("scientificname  {} -- {}", text, searchMode + " -- " + sort);
  
-        return Response.ok(logic.scientificNameSearch(text, searchMode, 
-                fuzzySearch, start, numPerPage, sort)).build();
+        return Response.ok(logic.scientificNameSearch(text, 
+                searchMode, start, numPerPage, sort)).build();
     }
-     
-        
+    
     @GET
     @Path("/search")
     @ApiOperation(value = "Search",
@@ -97,6 +110,63 @@ public class SamlingarService {
         log.info("getSearchResults");
         return Response.ok(logic.search(uriInfo.getQueryParameters())).build(); 
     }
+    
+    @GET
+    @Path("/simpleSearch")
+    @ApiOperation(value = "SimpleSearch",
+            notes = "Return search results in json",
+            response = String.class
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response simpleSearch(@Context UriInfo uriInfo) { 
+        log.info("getSearchResults");
+        return Response.ok(logic.simpleSearch(uriInfo.getQueryParameters())).build(); 
+    }
+     
+    @GET
+    @Path("/freeTextSearch")
+    @ApiOperation(value = "freeTextSearch",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response freeTextSearch(@QueryParam("catchall") String text) {
+        log.info("freeTextSearch {} ", text);
+         
+        if (text == null || text.isEmpty()) {
+            text = star;
+        } 
+        
+        return Response.ok(logic.freeTextSearch(text )).build();
+    }
+    
+    
+                
+    @GET
+    @Path("/id")
+    @ApiOperation(value = "Search by id",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response idSearch(@QueryParam("id") String id ) { 
+        log.info("idSearch... {}", id); 
+        return Response.ok(logic.searchWithId(id)).build();
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ 
+        
+
     
     @GET
     @Path("/heatmap")  
@@ -144,36 +214,12 @@ public class SamlingarService {
     
 
     
-    @GET
-    @Path("/autocomplete")
-    @ApiOperation(value = "autocomplete",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response autoCompleteSearch(@QueryParam("text") String text,
-            @QueryParam("field") String field) {
-        log.info("autoCompleteSearch: {} -- {} ", text, field);
-         
-        return Response.ok(logic.autoCompleteSearch(text, field)).build();
-    } 
+   
      
             
 
 
 
-            
-    @GET
-    @Path("/id")
-    @ApiOperation(value = "Search by id",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response idSearch(@QueryParam("id") String id ) { 
-        log.info("idSearch... {}", id); 
-        return Response.ok(logic.searchWithId(id)).build();
-    }
 
     @GET
     @Path("/download")

@@ -37,6 +37,8 @@ public class JsonHelper {
     private final String catalogedYearKey = "catalogedYear";
     private final String catalogIDKey = "catalogID";
     
+    private final String modifiedDateKey = "modified";
+    
     private final String associatedMediaKey = "associatedMedia";
     private final String synonymsKey = "synonyms";
     private final String synonymAuthorKey = "synonymAuthor";
@@ -68,7 +70,7 @@ public class JsonHelper {
     private final String verbatimCoordinatesKey = "verbatimCoordinates";
     
     private final String countryKey = "country";
-    private final String exsiccatKey = "exsiccat";
+    private final String exsiccatKey = "exsiccate";
     private final String dateIdentifiedKey = "dateIdentified";
     
 //    private final String pointKey = "point"; 
@@ -140,6 +142,8 @@ public class JsonHelper {
     private LocalDate catalogedDate;
     private StringBuilder coordinatesSb;
     
+    private LocalDate modifiedDate;
+
     private LocalDate eventEndDate;
     
     private LocalDate dateIdentified;
@@ -221,6 +225,10 @@ public class JsonHelper {
 
     public String getCatalogedDateCsvKey(JsonObject json) {
         return json.containsKey(catalogedDateKey) ? json.getString(catalogedDateKey) : null;
+    }
+    
+    public String getModifiedDateCsvKey(JsonObject json) { 
+        return json.containsKey(modifiedDateKey) ? json.getString(modifiedDateKey) : null;
     }
 
     public String getLatitudeCsvKey(JsonObject coordinatesJson) {
@@ -407,6 +415,15 @@ public class JsonHelper {
         }
     }
     
+    public void addModifedDate(JsonObjectBuilder attBuilder, String date) {
+        log.info("addModifedDate : {}", date);   
+        modifiedDate = Util.getInstance().stringToLocalDate(date);
+        log.info("modifiedDate : {}", modifiedDate);
+        if (modifiedDate != null) {
+            attBuilder.add(modifiedDateKey, modifiedDate.toString()); 
+        }
+    }
+        
     public void addDateIdentified(JsonObjectBuilder attBuilder, String date) {
         log.info("addDateIdentified : {}", date);
         dateIdentified = Util.getInstance().stringToLocalDate(date);
@@ -422,9 +439,10 @@ public class JsonHelper {
 
     public void addMappingValue(JsonObjectBuilder attBuilder,
             JsonObject mappingJson, CSVRecord record) {
+//        log.info("addMappingValue : {} - {}", record, mappingJson);
         mappingJson.keySet().stream()
                 .forEach(key -> {
-                    csvKey = mappingJson.getString(key);
+                    csvKey = mappingJson.getString(key); 
                     addAttValue(attBuilder, key, record.get(csvKey));
                 });
     }

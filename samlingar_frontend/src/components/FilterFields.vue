@@ -43,7 +43,7 @@ const groupedSelections = ref([
     items: [
       { label: 'Kingdom', value: 'kingdom', key: 'kingdom:', code: 'tx', multiple: false },
       { label: 'Phylum', value: 'phylum', key: 'phylum:', code: 'tx', multiple: true },
-      { label: 'Class', value: 'class', key: 'class:', code: 'tx', multiple: true },
+      { label: 'Class', value: 'clazz', key: 'clazz:', code: 'tx', multiple: true },
       { label: 'Order', value: 'order', key: 'order:', code: 'tx', multiple: true },
       { label: 'Family', value: 'family', key: 'family:', code: 'tx', multiple: true },
       { label: 'Genus', value: 'genus', key: 'genus:', code: 'tx', multiple: true },
@@ -58,10 +58,10 @@ const groupedSelections = ref([
       },
       {
         label: 'Synonyms',
-        value: 'dynamicProperties_synonyms',
-        key: 'dynamicProperties_synonyms:',
+        value: 'synonyms',
+        key: 'synonyms:',
         code: 'tx',
-        multiple: true
+        multiple: false
       },
       { label: 'Taxon rank', value: 'taxonRank', key: 'taxonRank:', code: 'tx', multiple: true }
     ]
@@ -95,13 +95,6 @@ const groupedSelections = ref([
         label: 'Collection name',
         value: 'collectionName',
         key: 'collectionName:',
-        code: 'specimen',
-        multiple: true
-      },
-      {
-        label: 'Data resource name',
-        value: 'dataResourceName',
-        key: 'dataResourceName:',
         code: 'specimen',
         multiple: true
       }

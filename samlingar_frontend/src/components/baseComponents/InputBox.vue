@@ -1,5 +1,21 @@
 <template>
-  <div class="grid" id="inputbox">
+  <div class="justify-right" style="float: left; margin-top: 10px">
+    <InputGroup>
+      <InputGroupAddon style="min-width: 80px; font-weight: bold">
+        <small>{{ label }}: </small>
+      </InputGroupAddon>
+      <InputText
+        v-model="value"
+        :placeholder="$t(placehold)"
+        size="small"
+        class="w-full"
+        style="min-width: 350px"
+        @input="onInputAction"
+      />
+      <Button icon="pi pi-times" v-if="showClearField" @click="clearField" />
+    </InputGroup>
+  </div>
+  <!-- <div class="grid" id="inputbox" style="float: left; margin-top: 10px">
     <div class="col-11">
       <InputGroup>
         <InputGroupAddon style="min-width: 120px; font-weight: bold">
@@ -15,7 +31,7 @@
         <Button icon="pi pi-times" v-if="showClearField" @click="clearField" />
       </InputGroup>
     </div>
-  </div>
+  </div> -->
 </template>
 <script setup>
 import { computed, ref } from 'vue'
@@ -24,7 +40,7 @@ import InputGroupAddon from 'primevue/inputgroupaddon'
 
 const store = useStore()
 
-const emits = defineEmits(['search'])
+// const emits = defineEmits(['search'])
 
 const props = defineProps(['field'])
 
@@ -42,14 +58,37 @@ const label = computed(() => {
 function onInputAction() {
   showClearField.value = value.value !== undefined
 
-  search(props.field.key, value.value)
+  const fieldKey = props.field.key
+
+  let fields = store.getters['fields']
+  const field = fields.find(({ key }) => key === fieldKey)
+
+  // let value
+  // if (multiple.value) {
+  //   value = values.value
+  //     .map((str) => `"${str}"`) // Wrap each string in single quotes
+  //     .join(' ')
+  // } else {
+  //   value = values.value
+  // }
+
+  if (value.value.trim() !== '') {
+    field.text = value.value + '*'
+  } else {
+    delete field.text
+  }
+
+  console.log('field', field)
+  store.commit('setFields', fields)
+
+  // search(props.field.key, value.value)
 }
 
 function clearField() {
   showClearField.value = false
   value.value = null
 
-  search(props.field.key, value.value)
+  // search(props.field.key, value.value)
 }
 
 function search(fieldKey, value) {

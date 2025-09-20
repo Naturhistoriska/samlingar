@@ -1,7 +1,7 @@
 package se.nrm.samlingar.data.process.logic.bot;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,18 +18,18 @@ import se.nrm.samlingar.data.process.vo.Determination;
 @Slf4j
 public class DeterminationData implements Serializable {
     private final String determinationKey = "currentDetermination"; 
-    private final String identifiedByKey = "identifiedBy";
-    private final String identifiedYearKey = "identifiedYear"; 
+    private final String identifiedByKey = "identifiedBy"; 
+    private final String dateIdentifiedKey = "dateIdentified"; 
     
     private Map<String, List<Determination>> determinationMap;
     private String currentDetermination;
     private String regNumber;
-    private String identifiedBy;
-    private String identifiedYear; 
+    private String identifiedBy; 
+    private String dateIdentified;
     
     private String csvDeterminationKey;
-    private String csvIdentifiedByKey;
-    private String csvIdentifiedYearKey; 
+    private String csvIdentifiedByKey; 
+    private String csvDateIdentifiedKey; 
     
     private  List<Determination> determinationList;
     private Determination determination; 
@@ -41,26 +41,31 @@ public class DeterminationData implements Serializable {
     public Map<String, List<Determination>> extractData(
                 List<CSVRecord> determinationRecords, JsonObject json) {
         log.info("extractDeterminationData : {}", json);
+        
         determinationMap = new LinkedHashMap(); 
         currentDetermination = null;
         
         csvDeterminationKey = json.getString(determinationKey);
-        csvIdentifiedByKey = json.getString(identifiedByKey);
-        if(json.containsKey(identifiedYearKey)) {
-            csvIdentifiedYearKey = json.getString(identifiedYearKey);
+        csvIdentifiedByKey = json.getString(identifiedByKey); 
+          
+        if(json.containsKey(dateIdentifiedKey)) {
+            csvDateIdentifiedKey = json.getString(dateIdentifiedKey);
         }  
-    
+        
+     
         determinationRecords.stream()
                 .forEach(detRecord -> {
                     currentDetermination = detRecord.get(csvDeterminationKey);
                     if (!StringUtils.isBlank(currentDetermination)) {
                         regNumber = detRecord.get(0);
                         identifiedBy = detRecord.get(csvIdentifiedByKey);
+                          
+                        if(csvDateIdentifiedKey != null) {
+                            dateIdentified =  detRecord.get(csvDateIdentifiedKey);
+                        }
                         
-                        if(json.containsKey(csvIdentifiedYearKey)) {
-                            identifiedYear = detRecord.get(csvIdentifiedYearKey);
-                        } 
-                        determination = new Determination(currentDetermination, identifiedBy, identifiedYear);
+                        determination = new Determination(currentDetermination, 
+                                identifiedBy,  dateIdentified);
                         
                         if (determinationMap.containsKey(regNumber)) {
                             determinationList = determinationMap.get(regNumber); 

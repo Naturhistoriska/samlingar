@@ -62,7 +62,8 @@
 
       <div class="col-4 reducePadding">{{ $t('results.synonyms') }}</div>
       <div class="col-8 reducePadding">
-        {{ synonymsData }}
+        <!-- {{ synonymsData }} -->
+        <span v-for="(item, index) in synonymsData" :key="index"> {{ item }}<br /> </span>
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.infragenericEpithet') }}</div>
@@ -129,7 +130,7 @@ onMounted(async () => {
     specificEpithet,
     subgenus, // ev, et
     synonyms, // ev, et, pi, he
-
+    synonymAuthor,
     taxonRemarks, // none
     vernacularName // ma, va
   } = record
@@ -141,7 +142,11 @@ onMounted(async () => {
   rank.value = taxonRank
   remarks.value = taxonRemarks
 
-  synonymsData.value = synonyms
+  // if (synonyms) {
+  // synonymsData.value = synonyms.join(' | ')
+  // }
+
+  synonymsData.value = synonymAuthor
 
   specificEpithetData.value = specificEpithet
   scientificNameAuthorshipData.value = scientificNameAuthorship

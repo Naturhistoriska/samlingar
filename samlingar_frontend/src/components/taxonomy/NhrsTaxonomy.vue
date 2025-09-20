@@ -133,7 +133,10 @@ onMounted(async () => {
 
   specificEpithetData.value = specificEpithet
   scientificNameAuthorshipData.value = scientificNameAuthorship
-  synonymsData.value = synonyms
+  if (synonyms) {
+    synonymsData.value = synonyms.join(' | ')
+  }
+
   taxonName.value = scientificName
 
   theKingdom.value = kingdom

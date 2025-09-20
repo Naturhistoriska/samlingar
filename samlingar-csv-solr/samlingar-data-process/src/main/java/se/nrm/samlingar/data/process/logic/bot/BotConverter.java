@@ -36,8 +36,8 @@ public class BotConverter implements Serializable {
     private JsonArrayBuilder imageArrayBuilder;
     
     private String taxonWithAuthor;
-    private String identifiedBy;
-    private String identifiedYear;
+    private String identifiedBy; 
+    private String dateIdentified;
     
     private List<Determination> list;
     private JsonArrayBuilder determinationArrayBuilder;
@@ -103,34 +103,39 @@ public class BotConverter implements Serializable {
     }
 
     public void convertDetermination(JsonObjectBuilder builder,
-            Map<String, List<Determination>> determinationMap, String catalogNumber) { 
+            Map<String, List<Determination>> determinationMap, String catalogNumber) {
 
         taxonWithAuthor = null;
-        identifiedBy = null;
-        identifiedYear = null;
+        identifiedBy = null; 
+        dateIdentified = null;
         try {
-            list = determinationMap.get(catalogNumber); 
+            list = determinationMap.get(catalogNumber);
             if (list != null && !list.isEmpty()) {
 //                log.info("has determination : {}", regNumber);
                 determinationArrayBuilder = Json.createArrayBuilder();
                 list.stream()
-                        .forEach(vo -> { 
+                        .forEach(vo -> {
                             determinationSb = new StringBuilder();
+                            
                             taxonWithAuthor = vo.getCurrentDetermination();
-                            identifiedBy = vo.getIdentifiedBy();
-                            identifiedBy = vo.getIdentifiedYear(); 
+                            identifiedBy = vo.getIdentifiedBy(); 
+                            dateIdentified = vo.getDateIdentified();
+
                             if (taxonWithAuthor != null) {
                                 determinationSb.append(taxonWithAuthor);
-                                determinationSb.append(emptySpace);
-                                determinationSb.append(identifiedBy);
-                                if (!StringUtils.isBlank(identifiedYear)) {
+                                if (identifiedBy != null) {
+                                    determinationSb.append(emptySpace);
+                                    determinationSb.append(identifiedBy);
+
+                                }
+                                if (!StringUtils.isBlank(dateIdentified)) {
                                     determinationSb.append(emptySpace);
                                     determinationSb.append(startBracket);
-                                    determinationSb.append(identifiedYear);
+                                    determinationSb.append(dateIdentified);
                                     determinationSb.append(endBracket);
                                 }
                             }
-                            
+
                             determinationArrayBuilder.add(determinationSb.toString().trim());
                         });
                 builder.add(identificationKey, determinationArrayBuilder);

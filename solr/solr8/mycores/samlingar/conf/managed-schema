@@ -240,11 +240,12 @@
   <fieldType name="tint" class="solr.IntPointField" omitNorms="true" positionIncrementGap="0"/>
   <fieldType name="tlong" class="solr.LongPointField" omitNorms="true" positionIncrementGap="0"/>
   <field name="_version_" type="long" multiValued="false" indexed="true" stored="true"/>
+
   <field name="id" type="string" indexed="true" required="true" stored="true"/>
   <field name="guid" type="string" indexed="false" stored="true"/>
 
   <field name="accessionNumber" type="string" indexed="true" stored="true"/>
-  <field name="accessionRemarks" type="string"  multiValued="true" indexed="false" stored="true"/>
+  <!-- <field name="accessionRemarks" type="string"  multiValued="true" indexed="false" stored="true"/> -->
   <field name="accessRights" type="string" indexed="false" stored="true"/>
   <field name="additionalDetermination" type="string" multiValued="true" indexed="false" stored="true"/>
   <field name="associatedMedia" type="string" multiValued="true" indexed="false" stored="true"/>
@@ -253,8 +254,8 @@
   <field name="basisOfRecord" type="string" indexed="false" stored="true"/>
 
   <field name="catalogedDate" type="tdate" indexed="true" stored="true"/>
-  <field name="catalogedMonth" type="string" indexed="true" stored="true"/>
-  <field name="catalogedYear" type="int" indexed="true" stored="true"/>
+  <!-- <field name="catalogedMonth" type="string" indexed="true" stored="true"/> -->
+  <!-- <field name="catalogedYear" type="int" indexed="true" stored="true"/> -->
   <field name="catalogNumber" type="string" indexed="true" stored="true"/>
 
   <field name="clazz" type="string" indexed="true" stored="true"/>
@@ -273,16 +274,16 @@
   <field name="decimalLongitude" type="double"  indexed="true" stored="true"/>
   <field name="dateIdentified" type="tdate" indexed="false" stored="true"/>
   <field name="district" type="string" indexed="false" stored="true"/>
-  <field name="description" type="string" indexed="false" stored="true"/>
+  <field name="description" type="string" indexed="true" stored="true"/>
 
   <field name="element" type="string" indexed="true" stored="true"/>
   <field name="endDayOfYear" type="string" indexed="false" stored="true"/>
   <field name="endday" type="string" indexed="false" stored="true"/>
   <field name="endmonth" type="string" indexed="false" stored="true"/>
   <field name="endyear" type="string" indexed="false" stored="true"/>
-  <field name="environment" type="text_general" indexed="false" stored="true"/>
-  <field name="exsiccate" type="string" indexed="false" stored="true"/>
-  <field name="exsiccateNumber" type="string" indexed="false" stored="true"/>
+  <field name="environment" type="string" indexed="false" stored="true"/>
+  <field name="exsiccate" type="string" indexed="true" stored="true"/>
+  <field name="exsiccateNumber" type="string" indexed="true" stored="true"/>
   <field name="earliestAgeOrLowestStage" type="string" indexed="false" stored="true"/>
   <field name="earliestEpochOrLowestSeries" type="string" indexed="false" stored="true"/>
   <field name="earliestPeriodOrLowestSystem" type="string" indexed="false" stored="true"/>
@@ -304,11 +305,11 @@
   <field name="geodeticDatum" type="string" indexed="false" stored="true"/>
 
 
-  <field name="geohash" type="location_rpt" multiValued="true" indexed="true" required="false" stored="true"/>
+  <!-- <field name="geohash" type="location_rpt" multiValued="true" indexed="true" required="false" stored="true"/> -->
   <!-- <field name="geopoint" type="location" indexed="true" stored="true"/> -->
 
 
-  <field name="habitat" type="string" indexed="false" stored="true"/>
+  <field name="habitat" type="string" indexed="true" stored="true"/>
   <field name="hasImage" type="boolean" indexed="true" stored="false" docValues="true" />
   <field name="herbarium" type="string" indexed="false" stored="true"/>
   <field name="higherClassification" type="string" indexed="false" stored="true"/>
@@ -319,6 +320,7 @@
   <field name="identifiedYear" type="string" indexed="false" stored="true"/>
   <field name="identificationQualifier" type="string" indexed="false" stored="true"/>
   <field name="identificationRemarks" type="string" indexed="false" stored="true"/>
+
   <field name="individualCount" type="string" indexed="false" stored="true"/>
   <field name="infraspecificEpithet" type="string" indexed="true" stored="true"/>
   <field name="infragenericEpithet" type="string" indexed="true" stored="true"/>
@@ -331,20 +333,21 @@
   <field name="kingdom" type="string" indexed="false" stored="true"/>
 
 
-  <field name="latestAgeOrHighestStage" type="string" indexed="false" stored="true"/>
-  <field name="latestEpochOrHighestSeries" type="string" indexed="false" stored="true"/>
-  <field name="latestPeriodOrHighestSystem" type="string" indexed="false" stored="true"/>
+  <field name="latestAgeOrHighestStage" type="string" indexed="true" stored="true"/>
+  <field name="latestEpochOrHighestSeries" type="string" indexed="true" stored="true"/>
+  <field name="latestPeriodOrHighestSystem" type="string" indexed="true" stored="true"/>
   <field name="lakeBasin" type="string" indexed="false" stored="true"/>
   <field name="lifeStage" type="string" indexed="true" stored="true"/>
   <field name="license" type="string" indexed="false" stored="true"/>
   <field name="lithostratigraphicTerms" type="string" indexed="true" stored="true"/>
   <field name="locality" type="string" indexed="true" stored="true"/>
   <field name="locationRemarks" type="string" indexed="false" stored="true"/>
-  <field name="location" type="location" indexed="true" stored="true" multiValued="false" />
-  <field name="lithostratigraphy" type="string" indexed="true" stored="true" />
+  <!-- <field name="location" type="location" indexed="true" stored="true" multiValued="false" /> -->
+  <!-- <field name="lithostratigraphy" type="string" indexed="true" stored="true" /> -->
+  <field name="lat_long" type="string" indexed="true" stored="true" docValues="true" />
 
 
-  <field name="minimumDepthInMeters" type="string" indexed="true" stored="true"/>
+  <field name="minimumDepthInMeters" type="string" indexed="false" stored="true"/>
   <field name="maximumDepthInMeters" type="string" indexed="false" stored="true"/>
   <field name="minimumElevationInMeters" type="string" indexed="false" stored="true"/>
   <field name="maximumElevationInMeters" type="string" indexed="false" stored="true"/>
@@ -356,10 +359,10 @@
   <field name="originalnameBasionym" type="string" indexed="true" stored="true"/>
   <field name="occurrenceRemarks" type="string" indexed="false" stored="true"/>
   <field name="occurrenceAttributeRemarks" type="string" indexed="false" stored="true"/>
-  <field name="order" type="string" indexed="false" stored="true"/>
-  <field name="organismQuantity" type="string" indexed="false" stored="true"/>
-  <field name="originalNameUsage" type="string" indexed="false" stored="true"/>
-  <field name="otherCatalogNumbers" type="string" multiValued="true" indexed="true" stored="true" />
+  <field name="order" type="string" indexed="true" stored="true"/>
+  <!-- <field name="organismQuantity" type="string" indexed="false" stored="true"/> -->
+  <field name="originalNameUsage" type="string" indexed="true" stored="true"/>
+  <field name="otherCatalogNumbers" type="string" multiValued="true" indexed="false" stored="true" />
 
 
   <field name="palaeontologicalPreservation" type="string" indexed="true" stored="true"/>
@@ -371,10 +374,10 @@
   <field name="previousIdentifications" type="string"  multiValued="true" indexed="false" stored="true"/>
 
   <!-- <field name="point" type="string" multiValued="true" indexed="true" stored="true"/> -->
-  <field name="point-1" type="string" indexed="true" stored="true" docValues="true"/>
+ <!--  <field name="point-1" type="string" indexed="true" stored="true" docValues="true"/>
   <field name="point-0.1" type="string" indexed="true" stored="true"/>
   <field name="point-0.01" type="string" indexed="true" stored="true"/>
-  <field name="point-0.001" type="string" indexed="true" stored="true"/>
+  <field name="point-0.001" type="string" indexed="true" stored="true"/> -->
 
 
   <field name="recordedBy" type="string" multiValued="true" indexed="true" stored="true"/>
@@ -384,7 +387,7 @@
 
   <field name="scientificName" type="string" indexed="true" stored="true"/>
   <field name="scientificNameAuthorship" type="string" indexed="false" stored="true"/>
-  <field name="se" type="string"  indexed="false" stored="true"/>
+  <!-- <field name="se" type="string"  indexed="false" stored="true"/> -->
   <field name="serie" type="string" indexed="true" stored="true"/>
   <field name="sex" type="string" indexed="true" stored="true"/>
   <field name="species" type="string" indexed="true" stored="true"/>
@@ -407,7 +410,7 @@
   <field name="taxonRemarks" type="string" indexed="false" stored="true"/>
   <field name="typeStatus" type="string" indexed="true" stored="true" docValues="true"/>
 
-  <field name="verbatimCoordinates" type="string" indexed="true" stored="true"/>
+  <field name="verbatimCoordinates" type="string" indexed="false" stored="true"/>
   <field name="vernacularName" type="string" indexed="true" multiValued="true" stored="true"/>
   <field name="verbatimEventDate" type="string" indexed="false" stored="true"/>
   <field name="verbatimLocality" type="string" indexed="false" stored="true"/>
@@ -417,20 +420,41 @@
   <field name="waterBody" type="string" indexed="false" stored="true"/>
 
   <field name="catchall" type="text_general" stored="false" indexed="true" multiValued="true" />
-  <field name="scientificNameCopy" type="text_general" stored="false" indexed="true" />
-  <field name="catalogNumberCopy" type="lowercase" indexed="true" stored="false"/>
+  <!-- <field name="scientificNameCopy" type="text_general" stored="false" indexed="true" /> -->
 
-  <field name="text" type="lowercase" multiValued="true" indexed="true" stored="false"/>
+  <field name="copy_catalogNumber" type="lowercase" indexed="true" stored="false"/>
+  <field name="copy_scientificName" type="text_general" stored="false" indexed="true" multiValued="true"  />
+  <field name="copy_typeStatus" type="lowercase" indexed="true" stored="false" />
+  <field name="copy_synonyms" type="text_general" indexed="true" stored="false" multiValued="true"  />
+  <field name="copy_locality" type="text_general" indexed="true" stored="false"/>
+  <!-- <field name="catalogNumberCopy" type="lowercase" indexed="true" stored="false"/> -->
+
+  <!-- <field name="text" type="lowercase" multiValued="true" indexed="true" stored="false"/> -->
   <dynamicField name="*" type="ignored"/>
-  <dynamicField name="*_text" type="auto_text" indexed="true" stored="true"/>
-  <dynamicField name="*_text_edge" type="auto_text_edge" indexed="true" stored="true"/>
+  <!-- <dynamicField name="*_text" type="auto_text" indexed="true" stored="true"/> -->
+  <!-- <dynamicField name="*_text_edge" type="auto_text_edge" indexed="true" stored="true"/> -->
 
   <!-- copy fields -->
   <copyField source="*" dest="catchall"/>
 
 
-  <copyField source="catalogNumber" dest="catalogNumberCopy"/>
-  <copyField source="scientificName" dest="scientificNameCopy"/>
+  <copyField source="catalogNumber" dest="copy_catalogNumber"/>
+
+  <copyField source="synonyms" dest="copy_synonyms"/>
+  <copyField source="typeStatus" dest="copy_typeStatus"/>
+  <copyField source="locality" dest="copy_locality"/>
+
+  <copyField source="scientificName" dest="copy_scientificName"/>
+  <copyField source="clazz" dest="copy_scientificName"/>
+  <copyField source="order" dest="copy_scientificName"/>
+
+  <copyField source="phylum" dest="copy_scientificName"/>
+
+  <copyField source="species" dest="copy_scientificName"/>
+  <copyField source="genus" dest="copy_scientificName"/>
+  <copyField source="subgenus" dest="copy_scientificName"/>
+  <copyField source="subgenus" dest="copy_scientificName"/>
+  <copyField source="kingdom" dest="copy_scientificName"/>
 
   <!-- <copyField source="catalogNumber" dest="text"/>
 

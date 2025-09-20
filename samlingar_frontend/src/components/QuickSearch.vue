@@ -60,7 +60,7 @@ function apiAutoComplete(event) {
   let searchText = event.query
 
   service
-    .apiAutoCompleteSearch(searchText, 'scientificName')
+    .apiAutoCompleteSearch(searchText, 'copy_scientificName')
     .then((response) => {
       const facets = response.facets.facet
       if (facets) {
@@ -77,7 +77,7 @@ function apiSearch() {
   const searchMode = fuzzySearch ? 'contains' : 'equals'
 
   const params = new URLSearchParams({
-    scientificName: searchText,
+    copy_scientificName: searchText,
     searchMode,
     fuzzySearch
   })
