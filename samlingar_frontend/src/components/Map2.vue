@@ -79,28 +79,49 @@ onMounted(async () => {
   await new Promise((r) => setTimeout(r, 1500))
 
   const entryType = props.entry
-
   const total = store.getters['totalRecords']
 
-  if (total) {
+  const isUrlPush = store.getters['isUrlPush']
+
+  let reloadMap = false
+  if (total < 50000) {
     if (entryType === 'first-visit' || entryType === 'reload') {
-      console.log('entryType 1', entryType)
-      let params = new URLSearchParams({
-        text: '*'
-      })
-      await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+      reloadMap = true
     } else {
-      console.log('entryType 2', entryType)
-      const isUrlPush = store.getters['isUrlPush']
       if (isUrlPush) {
-        // const params = buildParams()
-        const params = store.getters['searchParams']
-        await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
+        reloadMap = true
+        store.commit('setIsUrlPush', false)
       }
-      store.commit('setIsUrlPush', false)
     }
-    addClustringPopup()
+    if (reloadMap) {
+      let params = store.getters['searchParams']
+      if (params === null) {
+        params = new URLSearchParams({
+          catchall: '*'
+        })
+      }
+      await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+      addClustringPopup()
+    }
   }
+  //   if (entryType === 'first-visit' || entryType === 'reload') {
+  //     console.log('entryType 1', entryType)
+  //     let params = new URLSearchParams({
+  //       text: '*'
+  //     })
+  //     await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+  //   } else {
+  //     console.log('entryType 2', entryType)
+  //     const isUrlPush = store.getters['isUrlPush']
+  //     if (isUrlPush) {
+  //       // const params = buildParams()
+  //       const params = store.getters['searchParams']
+  //       await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
+  //     }
+  //     store.commit('setIsUrlPush', false)
+  //   }
+  //   addClustringPopup()
+  // }
 })
 
 watch(
@@ -116,7 +137,7 @@ watch(
 watch(
   () => store.getters['searchParams'],
   () => {
-    console.log('map data changed..')
+    console.log('map 2 map data changed..')
 
     if (store.getters['totalRecords'] < 50000) {
       const params = store.getters['searchParams']
@@ -166,18 +187,18 @@ function addClustringPopup() {
   })
 }
 
-function onMapReady() {
-  const markers = store.getters['clusterGroup']
+// function onMapReady() {
+//   const markers = store.getters['clusterGroup']
 
-  if (markers) {
-    mapRef.value.addLayer(markers)
-  }
+//   if (markers) {
+//     mapRef.value.addLayer(markers)
+//   }
 
-  const hasMarkers = hasMarkersInView(markers)
-  if (!hasMarkers) {
-    mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
-  }
-}
+//   const hasMarkers = hasMarkersInView(markers)
+//   if (!hasMarkers) {
+//     mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
+//   }
+// }
 
 function removeOldMarkers() {
   const groupMarkers = store.getters['clusterGroup']
@@ -221,7 +242,9 @@ const fetchAndRender = async (params, { lat, lng }) => {
         loading.value = false
       }
     })
-    .catch()
+    .catch((error) => {
+      console.log('error', error)
+    })
     .finally(() => {
       isDataReady.value = true
       loading.value = false
@@ -278,7 +301,9 @@ async function fetchRecord(id, marker) {
       }
       setTimeout(() => {}, 2000)
     })
-    .catch()
+    .catch((error) => {
+      console.log('error', error)
+    })
     .finally(() => {})
 }
 
@@ -353,7 +378,7 @@ function buildParams() {
   const startDate = store.getters['startDate']
 
   const params = new URLSearchParams({
-    text: searchText
+    catchall: searchText
   })
 
   if (scientificName) {

@@ -2,14 +2,8 @@
   <div style="font-size: 12px">
     <nhrs-taxonomy v-if="isNhrsCollection" />
     <pal-taxonomy v-else-if="isPalCollection" />
+    <zoo-taxonomy v-else-if="isZooCollection" />
     <common-taxonomy v-else />
-    <!-- <ev-location v-if="isEvCollection" />
-
-    <pal-location v-else-if="isPalCollection" />
-    <bird-location v-else-if="isBirdAndMammalCollection" />
-    <fish-location v-else-if="isFishAndHerpCollection" />
-    <bot-location v-else-if="isBotCollection" />
-    <common-location v-else /> -->
   </div>
 </template>
 <script setup>
@@ -18,14 +12,7 @@ import { onMounted, ref } from 'vue'
 import CommonTaxonomy from './taxonomy/CommonTaxonomy.vue'
 import NhrsTaxonomy from './taxonomy/NhrsTaxonomy.vue'
 import PalTaxonomy from './taxonomy/PalTaxonomy.vue'
-
-// import BirdLocation from './taxonomy/BirdLocation.vue'
-// import BotLocation from './location/BotLocation.vue'
-//
-// import EvLocation from './location/EvLocation.vue'
-// import FishLocation from './location/FishLocation.vue'
-//
-//
+import ZooTaxonomy from './taxonomy/ZooTaxonomy.vue'
 
 const props = defineProps(['code'])
 
@@ -38,10 +25,20 @@ const isBotCollection = ref(false)
 const isNhrsCollection = ref(false)
 const isPalCollection = ref(false)
 
+const isZooCollection = ref(false)
+
 onMounted(async () => {
   isBirdAndMammalCollection.value = props.code === 'AV' || props.code === 'MA'
   isEvCollection.value = props.code === 'ev' || props.code === 'et'
   isFishAndHerpCollection.value = props.code === 'PI' || props.code === 'HE'
+
+  isZooCollection.value =
+    props.code === 'MA' ||
+    props.code === 'AV' ||
+    props.code === 'ev' ||
+    props.code === 'et' ||
+    props.code === 'PI' ||
+    props.code === 'HE'
 
   isNhrsCollection.value =
     props.code === 'NHRS' ||

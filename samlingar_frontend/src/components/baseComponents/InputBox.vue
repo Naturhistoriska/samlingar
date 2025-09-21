@@ -73,12 +73,12 @@ function onInputAction() {
   // }
 
   if (value.value.trim() !== '') {
-    field.text = value.value + '*'
+    field.text = value.value
   } else {
     delete field.text
   }
 
-  console.log('field', field)
+  console.log('field...', field)
   store.commit('setFields', fields)
 
   // search(props.field.key, value.value)

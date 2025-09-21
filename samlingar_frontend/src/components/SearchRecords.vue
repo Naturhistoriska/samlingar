@@ -86,7 +86,7 @@ import ScientificName from './ScientificName.vue'
 import SearchAll from './SearchAll.vue'
 
 const store = useStore()
-const emits = defineEmits(['freeTextSearch', 'search', 'scientificNameSearch'])
+const emits = defineEmits(['search'])
 
 const dialogVisible = ref(false)
 

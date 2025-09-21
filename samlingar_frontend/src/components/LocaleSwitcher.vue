@@ -68,6 +68,41 @@ export default {
 }
 </script>
 <style scoped>
+/* ::v-deep(.p-menu) {
+  background: #f0f0f0 !important;
+} */
+
+/* ::v-deep(.p-menu .p-menuitem:hover) {
+  background-color: #d0d0d0 !important;
+} */
+/* .p-menu {
+  background: #f0f0f0 !important;
+} */
+/*
+.p-menu.p-component {
+  background-color: #f0f0f0 !important;
+}
+
+::v-deep(.p-menu.p-menu-overlay) {
+  background-color: #f0f0f0 !important;
+}
+
+::v-deep(.p-menu.p-component) {
+  background-color: #f0f0f0 !important;
+}
+
+::v-deep(.p-menu.p-component) {
+  background-color: #333 !important;
+}
+
+::v-deep(.p-menu .p-menu-list) {
+  background-color: #333 !important;
+}
+
+::v-deep(.p-menu .p-menuitem-link) {
+  background-color: #333 !important;
+  color: white !important;
+} */
 .ui-menu {
   max-width: 50px;
 }

@@ -36,7 +36,7 @@ const isHeatMap = computed(() => {
 watch(
   () => store.getters['searchParams'],
   () => {
-    console.log('map data changed..')
+    console.log('map switch map data changed..')
     const total = store.getters['totalRecords'] > 50000
 
     if (total > 50000) {
@@ -47,6 +47,7 @@ watch(
 )
 
 onMounted(async () => {
+  console.log('switch map onMounted')
   console.log('entry', entryType.value, previousRoute.value)
 
   from.value = previousRoute.value?.fullPath

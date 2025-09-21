@@ -41,7 +41,6 @@ const groupedSelections = ref([
     label: 'Taxonomy',
     code: 'tx',
     items: [
-      { label: 'Kingdom', value: 'kingdom', key: 'kingdom:', code: 'tx', multiple: false },
       { label: 'Phylum', value: 'phylum', key: 'phylum:', code: 'tx', multiple: true },
       { label: 'Class', value: 'clazz', key: 'clazz:', code: 'tx', multiple: true },
       { label: 'Order', value: 'order', key: 'order:', code: 'tx', multiple: true },
@@ -85,13 +84,6 @@ const groupedSelections = ref([
         multiple: true
       },
       {
-        label: 'Collection code',
-        value: 'collectionCode',
-        key: 'collectionCode:',
-        code: 'specimen',
-        multiple: true
-      },
-      {
         label: 'Collection name',
         value: 'collectionName',
         key: 'collectionName:',
@@ -127,19 +119,13 @@ const groupedSelections = ref([
       { label: 'Country', value: 'country', key: 'country:', code: 'locality', multiple: true },
       {
         label: 'State/Province',
-        value: 'state',
+        value: 'stateProvince',
         key: 'stateProvince:',
         code: 'locality',
         multiple: true
       },
       { label: 'County/Parish', value: 'county', key: 'county:', code: 'locality', multiple: true },
-      {
-        label: 'Water body',
-        value: 'waterBody',
-        key: 'waterBody:',
-        code: 'locality',
-        multiple: true
-      },
+
       { label: 'Locality', value: 'locality', key: 'locality:', code: 'locality', multiple: false }
     ]
   }

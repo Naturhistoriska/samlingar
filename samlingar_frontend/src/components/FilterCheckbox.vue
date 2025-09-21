@@ -5,7 +5,7 @@
         v-model="image"
         inputId="image"
         name="image"
-        binary
+        :binary="true"
         size="small"
         @click="imageClicked"
       />
@@ -27,7 +27,7 @@
         v-model="type"
         inputId="types"
         name="type"
-        binary
+        :binary="true"
         size="small"
         @click="typeClicked"
       />
@@ -57,33 +57,34 @@ let coordinates = ref(false)
 let type = ref(false)
 let sweden = ref(false)
 
-watch(
-  () => store.getters['filterImage'],
-  (newValue, oldValue) => {
-    image.value = newValue
-  }
-)
+// watch(
+// () => store.getters['filterImage'],
+// (newValue, oldValue) => {
+// image.value = newValue
+// }
+// )
 
-watch(
-  () => store.getters['filterCoordinates'],
-  (newValue, oldValue) => {
-    coordinates.value = newValue
-  }
-)
+// watch(
+//   () => store.getters['filterCoordinates'],
+//   (newValue, oldValue) => {
+//     coordinates.value = newValue
+//   }
+// )
 
-watch(
-  () => store.getters['filterInSweden'],
-  (newValue, oldValue) => {
-    sweden.value = newValue
-  }
-)
+// watch(
+//   () => store.getters['filterInSweden'],
+//   (newValue, oldValue) => {
+//     sweden.value = newValue
+//   }
+// )
 
-watch(
-  () => store.getters['filterType'],
-  (newValue, oldValue) => {
-    type.value = newValue
-  }
-)
+// watch(
+//   () => store.getters['filterType'],
+//   (newValue, oldValue) => {
+//     console.log('newValue', newValue, oldValue)
+//     type.value = newValue
+//   }
+// )
 
 onMounted(() => {
   console.log('onMounted')
@@ -100,8 +101,8 @@ function swedenClicked() {
 }
 
 function typeClicked() {
-  const searchType = !type.value
-  store.commit('setFilterType', searchType)
+  console.log('type.value', type.value)
+  store.commit('setFilterType', !type.value)
 }
 
 function coordinatesClicked() {

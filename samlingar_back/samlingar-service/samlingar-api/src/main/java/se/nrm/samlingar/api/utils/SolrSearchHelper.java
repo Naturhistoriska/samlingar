@@ -17,7 +17,20 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class SolrSearchHelper {
 
+    
+    private final String regex = "([+\\-!(){}\\[\\]^\"~*?:\\\\|&])"; 
+    private final String regexReplecement = "\\\\$1";
     private final String colon = ":";
+    private final String spaceSeparate = "\\s+";
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     private final String plusSign = "+";
     private final String colonEscap = "\\:";
@@ -34,16 +47,16 @@ public class SolrSearchHelper {
     private LocalDate firstDayOfYear;
     private LocalDate tomorrow;
 
-    private final String basisOfRecordKey = "basisOfRecord";
+//    private final String basisOfRecordKey = "basisOfRecord";
     private final String catalogNumberKey = "catalogNumber";
     private final String collectionNameKey = "collectionName";
-    private final String expeditionNameKey = "dynamicProperties_expeditionName";
-    private final String preservationKey = "dynamicProperties_preservation";
+    private final String expeditionNameKey = "expeditionName";
+    private final String preservationKey = "preservation";
     private final String preparationsKey = "preparations";
     private final String recordedByKey = "recordedBy";
     private final String lifeStageKey = "lifeStage";
-    private final String licenseKey = "license";
-    private final String individualCountKey = "individualCount";
+//    private final String licenseKey = "license";
+//    private final String individualCountKey = "individualCount";
     private final String occurrenceRemarksKey = "occurrenceRemarks";
     private final String sexKey = "sex";
 
@@ -65,7 +78,7 @@ public class SolrSearchHelper {
 
     private final String kingdomKey = "kingdom";
     private final String phylumKey = "phylum";
-    private final String classKey = "class";
+    private final String classKey = "cazz";
     private final String orderKey = "order";
     private final String familyKey = "family";
     private final String genusKey = "genus";
@@ -91,6 +104,8 @@ public class SolrSearchHelper {
     private List<String> fields;
 
     private static SolrSearchHelper instance = null;
+    
+    private StringBuilder seachTextSb;
 
 //    
 //    
@@ -118,6 +133,9 @@ public class SolrSearchHelper {
     private StringBuilder synonymsSb;
 
     private final String star = "*";
+    private final String catchallWithStar = "catchall:*";
+    private final String scientificNameWithStar = "copy_scientificName:*";
+    private final String and = " AND ";
 
     public static SolrSearchHelper getInstance() {
         synchronized (SolrSearchHelper.class) {
@@ -127,36 +145,155 @@ public class SolrSearchHelper {
         }
         return instance;
     }
+
+    public String buildContainsQuery(String text) {
+        seachTextSb = new StringBuilder();
+        if (text == null || text.isEmpty() || text.equals(star)) {
+            seachTextSb.append(catchallWithStar); 
+        } else { 
+            text = text.replaceAll(regex, regexReplecement);
+            String[] terms = text.split(spaceSeparate); 
+            for (int i = 0; i < terms.length; i++) {
+                seachTextSb.append(catchallWithStar).append(terms[i]).append(star);
+                if (i < terms.length - 1) {
+                    seachTextSb.append(and);
+                }
+            } 
+        } 
+        return seachTextSb.toString();
+    }
     
-    public String buildAutoCompleteSearchText(String text, String field, 
+    public String buildScientificNameContainsQuery(String text) {
+        seachTextSb = new StringBuilder();
+
+        text = text.replaceAll(regex, regexReplecement);
+        String[] terms = text.split(spaceSeparate);
+        for (int i = 0; i < terms.length; i++) { 
+            seachTextSb.append(scientificNameWithStar).append(terms[i]).append(star);
+            if (i < terms.length - 1) {
+                seachTextSb.append(and);
+            }
+        }
+
+        return seachTextSb.toString();
+    }
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    
+    public String buildAutoCompleteSearchText(String text, String key, 
             boolean isCaseSensitive) {
         
+        log.info("buildAutoCompleteSearchText: {}--{}", text, key);
+        
+        seachTextSb = new StringBuilder();
         if(isCaseSensitive) {
-            return buildContainsSearchText(text, text);
+            log.info("here...");
+            return buildContainsSearchText(text, key);
         } else {
-            return buildCaseInsensitiveContainsSearchText(text, field);
+            return buildCaseInsensitiveContainsSearchText(text, key);
         } 
     }
      
     public String buildScientificName(String text, String key, String searchMode ) {
 
-        searchMode = searchMode == null ? equals : searchMode;
-        text = text.replaceAll("([+\\-!(){}\\[\\]^\"~*?:\\\\|&])", "\\\\$1");
-
-        if (searchMode.equals(equals)) {
-            return buildCaseInsensitivEqualsSearchText(text, key);
-        } else {
-            return buildCaseInsensitiveContainsSearchText(text, key);
-        } 
+        searchMode = searchMode == null ? equals : searchMode; 
+         
+        switch (searchMode) {
+            case equals:
+                return buildCaseInsensitivEqualsSearchText(text, key);
+            case startsWith:
+                return buildCaseInsensitiveStartsWithSearchText(text, key);
+            default:
+                return buildScientificNameContainsQuery(text); 
+//                return buildCaseInsensitiveContainsSearchText(text, key); 
+        }
     }
     
-    public String buildFreesearchText(String text) {
-        fuzzySeachTextSb = new StringBuilder();
-        text = buildCaseInsensitiveContainsSearchText(text, catchallKey);
-       
-        
-        return text;
+    private String buildCaseInsensitivEqualsSearchText(String text, String key) {
+        seachTextSb = new StringBuilder();
+        seachTextSb.append(key);
+        seachTextSb.append(colon);
+        seachTextSb.append(quotationMark);
+        seachTextSb.append(text);
+        seachTextSb.append(quotationMark);
+        return seachTextSb.toString().trim();
     }
+    
+    private String buildCaseInsensitiveStartsWithSearchText(String text, String key) {
+        seachTextSb = new StringBuilder();
+        if (text.contains(emptySpace)) {
+            searchText = text.split(emptySpace);
+
+            seachTextSb.append(plusSign);
+            seachTextSb.append(key);
+            seachTextSb.append(colon);
+            seachTextSb.append(searchText[0]);
+            seachTextSb.append(star);
+
+            for (int i = 1; i < searchText.length; i++) {
+                seachTextSb.append(emptySpace);
+                seachTextSb.append(plusSign);
+                seachTextSb.append(key);
+                seachTextSb.append(colon);
+                seachTextSb.append(star);
+                seachTextSb.append(searchText[i]);
+                seachTextSb.append(star);
+            }
+        } else {
+            seachTextSb.append(key);
+            seachTextSb.append(colon);
+            seachTextSb.append(text);
+            seachTextSb.append(star);
+        }
+
+        return seachTextSb.toString().trim();
+    }
+ 
+    
+    private String buildCaseInsensitiveContainsSearchText(String text, String key) {
+        seachTextSb = new StringBuilder();
+        if (text.contains(emptySpace)) {
+            
+            searchText = text.split(emptySpace); 
+            for (String value : searchText) {
+                seachTextSb.append(plusSign);
+                seachTextSb.append(key);
+                seachTextSb.append(colon);
+                seachTextSb.append(star);
+                seachTextSb.append(value);
+                seachTextSb.append(star);
+                seachTextSb.append(emptySpace);
+            } 
+        } else {
+            seachTextSb.append(key);
+            seachTextSb.append(colon); 
+            seachTextSb.append(star);
+            seachTextSb.append(text);
+            seachTextSb.append(star);  
+        }
+        return seachTextSb.toString().trim();
+    }
+    
+//    public String buildFreesearchText(String text) { 
+//        return buildCaseInsensitiveContainsSearchText(text, catchallKey); 
+//    }
     
     public String getStartDate(boolean isYearChart) {
         return isYearChart ? getFirstDayOfLastTenYears() : getFirstDayOfLastTwelveMohth();
@@ -190,51 +327,91 @@ public class SolrSearchHelper {
         return utcDateTime.format(DateTimeFormatter.ISO_INSTANT);
     }
 
-
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    private String buildCaseInsensitiveContainsSearchText(String text, String key) {
+     private String buildContainsSearchText(String text, String key) {
+        seachTextSb = new StringBuilder();
+        boolean isUpperCase = Character.isUpperCase(text.charAt(0));
 
         if (text.contains(emptySpace)) {
-            
-            searchText = text.split(emptySpace); 
-            for (String value : searchText) {
-                fuzzySeachTextSb.append(plusSign);
-                fuzzySeachTextSb.append(key);
-                fuzzySeachTextSb.append(colon);
-                fuzzySeachTextSb.append(star);
-                fuzzySeachTextSb.append(value);
-                fuzzySeachTextSb.append(star);
-                fuzzySeachTextSb.append(emptySpace);
-            } 
+            searchText = text.split(emptySpace);
+
+            if (isUpperCase) {
+                for (String value : searchText) {
+                    seachTextSb.append(plusSign);
+                    seachTextSb.append(key);
+                    seachTextSb.append(colon);
+                    seachTextSb.append(star);
+                    seachTextSb.append(value);
+                    seachTextSb.append(star);
+                    seachTextSb.append(emptySpace);
+                }
+            } else {
+                seachTextSb.append(leftBracket);
+                seachTextSb.append(plusSign);
+                seachTextSb.append(key);
+                seachTextSb.append(colon);
+                seachTextSb.append(star);
+                seachTextSb.append(StringUtils.capitalize(searchText[0]));
+                seachTextSb.append(star);
+
+                for (int i = 1; i < searchText.length; i++) {
+                    seachTextSb.append(emptySpace);
+                    seachTextSb.append(plusSign);
+                    seachTextSb.append(key);
+                    seachTextSb.append(colon);
+                    seachTextSb.append(star);
+                    seachTextSb.append(searchText[i]);
+                    seachTextSb.append(star);
+                }
+                seachTextSb.append(rightBracket);
+
+                seachTextSb.append(emptySpace);
+                seachTextSb.append(leftBracket);
+                for (String value : searchText) {
+                    seachTextSb.append(plusSign);
+                    seachTextSb.append(key);
+                    seachTextSb.append(colon);
+                    seachTextSb.append(star);
+                    seachTextSb.append(value);
+                    seachTextSb.append(star);
+                    seachTextSb.append(emptySpace);
+                }
+                seachTextSb.append(rightBracket);
+            }
         } else {
-            fuzzySeachTextSb.append(key);
-            fuzzySeachTextSb.append(colon);
-            fuzzySeachTextSb.append(leftBracket);
-            fuzzySeachTextSb.append(star);
-            fuzzySeachTextSb.append(text);
-            fuzzySeachTextSb.append(star); 
-            fuzzySeachTextSb.append(rightBracket);
+            seachTextSb.append(key);
+            seachTextSb.append(colon);
+            seachTextSb.append(leftBracket);
+            seachTextSb.append(star);
+            seachTextSb.append(text);
+            seachTextSb.append(star);
+            seachTextSb.append(emptySpace);
+
+            seachTextSb.append(star);
+            seachTextSb.append(StringUtils.capitalize(text));
+            seachTextSb.append(star);
+            seachTextSb.append(rightBracket);
         }
-        return fuzzySeachTextSb.toString().trim();
+        return seachTextSb.toString().trim();
     }
 
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
     
     
     
@@ -345,20 +522,16 @@ public class SolrSearchHelper {
 //    
 //    
     public List<String> buildDataExportFields() {
-        fields = new ArrayList();
-        fields.add(basisOfRecordKey);
+        fields = new ArrayList(); 
         fields.add(catalogNumberKey);
         fields.add(collectionNameKey);
         fields.add(expeditionNameKey);
         fields.add(preservationKey);
         fields.add(preparationsKey);
         fields.add(recordedByKey);
-        fields.add(lifeStageKey);
-        fields.add(licenseKey);
-        fields.add(individualCountKey);
+        fields.add(lifeStageKey);  
         fields.add(occurrenceRemarksKey);
-        fields.add(sexKey);
-
+        fields.add(sexKey); 
         fields.add(countryKey);
         fields.add(stateProvinceKey);
         fields.add(continentKey);
@@ -388,7 +561,7 @@ public class SolrSearchHelper {
         fields.add(scientificNameAuthorshipKey);
 
         fields.add(specificEpithetKey);
-        fields.add(synonymsKey);
+//        fields.add(synonymsKey);
         fields.add(vernacularNameKey);
 
         return fields;
@@ -438,72 +611,7 @@ public class SolrSearchHelper {
         return fuzzySeachTextSb.toString().trim();
     }
 
-    private String buildContainsSearchText(String text, String key) {
-
-        boolean isUpperCase = Character.isUpperCase(text.charAt(0));
-
-        if (text.contains(emptySpace)) {
-            searchText = text.split(emptySpace);
-
-            if (isUpperCase) {
-                for (String value : searchText) {
-                    fuzzySeachTextSb.append(plusSign);
-                    fuzzySeachTextSb.append(key);
-                    fuzzySeachTextSb.append(colon);
-                    fuzzySeachTextSb.append(star);
-                    fuzzySeachTextSb.append(value);
-                    fuzzySeachTextSb.append(star);
-                    fuzzySeachTextSb.append(emptySpace);
-                }
-            } else {
-                fuzzySeachTextSb.append(leftBracket);
-                fuzzySeachTextSb.append(plusSign);
-                fuzzySeachTextSb.append(key);
-                fuzzySeachTextSb.append(colon);
-                fuzzySeachTextSb.append(star);
-                fuzzySeachTextSb.append(StringUtils.capitalize(searchText[0]));
-                fuzzySeachTextSb.append(star);
-
-                for (int i = 1; i < searchText.length; i++) {
-                    fuzzySeachTextSb.append(emptySpace);
-                    fuzzySeachTextSb.append(plusSign);
-                    fuzzySeachTextSb.append(key);
-                    fuzzySeachTextSb.append(colon);
-                    fuzzySeachTextSb.append(star);
-                    fuzzySeachTextSb.append(searchText[i]);
-                    fuzzySeachTextSb.append(star);
-                }
-                fuzzySeachTextSb.append(rightBracket);
-
-                fuzzySeachTextSb.append(emptySpace);
-                fuzzySeachTextSb.append(leftBracket);
-                for (String value : searchText) {
-                    fuzzySeachTextSb.append(plusSign);
-                    fuzzySeachTextSb.append(key);
-                    fuzzySeachTextSb.append(colon);
-                    fuzzySeachTextSb.append(star);
-                    fuzzySeachTextSb.append(value);
-                    fuzzySeachTextSb.append(star);
-                    fuzzySeachTextSb.append(emptySpace);
-                }
-                fuzzySeachTextSb.append(rightBracket);
-            }
-        } else {
-            fuzzySeachTextSb.append(key);
-            fuzzySeachTextSb.append(colon);
-            fuzzySeachTextSb.append(leftBracket);
-            fuzzySeachTextSb.append(star);
-            fuzzySeachTextSb.append(text);
-            fuzzySeachTextSb.append(star);
-            fuzzySeachTextSb.append(emptySpace);
-
-            fuzzySeachTextSb.append(star);
-            fuzzySeachTextSb.append(StringUtils.capitalize(text));
-            fuzzySeachTextSb.append(star);
-            fuzzySeachTextSb.append(rightBracket);
-        }
-        return fuzzySeachTextSb.toString().trim();
-    }
+   
 
     private String buildEqualsSearchText(String text, String key) {
         fuzzySeachTextSb.append(key);
@@ -514,14 +622,7 @@ public class SolrSearchHelper {
         return fuzzySeachTextSb.toString().trim();
     }
 
-    private String buildCaseInsensitivEqualsSearchText(String text, String key) {
-        fuzzySeachTextSb.append(key);
-        fuzzySeachTextSb.append(colon);
-        fuzzySeachTextSb.append(quotationMark);
-        fuzzySeachTextSb.append(text);
-        fuzzySeachTextSb.append(quotationMark);
-        return fuzzySeachTextSb.toString().trim();
-    }
+
 
     
     public String buildSearchText(String text, String key, String searchMode, boolean fuzzySearch) {

@@ -12,19 +12,9 @@
         {{ institution }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.collectionCode') }}</div>
-      <div class="col-8 reducePadding">
-        {{ code }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
       <div class="col-8 reducePadding">
         {{ catNumber }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.catalogedDate') }}</div>
-      <div class="col-8 reducePadding">
-        {{ dateCataloged }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.recordType') }}</div>
@@ -54,27 +44,7 @@
 
       <div class="col-4 reducePadding">{{ $t('results.sex') }}</div>
       <div class="col-8 reducePadding">
-        {{ sex }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.minimumDepthInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ minimumDepth }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.maximumDepthInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ maximumDepth }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.minElevationInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ minElevation }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.maxElevationInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ maxElevation }}
+        {{ sexData }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.recordNumber') }}</div>
@@ -99,20 +69,11 @@ const { t } = useI18n()
 
 const store = useStore()
 
-const dateCataloged = ref()
 const catNumber = ref()
-const code = ref()
 const collection = ref()
-const count = ref()
 const expeditionNameData = ref()
 
-const maximumDepth = ref()
-const minimumDepth = ref()
-const maxElevation = ref()
-const minElevation = ref()
-
 const institution = ref()
-const preparationList = ref()
 const preparationString = ref()
 
 const preservationData = ref()
@@ -129,51 +90,29 @@ onMounted(async () => {
 
   const {
     basisOfRecord,
-    collectionCode,
+    catalogNumber,
+    collectionName,
     expeditionName,
     institutionCode,
     lifeStage,
-    maximumDepthInMeters,
-    maximumElevationInMeters,
-    minimumDepthInMeters,
-    minimumElevationInMeters,
     occurrenceRemarks,
     preparations,
     preservation,
     recordNumber,
-    sex,
-    catalogedDate,
-    catalogNumber,
-    collectionName
+    sex
   } = record
 
   catNumber.value = catalogNumber
-
-  if (catalogedDate) {
-    dateCataloged.value = moment
-      .tz(catalogedDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
-      .format('YYYY-MM-DD')
-  }
-
-  code.value = collectionCode
   collection.value = collectionName
-  count.value = individualCount
-
   expeditionNameData.value = expeditionName
 
-  habitatData.value = habitat
   institution.value = t('common.institution') + ' [ ' + institutionCode + ' ]'
 
   stage.value = lifeStage
 
-  maximumDepth.value = maximumDepthInMeters
-  minimumDepth.value = minimumDepthInMeters
-  maxElevation.value = maximumElevationInMeters
-  minElevation.value = minimumElevationInMeters
-
   if (preparations) {
-    preparationList.value = preparations
-    preparationString.value = preparationList.value.join(', ')
+    const preparationList = preparations
+    preparationString.value = preparationList.join(', ')
   }
 
   preservationData.value = preservation

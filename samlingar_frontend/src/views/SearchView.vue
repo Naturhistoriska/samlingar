@@ -74,14 +74,15 @@ watch(
 onMounted(async () => {
   console.log('onMounted SearchView')
 
-  // const from = previousRoute.value?.fullPath
-  // const to = currentRoute.value?.fullPath
-  // console.log('entryType.value', entryType.value, from)
+  const from = previousRoute.value?.fullPath
+  const to = currentRoute.value?.fullPath
+  console.log('entryType.value', entryType.value, from)
 
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
     const queries = toRaw(currentRoute.value?.query)
+    console.log('queries', queries)
     let params = new URLSearchParams({
-      text: '*'
+      catchall: '*'
     })
 
     if (queries) {
@@ -89,19 +90,17 @@ onMounted(async () => {
         params.set(key, value)
       }
     }
-    store.commit('setSearchParams', params)
-    console.log('here...')
-    search(params, 0, 10, true)
+    search(params, 0, 20, true)
   } else if (entryType.value === 'internal') {
     const isPushed = store.getters['isUrlPush']
 
-    // console.log(isPushed, entryType.value)
-    if (!isPushed) {
-      let params = new URLSearchParams({
-        text: '*'
-      })
-      store.commit('setSearchParams', params)
-      search(params, 0, 10, true)
+    if (!from.includes('/record')) {
+      if (!isPushed) {
+        let params = new URLSearchParams({
+          catchall: '*'
+        })
+        search(params, 0, 20, true)
+      }
     }
   }
 
@@ -139,7 +138,7 @@ function preparaDataExport() {
 
 function handleSearch() {
   const params = buildParams(true)
-  search(params, 0, 10, true)
+  search(params, 0, 20, true)
   // store.commit('setSearchParams', params)
 }
 
@@ -163,8 +162,8 @@ async function search(params, start, numPerPage, saveData) {
           // const collectionCodefacet = response.facets.collectionCode.buckets
           // store.commit('setSelectedCollection', collectionCodefacet)
         } else {
-          store.commit('setSelectedCollectionGroup', null)
-          store.commit('setSelectedCollection', null)
+          // store.commit('setSelectedCollectionGroup', null)
+          // store.commit('setSelectedCollection', null)
         }
       }
 
@@ -204,7 +203,7 @@ function buildParams() {
   // const collectionGroup = store.getters['collectionGroup']
 
   const params = new URLSearchParams({
-    text: searchText
+    catchall: searchText
   })
 
   if (scientificName) {
@@ -226,7 +225,7 @@ function buildParams() {
   }
 
   if (hasCoordinates) {
-    params.set('point-1', '*')
+    params.set('geo', '*')
   }
 
   // if (collectionGroup) {
@@ -250,12 +249,12 @@ function buildParams() {
   //   params.set('collectionName', newValue)
   // }
 
-  console.log('selectedCollection', selectedCollection)
   if (selectedCollection !== null) {
     const newValue = selectedCollection.replace(/'/g, '"')
     params.set('collectionCode', newValue)
   }
 
+  console.log('fields...', fields)
   if (fields) {
     fields
       .filter((field) => field.text)
@@ -322,7 +321,7 @@ function buildParams() {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .spinner {

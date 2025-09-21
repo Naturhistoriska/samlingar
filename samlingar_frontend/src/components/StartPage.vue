@@ -28,7 +28,7 @@ import Search from './SearchAllFields.vue'
 import Collections from './CollectionsFilter.vue'
 import Filter from './Filter.vue'
 
-const emits = defineEmits(['filterSearch', 'search', 'collectionsSearch'])
+const emits = defineEmits(['collectionsSearch', 'filterSearch', 'freeTextSearch'])
 
 function filterSearch(params) {
   emits('filterSearch', params)

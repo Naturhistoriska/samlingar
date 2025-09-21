@@ -7,20 +7,14 @@
       />
 
       <!-- Draw heatmap polygons -->
-      <l-geo-json
+      <l-geo-json v-if="geojson" :geojson="geojson" :options-style="styleFeature" />
+
+      <!-- <l-geo-json
         v-if="geojson"
         :geojson="geojson"
         :options-style="styleFeature"
         :options-on-each-feature="onEachFeature"
-      />
-
-      <!-- Overlay count labels as divIcons -->
-      <!-- <l-marker
-      v-for="(marker, index) in countMarkers"
-      :key="index"
-      :lat-lng="marker.position"
-      :icon="marker.icon"
-    /> -->
+      /> -->
     </l-map>
 
     <!-- ✅ Toggle Button -->
@@ -77,15 +71,38 @@ watch(
   }
 )
 
-function getColor(count) {
-  // if (count === 0) return 'transparent'
-  // if (count <= 5) return '#ffffcc'
-  // if (count <= 10) return '#c2e699'
-  // if (count <= 20) return '#78c679'
-  // if (count <= 50) return '#31a354'
-  // if (count <= 100) return '#006837'
-  // return '#004529'
+onMounted(() => {
+  console.log('onMounted', props.entry, props.from, props.reloadData)
+  fetchHeatmapData()
+})
 
+async function fetchHeatmapData() {
+  const totalRecords = store.getters['totalRecords']
+  // const params = buildParams()
+
+  let params = store.getters['searchParams']
+  if (params === null) {
+    console.log('no params')
+    params = buildParams()
+    // params = new URLSearchParams({
+    //   catchall: '*'
+    // })
+  }
+  await service
+    .apiHeatmap(params, 0, totalRecords)
+    .then(async (response) => {
+      const data = response
+      if (data) {
+        geojson.value = data
+      }
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {})
+}
+
+function getColor(count) {
   if (count > 10000) return '#800026'
   if (count > 5000) return '#BD0026'
   if (count > 2000) return '#E31A1C'
@@ -94,22 +111,6 @@ function getColor(count) {
   if (count > 100) return '#FEB24C'
   if (count > 0) return '#fed398'
   return 'transparent'
-}
-
-function onEachFeature(feature, layer) {
-  console.log('Adding tooltip to feature:', feature)
-
-  layer.bindTooltip(`Count: ${feature.properties.count}`, {
-    sticky: true,
-    direction: 'auto'
-  })
-
-  layer.on('mouseover', () => {
-    layer.openTooltip()
-  })
-  layer.on('mouseout', () => {
-    layer.closeTooltip()
-  })
 }
 
 function styleFeature(feature) {
@@ -121,71 +122,6 @@ function styleFeature(feature) {
     fillOpacity: 0.6
   }
 }
-
-// Compute the centroid of a polygon (rectangle in our case)
-function getCentroid(polygon) {
-  const coords = polygon[0] // outer ring
-  let x = 0,
-    y = 0
-  for (let i = 0; i < coords.length - 1; i++) {
-    x += coords[i][0]
-    y += coords[i][1]
-  }
-  const len = coords.length - 1
-  return [y / len, x / len] // [lat, lng]
-}
-
-// Prepare list of count labels as Leaflet markers
-const countMarkers = computed(() => {
-  if (!geojson.value) return []
-
-  return geojson.value.features
-    .filter((f) => f.properties.count > 0)
-    .map((f) => {
-      const coords = f.geometry.coordinates
-      const count = f.properties.count
-      const position = getCentroid(coords)
-      const icon = L.divIcon({
-        html: `<div style="font-size:12px;color:black;font-weight:bold;">${count}</div>`,
-        className: 'label-icon', // prevent default marker styling
-        iconSize: [30, 12],
-        iconAnchor: [15, 6]
-      })
-
-      return { position, icon }
-    })
-})
-
-async function fetchHeatmapData() {
-  // Your backend endpoint
-
-  const totalRecords = store.getters['totalRecords']
-  // const params = buildParams()
-  let params = store.getters['searchParams']
-  if (params === null) {
-    params = new URLSearchParams({
-      text: '*'
-    })
-  }
-
-  await service
-    .apiHeatmap(params, 0, totalRecords)
-    .then(async (response) => {
-      const data = response
-
-      if (data) {
-        console.log('data', data)
-        geojson.value = data
-      }
-    })
-    .catch()
-    .finally(() => {})
-}
-
-onMounted(() => {
-  console.log('onMounted', props.entry, props.from, props.reloadData)
-  fetchHeatmapData()
-})
 
 function buildParams() {
   const fields = store.getters['fields']
@@ -209,7 +145,7 @@ function buildParams() {
   console.log(selectedCollection)
 
   const params = new URLSearchParams({
-    text: searchText
+    catchall: searchText
   })
 
   if (scientificName) {
@@ -245,12 +181,6 @@ function buildParams() {
   if (endDate) {
     params.set('endDate', endDate)
   }
-
-  // if (dataResource) {
-  //   let newValue = dataResource.replace(/'/g, '"')
-  //   params.set('dataResourceName', newValue)
-  // }
-
   if (fields) {
     fields
       .filter((field) => field.text)
@@ -261,6 +191,56 @@ function buildParams() {
   //store.commit('setSearchParams', params)
   return params
 }
+
+// Compute the centroid of a polygon (rectangle in our case)
+// function getCentroid(polygon) {
+//   const coords = polygon[0] // outer ring
+//   let x = 0,
+//     y = 0
+//   for (let i = 0; i < coords.length - 1; i++) {
+//     x += coords[i][0]
+//     y += coords[i][1]
+//   }
+//   const len = coords.length - 1
+//   return [y / len, x / len] // [lat, lng]
+// }
+
+// Prepare list of count labels as Leaflet markers
+// const countMarkers = computed(() => {
+//   if (!geojson.value) return []
+
+//   return geojson.value.features
+//     .filter((f) => f.properties.count > 0)
+//     .map((f) => {
+//       const coords = f.geometry.coordinates
+//       const count = f.properties.count
+//       const position = getCentroid(coords)
+//       const icon = L.divIcon({
+//         html: `<div style="font-size:12px;color:black;font-weight:bold;">${count}</div>`,
+//         className: 'label-icon', // prevent default marker styling
+//         iconSize: [30, 12],
+//         iconAnchor: [15, 6]
+//       })
+
+//       return { position, icon }
+//     })
+// })
+
+// function onEachFeature(feature, layer) {
+//   console.log('Adding tooltip to feature:', feature)
+
+//   layer.bindTooltip(`Count: ${feature.properties.count}`, {
+//     sticky: true,
+//     direction: 'auto'
+//   })
+
+//   layer.on('mouseover', () => {
+//     layer.openTooltip()
+//   })
+//   layer.on('mouseout', () => {
+//     layer.closeTooltip()
+//   })
+// }
 </script>
 <style>
 .map-container {
@@ -269,7 +249,7 @@ function buildParams() {
 
 .legend {
   position: absolute;
-  bottom: 5px;
+  bottom: 40px;
   left: 5px;
   background: white;
   padding: 8px 12px;
@@ -298,8 +278,8 @@ function buildParams() {
 /* ✅ Toggle button style */
 .legend-toggle {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  bottom: 0px;
+  left: 5px;
   z-index: 1100;
   background: #fff;
   border: 1px solid #ccc;

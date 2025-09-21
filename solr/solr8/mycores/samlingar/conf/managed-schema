@@ -453,7 +453,7 @@
   <copyField source="species" dest="copy_scientificName"/>
   <copyField source="genus" dest="copy_scientificName"/>
   <copyField source="subgenus" dest="copy_scientificName"/>
-  <copyField source="subgenus" dest="copy_scientificName"/>
+  <copyField source="family" dest="copy_scientificName"/>
   <copyField source="kingdom" dest="copy_scientificName"/>
 
   <!-- <copyField source="catalogNumber" dest="text"/>

@@ -6,8 +6,10 @@ import javax.inject.Inject;
 import javax.json.JsonObjectBuilder;
 import lombok.extern.slf4j.Slf4j; 
 import org.apache.commons.lang3.StringUtils;
+import se.nrm.samlingar.data.process.logic.exception.ErrorMsg;
 import se.nrm.samlingar.data.process.logic.exception.SamlingarException;
 import se.nrm.samlingar.data.process.logic.json.JsonHelper; 
+import se.nrm.samlingar.data.process.logic.util.Util;
 
 /**
  *
@@ -58,16 +60,16 @@ public class CoordinatesBuilder implements Serializable {
         }
     }
 
-    public void build(JsonObjectBuilder attBuilder, String coordinates) {
-        log.info("CoordinatesBuilder build : {}", coordinates);
-        if(!StringUtils.isBlank(coordinates)) {
-            latLngArray = coordinates.split(emptySpace);
-         
-            strLatitude = latLngArray[0].trim();
-            strLongitude = latLngArray[1].trim();
-            build(attBuilder, strLatitude, strLongitude);
-        }
-    }
+//    private void buildww(JsonObjectBuilder attBuilder, String coordinates) {
+//        log.info("CoordinatesBuilder build : {}", coordinates);
+//        if(!StringUtils.isBlank(coordinates)) {
+//            latLngArray = coordinates.split(emptySpace);
+//         
+//            strLatitude = latLngArray[0].trim();
+//            strLongitude = latLngArray[1].trim();
+//            build(attBuilder, strLatitude, strLongitude);
+//        }
+//    }
     
     public void build(JsonObjectBuilder attBuilder, String latitude, String longitude) {
         log.info("build: {} -- {}", latitude, longitude);
@@ -85,15 +87,36 @@ public class CoordinatesBuilder implements Serializable {
         }
     }
     
+    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    private  boolean isValidLatitude(double latitude) {
+        return latitude >= -90 && latitude <= 90;
+    }
+
+    public boolean isValidLongitude(double longitude) {
+        return longitude >= -180 && longitude <= 180;
+    }
+    
+    
     public void buildPaleoCoordinates(JsonObjectBuilder attBuilder, String latitude, String longitude) {
         log.info("build: {} -- {}", latitude, longitude);
         
         try { 
             dblLat = convert.convert(latitude);
             dblLong = convert.convert(longitude);
+            
             log.info("latitude and longigude: {} -- {}", dblLat, dblLong);
              
-            addGeoData(attBuilder, dblLat, dblLong); 
+            if(isValidLatitude(dblLat) && isValidLongitude(dblLong)) {  
+                addGeoData(attBuilder, dblLat, dblLong);  
+            }   
         } catch(SamlingarException ex) { 
 //            log.error("SamlingarException: builderCoordinates : {}", ex.getErrorMessage());
         } catch (Exception ex) {

@@ -7,10 +7,9 @@ import java.io.StringReader;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;  
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -20,6 +19,12 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -28,6 +33,8 @@ import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.SuggesterResponse;
+import org.apache.solr.common.params.ModifiableSolrParams;
 import se.nrm.samlingar.api.logic.InitialProperties;
 import se.nrm.samlingar.api.utils.SolrSearchBuildChart;
 import se.nrm.samlingar.api.utils.SolrSearchBuildGeoJson;
@@ -53,10 +60,10 @@ public class Solr implements Serializable {
     private final String star = "*";
 
     private final String countryKey = "country";
-
-    private final String dataResourceNameKey = "dataResourceName";
+ 
 
     private final String idKey = "id";
+     private final String idFieldKey = "id:";
     private final String locationKey = "location";
     private final String scientificNameKey = "scientificName";
     private final String localityKey = "locality";
@@ -89,7 +96,15 @@ public class Solr implements Serializable {
     private final String responseKey = "response";
 
     private final String cursorMarkKey = "cursorMark";
-
+    
+    private final String defType = "defType";
+    private final String edismax = "edismax"; 
+    private final String qf = "qf";
+    private final String mmKey = "mm";
+    private final String mmValue = "2<75%";
+    private final String catchall = "catchall";
+    private final String copyScientificNameKey = "copy_scientificName";
+       
     private final int maxExport = 50000;
     private final int batchSize = 1000;
     
@@ -123,7 +138,7 @@ public class Solr implements Serializable {
 
     private final String defaultSort = "catalogedDate desc";
     private final int defaultStart = 0;
-    private final int defaultRows = 10;
+    private final int defaultRows = 20;
     
     private final String catalogedDateKey = "catalogedDate";
 
@@ -132,7 +147,7 @@ public class Solr implements Serializable {
     private final String hasImageKey = "hasImage";
     private final String inSwedenKey = "inSweden";
     private final String coordinatesKey = "coordinates";
-    private final String point1Key = "point-1";
+//    private final String point1Key = "point-1";
     private final String typeStatusKey = "typeStatus";
     
     private final String pt ="59,15";
@@ -145,7 +160,7 @@ public class Solr implements Serializable {
     final TermsFacetMap collectionFacet;
     final TermsFacetMap collectionCodeFacet;
     
-    
+    final Map<String, Object> facetQuery; 
     
     
     
@@ -159,7 +174,7 @@ public class Solr implements Serializable {
     private InitialProperties properties;
 
     public Solr() {
-        mapFacet = new TermsFacetMap(point1Key)
+        mapFacet = new TermsFacetMap(geoKey)
                 .includeAllBucketsUnionBucket(true);
 
         imageFacet = new TermsFacetMap(hasImageKey);
@@ -174,6 +189,10 @@ public class Solr implements Serializable {
         collectionFacet = new TermsFacetMap(collectionNameKey);
         
         collectionCodeFacet = new TermsFacetMap(collectionCodeKey); 
+         
+        facetQuery = new HashMap<>();
+        facetQuery.put("query", "geo:*");
+         
     }
 
     @PostConstruct
@@ -188,14 +207,15 @@ public class Solr implements Serializable {
 
     public String getInitalData() {
         log.info("getInitalData");
- 
+         
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(searchAll) 
-                .withFacet(associatedMediaKey, imageFacet)
-                .withFacet(coordinatesKey, mapFacet.setLimit(1))
+                .setQuery(searchAll)  
+                .withFacet(associatedMediaKey, imageFacet) 
                 .withFacet(inSwedenKey, inSwedenFacet)
                 .withFacet(typeStatusKey, typeFacet.setLimit(1))
+                .withFacet(coordinatesKey, facetQuery)
                 .setLimit(1);
+         
         jsonRequest.setBasicAuthCredentials(username, password); 
         try {  
             response = jsonRequest.process(client);
@@ -209,8 +229,7 @@ public class Solr implements Serializable {
             } catch (IOException ex) {
                 log.error(ex.getMessage());
             }
-        }
-
+        } 
         return response.jsonStr();
     }
 
@@ -273,7 +292,7 @@ public class Solr implements Serializable {
         }
     }
     
-     public String scientificNameSearch(int start, int numPerPage, String text, String sort) {
+     public String scientificNameSearch1(int start, int numPerPage, String text, String sort) {
         log.info("scientificNameSearch: {} -- {}", text, sort);
 
         sort = sort == null ? defaultSort : sort;
@@ -336,21 +355,24 @@ public class Solr implements Serializable {
         } 
     }
     
-    public String freeTextSearch(String text) {
-
-        query = new SolrQuery();
-        query.set("defType", "edismax");
-        query.set("q", text);
-        query.set("qf", "catchall");  // Fields to search
-        query.set("mm", "2<75%"); // Minimum number of terms that must match
-        query.setStart(0);
-        query.setRows(10);
-        query.setSort(catalogedDateKey, SolrQuery.ORDER.desc);
-        
-        try {
-            response = client.query(query);
+    public String scientificNameSearch(String text) {
+        log.info("scientificNameSearch: {} -- {}", text );
  
-            return response.jsonStr(); 
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .withParam(defType, edismax)
+                .withParam(qf, copyScientificNameKey)
+                .withParam(mmKey, mmValue) 
+                .withFacet(collectionNameKey, collectionFacet.setLimit(20))
+                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
+                .setOffset(defaultStart)
+                .setLimit(defaultRows)
+                .setSort(defaultSort);   
+        jsonRequest.setBasicAuthCredentials(username, password);
+        try {
+            response = jsonRequest.process(client);
+//            log.info("json: {}", response.jsonStr()); 
+            return response.jsonStr();
         } catch (SolrServerException | IOException ex) {
             log.error(ex.getMessage());
             return null;
@@ -362,11 +384,57 @@ public class Solr implements Serializable {
             }
         }
     }
+    
+    
+    public String freeTextSearch(String text) {
+
+        JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .withParam(defType, edismax)
+                .withParam(qf, catchall)
+                .withParam(mmKey, mmValue) 
+                .withFacet(collectionNameKey, collectionFacet.setLimit(20))
+                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
+                .setOffset(defaultStart)
+                .setLimit(defaultRows)
+                .setSort(defaultSort);
+
+
+        
+        
+        
+        
+//           JsonQueryRequest jsonRequest = new JsonQueryRequest()
+//                .setQuery(text)
+//                .withParam(defType, edismax)
+//                .withParam(qf, catchall)
+//                .withParam(mmKey, mmValue) 
+//                .withFacet(collectionNameKey, collectionFacet.setLimit(20))
+//                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
+//                .setOffset(defaultStart)
+//                .setLimit(defaultRows)
+//                .setSort(defaultSort); 
+           
+            jsonRequest.setBasicAuthCredentials(username, password);
+        try {
+            response = jsonRequest.process(client); 
+            return response.jsonStr();
+        } catch (SolrServerException | IOException ex) {
+            log.error(ex.getMessage());
+            return null;
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
+        }  
+    }
 
     
     public String searchWithId(String id) {
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(idKey + id)    
+                .setQuery(idFieldKey + id)    
                 .setLimit(1);
         jsonRequest.setBasicAuthCredentials(username, password); 
         try {
@@ -397,7 +465,7 @@ public class Solr implements Serializable {
    
 
     public String search(Map<String, String> paramMap, String text, String scientificName,
-            String locality, String dateRange, String facets,
+            String locality, String synonyms, String dateRange, String facets,
             int start, int numPerPage, String sort) {
 
         sort = sort == null ? defaultSort : sort;
@@ -425,6 +493,12 @@ public class Solr implements Serializable {
         if (!StringUtils.isBlank(scientificName)) {
             jsonRequest.withFilter(scientificName);
         }
+        
+        
+        if (!StringUtils.isBlank(synonyms)) {
+            jsonRequest.withFilter(synonyms);
+        }
+
 
         if (!StringUtils.isBlank(locality)) {
             jsonRequest.withFilter(locality);
@@ -562,6 +636,35 @@ public class Solr implements Serializable {
                 log.error(ex.getMessage());
             }
         }
+    }
+    
+    public String autocompolete(String text) {
+      
+        JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery("copy_scientificName:aves*")
+                .returnFields("scientificName")
+                .withParam("suggest", "true")
+                .withParam("suggest.build", "true")
+                .withParam("suggest.q", "copy_scientificName:aves*");   
+                 
+                 
+                    
+         jsonRequest.setBasicAuthCredentials(username, password);
+            
+        try {
+           response = jsonRequest.process(client);  
+           log.info(response.jsonStr());
+             
+        } catch (SolrServerException | IOException ex) {  
+            log.error(ex.getMessage());
+        }finally {
+            try {
+                client.close();
+            } catch (IOException ex) {
+                log.error(ex.getMessage());
+            }
+        }
+        return response.jsonStr();
     }
 
 //    

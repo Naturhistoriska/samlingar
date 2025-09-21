@@ -32,10 +32,10 @@ export default class Service {
     return response.data
   }
 
-  async apiScientificnameSearch(searchText, searchMode, fuzzySearch, start, rows) {
+  async apiScientificnameSearch(searchText, searchMode) {
     searchText = searchText.replace(/&/g, '%26') // eplaces all instances of the ampersand character (&) in a string with %26
 
-    const url = `${samlingApi}/scientificname?scientificname=${searchText}&searchMode=${searchMode}&fuzzySearch=${fuzzySearch}&start=${start}&numPerPage=${rows}&sort=catalogedDate desc`
+    const url = `${samlingApi}/scientificname?scientificname=${searchText}&searchMode=${searchMode}`
     const response = await axios.get(url)
     return response.data
   }
@@ -48,7 +48,7 @@ export default class Service {
   }
 
   async apiFreeTextSearch(searchText) {
-    let url = `${samlingApi}/simpleSearch?catchall=${searchText}`
+    let url = `${samlingApi}/freeTextSearch?catchall=${searchText}`
 
     const response = await axios.get(url)
     return response.data
@@ -59,50 +59,50 @@ export default class Service {
     const response = await axios.get(url)
     return response.data
   }
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
 
   async apiSearch(params, start, numPerPage) {
-    let url = `${samlingApi}/search?${params.toString()}&start=${start}&numPerPage=${numPerPage}&sort=catalogedDate desc`
+    let url = `${samlingApi}/search?${params.toString()}&start=${start}&numPerPage=${numPerPage}`
 
     const response = await axios.get(url)
     return response.data
   }
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   async apiGeoFetch(params, start, rows) {
     let url = `${samlingApi}/geojson?${params.toString()}&start=${start}&numPerPage=${rows}`

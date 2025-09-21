@@ -4,36 +4,44 @@
       <div class="spinner"></div>
     </div>
     <DataTable
+      class="p-datatable-sm"
+      dataKey="id"
+      filterDisplay="row"
+      lazy
+      paginator
       ref="dt"
-      :value="records"
+      selectionMode="single"
+      sortMode="multiple"
+      stripedRows
+      tableStyle="min-width: 50rem"
       v-model:selection="selectedRecord"
       v-model:expandedRows="expandedRows"
       v-model:filters="filters"
-      selectionMode="single"
-      filterDisplay="row"
-      dataKey="id"
-      stripedRows
-      class="p-datatable-sm"
-      tableStyle="min-width: 50rem"
-      paginator
+      :first="firstPage"
+      :rows="20"
+      :rowsPerPageOptions="[10, 20, 50]"
+      :totalRecords="totalCount"
+      :filters="filters"
+      :value="records"
+      @filter="onFilter"
       @page="onPage($event)"
       @rowExpand="onRowExpand"
       @rowCollapse="onRowCollapse"
-      lazy
-      :rows="20"
-      :rowsPerPageOptions="[5, 10, 20]"
-      :totalRecords="totalCount"
-      :filters="filters"
-      @filter="onFilter"
+      @sort="onSort"
     >
-      <!-- <template #header>
+      <template #header>
         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
           <span class="text-xl text-900 font-bold"> </span>
-          <div style="text-align: right" clss="grid justify-end">
-            <Button type="button" :label="$t('btnLabel.columns')" @click="dialogVisible = true" />
+
+          <div class="text-end pb-4">
+            <Button
+              icon="pi pi-external-link"
+              label="Export table to csv"
+              @click="exportCSV($event)"
+            />
           </div>
         </div>
-      </template> -->
+      </template>
       <template #empty>{{ $t('search.noResultsFound') }}</template>
       <template #loading>{{ $t('search.loadingData') }}</template>
 
@@ -58,7 +66,7 @@
         field="collectionName"
         header="Collection name"
         :showFilterMenu="false"
-        style="min-width: 14rem; max-width: 14rem"
+        style="min-width: 10rem; max-width: 10rem"
       >
         <template #body="{ data }">
           {{ data.collectionName }}
@@ -93,7 +101,7 @@
       <Column
         field="scientificName"
         header="Scientific Name"
-        style="min-width: 12rem; max-width: 12rem"
+        style="min-width: 14rem; max-width: 14rem"
         filterField="scientificName"
         sortable
         :filter="true"
@@ -101,6 +109,8 @@
       >
         <template #body="{ data }">
           {{ data.scientificName }}
+          <br />
+          {{ buildClassification(data) }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <InputText
@@ -118,7 +128,8 @@
         field="catalogNumber"
         header="CatalogNumber"
         :showFilterMenu="false"
-        style="min-width: 8rem; max-width: 10rem"
+        sortable
+        style="min-width: 6 rem; max-width: 8rem"
       >
         <template #body="{ data }">
           {{ data.catalogNumber }}
@@ -139,6 +150,7 @@
       <Column
         field="locality"
         header="Locality"
+        sortable
         :showFilterMenu="false"
         style="min-width: 12rem; max-width: 12rem"
       >
@@ -174,7 +186,9 @@
           <b>
             {{ slotProps.data.scientificName }}
           </b>
-          ({{ slotProps.data.scientificNameAuthorship }})
+          <span v-if="slotProps.data.scientificNameAuthorship"
+            >({{ slotProps.data.scientificNameAuthorship }})</span
+          >
           <br />
           {{ buildClassification(slotProps.data) }}<br />
           {{ slotProps.data.locality }}
@@ -183,16 +197,6 @@
         </div>
       </template>
     </DataTable>
-    <Dialog
-      v-model:visible="dialogVisible"
-      header="Flex Scroll"
-      :style="{ width: '75vw' }"
-      maximizable
-      modal
-      :contentStyle="{ height: '300px' }"
-    >
-      <datatable-column />
-    </Dialog>
   </div>
 </template>
 
@@ -203,7 +207,6 @@ import { FilterMatchMode } from '@primevue/core/api'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Service from '../Service'
-import DatatableColumn from './DatatableColumn.vue'
 
 const store = useStore()
 const router = useRouter()
@@ -213,11 +216,9 @@ const toast = useToast()
 
 // const emits = defineEmits(['search'])
 
-const dialogVisible = ref(false)
-
 let columns = ref([])
 const dt = ref()
-
+const showColumn = ref(false)
 // const params = ref()
 
 const defaultColumns = ref([
@@ -239,6 +240,7 @@ const records = ref()
 const collectionOptions = ref()
 let filterArray = ref([])
 
+let firstPage = ref(0)
 const loading = ref(false)
 
 const filters = ref({
@@ -285,22 +287,75 @@ onMounted(async () => {
   columns.value = defaultColumns.value
 })
 
-// function getColumnStyle(col) {
-//   return {
-//     minWidth: col.minWidth,
-//     maxWidth: col.maxWidth,
-//     width: col.width || 'auto',
-//     overflow: 'visible',
-//     whiteSpace: 'wrap'
-//   }
-// }
+function exportCSV() {
+  console.log('exportCSV')
+  // dt.value.exportCSV()
+
+  const exportFields = [
+    'scientificName',
+    'catalogNumber',
+    'locality',
+    'decimalLatitude',
+    'decimalLongitude',
+    'stateProvince',
+    'country'
+  ]
+  const exportHeaders = [
+    'Scientific Name',
+    'Catalog Number',
+    'Locality',
+    'DecimalLatitude',
+    'DecimalLongitude',
+    'Province',
+    'Country'
+  ]
+
+  const csvRows = [exportHeaders.join(',')]
+
+  records.value.forEach((record) => {
+    const row = exportFields.map((field) => {
+      let value = record[field] ?? ''
+      // Escape quotes and wrap in double quotes
+      return `"${String(value).replace(/"/g, '""')}"`
+    })
+    csvRows.push(row.join(','))
+  })
+
+  const csvContent = csvRows.join('\n')
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = 'records.csv'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+
+  // Convert to worksheet
+}
+
+function onSort(event) {
+  console.log('Multi-sort event:', event)
+
+  const sortMeta = event.multiSortMeta
+  const sortString = sortMeta
+    .map(({ field, order }) => `${field} ${order === 1 ? 'asc' : 'desc'}`)
+    .join(', ')
+
+  firstPage.value = 0
+  const params = store.getters['searchParams']
+  if (params === null) {
+    params = buildParams()
+  }
+  params.set('sort', sortString)
+
+  loadRecordsLazy(params, 0, 20)
+}
 
 function buildClassification(data) {
-  const { kingdom, phylum, order, family, genus, subgenus, scientificName } = data
+  const { kingdom, phylum, clazz, order, family, genus, subgenus } = data
 
-  const clazz = data.class
   const higherClassification = new Array(kingdom, phylum, clazz, order, family, genus, subgenus)
-
   return higherClassification.filter((str) => str !== undefined).join(' > ')
 }
 
@@ -437,7 +492,7 @@ function buildParams() {
   // const collectionGroup = store.getters['collectionGroup']
 
   const params = new URLSearchParams({
-    text: searchText
+    catchall: searchText
   })
 
   if (isType) {
@@ -564,7 +619,7 @@ function selectRow(data) {
 
 const onPage = async (event) => {
   const { first, rows } = event
-
+  firstPage.value = event.first
   const params = store.getters['searchParams']
 
   loadRecordsLazy(params, first, rows)

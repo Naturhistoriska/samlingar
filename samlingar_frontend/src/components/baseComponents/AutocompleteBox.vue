@@ -62,20 +62,22 @@ const apiAutoComplete = (event) => {
   const field = props.field.value
   let value = event.query
 
+  console.log('value', value)
   // if (field === 'typeStatus') {
   //   value = value.toUpperCase()
   // }
-
-  service
-    .apiAutoCompleteSearch(value, field)
-    .then((response) => {
-      const facets = response.facets.facet
-      if (facets) {
-        items.value = facets.buckets.map((a) => a.val)
-      }
-    })
-    .catch()
-    .finally(() => {})
+  if (value) {
+    service
+      .apiAutoCompleteSearch(value, field)
+      .then((response) => {
+        const facets = response.facets.facet
+        if (facets) {
+          items.value = facets.buckets.map((a) => a.val)
+        }
+      })
+      .catch()
+      .finally(() => {})
+  }
 }
 
 function onItemRemove(event) {

@@ -45,6 +45,16 @@
         {{ theSpecies }}
       </div>
 
+      <div class="col-4 reducePadding">{{ $t('results.infraspecificEpithet') }}</div>
+      <div class="col-8 reducePadding">
+        {{ infraspecificEpithetData }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.specificEpithet') }}</div>
+      <div class="col-8 reducePadding">
+        {{ specificEpithetData }}
+      </div>
+
       <div class="col-4 reducePadding" v-if="hasCommonName">{{ $t('results.vernacularName') }}</div>
       <div class="col-8 reducePadding" v-if="hasCommonName">
         {{ commonName }}
@@ -57,21 +67,11 @@
         {{ synonymsData }}
       </div>
 
-      <div class="col-4 reducePadding" infragenericEpithet>
+      <div class="col-4 reducePadding" v-if="isEvCollection">
         {{ $t('results.infragenericEpithet') }}
       </div>
-      <div class="col-8 reducePadding" infragenericEpithet>
+      <div class="col-8 reducePadding" v-if="isEvCollection">
         {{ infragenericEpithetData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.infraspecificEpithet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ infraspecificEpithetData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.specificEpithet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ specificEpithetData }}
       </div>
     </div>
   </div>
@@ -118,7 +118,7 @@ const hasKindomAndSynonyms = computed(() => {
 const hasCommonName = computed(() => {
   const record = store.getters['selectedRecord']
   const collectionCode = record.collectionCode
-  return collectionCode === 'MA' || collectionCode === 'VA'
+  return collectionCode === 'MA' || collectionCode === 'AV'
 })
 
 onMounted(async () => {
@@ -129,31 +129,31 @@ onMounted(async () => {
     genus,
     family,
     infraspecificEpithet,
-    infragenericEpithet,
-    kingdom,
+    infragenericEpithet, // ev, et
+    kingdom, // ev, et, pi, he
     order,
     phylum,
     scientificName,
     species,
     specificEpithet,
-    subgenus,
-    synonyms,
-    vernacularName // ma, va
+    subgenus, // ev, et
+    synonyms, // ev, et, pi, he
+    vernacularName // ma, av
   } = record
-  commonName.value = vernacularName
+
+  if (vernacularName) {
+    commonName.value = vernacularName.join(' | ')
+    console.log('commonName', commonName.value)
+  }
 
   infragenericEpithetData.value = infragenericEpithet
   infraspecificEpithetData.value = infraspecificEpithet
-
-  rank.value = taxonRank
-  remarks.value = taxonRemarks
 
   if (synonyms) {
     synonymsData.value = synonyms.join(' | ')
   }
 
   specificEpithetData.value = specificEpithet
-  scientificNameAuthorshipData.value = scientificNameAuthorship
 
   theClass.value = clazz
   theKingdom.value = kingdom

@@ -41,11 +41,12 @@ const initData = ref(false)
 
 onMounted(() => {
   console.log('type visit', entryType.value)
+
+  // const collectionCode = 'collectionCode: *'
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
-    const collectionCode = 'collectionCode: *'
-    fetchInitdata()
-    fetchYearChartData(collectionCode)
-    fetchMonthChartData(collectionCode)
+    // fetchInitdata()
+    //  fetchYearChartData(collectionCode)
+    //  fetchMonthChartData(collectionCode)
     initData.value = true
   } else {
     const totalCount = store.getters['totalCount']
@@ -54,10 +55,10 @@ onMounted(() => {
     }
   }
   if (initData.value) {
-    const collectionCode = 'collectionCode: *'
     fetchInitdata()
-    fetchYearChartData(collectionCode)
-    fetchMonthChartData(collectionCode)
+
+    // fetchYearChartData(collectionCode)
+    // fetchMonthChartData(collectionCode)
   }
 })
 
@@ -74,7 +75,9 @@ function fetchMonthChartData(collectionCode) {
       // const counts = facet.counts
       setMonthChartData(facet.counts)
     })
-    .catch()
+    .catch((error) => {
+      console.log('error', error)
+    })
     .finally(() => {})
 }
 
@@ -91,7 +94,9 @@ function fetchYearChartData(collectionCode) {
       const totalCount = response.total
       setYearChartData(totalCount, counts)
     })
-    .catch()
+    .catch((error) => {
+      console.log('error', error)
+    })
     .finally(() => {})
 }
 
@@ -138,20 +143,24 @@ function fetchInitdata() {
       store.commit('setSelectedCollectionGroup', null)
       store.commit('setDataResource', null)
     })
-    .catch()
-    .finally(() => {})
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {
+      initData.value = false
+    })
 }
 
 function setSearchCommentFacet(facets) {
-  const inSweden = facets.inSweden.allBuckets.count
-  const typeStatus = facets.typeStatus.allBuckets.count
-  const hasImages = facets.associatedMedia.buckets[0].count
-  const hasCoordinates = facets.coordinates.allBuckets.count
+  const totalInSweden = facets.inSweden.allBuckets.count
+  const totalTypeStatus = facets.typeStatus.allBuckets.count
+  const totalSpeciemensHasImages = facets.associatedMedia.buckets[0].count
+  const totalSpeciemensHasCoordinates = facets.coordinates.count
 
-  store.commit('setHasCoordinatesCount', hasCoordinates)
-  store.commit('setInSwedenCount', inSweden)
-  store.commit('setIsTypeCount', typeStatus)
-  store.commit('setImageCount', hasImages)
+  store.commit('setHasCoordinatesCount', totalSpeciemensHasCoordinates)
+  store.commit('setInSwedenCount', totalInSweden)
+  store.commit('setIsTypeCount', totalTypeStatus)
+  store.commit('setImageCount', totalSpeciemensHasImages)
 }
 
 async function filterSearch(params) {
@@ -164,11 +173,6 @@ async function filterSearch(params) {
 
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
-
-      // store.commit('setFilterImage', false)
-      // store.commit('setFilterCoordinates', false)
-      // store.commit('setFilterInSweden', false)
-      // store.commit('setFilterType', false)
 
       if (total > 0) {
         const collectionfacet = response.facets.collectionName.buckets
@@ -242,6 +246,11 @@ async function freeTextSearch(value) {
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
+      store.commit('setFilterImage', false)
+      store.commit('setFilterCoordinates', false)
+      store.commit('setFilterInSweden', false)
+      store.commit('setFilterType', false)
+
       if (total > 0) {
         const collectionfacet = response.facets.collectionName.buckets
         const collectionCodefacet = response.facets.collectionCode.buckets
@@ -250,6 +259,7 @@ async function freeTextSearch(value) {
         store.commit('setSelectedCollectionGroup', collectionfacet)
       } else {
         store.commit('setSelectedCollectionGroup', null)
+        store.commit('setSelectedCollection', null)
       }
     })
     .catch((error) => {

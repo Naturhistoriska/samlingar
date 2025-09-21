@@ -83,7 +83,7 @@ function apiSearch() {
   })
 
   service
-    .apiScientificnameSearch(searchText, searchMode, fuzzySearch, 0, 50)
+    .apiScientificnameSearch(searchText, searchMode)
     .then((response) => {
       const total = response.facets.count
       const results = response.response

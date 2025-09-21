@@ -24,7 +24,7 @@ import se.nrm.samlingar.data.process.logic.util.CommonString;
 @Slf4j
 public class PaleoJsonConverter implements Serializable {
 
-    private final int batchSize = 6000;
+    private final int batchSize = 5000;
 
     private String catalogedDate;
     private String catalogNumber;
@@ -116,7 +116,7 @@ public class PaleoJsonConverter implements Serializable {
 
                     JsonHelper.getInstance().addClassificationForPaleoCollection(attBuilder, classificationJson, record);
 
-                    if(addImages) {
+                    if(addImages ) {
                         JsonHelper.getInstance().addImages(attBuilder,
                             record.get(JsonHelper.getInstance()
                                     .getAssociatedMediaCsvKey(collectionJson)));

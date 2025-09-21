@@ -1,26 +1,13 @@
 package se.nrm.samlingar.api.logic;
- 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter; 
+  
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import javax.inject.Inject; 
-import javax.json.JsonArrayBuilder; 
+import java.util.Map; 
+import javax.inject.Inject;  
 import javax.ws.rs.core.MultivaluedMap;
-import lombok.extern.slf4j.Slf4j; 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang3.StringUtils; 
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
-import se.nrm.samlingar.api.solr.services.Solr;
-import se.nrm.samlingar.api.solr.services.SolrService;
+import lombok.extern.slf4j.Slf4j;  
+import org.apache.commons.lang3.StringUtils;  
+import se.nrm.samlingar.api.solr.services.Solr; 
 import se.nrm.samlingar.api.utils.SolrSearchHelper;
 
 /**
@@ -35,53 +22,40 @@ public class SamlingarLogic {
     
     @Inject
     private Solr solr;
+ 
+ 
+    private final String facetsKey = "facets"; 
 
-    private final String valKey = "val";
-    private final String countKey = "count";
-
-    private final String geohashKey = "geohash";
-    private final String facetsKey = "facets";
-    private final String bucketsKey = "buckets";
-    private final String responseKey = "response";
-    private final String docsKey = "docs";
-
-    private final String latitudeKey = "latitude";
-    private final String longitudeKey = "longitude";
-    private final String geoDataKey = "geoData";
-
-    private final String prefix = "4_";
-
-
-    private final String authorField = "author";
-    private final String catalogNumberField = "catalogNumber";
-    private final String collectionNameField = "collectionName";
-    private final String continentField = "continent";
-    private final String countryField = "country";
-    private final String countyField = "county";
-    private final String currentDeterminationField = "currentDetermination";
-    private final String determinerField = "determiner";
-    private final String districtField = "district";
-    private final String familyField = "family";
-    private final String genusField = "genus";
-    private final String higherTxField = "higherTx";
-    private final String latitudeField = "latitudeText";
-    private final String localityField = "locality";
-    private final String longitudeField = "longitudeText";
-    private final String oceanOrSeaField = "oceanOrSea";
-    private final String preservationField = "preservation";
-    private final String remarksField = "remarks";
-    private final String speciesField = "species";
-    private final String stateField = "state";
-    private final String stationFieldNumberField = "stationFieldNumber";
-    private final String synonymAuthorField = "synonymAuthor";
-    private final String txFullNameField = "txFullName";
-    private final String typeStatusField = "typeStatus";
-
-    private final String catalogedDateField = "catalogedDate";
-    
-    private final String collectorField = "collector";
-    private final String commonNameField = "commonName";
-    private final String preprationField = "prepration";
+//    private final String authorField = "author";
+//    private final String catalogNumberField = "catalogNumber";
+//    private final String collectionNameField = "collectionName";
+//    private final String continentField = "continent";
+//    private final String countryField = "country";
+//    private final String countyField = "county";
+//    private final String currentDeterminationField = "currentDetermination";
+//    private final String determinerField = "determiner";
+//    private final String districtField = "district";
+//    private final String familyField = "family";
+//    private final String genusField = "genus";
+//    private final String higherTxField = "higherTx";
+//    private final String latitudeField = "latitudeText";
+//    private final String localityField = "locality";
+//    private final String longitudeField = "longitudeText";
+//    private final String oceanOrSeaField = "oceanOrSea";
+//    private final String preservationField = "preservation";
+//    private final String remarksField = "remarks";
+//    private final String speciesField = "species";
+//    private final String stateField = "state";
+//    private final String stationFieldNumberField = "stationFieldNumber";
+//    private final String synonymAuthorField = "synonymAuthor";
+//    private final String txFullNameField = "txFullName";
+//    private final String typeStatusField = "typeStatus";
+//
+//    private final String catalogedDateField = "catalogedDate";
+//    
+//    private final String collectorField = "collector";
+//    private final String commonNameField = "commonName";
+//    private final String preprationField = "prepration";
     
     
     
@@ -117,7 +91,7 @@ public class SamlingarLogic {
     private final String toWithStar = " TO *]";
     
     private int start = 0;
-    private int numPerPage = 10;
+    private int numPerPage = 20;
     private boolean isFuzzySearch;
     private String scientificName;
     private String locality;
@@ -130,11 +104,15 @@ public class SamlingarLogic {
     private String dateRange;
     private boolean yearChart;
     private String synonyms;
+    private String catchall;
     
     private String pt;
     
     private final String catchallKey = "catchall";
     private final String copyScientificNameKey = "copy_scientificName";
+    
+    private final String regex = "([+\\-!(){}\\[\\]^\"~*?:\\\\|&])"; 
+    private final String regexReplecement = "\\\\$1";
     
     private StringBuilder dateRangeSb;
     
@@ -180,8 +158,7 @@ public class SamlingarLogic {
     }
      
     public String autoCompleteSearch(String text, String field) {
-        
-      
+         
         if(field.equals(copyScientificNameKey)) {
             text = SolrSearchHelper.getInstance()
                     .buildAutoCompleteSearchText(text, field, false );
@@ -191,15 +168,18 @@ public class SamlingarLogic {
         }
         log.info("autoCompleteSearch text : {}", text);
         return solr.autoCompleteSearch(text, field);
+//        return solr.autocompolete(text);
     }
 
            
     public String scientificNameSearch(String text, String searchMode, int start, int numPerPage, String sort ) {
         log.info("scientificNameSearch : {}", text);
         
-        text = SolrSearchHelper.getInstance().buildScientificName(text, copyScientificNameKey, searchMode);
-        log.info("text... {}", text);
-        return solr.scientificNameSearch(start, numPerPage, text, sort);
+//        text = SolrSearchHelper.getInstance().buildScientificName(text, copyScientificNameKey, searchMode);
+//        log.info("text... {}", text);
+        
+        text = text.replaceAll(regex, regexReplecement);
+        return solr.scientificNameSearch(text);
     }
     
     public String simpleSearch(MultivaluedMap<String, String> queryParams ) {
@@ -213,11 +193,9 @@ public class SamlingarLogic {
     
     
     public String freeTextSearch(String text) {
-        log.info("simpleSearch : {}", text);
-        
-        text = SolrSearchHelper.getInstance().buildFreesearchText(text);
-        log.info("text : {}", text);
-         
+        log.info("freeTextSearch : {}", text);  
+        text = SolrSearchHelper.getInstance().buildContainsQuery(text);
+        log.info("text... : {}", text); 
         return solr.freeTextSearch(text);
     }
     
@@ -242,6 +220,9 @@ public class SamlingarLogic {
                     break;
                 case textKey: 
                     text = queryParams.get(textKey).get(0); 
+                    break;
+                case catchallKey: 
+                    catchall = queryParams.get(catchallKey).get(0);  
                     break;
                 case startDateKey: 
                     startDate = queryParams.get(startDateKey).get(0); 
@@ -277,8 +258,9 @@ public class SamlingarLogic {
         } 
         
         if(scientificName != null) {
-            scientificName = SolrSearchHelper.getInstance().buildSearchText(
-                scientificName, scientificNameKey, searchMode, isFuzzySearch);
+            scientificName = SolrSearchHelper.getInstance()
+                    .buildScientificName(scientificName, copyScientificNameKey, searchMode);
+             
             log.info("scientificName : {}", scientificName);
         }
         
@@ -289,7 +271,13 @@ public class SamlingarLogic {
             log.info("locality : {}", locality);
         }
  
-        text = SolrSearchHelper.getInstance().buildFreeTextSearch(text);
+//        text = SolrSearchHelper.getInstance().buildFreeTextSearch(text);
+        catchall = catchall == null ? text : catchall; 
+        log.info("catchall: {}", catchall);
+        if(catchall != null && !catchall.equals(wildCard)) {
+            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
+        }   
+        log.info("catchall 1: {}", catchall);
         
         dateRangeSb = new StringBuilder();
         if(!StringUtils.isBlank(startDate)) {
@@ -316,8 +304,8 @@ public class SamlingarLogic {
             synonyms = SolrSearchHelper.getInstance().buildSynonyms(synonyms);
             log.info("syynonyms : {}", synonyms);
         }
-        
-        return solr.search(paramMap, text, scientificName, locality, dateRange, facets,
+        log.info("sort... {}", sort);
+        return solr.search(paramMap, catchall, scientificName, locality, synonyms, dateRange, facets,
                 start, numPerPage, sort); 
     } 
     
@@ -367,7 +355,7 @@ public class SamlingarLogic {
     
     
     public String getHeatmap(MultivaluedMap<String, String> queryParams) {
-        Map<String, String> paramMap = new HashMap<>();
+        paramMap = new HashMap<>();
         text = wildCard;
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
              
@@ -381,6 +369,9 @@ public class SamlingarLogic {
                 case textKey: 
                     text = queryParams.get(textKey).get(0); 
                      log.info("why... {}", text);
+                    break;
+                case catchallKey: 
+                    catchall = queryParams.get(catchallKey).get(0);  
                     break;
                 case startDateKey: 
                     startDate = queryParams.get(startDateKey).get(0); 
@@ -428,7 +419,13 @@ public class SamlingarLogic {
             text = SolrSearchHelper.getInstance().buildFreeTextSearch(text);
         }  
         
-        log.info("text.... {}", text);
+        
+        catchall = catchall == null ? text : catchall;
+        if(catchall != null && !catchall.equals(wildCard)) {
+            catchall = SolrSearchHelper.getInstance().buildContainsQuery(text);
+        }  
+        
+        log.info("text.... {}", catchall);
         
         dateRangeSb = new StringBuilder();
         if(!StringUtils.isBlank(startDate)) {
@@ -489,7 +486,7 @@ public class SamlingarLogic {
     
      public String geoJson(MultivaluedMap<String, String> queryParams) {
          
-        Map<String, String> paramMap = new HashMap<>();
+        paramMap = new HashMap<>();
         text = wildCard;
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
              
@@ -501,8 +498,10 @@ public class SamlingarLogic {
                     locality = queryParams.get(localityKey).get(0); 
                     break;
                 case textKey: 
-                    text = queryParams.get(textKey).get(0); 
-                   
+                    text = queryParams.get(textKey).get(0);  
+                    break;
+                case catchallKey: 
+                    catchall = queryParams.get(catchallKey).get(0);  
                     break;
                 case startDateKey: 
                     startDate = queryParams.get(startDateKey).get(0); 
@@ -547,8 +546,13 @@ public class SamlingarLogic {
                 locality, localityKey, contains, true);
             log.info("locality : {}", locality);
         }
-        if(text != null && !text.equals(wildCard)) {
-            text = SolrSearchHelper.getInstance().buildFreeTextSearch(text);
+//        if(text != null && !text.equals(wildCard)) {
+//            text = SolrSearchHelper.getInstance().buildContainsQuery(text);
+//        }  
+        
+        catchall = catchall == null ? text : catchall;
+        if(catchall != null && !catchall.equals(wildCard)) {
+            catchall = SolrSearchHelper.getInstance().buildContainsQuery(text);
         }  
         
         dateRangeSb = new StringBuilder();
@@ -571,21 +575,15 @@ public class SamlingarLogic {
         
         log.info("scientificName : {} -- {}", scientificName, locality);
          
-        return solr.geojson(paramMap, text, scientificName, locality, dateRange,  
+        return solr.geojson(paramMap, catchall, scientificName, locality, dateRange,  
                 start, numPerPage );
         
     } 
-     
-     
-    
-    
-     
-
-    
+       
     public String export(MultivaluedMap<String, String> queryParams) {
         int numperOfRows = 0;
 
-        Map<String, String> paramMap = new HashMap<>();
+        paramMap = new HashMap<>();
         text = wildCard;
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
             
@@ -672,43 +670,43 @@ public class SamlingarLogic {
             
     }
     
-      private byte[] convertSolrDocsToCsvZip(SolrDocumentList docs) throws IOException {
-        if (docs == null || docs.isEmpty()) {
-            throw new IllegalArgumentException("SolrDocumentList is empty");
-        }
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);
-             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(zipOut, "UTF-8"))) {
-
-            // Create a new entry for the CSV file inside the ZIP
-            ZipEntry zipEntry = new ZipEntry(csvFileName);
-            zipOut.putNextEntry(zipEntry);
-
-            // Extract header fields from the first document
-            Set<String> headers = (Set<String>) docs.get(0).getFieldNames();
-
-            // Create CSVPrinter for writing CSV
-            CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
-
-            // Write header row
-            csvPrinter.printRecord(headers);
-
-            // Write document rows
-            for (SolrDocument doc : docs) {
-                for (String header : headers) {
-                    Object value = doc.getFieldValue(header);
-                    csvPrinter.print(value != null ? value.toString() : "");
-                }
-                csvPrinter.println();
-            }
-
-            csvPrinter.flush();
-            zipOut.closeEntry();
-        }
-
-        return byteArrayOutputStream.toByteArray();
-    }
+//      private byte[] convertSolrDocsToCsvZip(SolrDocumentList docs) throws IOException {
+//        if (docs == null || docs.isEmpty()) {
+//            throw new IllegalArgumentException("SolrDocumentList is empty");
+//        }
+//
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);
+//             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(zipOut, "UTF-8"))) {
+//
+//            // Create a new entry for the CSV file inside the ZIP
+//            ZipEntry zipEntry = new ZipEntry(csvFileName);
+//            zipOut.putNextEntry(zipEntry);
+//
+//            // Extract header fields from the first document
+//            Set<String> headers = (Set<String>) docs.get(0).getFieldNames();
+//
+//            // Create CSVPrinter for writing CSV
+//            CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
+//
+//            // Write header row
+//            csvPrinter.printRecord(headers);
+//
+//            // Write document rows
+//            for (SolrDocument doc : docs) {
+//                for (String header : headers) {
+//                    Object value = doc.getFieldValue(header);
+//                    csvPrinter.print(value != null ? value.toString() : "");
+//                }
+//                csvPrinter.println();
+//            }
+//
+//            csvPrinter.flush();
+//            zipOut.closeEntry();
+//        }
+//
+//        return byteArrayOutputStream.toByteArray();
+//    }
 
     
 

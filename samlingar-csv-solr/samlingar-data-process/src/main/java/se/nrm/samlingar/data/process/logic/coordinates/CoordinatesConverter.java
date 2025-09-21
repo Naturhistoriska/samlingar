@@ -173,10 +173,9 @@ public class CoordinatesConverter implements Serializable {
                         StringUtils.replace(lon, comma, dot));
             }  else if(lon.matches(rex1)) {
                 dblLon = Util.getInstance().stringToDouble(StringUtils.substringBefore(lon, degreeSign));
-                if(dblLat >= -180.0 && dblLat <= 180.0) {
-                    return dblLat;
-                } else {
-                    log.error("what...{}", lon);
+                if(dblLon >= -180.0 && dblLon <= 180.0) {
+                    return dblLon;
+                } else { 
                     throw new SamlingarException(ErrorMsg.getInstance().getInvalidCoordinatesErrorMsg() + lon);
                 } 
             } else {

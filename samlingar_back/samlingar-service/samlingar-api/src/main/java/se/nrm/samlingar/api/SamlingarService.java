@@ -34,9 +34,7 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class SamlingarService {
-    
-    private final String star = "*";
-  
+     
     @Inject
     private SamlingarLogic logic;
     
@@ -132,11 +130,7 @@ public class SamlingarService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response freeTextSearch(@QueryParam("catchall") String text) {
         log.info("freeTextSearch {} ", text);
-         
-        if (text == null || text.isEmpty()) {
-            text = star;
-        } 
-        
+          
         return Response.ok(logic.freeTextSearch(text )).build();
     }
     
@@ -153,8 +147,36 @@ public class SamlingarService {
         log.info("idSearch... {}", id); 
         return Response.ok(logic.searchWithId(id)).build();
     }
-
     
+    @GET
+    @Path("/geojson")
+    @ApiOperation(value = "geojson",
+            notes = "Return data in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response geojson(@Context UriInfo uriInfo ) { 
+        log.info("start....");
+        
+        return Response.ok(logic
+                .geoJson(uriInfo.getQueryParameters())).build(); 
+    }
+    
+        
+    
+
+    @GET
+    @Path("/download")
+    @ApiOperation(value = "download",
+            notes = "Return data in json",
+            response = String.class
+    ) 
+    public Response download(@Context UriInfo uriInfo ) {  
+        log.info("download");
+          
+        return Response.ok(logic
+                .export(uriInfo.getQueryParameters())).build();
+    }
     
     
     
@@ -221,40 +243,9 @@ public class SamlingarService {
 
 
 
-    @GET
-    @Path("/download")
-    @ApiOperation(value = "download",
-            notes = "Return data in json",
-            response = String.class
-    )
-//    @Produces(MediaType.APPLICATION_JSON) 
-    public Response download(@Context UriInfo uriInfo ) {  
-        log.info("download");
-          
-        return Response.ok(logic
-                .export(uriInfo.getQueryParameters())).build();
-    }
+
     
-    @GET
-    @Path("/geojson")
-    @ApiOperation(value = "geojson",
-            notes = "Return data in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response geojson(@Context UriInfo uriInfo ) {
-         
-        log.info("start....");
-        
-        Response res = Response.ok(logic
-                .geoJson(uriInfo.getQueryParameters())).build();
-        
-        
-        log.info("end.....");
-        return res;
-    }
-    
-        
+ 
     
     
     

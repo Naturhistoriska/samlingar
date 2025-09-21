@@ -37,10 +37,9 @@ import Navigation from './components/Navigation.vue'
   /* color: #fff !important; */
   background: transparent !important;
 }
-.p-menu {
-  /* color: #fff !important; */
+/* .p-menu {
   background: transparent !important;
-}
+} */
 
 .p-button-link {
   /* color: #fff !important; */
