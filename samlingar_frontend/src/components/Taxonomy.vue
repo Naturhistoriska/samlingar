@@ -1,6 +1,7 @@
 <template>
   <div style="font-size: 12px">
     <nhrs-taxonomy v-if="isNhrsCollection" />
+    <bot-taxonomy v-else-if="isBotCollection" />
     <pal-taxonomy v-else-if="isPalCollection" />
     <zoo-taxonomy v-else-if="isZooCollection" />
     <common-taxonomy v-else />
@@ -9,6 +10,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 
+import BotTaxonomy from './taxonomy/BotTaxonomy.vue'
 import CommonTaxonomy from './taxonomy/CommonTaxonomy.vue'
 import NhrsTaxonomy from './taxonomy/NhrsTaxonomy.vue'
 import PalTaxonomy from './taxonomy/PalTaxonomy.vue'

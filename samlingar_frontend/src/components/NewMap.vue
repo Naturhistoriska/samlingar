@@ -71,9 +71,36 @@ watch(
   }
 )
 
-onMounted(() => {
+onMounted(async () => {
   console.log('onMounted', props.entry, props.from, props.reloadData)
-  fetchHeatmapData()
+
+  const entryType = props.entry
+  const total = store.getters['totalRecords']
+
+  const isUrlPush = store.getters['isUrlPush']
+
+  await new Promise((r) => setTimeout(r, 1500))
+
+  let reloadMap = false
+  if (total >= 50000) {
+    if (entryType === 'first-visit' || entryType === 'reload') {
+      reloadMap = true
+    } else {
+      if (isUrlPush) {
+        reloadMap = true
+        store.commit('setIsUrlPush', false)
+      }
+    }
+    if (reloadMap) {
+      let params = store.getters['searchParams']
+      if (params === null) {
+        params = new URLSearchParams({
+          catchall: '*'
+        })
+      }
+      await fetchHeatmapData()
+    }
+  }
 })
 
 async function fetchHeatmapData() {

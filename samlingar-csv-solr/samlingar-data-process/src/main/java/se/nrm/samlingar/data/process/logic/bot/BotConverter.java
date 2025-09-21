@@ -21,6 +21,7 @@ import se.nrm.samlingar.data.process.vo.Synonyms;
 public class BotConverter implements Serializable {
     
     private final String identificationKey = "previousIdentifications";
+    private final String identifiedByKey = "identifiedBy";
     private final String hasImagesKey = "hasImage";
     private final String associatedMediaKey = "associatedMedia";
     private final String emptySpace = " ";
@@ -28,6 +29,7 @@ public class BotConverter implements Serializable {
     private final String endBracket = "]";
     
     private final String scientificNameAuthorshipKey = "scientificNameAuthorship";
+    private final String scientificNameKey = "scientificName";
     private final String speciesKey = "species";
     private final String genusKey = "genus";
     private final String familyKey = "family";
@@ -80,7 +82,8 @@ public class BotConverter implements Serializable {
             JsonHelper.getInstance().addAttValue(builder, speciesKey, nameSynonyms.getName());
             JsonHelper.getInstance().addAttValue(builder, familyKey, nameSynonyms.getFamily());
             JsonHelper.getInstance().addAttValue(builder, genusKey, nameSynonyms.getGenus());
-            
+            JsonHelper.getInstance().addAttValue(builder, scientificNameKey, nameSynonyms.getName());
+ 
             addSynomys(builder, nameSynonyms.getSynomys());
         }
 
@@ -120,13 +123,15 @@ public class BotConverter implements Serializable {
                             taxonWithAuthor = vo.getCurrentDetermination();
                             identifiedBy = vo.getIdentifiedBy(); 
                             dateIdentified = vo.getDateIdentified();
-
+                            JsonHelper.getInstance().addAttValue(builder, identifiedByKey, identifiedBy );
+ 
                             if (taxonWithAuthor != null) {
                                 determinationSb.append(taxonWithAuthor);
                                 if (identifiedBy != null) {
+                                    builder.add(identificationKey, determinationArrayBuilder);
                                     determinationSb.append(emptySpace);
                                     determinationSb.append(identifiedBy);
-
+                                    
                                 }
                                 if (!StringUtils.isBlank(dateIdentified)) {
                                     determinationSb.append(emptySpace);

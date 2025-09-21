@@ -12,11 +12,6 @@
         {{ institution }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.collectionCode') }}</div>
-      <div class="col-8 reducePadding">
-        {{ code }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
       <div class="col-8 reducePadding">
         {{ catNumber }}
@@ -47,6 +42,11 @@
         {{ preservationData }}
       </div>
 
+      <div class="col-4 reducePadding">{{ $t('results.individualCount') }}</div>
+      <div class="col-8 reducePadding">
+        {{ count }}
+      </div>
+
       <div class="col-4 reducePadding">{{ $t('results.lifeStage') }}</div>
       <div class="col-8 reducePadding">
         {{ stage }}
@@ -55,11 +55,6 @@
       <div class="col-4 reducePadding">{{ $t('results.sex') }}</div>
       <div class="col-8 reducePadding">
         {{ sexData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.recordNumber') }}</div>
-      <div class="col-8 reducePadding">
-        {{ recordNo }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
@@ -86,7 +81,6 @@ const store = useStore()
 
 const dateCataloged = ref()
 const catNumber = ref()
-const code = ref()
 const collection = ref()
 const count = ref()
 const expeditionNameData = ref()
@@ -97,7 +91,6 @@ const preparationString = ref()
 
 const preservationData = ref()
 
-const recordNo = ref()
 const recored = ref()
 const recordType = ref()
 const remarks = ref()
@@ -112,7 +105,6 @@ onMounted(async () => {
     basisOfRecord,
     catalogedDate,
     catalogNumber,
-    collectionCode,
     collectionName,
     expeditionName,
     individualCount,
@@ -122,7 +114,6 @@ onMounted(async () => {
     preparations,
     preservation,
     recordedBy,
-    recordNumber,
     sex
   } = record
 
@@ -134,7 +125,6 @@ onMounted(async () => {
       .format('YYYY-MM-DD')
   }
 
-  code.value = collectionCode
   collection.value = collectionName
   count.value = individualCount
 
@@ -151,8 +141,10 @@ onMounted(async () => {
 
   preservationData.value = preservation
 
-  recordNo.value = recordNumber
-  recored.value = recordedBy
+  if (recordedBy) {
+    recored.value = recordedBy.join(', ')
+  }
+
   recordType.value = basisOfRecord
   remarks.value = occurrenceRemarks
 

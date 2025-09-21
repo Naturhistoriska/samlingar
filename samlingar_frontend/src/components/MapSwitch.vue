@@ -1,6 +1,6 @@
 <template>
   <div v-if="isHeatMap">
-    <large-map />
+    <large-map v-bind:entry="entryType" v-bind:from="from" v-bind:reloadData="reloadMapData" />
   </div>
   <div v-else>
     <Map v-bind:entry="entryType" v-bind:from="from" v-bind:reloadData="reloadMapData" />

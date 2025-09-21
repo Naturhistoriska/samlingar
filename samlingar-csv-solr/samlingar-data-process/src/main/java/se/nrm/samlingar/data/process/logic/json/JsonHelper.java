@@ -68,6 +68,7 @@ public class JsonHelper {
     
     private final String geoKey = "geo";
     private final String verbatimCoordinatesKey = "verbatimCoordinates";
+    private final String latLongKey = "lat_long";
     
     private final String countryKey = "country";
     private final String exsiccatKey = "exsiccate";
@@ -670,7 +671,7 @@ public class JsonHelper {
         coordinatesSb.append(latitude);
         coordinatesSb.append(comma);
         coordinatesSb.append(longitude);
-        attBuilder.add(verbatimCoordinatesKey, coordinatesSb.toString().trim());
+        attBuilder.add(latLongKey, coordinatesSb.toString().trim());
         attBuilder.add(geoKey, coordinatesSb.toString().trim());
 //        attBuilder.add(geopointKey, coordinatesSb.toString().trim());
     }

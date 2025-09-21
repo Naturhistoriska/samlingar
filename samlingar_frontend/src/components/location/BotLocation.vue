@@ -36,6 +36,11 @@
       <div class="col-8 reducePadding">
         {{ longigude }}
       </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.verbatimCoordinates') }}</div>
+      <div class="col-8 reducePadding">
+        {{ coordinates }}
+      </div>
     </div>
   </div>
 </template>
@@ -54,6 +59,7 @@ const longigude = ref()
 const localityName = ref()
 
 const state = ref()
+const coordinates = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -65,16 +71,24 @@ onMounted(async () => {
     locality,
     decimalLongitude,
     decimalLatitude,
-    stateProvince
+    stateProvince,
+    verbatimCoordinates
   } = record
 
   theCountry.value = country
   state.value = stateProvince
   theContinent.value = continent
   theDistrict.value = district
-  latitude.value = decimalLatitude
-  longigude.value = decimalLongitude
+
+  if (decimalLatitude) {
+    latitude.value = decimalLatitude.toFixed(5)
+  }
+  if (decimalLongitude) {
+    longigude.value = decimalLongitude.toFixed(5)
+  }
+
   localityName.value = locality
+  coordinates.value = verbatimCoordinates
 })
 </script>
 <style scoped>

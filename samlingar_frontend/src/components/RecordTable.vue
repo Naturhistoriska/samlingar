@@ -61,12 +61,12 @@
           </div>
         </template>
       </Column> -->
-      <Column expander style="width: 5rem" />
+      <Column expander style="width: 2rem" />
       <Column
         field="collectionName"
         header="Collection name"
         :showFilterMenu="false"
-        style="min-width: 10rem; max-width: 10rem"
+        style="min-width: 8rem; max-width: 8rem"
       >
         <template #body="{ data }">
           {{ data.collectionName }}
@@ -101,7 +101,7 @@
       <Column
         field="scientificName"
         header="Scientific Name"
-        style="min-width: 14rem; max-width: 14rem"
+        style="min-width: 10rem; max-width: 10rem"
         filterField="scientificName"
         sortable
         :filter="true"

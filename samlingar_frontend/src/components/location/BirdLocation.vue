@@ -77,6 +77,7 @@ onMounted(async () => {
   const {
     continent,
     country,
+
     decimalLongitude,
     decimalLatitude,
     locality,

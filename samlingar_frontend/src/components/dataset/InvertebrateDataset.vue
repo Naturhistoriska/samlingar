@@ -12,11 +12,6 @@
         {{ institution }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.collectionCode') }}</div>
-      <div class="col-8 reducePadding">
-        {{ code }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
       <div class="col-8 reducePadding">
         {{ catNumber }}
@@ -42,29 +37,14 @@
         {{ preparationString }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collectors }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.habitat') }}</div>
-      <div class="col-8 reducePadding">
-        {{ habitatData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.minimumDepthInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ minimumDepth }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.maximumDepthInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ maximumDepth }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.individualCount') }}</div>
       <div class="col-8 reducePadding">
         {{ count }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
+      <div class="col-8 reducePadding">
+        {{ collectors }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
@@ -86,14 +66,10 @@ const store = useStore()
 
 const dateCataloged = ref()
 const catNumber = ref()
-const code = ref()
 const collection = ref()
 const collectors = ref()
 const count = ref()
 const expeditionNameData = ref()
-const habitatData = ref()
-const maximumDepth = ref()
-const minimumDepth = ref()
 const institution = ref()
 const preparationList = ref()
 const preparationString = ref()
@@ -107,14 +83,9 @@ onMounted(async () => {
     basisOfRecord,
     catalogedDate,
     catalogNumber,
-    collectionCode,
     collectionName,
     expeditionName,
-    habitat,
     individualCount,
-    institutionCode,
-    maximumDepthInMeters,
-    minimumDepthInMeters,
     occurrenceRemarks,
     preparations,
     recordedBy
@@ -128,18 +99,13 @@ onMounted(async () => {
       .format('YYYY-MM-DD')
   }
 
-  code.value = collectionCode
   collection.value = collectionName
   collectors.value = recordedBy ? recordedBy.toString() : ''
   count.value = individualCount
 
   expeditionNameData.value = expeditionName
 
-  habitatData.value = habitat
-  institution.value = t('common.institution') + ' [ ' + institutionCode + ' ]'
-
-  maximumDepth.value = maximumDepthInMeters
-  minimumDepth.value = minimumDepthInMeters
+  institution.value = t('common.institution') + ' [ NRM  ]'
 
   if (preparations) {
     preparationList.value = preparations

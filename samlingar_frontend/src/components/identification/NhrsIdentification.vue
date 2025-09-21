@@ -17,6 +17,11 @@
         {{ identificationQualifierData }}
       </div>
 
+      <div class="col-3 reducePadding">{{ $t('results.previousIdentifications') }}</div>
+      <div class="col-9 reducePadding">
+        {{ additionalDetermination }}
+      </div>
+
       <div class="col-4 reducePadding">{{ $t('results.typeStatus') }}</div>
       <div class="col-8 reducePadding">
         {{ typeStatusData }}
@@ -39,6 +44,7 @@ const identifyDate = ref()
 const identifiedByData = ref()
 const identificationQualifierData = ref()
 const typeStatusData = ref()
+const additionalDetermination = ref()
 
 const remarks = ref()
 
@@ -50,8 +56,13 @@ onMounted(async () => {
     identifiedBy,
     identificationQualifier,
     identificationRemarks,
+    previousIdentifications,
     typeStatus
   } = record
+
+  if (previousIdentifications) {
+    additionalDetermination.value = previousIdentifications.join(', ')
+  }
 
   identifyDate.value = dateIdentified
   identifiedByData.value = identifiedBy

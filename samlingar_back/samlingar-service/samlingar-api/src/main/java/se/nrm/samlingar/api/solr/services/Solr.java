@@ -269,7 +269,7 @@ public class Solr implements Serializable {
     public String autoCompleteSearch(String text, String field) {
         log.info("autoCompleteSearch: {} -- {}", text, field);
         
-        final TermsFacetMap facet = new TermsFacetMap(field).setLimit(50);
+        final TermsFacetMap facet = new TermsFacetMap(field).setLimit(50); 
 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)
@@ -284,7 +284,7 @@ public class Solr implements Serializable {
             log.error(ex.getMessage());
             return null;
         } finally {
-            try {
+            try {   
                 client.close();
             } catch (IOException ex) {
                 log.error(ex.getMessage());

@@ -51,6 +51,15 @@
         {{ theSpecies }}
       </div>
 
+      <div class="col-4 reducePadding">{{ $t('results.infraspecificEpithet') }}</div>
+      <div class="col-8 reducePadding">
+        {{ infraspecificEpithetData }}
+      </div>
+      <div class="col-4 reducePadding">{{ $t('results.specificEpithet') }}</div>
+      <div class="col-8 reducePadding">
+        {{ specificEpithetData }}
+      </div>
+
       <div class="col-4 reducePadding">{{ $t('results.vernacularName') }}</div>
       <div class="col-8 reducePadding">
         {{ commonName }}
@@ -59,15 +68,6 @@
       <div class="col-4 reducePadding">{{ $t('results.synonyms') }}</div>
       <div class="col-8 reducePadding">
         {{ synonymsData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.infraspecificEpithet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ infraspecificEpithetData }}
-      </div>
-      <div class="col-4 reducePadding">{{ $t('results.specificEpithet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ specificEpithetData }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.taxonRemarks') }}</div>
@@ -124,7 +124,10 @@ onMounted(async () => {
   } = record
 
   theClass.value = clazz
-  commonName.value = vernacularName
+
+  if (vernacularName) {
+    commonName.value = vernacularName.join(' | ')
+  }
 
   infraspecificEpithetData.value = infraspecificEpithet
 

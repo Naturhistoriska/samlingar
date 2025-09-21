@@ -2,18 +2,18 @@
   <div style="font-size: 12px">
     <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
-      <div class="col-3 reducePadding">{{ $t('results.collectionName') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.collectionName') }}</div>
+      <div class="col-8 reducePadding">
         {{ collection }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.institiutionCode') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.institiutionCode') }}</div>
+      <div class="col-8 reducePadding">
         {{ institution }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.catalogNumber') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
+      <div class="col-8 reducePadding">
         {{ catNumber }}
       </div>
 
@@ -27,57 +27,57 @@
         {{ dateCataloged }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.modified') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
+      <div class="col-8 reducePadding">
         {{ modifiedDate }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.recordType') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.recordType') }}</div>
+      <div class="col-8 reducePadding">
         {{ recordType }}
       </div>
 
-      <div class="col-3 reducePadding" v-if="isMineralCollection">{{ $t('results.minerals') }}</div>
-      <div class="col-9 reducePadding" v-if="isMineralCollection">
+      <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.minerals') }}</div>
+      <div class="col-8 reducePadding" v-if="isMineralCollection">
         {{ minerals }}
       </div>
 
-      <div class="col-3 reducePadding" v-if="isMineralCollection">{{ $t('results.serie') }}</div>
-      <div class="col-9 reducePadding" v-if="isMineralCollection">
+      <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.serie') }}</div>
+      <div class="col-8 reducePadding" v-if="isMineralCollection">
         {{ serieData }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.preparation') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
+      <div class="col-8 reducePadding">
         {{ preparationString }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
+      <div class="col-8 reducePadding">
         {{ collectors }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.individualCount') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.individualCount') }}</div>
+      <div class="col-8 reducePadding">
         {{ count }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.license') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.license') }}</div>
+      <div class="col-8 reducePadding">
         {{ specimenLicense }}
       </div>
-      <div class="col-3 reducePadding">{{ $t('results.previousIdentifications') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.previousIdentifications') }}</div>
+      <div class="col-8 reducePadding">
         {{ additionalDetermination }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
+      <div class="col-8 reducePadding">
         {{ occurrenceAttRemarks }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
+      <div class="col-8 reducePadding">
         {{ remarks }}
       </div>
     </div>
@@ -95,7 +95,6 @@ const additionalDetermination = ref()
 
 const catNumber = ref()
 const count = ref()
-const code = ref()
 const collection = ref()
 const collectors = ref()
 
@@ -132,12 +131,11 @@ onMounted(async () => {
     associeradeMineral,
     basisOfRecord,
     catalogNumber,
-    collectionCode,
     collectionName,
     catalogedDate,
     individualCount,
     institutionCode,
-    institutionID,
+    institutionName,
     license,
     modified,
     occurrenceAttributeRemarks,
@@ -164,7 +162,7 @@ onMounted(async () => {
       .format('YYYY-MM-DD')
   }
 
-  institution.value = institutionID + ' [ ' + institutionCode + ' ] '
+  institution.value = institutionName + ' [ ' + institutionCode + ' ] '
 
   if (modified) {
     modifiedDate.value = moment

@@ -227,6 +227,7 @@
     "accession": "Accession number",
     "backToResultListView": "Tillbaka till resultatlistan",
     "backToReslutView": "Tillbaka till resultatlistan",
+    "basionym": "Original name basionym",
     "catalogedDate": "Registreringsdatum",
     "catalogNumber": "Katalognummer",
     "class": "Klass",
@@ -240,6 +241,7 @@
     "dataset": "Dataset",
     "dataResource": "Data resource",
     "description": "Description",
+    "determinations": "Bestämningar",
     "district": "district",
     "earliestAgeOrLowestStage": "Minimal ålder ålder",
     "earliestEpochOrLowestSeries": "Minimal ålder epok",
@@ -339,6 +341,7 @@
     "typeStatus": "Typstatus",
     "waterBody": "Vatten",
     "verbatimEventDate": "Verbatim event date",
+    "verbatimCoordinates": "Verbatim coordinates",
     "vernacularName": "Svenskt namn"
   },
   "records": {

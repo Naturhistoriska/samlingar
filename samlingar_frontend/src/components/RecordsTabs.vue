@@ -4,8 +4,8 @@
       <TabList>
         <Tab value="0">{{ $t('records.list') }}</Tab>
         <Tab value="1">{{ $t('records.labels') }}</Tab>
-        <Tab value="2" disabled>{{ $t('records.media') }}</Tab>
-        <Tab value="3" disabled>
+        <!-- <Tab value="2">{{ $t('records.media') }}</Tab> -->
+        <Tab value="2" disabled>
           <span class="text-900 font-bold">
             [{{ $t('results.searchResults') }} {{ $t('results.num_results', totalCount) }}]
           </span>
@@ -23,9 +23,9 @@
         <TabPanel value="1" v-if="isLableView">
           <RecordLabels @search="handleSearch" />
         </TabPanel>
-        <TabPanel value="2">
+        <!-- <TabPanel value="2">
           <RecordMedia v-if="isMediaView" />
-        </TabPanel>
+        </TabPanel> -->
       </TabPanels>
     </Tabs>
   </div>
@@ -36,7 +36,7 @@ import { useStore } from 'vuex'
 import Download from './Download.vue'
 import RecordLabels from './RecordLabels.vue'
 import RecordTable from './RecordTable.vue'
-import RecordMedia from './RecordMedia.vue'
+// import RecordMedia from './RecordMedia.vue'
 
 const store = useStore()
 
@@ -52,9 +52,9 @@ const isLableView = computed(() => {
   return value.value == 1
 })
 
-const isMediaView = computed(() => {
-  return value.value == 2
-})
+// const isMediaView = computed(() => {
+//   return value.value == 2
+// })
 
 const totalCount = computed(() => {
   return store.getters['totalRecords']

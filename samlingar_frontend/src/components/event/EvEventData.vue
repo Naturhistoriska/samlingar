@@ -7,16 +7,6 @@
         {{ verbatimEventDateData }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.startDayOfYear') }}</div>
-      <div class="col-8 reducePadding">
-        {{ dayOfYear }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.eventDayOfYear') }}</div>
-      <div class="col-8 reducePadding">
-        {{ eventEndDayOfYear }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.fieldNumber') }}</div>
       <div class="col-8 reducePadding">
         {{ eventStationNumber }}
@@ -35,20 +25,16 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const eventEndDayOfYear = ref()
 const eventStationNumber = ref()
-const dayOfYear = ref()
 const habitatData = ref()
 const verbatimEventDateData = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
-  const { endDayOfYear, habitat, stationNumber, startDayOfYear, verbatimEventDate } = record
+  const { habitat, stationNumber, verbatimEventDate } = record
 
-  eventEndDayOfYear.value = endDayOfYear
   eventStationNumber.value = stationNumber
-  dayOfYear.value = startDayOfYear
 
   habitatData.value = habitat
 

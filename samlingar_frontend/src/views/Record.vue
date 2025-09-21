@@ -20,7 +20,10 @@
         <div class="col-12" no-gutters>
           <Location v-bind:code="code" />
         </div>
-        <geological-context v-if="isPalCollection" />
+        <div class="col-12" no-gutters>
+          <geological-context v-if="isPalCollection" />
+        </div>
+
         <div class="col-12" no-gutters>
           <record-identification v-bind:code="code" />
         </div>

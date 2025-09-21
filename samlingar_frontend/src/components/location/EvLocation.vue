@@ -56,6 +56,7 @@ const longigude = ref()
 const localityName = ref()
 const minDepthInMeters = ref()
 const maxDepthInMeters = ref()
+
 const state = ref()
 const water = ref()
 

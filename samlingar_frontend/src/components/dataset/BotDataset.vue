@@ -12,11 +12,6 @@
         {{ institution }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.collectionCode') }}</div>
-      <div class="col-8 reducePadding">
-        {{ code }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
       <div class="col-8 reducePadding">
         {{ catNumber }}
@@ -27,14 +22,14 @@
         {{ dateCataloged }}
       </div>
 
+      <div class="col-4 reducePadding">{{ $t('results.recordNumber') }}</div>
+      <div class="col-8 reducePadding">
+        {{ recordNu }}
+      </div>
+
       <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
       <div class="col-8 reducePadding">
         {{ modifiedDate }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.expeditionName') }}</div>
-      <div class="col-8 reducePadding">
-        {{ expeditionNameData }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
@@ -45,11 +40,6 @@
       <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
       <div class="col-8 reducePadding">
         {{ collectors }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
-      <div class="col-8 reducePadding">
-        {{ modifiedDate }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
@@ -71,16 +61,15 @@ const store = useStore()
 
 const dateCataloged = ref()
 const catNumber = ref()
-const code = ref()
 const collection = ref()
 const collectors = ref()
 
-const expeditionNameData = ref()
 const institution = ref()
 const modifiedDate = ref()
 const preparationList = ref()
 const preparationString = ref()
 const remarks = ref()
+const recordNu = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -88,11 +77,11 @@ onMounted(async () => {
   const {
     catalogedDate,
     catalogNumber,
-    collectionCode,
     collectionName,
     modified,
     preparations,
     recordedBy,
+    recordNumber,
     occurrenceRemarks
   } = record
 
@@ -104,7 +93,6 @@ onMounted(async () => {
       .format('YYYY-MM-DD')
   }
 
-  code.value = collectionCode
   collection.value = collectionName
   collectors.value = recordedBy ? recordedBy.toString() : ''
 
@@ -121,6 +109,7 @@ onMounted(async () => {
     preparationString.value = preparationList.value.join(', ')
   }
   remarks.value = occurrenceRemarks
+  recordNu.value = recordNumber
 })
 </script>
 <style scoped>

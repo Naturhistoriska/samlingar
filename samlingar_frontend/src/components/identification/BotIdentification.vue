@@ -2,21 +2,19 @@
   <div style="font-size: 12px">
     <p style="font-weight: bold; font-size: 1em">{{ $t('results.identification') }}</p>
     <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.dateIdentified') }}</div>
+      <div class="col-4 reducePadding">{{ $t('results.determinations') }}</div>
       <div class="col-8 reducePadding">
-        {{ identifyDate }}
-      </div>
-
-      <div class="col-4 reducePadding">
-        {{ $t('results.identifiedYear') }}
-      </div>
-      <div class="col-8 reducePadding">
-        {{ yearIdentified }}
+        {{ determinations }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.identifiedBy') }}</div>
       <div class="col-8 reducePadding">
         {{ identifiedByData }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.basionym') }}</div>
+      <div class="col-8 reducePadding">
+        {{ basionym }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.typeStatus') }}</div>
@@ -32,20 +30,22 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const identifyDate = ref()
+const basionym = ref()
 const identifiedByData = ref()
-const yearIdentified = ref()
+const determinations = ref()
 const typeStatusData = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
-  const { dateIdentified, identifiedBy, identifiedYear, typeStatus } = record
+  const { identifiedBy, originalnameBasionym, previousIdentifications, typeStatus } = record
 
-  identifyDate.value = dateIdentified
+  basionym.value = originalnameBasionym
+  if (previousIdentifications) {
+    determinations.value = previousIdentifications.join(', ')
+  }
   identifiedByData.value = identifiedBy
 
-  yearIdentified.value = identifiedYear
   typeStatusData.value = typeStatus
 })
 </script>

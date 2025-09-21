@@ -81,12 +81,12 @@ onMounted(() => {
     const botnayColection = 'vp, fungi, mosses, algae'
     const kbo = 'algae, fungi, mosses'
     const paleo = 'pz, pa'
-    const zoo = 'ev, et, pi, he'
+    const zoo = 'ev, et, PI, HE'
 
     let smallImage = 'tumme'
     if (associatedMedia) {
       if (botnayColection.includes(collectionCode)) {
-        if (kbo.includes(collectionId)) {
+        if (kbo.includes(collectionCode)) {
           dataset.value = '&dataset=kbo'
         } else {
           smallImage = 'mini'
@@ -100,9 +100,16 @@ onMounted(() => {
         if (paleo.includes(collectionCode)) {
           dataset.value = '&dataset=pal'
         } else if (zoo.includes(collectionCode)) {
-          dataset.value = '&dataset=' + collectionCode
+          if (collectionCode === 'HE') {
+            dataset.value = '&dataset=herps'
+          } else if (collectionCode === 'PI') {
+            dataset.value = '&dataset=fish'
+          } else {
+            dataset.value = '&dataset=' + collectionCode
+          }
         }
         images.value = associatedMedia.filter((media) => !media.includes(smallImage))
+        console.log('dataset.value', dataset.value)
       }
     }
   }

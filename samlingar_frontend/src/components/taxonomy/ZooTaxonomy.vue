@@ -50,6 +50,13 @@
         {{ infraspecificEpithetData }}
       </div>
 
+      <div class="col-4 reducePadding" v-if="isEvCollection">
+        {{ $t('results.infragenericEpithet') }}
+      </div>
+      <div class="col-8 reducePadding" v-if="isEvCollection">
+        {{ infragenericEpithetData }}
+      </div>
+
       <div class="col-4 reducePadding">{{ $t('results.specificEpithet') }}</div>
       <div class="col-8 reducePadding">
         {{ specificEpithetData }}
@@ -65,13 +72,6 @@
       </div>
       <div class="col-8 reducePadding" v-if="hasKindomAndSynonyms">
         {{ synonymsData }}
-      </div>
-
-      <div class="col-4 reducePadding" v-if="isEvCollection">
-        {{ $t('results.infragenericEpithet') }}
-      </div>
-      <div class="col-8 reducePadding" v-if="isEvCollection">
-        {{ infragenericEpithetData }}
       </div>
     </div>
   </div>

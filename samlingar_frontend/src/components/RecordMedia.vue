@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <DataView
-      :value="images"
+      :value="records"
       layout="grid"
       paginator
       :rows="30"
@@ -25,7 +25,7 @@
                 <template #title>
                   <div class="grid">
                     <div class="col-10" no-gutters>
-                      <media-image v-bind:mediaUrl="item" />
+                      <media-image v-bind:mediaUrl="item" v-bind:dataset="dataset" />
                     </div>
                     <div class="col-2" no-gutters>
                       <Button variant="link" @click="view(item)">
@@ -73,48 +73,17 @@ let records = ref(Array.from({ length: 50 }))
 let images = ref([])
 let dataset = ref()
 
-const searchText = computed(() => {
-  let text = store.getters['searchText']
-  return text ? text : '*'
-})
-
-const scientificName = computed(() => {
-  return store.getters['scientificName']
-})
-
-const isFuzzySearch = computed(() => {
-  return store.getters['isFuzzySearch']
-})
-
-const hasCoordinates = computed(() => {
-  return store.getters['filterCoordinates']
-})
-
-const isInSweden = computed(() => {
-  return store.getters['filterInSweden']
-})
-
-const isType = computed(() => {
-  return store.getters['filterType']
-})
-
-const startDate = computed(() => {
-  return store.getters['startDate']
-})
-
-const endDate = computed(() => {
-  return store.getters['endDate']
-})
-
 onMounted(async () => {
   console.log('media onMounted')
 
   await new Promise((res) => setTimeout(res, 500))
 
-  fetchData(0, 30)
+  let params = store.getters['searchParams']
+  fetchData(params, 0, 30)
 })
 
 function buildImages() {
+  console.log('records', records.value)
   records.value.forEach((record) => {
     const { associatedMedia, catalogNumber, collectionCode, scientificName } = record
 
@@ -157,75 +126,26 @@ function buildImages() {
         images.value.push(medias)
       }
     }
-
-    console.log('images', images)
   })
 }
 
-function fetchData(start, end) {
-  const fields = store.getters['fields']
-  console.log('fields', fields)
-
-  // const params = new URLSearchParams({
-  //   text: searchText.value,
-  //   scientificName: scientificName.value,
-  //   fuzzySearch: isFuzzySearch.value,
-  //   hasImages: true,
-  //   isType: isType.value,
-  //   isInSweden: isInSweden.value,
-  //   hasCoordinates: hasCoordinates.value,
-  //   startDate: startDate.value,
-  //   endDate: endDate.value
-  // })
-
-  const params = new URLSearchParams({
-    text: searchText.value,
-    hasImages: true
-  })
-
-  if (scientificName.value) {
-    params.set('scientificName', scientificName.value)
-    params.set('fuzzySearch', isFuzzySearch.value)
-  }
-
-  if (isType.value) {
-    params.set('isType', isType.value)
-  }
-
-  if (isInSweden.value) {
-    params.set('isInSweden', isInSweden.value)
-  }
-
-  if (hasCoordinates.value) {
-    params.set('hasCoordinates', hasCoordinates.value)
-  }
-
-  if (startDate.value) {
-    params.set('startDate', startDate.value)
-  }
-
-  if (endDate.value) {
-    params.set('endDate', endDate.value)
-  }
-
-  fields
-    .filter((field) => field.text)
-    .forEach((field) => {
-      console.log('what...', field.value, field.text)
-      params.set(field.value, field.text)
-    })
+function fetchData(params, start, end) {
+  params.set('hasImage', '*')
 
   service
     .apiSearch(params, start, end)
     .then((response) => {
-      records.value = response.response.docs
-      const total = response.response.numFound
-      store.commit('setTotalRecords', total)
+      const total = response.facets.count
+      records.value = response.response
+
+      console.log('recordes...', records.value)
+
+      if (total > 0) {
+        buildImages()
+      }
     })
     .catch()
-    .finally(() => {
-      buildImages()
-    })
+    .finally(() => {})
 }
 
 const onPage = async (event) => {
@@ -241,6 +161,7 @@ const totalCount = computed(() => {
 })
 
 function view(data) {
+  console.log('view', data, data.id)
   store.commit('setSelectedRecord', data)
   router.push(`/record/${data.id}`)
 }

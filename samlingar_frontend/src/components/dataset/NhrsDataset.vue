@@ -2,18 +2,18 @@
   <div style="font-size: 12px">
     <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
-      <div class="col-3 reducePadding">{{ $t('results.collectionName') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.collectionName') }}</div>
+      <div class="col-8 reducePadding">
         {{ collection }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.institiutionCode') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.institiutionCode') }}</div>
+      <div class="col-8 reducePadding">
         {{ institution }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.catalogNumber') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
+      <div class="col-8 reducePadding">
         {{ catNumber }}
       </div>
 
@@ -27,75 +27,70 @@
         {{ dateCataloged }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.recordType') }}</div>
-      <div class="col-9 reducePadding">
-        {{ recordType }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.preparation') }}</div>
-      <div class="col-9 reducePadding">
-        {{ preparationString }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-9 reducePadding">
-        {{ collectors }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.sex') }}</div>
-      <div class="col-9 reducePadding">
-        {{ specimenSex }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.lifeStage') }}</div>
-      <div class="col-9 reducePadding">
-        {{ stage }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.reproductiveCondition') }}</div>
-      <div class="col-9 reducePadding">
-        {{ reproductCondition }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.individualCount') }}</div>
-      <div class="col-9 reducePadding">
-        {{ count }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.license') }}</div>
-      <div class="col-9 reducePadding">
-        {{ specimenLicense }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.modified') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
+      <div class="col-8 reducePadding">
         {{ modifiedDate }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.accession') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.recordType') }}</div>
+      <div class="col-8 reducePadding">
+        {{ recordType }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
+      <div class="col-8 reducePadding">
+        {{ preparationString }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
+      <div class="col-8 reducePadding">
+        {{ collectors }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.sex') }}</div>
+      <div class="col-8 reducePadding">
+        {{ specimenSex }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.lifeStage') }}</div>
+      <div class="col-8 reducePadding">
+        {{ stage }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.reproductiveCondition') }}</div>
+      <div class="col-8 reducePadding">
+        {{ reproductCondition }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.individualCount') }}</div>
+      <div class="col-8 reducePadding">
+        {{ count }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.license') }}</div>
+      <div class="col-8 reducePadding">
+        {{ specimenLicense }}
+      </div>
+
+      <div class="col-4 reducePadding" v-if="isNHRS">{{ $t('results.accession') }}</div>
+      <div class="col-8 reducePadding" v-if="isNHRS">
         {{ accession }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.previousIdentifications') }}</div>
-      <div class="col-9 reducePadding">
-        {{ additionalDetermination }}
-      </div>
-
-      <div class="col-3 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
+      <div class="col-8 reducePadding">
         {{ occurrenceAttRemarks }}
       </div>
 
-      <div class="col-3 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
-      <div class="col-9 reducePadding">
+      <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
+      <div class="col-8 reducePadding">
         {{ remarks }}
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 
 import moment from 'moment-timezone'
@@ -103,7 +98,6 @@ import moment from 'moment-timezone'
 const store = useStore()
 
 const accession = ref()
-const additionalDetermination = ref()
 const catNumber = ref()
 const dateCataloged = ref()
 
@@ -128,6 +122,18 @@ const otherCatNumbers = ref()
 const reproductCondition = ref()
 const remarks = ref()
 
+const isSmty = computed(() => {
+  const record = store.getters['selectedRecord']
+  const collectionCode = record.collectionCode
+  return collectionCode === 'SMTP_INV' || collectionCode === 'SMTP_SPPLST'
+})
+
+const isNHRS = computed(() => {
+  const record = store.getters['selectedRecord']
+  const collectionCode = record.collectionCode
+  return collectionCode === 'NHRS'
+})
+
 onMounted(async () => {
   console.log('onMounted dataset')
   const record = store.getters['selectedRecord']
@@ -141,7 +147,7 @@ onMounted(async () => {
     catalogedDate,
     individualCount,
     institutionCode,
-    institutionID,
+    institutionName,
     license,
     lifeStage,
     modified,
@@ -150,14 +156,12 @@ onMounted(async () => {
     otherCatalogNumbers,
     preparations,
     prepCount,
-    previousIdentifications,
     recordedBy,
     reproductiveCondition,
     sex
   } = record
 
   accession.value = accessionNumber
-  additionalDetermination.value = previousIdentifications
 
   catNumber.value = catalogNumber
   collection.value = collectionName
@@ -170,7 +174,7 @@ onMounted(async () => {
       .format('YYYY-MM-DD')
   }
 
-  institution.value = institutionID + ' [ ' + institutionCode + ' ] '
+  institution.value = institutionName + ' [ ' + institutionCode + ' ] '
 
   if (modified) {
     modifiedDate.value = moment
@@ -178,7 +182,10 @@ onMounted(async () => {
       .format('YYYY-MM-DD')
   }
 
-  occurrenceAttRemarks.value = occurrenceAttributeRemarks
+  if (occurrenceAttributeRemarks) {
+    occurrenceAttRemarks.value = occurrenceAttributeRemarks
+  }
+
   otherCatNumbers.value = otherCatalogNumbers
 
   preparationList.value =
