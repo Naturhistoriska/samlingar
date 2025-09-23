@@ -1,6 +1,6 @@
 {
   "name": "samlingar",
-  "version": "0.5.3",
+  "version": "0.6.2",
   "type": "module",
   "scripts": {
     "dev": "vite",

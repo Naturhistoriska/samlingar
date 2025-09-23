@@ -12,10 +12,11 @@ export default createStore({
     filterType: false,
 
     hasCoordinatesCount: 0,
-
     imageCount: 0,
     inSwedenCount: 0,
     isTypeCount: 0,
+
+    resetMapData: false,
 
     scientificName: null,
     selectedCollection: null, // selectedCollections Code
@@ -25,7 +26,7 @@ export default createStore({
     searchText: null,
 
     totalRecords: 0,
-
+    totalGeoData: 0,
     //
     //
     //
@@ -44,7 +45,7 @@ export default createStore({
     fields: [],
 
     isFuzzySearch: undefined,
-    isUrlPush: false,
+    // isUrlPush: false,
     results: [],
 
     searchMode: 'contains',
@@ -118,7 +119,6 @@ export default createStore({
 
     typeStatus: [],
 
-    totalGeoData: 0,
     zooCollectionTotal: 0,
     year: null,
     yearData: []
@@ -129,8 +129,16 @@ export default createStore({
       return state.collectionGroup
     },
 
+    resetMapData(state) {
+      return state.resetMapData
+    },
+
     selectedCollectionGroup(state) {
       return state.selectedCollectionGroup
+    },
+
+    totalGeoData(state) {
+      return state.totalGeoData
     },
 
     //
@@ -180,9 +188,9 @@ export default createStore({
     isFuzzySearch(state) {
       return state.isFuzzySearch
     },
-    isUrlPush(state) {
-      return state.isUrlPush
-    },
+    // isUrlPush(state) {
+    //   return state.isUrlPush
+    // },
     results(state) {
       return state.results
     },
@@ -390,9 +398,6 @@ export default createStore({
     synonym(state) {
       return state.synonym
     },
-    totalGeoData(state) {
-      return state.totalGeoData
-    },
 
     typeStatus(state) {
       return state.typeStatus
@@ -410,7 +415,9 @@ export default createStore({
 
   mutations: {
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
+    setResetMapData: (state, payload) => (state.resetMapData = payload),
     setSelectedCollectionGroup: (state, payload) => (state.selectedCollectionGroup = payload),
+    setTotalGeoData: (state, payload) => (state.totalGeoData = payload),
     //
     //
     //
@@ -432,7 +439,7 @@ export default createStore({
     setFilterInSweden: (state, payload) => (state.filterInSweden = payload),
     setFilterType: (state, payload) => (state.filterType = payload),
     setIsFuzzySearch: (state, payload) => (state.isFuzzySearch = payload),
-    setIsUrlPush: (state, payload) => (state.isUrlPush = payload),
+    // setIsUrlPush: (state, payload) => (state.isUrlPush = payload),
     setResults: (state, payload) => (state.results = payload),
     setScientificName: (state, payload) => (state.scientificName = payload),
     setSearchMode: (state, payload) => (state.searchMode = payload),
@@ -510,7 +517,6 @@ export default createStore({
 
     setStartRecord: (state, payload) => (state.startRecord = payload),
     setSynonym: (state, payload) => (state.synonym = payload),
-    setTotalGeoData: (state, payload) => (state.totalGeoData = payload),
 
     setTypeStatus: (state, payload) => (state.typeStatus = payload),
     setZooCollectionTotal: (state, payload) => (state.zooCollectionTotal = payload),

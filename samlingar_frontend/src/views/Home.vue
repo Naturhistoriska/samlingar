@@ -62,6 +62,154 @@ onMounted(() => {
   }
 })
 
+function fetchInitdata() {
+  service
+    .apiInitdata()
+    .then((response) => {
+      const facets = response.facets
+      const totalCount = facets.count
+      store.commit('setTotalCount', totalCount)
+
+      const totalInSweden = facets.inSweden.count
+      const totalTypeStatus = facets.typeStatus.count
+      const totalSpeciemensHasImages = facets.associatedMedia.count
+      const totalSpeciemensHasCoordinates = facets.coordinates.count
+
+      store.commit('setHasCoordinatesCount', totalSpeciemensHasCoordinates)
+      store.commit('setInSwedenCount', totalInSweden)
+      store.commit('setIsTypeCount', totalTypeStatus)
+      store.commit('setImageCount', totalSpeciemensHasImages)
+
+      store.commit('setFilterImage', false)
+      store.commit('setFilterCoordinates', false)
+      store.commit('setFilterInSweden', false)
+      store.commit('setFilterType', false)
+
+      store.commit('setSelectedCollection', null)
+      store.commit('setSelectedCollectionGroup', null)
+      store.commit('setDataResource', null)
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {
+      initData.value = false
+    })
+}
+
+async function filterSearch(params) {
+  loading.value = true
+  await service
+    .apiFilterSearch(params)
+    .then((response) => {
+      const total = response.facets.count
+      const results = response.response
+
+      store.commit('setResults', results)
+      store.commit('setTotalRecords', total)
+
+      if (total > 0) {
+        const facet = response.facets
+        const totalGeoData = facet.coordinates.count
+        const collectionfacet = facet.collectionName.buckets
+        store.commit('setSelectedCollectionGroup', collectionfacet)
+        store.commit('setTotalGeoData', totalGeoData)
+      } else {
+        store.commit('setSelectedCollectionGroup', null)
+        store.commit('setTotalGeoData', 0)
+      }
+
+      // if (total > 0) {
+      //   const collectionfacet = response.facets.collectionName.buckets
+      //   store.commit('setSelectedCollectionGroup', collectionfacet)
+
+      //   // const collectionCodefacet = response.facets.collectionCode.buckets
+      //   // store.commit('setSelectedCollection', collectionCodefacet)
+      // } else {
+      //   store.commit('setSelectedCollectionGroup', null)
+      //   store.commit('setSelectedCollection', null)
+      // }
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {
+      store.commit('setResetMapData', true)
+      store.commit('setSearchParams', params)
+      loading.value = false
+      router.push('/search')
+    })
+}
+
+async function freeTextSearch(value) {
+  loading.value = true
+  const params = new URLSearchParams({
+    catchall: value
+  })
+  await service
+    .apiFreeTextSearch(value)
+    .then((response) => {
+      const total = response.facets.count
+      const results = response.response
+
+      store.commit('setSearchText', value)
+      store.commit('setResults', results)
+      store.commit('setTotalRecords', total)
+
+      store.commit('setFilterImage', false)
+      store.commit('setFilterCoordinates', false)
+      store.commit('setFilterInSweden', false)
+      store.commit('setFilterType', false)
+
+      if (total > 0) {
+        const facets = response.facets
+        const totalGeoData = facets.coordinates.count
+        const collectionfacet = facets.collectionName.buckets
+        store.commit('setSelectedCollectionGroup', collectionfacet)
+        store.commit('setTotalGeoData', totalGeoData)
+      } else {
+        store.commit('setSelectedCollectionGroup', null)
+        store.commit('setSelectedCollection', 0)
+      }
+    })
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {
+      store.commit('setResetMapData', true)
+      store.commit('setSearchParams', params)
+      loading.value = false
+      router.push('/search')
+    })
+}
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 function fetchMonthChartData(collectionCode) {
   service
     .apiChart(collectionCode, false)
@@ -124,78 +272,6 @@ function setYearChartData(total, years) {
   store.commit('setYearData', cumulativeData)
 }
 
-function fetchInitdata() {
-  service
-    .apiInitdata()
-    .then((response) => {
-      const facets = response.facets
-      const totalCount = facets.count
-      store.commit('setTotalCount', totalCount)
-
-      setSearchCommentFacet(facets)
-
-      store.commit('setFilterImage', false)
-      store.commit('setFilterCoordinates', false)
-      store.commit('setFilterInSweden', false)
-      store.commit('setFilterType', false)
-
-      store.commit('setSelectedCollection', null)
-      store.commit('setSelectedCollectionGroup', null)
-      store.commit('setDataResource', null)
-    })
-    .catch((error) => {
-      console.log('error', error)
-    })
-    .finally(() => {
-      initData.value = false
-    })
-}
-
-function setSearchCommentFacet(facets) {
-  const totalInSweden = facets.inSweden.allBuckets.count
-  const totalTypeStatus = facets.typeStatus.allBuckets.count
-  const totalSpeciemensHasImages = facets.associatedMedia.buckets[0].count
-  const totalSpeciemensHasCoordinates = facets.coordinates.count
-
-  store.commit('setHasCoordinatesCount', totalSpeciemensHasCoordinates)
-  store.commit('setInSwedenCount', totalInSweden)
-  store.commit('setIsTypeCount', totalTypeStatus)
-  store.commit('setImageCount', totalSpeciemensHasImages)
-}
-
-async function filterSearch(params) {
-  loading.value = true
-  await service
-    .apiFilterSearch(params)
-    .then((response) => {
-      const total = response.facets.count
-      const results = response.response
-
-      store.commit('setResults', results)
-      store.commit('setTotalRecords', total)
-
-      if (total > 0) {
-        const collectionfacet = response.facets.collectionName.buckets
-        store.commit('setSelectedCollectionGroup', collectionfacet)
-
-        const collectionCodefacet = response.facets.collectionCode.buckets
-        store.commit('setSelectedCollection', collectionCodefacet)
-      } else {
-        store.commit('setSelectedCollectionGroup', null)
-        store.commit('setSelectedCollection', null)
-      }
-    })
-    .catch((error) => {
-      console.log('error', error)
-    })
-    .finally(() => {
-      store.commit('setIsUrlPush', true)
-      store.commit('setSearchParams', params)
-      loading.value = false
-      router.push('/search')
-    })
-}
-
 // async function collectionsSearch(params) {
 //   loading.value = true
 //   console.log('params', params)
@@ -230,48 +306,6 @@ async function filterSearch(params) {
 //       router.push('/search')
 //     })
 // }
-
-async function freeTextSearch(value) {
-  loading.value = true
-  const params = new URLSearchParams({
-    catchall: value
-  })
-  await service
-    .apiFreeTextSearch(value)
-    .then((response) => {
-      const total = response.facets.count
-      const results = response.response
-
-      store.commit('setSearchText', value)
-      store.commit('setResults', results)
-      store.commit('setTotalRecords', total)
-
-      store.commit('setFilterImage', false)
-      store.commit('setFilterCoordinates', false)
-      store.commit('setFilterInSweden', false)
-      store.commit('setFilterType', false)
-
-      if (total > 0) {
-        const collectionfacet = response.facets.collectionName.buckets
-        const collectionCodefacet = response.facets.collectionCode.buckets
-
-        store.commit('setSelectedCollection', collectionCodefacet)
-        store.commit('setSelectedCollectionGroup', collectionfacet)
-      } else {
-        store.commit('setSelectedCollectionGroup', null)
-        store.commit('setSelectedCollection', null)
-      }
-    })
-    .catch((error) => {
-      console.log('error', error)
-    })
-    .finally(() => {
-      store.commit('setIsUrlPush', true)
-      store.commit('setSearchParams', params)
-      loading.value = false
-      router.push('/search')
-    })
-}
 </script>
 <style scoped>
 .homePage {

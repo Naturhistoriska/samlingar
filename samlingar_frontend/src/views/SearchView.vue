@@ -76,7 +76,6 @@ onMounted(async () => {
 
   const from = previousRoute.value?.fullPath
   const to = currentRoute.value?.fullPath
-  console.log('entryType.value', entryType.value, from)
 
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
     const queries = toRaw(currentRoute.value?.query)
@@ -92,17 +91,22 @@ onMounted(async () => {
     }
     search(params, 0, 20, true)
   } else if (entryType.value === 'internal') {
-    const isPushed = store.getters['isUrlPush']
-
-    if (!from.includes('/record')) {
-      if (!isPushed) {
-        let params = new URLSearchParams({
-          catchall: '*'
-        })
-        search(params, 0, 20, true)
-      }
+    if (from === '/') {
+      // do nothing
+    } else {
+      // do something
     }
   }
+  // else if (entryType.value === 'internal') {
+  // if (!from.includes('/record')) {
+  // if (!isPushed) {
+  // let params = new URLSearchParams({
+  // catchall: '*'
+  // })
+  // search(params, 0, 20, true)
+  // }
+  // }
+  // }
 
   // setTimeout(() => {
   //   loading.value = false
@@ -143,30 +147,24 @@ function handleSearch() {
 }
 
 async function search(params, start, numPerPage, saveData) {
-  console.log('do search....', saveData)
   loading.value = true
-  // const params = buildParams()
   await service
     .apiSearch(params, start, numPerPage)
     .then((response) => {
       const total = response.facets.count
       const results = response.response
-
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
-      if (saveData) {
-        if (total > 0) {
-          const collectionfacet = response.facets.collectionName.buckets
-          store.commit('setSelectedCollectionGroup', collectionfacet)
-          // const collectionCodefacet = response.facets.collectionCode.buckets
-          // store.commit('setSelectedCollection', collectionCodefacet)
-        } else {
-          // store.commit('setSelectedCollectionGroup', null)
-          // store.commit('setSelectedCollection', null)
-        }
+      if (total > 0) {
+        const totalGeoData = response.facets.coordinates.count
+        const collectionfacet = response.facets.collectionName.buckets
+        store.commit('setSelectedCollectionGroup', collectionfacet)
+        store.commit('setTotalGeoData', totalGeoData)
+      } else {
+        store.commit('setSelectedCollectionGroup', null)
+        store.commit('setTotalGeoData', 0)
       }
-
       setTimeout(() => {
         loading.value = false
       }, 2000)
@@ -176,6 +174,7 @@ async function search(params, start, numPerPage, saveData) {
     })
     .finally(() => {
       store.commit('setSearchParams', params)
+      store.commit('setResetMapData', true)
       loading.value = false
     })
 }

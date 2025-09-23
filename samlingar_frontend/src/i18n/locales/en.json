@@ -354,6 +354,7 @@
     "vernacularName": "Common name"
   },
   "search": {
+    "addFilters": "Add filters",
     "advanceSearch": "Advance search",
     "backToResultsList": "Back to results list",
     "beginDate": "Begin date [YYYY-MM-DD]",
@@ -376,6 +377,8 @@
     "endDateLabel": "End date",
     "exact": "Exact",
     "family": "Search family",
+    "filterCollections": "Filter collections",
+    "filterScientificname": "Filter Scientific name",
     "fieldNumber": "Search fieldNumber",
     "freeTextSearch": "Free text search",
     "genus": "Search genus",

@@ -352,6 +352,7 @@
     "view": "View"
   },
   "search": {
+    "addFilters": "Add filters",
     "advanceSearch": "Avancerad sökning",
     "backToResultsList": "Tillbaka till resultatlistan",
     "beginDate": "Startdatum [YYYY-MM-DD]",
@@ -373,6 +374,8 @@
     "endDateLabel": "Slutdatum",
     "exact": "Exakt",
     "family": "Search family",
+    "filterCollections": "Filter collections",
+    "filterScientificname": "Filter Scientific name",
     "fieldNumber": "Search fieldNumber",
     "freeTextSearch": "Free text search",
     "genus": "Search genus",

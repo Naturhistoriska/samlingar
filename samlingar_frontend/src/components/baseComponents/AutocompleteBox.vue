@@ -75,7 +75,9 @@ const apiAutoComplete = (event) => {
           items.value = facets.buckets.map((a) => a.val)
         }
       })
-      .catch()
+      .catch((error) => {
+        console.log('error', error)
+      })
       .finally(() => {})
   }
 }

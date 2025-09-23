@@ -6,7 +6,7 @@
           id="searchScientificName"
           v-model="scientificName"
           @input="onInputScientificName"
-          :placeholder="$t('search.searchScientificName')"
+          :placeholder="$t('search.filterScientificname')"
           size="small"
           class="w-full"
         />

@@ -271,10 +271,14 @@ watch(
 watch(
   () => store.getters['selectedCollectionGroup'],
   (newValue, oldValue) => {
+    console.log('why...', newValue)
     const data = newValue
     if (data) {
       collectionOptions.value = data.map((item) => item.val)
+    } else {
+      collectionOptions.value = null
     }
+    clearFilters()
   }
 )
 
@@ -332,6 +336,12 @@ function exportCSV() {
   document.body.removeChild(link)
 
   // Convert to worksheet
+}
+
+function clearFilters() {
+  for (const key in filters.value) {
+    filters.value[key].value = null
+  }
 }
 
 function onSort(event) {
@@ -460,8 +470,14 @@ async function loadRecordsLazy(params, first, rows) {
       const results = response.response
 
       store.commit('setResults', results)
-
       store.commit('setTotalRecords', total)
+
+      if (total > 0) {
+        const totalGeoData = response.facets.coordinates.count
+        store.commit('setTotalGeoData', totalGeoData)
+      } else {
+        store.commit('setTotalGeoData', 0)
+      }
 
       setTimeout(() => {
         loading.value = false
@@ -472,6 +488,7 @@ async function loadRecordsLazy(params, first, rows) {
     })
     .finally(() => {
       loading.value = false
+      store.commit('setResetMapData', true)
       store.commit('setSearchParams', params)
     })
 }
@@ -626,7 +643,7 @@ const onPage = async (event) => {
 }
 
 const onRowExpand = (event) => {
-  toast.add({ severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000 })
+  toast.add({ severity: 'info', summary: 'Record Expanded', detail: event.data.name, life: 3000 })
 }
 const onRowCollapse = (event) => {
   toast.add({

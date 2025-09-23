@@ -38,25 +38,24 @@ const service = new Service()
 const store = useStore()
 const router = useRouter()
 
-const props = defineProps(['entry', 'from', 'reloadData'])
-
 let center = ref([59.0, 15.0])
 const zoo = 4
 
 const mapRef = ref(null)
 
 const loading = ref(false)
-let isDataReady = ref(false)
 const popupContent = ref('Loading...')
 
 const mapLoadingText = ref('Fetch data....')
+
+// const entry = ref(entryType.value)
 
 const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 const attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 // const tileUrl = "'https://tile.openstreetmap.org/{z}/{x}/{y}.png'"
 
 onMounted(async () => {
-  console.log('onMounted', props.entry, props.from, props.reloadData)
+  console.log('onMounted')
 
   mapRef.value = L.map('map', {
     zoomControl: true,
@@ -78,32 +77,42 @@ onMounted(async () => {
 
   await new Promise((r) => setTimeout(r, 1500))
 
-  const entryType = props.entry
-  const total = store.getters['totalRecords']
+  const total = store.getters['totalGeoData']
+  const resetMapData = store.getters['resetMapData']
 
-  const isUrlPush = store.getters['isUrlPush']
-
-  let reloadMap = false
-  if (total < 50000) {
-    if (entryType === 'first-visit' || entryType === 'reload') {
-      reloadMap = true
-    } else {
-      if (isUrlPush) {
-        reloadMap = true
-        store.commit('setIsUrlPush', false)
-      }
+  if (resetMapData && total < 50000 && total > 0) {
+    let params = store.getters['searchParams']
+    if (params === null) {
+      params = new URLSearchParams({
+        catchall: '*'
+      })
     }
-    if (reloadMap) {
-      let params = store.getters['searchParams']
-      if (params === null) {
-        params = new URLSearchParams({
-          catchall: '*'
-        })
-      }
-      await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
-      addClustringPopup()
-    }
+    await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+    store.commit('setResetMapData', false)
+  } else {
+    onMapReady()
   }
+
+  // let reloadMap = false
+  // if (total < 50000) {
+  //   if (from === 'first-visit' || from === 'reload') {
+  //     reloadMap = true
+  //   } else {
+  //     if (resetMapData) {
+  //       reloadMap = true
+  //     }
+  //   }
+  //   if (resetMapData) {
+  //     let params = store.getters['searchParams']
+  //     if (params === null) {
+  //       params = new URLSearchParams({
+  //         catchall: '*'
+  //       })
+  //     }
+  //     await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+  //     addClustringPopup()
+  //   }
+  // }
   //   if (entryType === 'first-visit' || entryType === 'reload') {
   //     console.log('entryType 1', entryType)
   //     let params = new URLSearchParams({
@@ -125,24 +134,16 @@ onMounted(async () => {
 })
 
 watch(
-  isDataReady,
-  (newValue, oldValue) => {
-    if (newValue) {
-      mapLoadingText.value = 'Loading markers....'
-    }
-  },
-  { immediate: true }
-)
-
-watch(
-  () => store.getters['searchParams'],
+  () => store.getters['resetMapData'],
   () => {
     console.log('map 2 map data changed..')
-
-    if (store.getters['totalRecords'] < 50000) {
+    const reset = store.getters['resetMapData']
+    const total = store.getters['totalGeoData'] < 50000
+    if (reset && total) {
       const params = store.getters['searchParams']
       removeOldMarkers()
       fetchAndRender(params, { lat: 59.0, lng: 15.0 })
+      store.commit('setResetMapData', false)
     }
   }
 )
@@ -187,18 +188,18 @@ function addClustringPopup() {
   })
 }
 
-// function onMapReady() {
-//   const markers = store.getters['clusterGroup']
+function onMapReady() {
+  const markers = store.getters['clusterGroup']
 
-//   if (markers) {
-//     mapRef.value.addLayer(markers)
-//   }
+  if (markers) {
+    mapRef.value.addLayer(markers)
+  }
 
-//   const hasMarkers = hasMarkersInView(markers)
-//   if (!hasMarkers) {
-//     mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
-//   }
-// }
+  const hasMarkers = hasMarkersInView(markers)
+  if (!hasMarkers) {
+    mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
+  }
+}
 
 function removeOldMarkers() {
   const groupMarkers = store.getters['clusterGroup']
@@ -210,33 +211,19 @@ function removeOldMarkers() {
 const fetchAndRender = async (params, { lat, lng }) => {
   console.log('lat-lon', lat, lng)
 
-  // const params = store.getters['searchParams']
-
-  if (params !== null) {
-    // params.set('pt', `${lat},${lng}`)
-  } else {
+  if (params === null) {
     params = buildParams()
-    // params.set('pt', `${lat},${lng}`)
   }
 
   loading.value = true
-  isDataReady.value = false
-
-  const totalRecords = store.getters['totalRecords']
-
-  console.log('params', params)
+  const total = store.getters['totalGeoData']
 
   await service
-    .apiGeoFetch(params, 0, totalRecords)
+    .apiGeoFetch(params, 0, total)
     .then((response) => {
       console.log('response:', response)
       const docs = response.response
-      console.log('docs', docs.length)
-
       if (docs && docs.length > 0) {
-        console.log('docs', docs.length)
-
-        isDataReady.value = true
         buildMarkers(docs)
       } else {
         loading.value = false
@@ -246,7 +233,6 @@ const fetchAndRender = async (params, { lat, lng }) => {
       console.log('error', error)
     })
     .finally(() => {
-      isDataReady.value = true
       loading.value = false
     })
 }
@@ -260,7 +246,6 @@ async function fetchRecord(id, marker) {
     .then((response) => {
       if (response) {
         const data = response.response[0]
-
         const {
           catalogNumber,
           collectionName,
@@ -292,7 +277,7 @@ async function fetchRecord(id, marker) {
         button.innerHTML = 'More details'
 
         button.onclick = function () {
-          displayDetail(id)
+          displayDetail(data)
         }
         div.style.cssText = ' overflow-wrap: break-word;   '
         div.appendChild(button)
@@ -307,21 +292,20 @@ async function fetchRecord(id, marker) {
     .finally(() => {})
 }
 
-function displayDetail(id) {
-  router.push(`/record/${id}`)
+function displayDetail(data) {
+  store.commit('setSelectedRecord', data)
+  router.push(`/record/${data.id}`)
 }
 
 async function buildMarkers(docs) {
   console.log('buildMarkers')
-
   loading.value = true
-
   await nextTick()
 
   const markers = L.markerClusterGroup({
-    spiderfyOnMaxZoom: false,
-    showCoverageOnHover: true,
-    zoomToBoundsOnClick: false
+    // spiderfyOnMaxZoom: false,
+    // showCoverageOnHover: true,
+    // zoomToBoundsOnClick: false
   })
 
   // addMarkersInChunks(docs, markers)
@@ -403,10 +387,6 @@ function buildParams() {
     params.set('geo', '*')
   }
 
-  // if (collectionGroup) {
-  //   params.set('collectionCode', collectionGroup)
-  // }
-
   if (startDate) {
     params.set('startDate', startDate)
   }
@@ -427,7 +407,6 @@ function buildParams() {
         params.set(field.value, field.text)
       })
   }
-  //store.commit('setSearchParams', params)
   return params
 }
 </script>

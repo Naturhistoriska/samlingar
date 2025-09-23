@@ -60,63 +60,75 @@ const showLegend = ref(true)
 
 const props = defineProps(['entry', 'from', 'reloadData'])
 
-watch(
-  () => store.getters['searchParams'],
-  () => {
-    console.log('map data changed..')
+// watch(
+//   () => store.getters['searchParams'],
+//   () => {
+//     console.log('map data changed..')
 
-    if (store.getters['totalRecords'] > 50000) {
+//     if (store.getters['totalRecords'] > 50000) {
+//       fetchHeatmapData()
+//     }
+//   }
+// )
+
+watch(
+  () => store.getters['resetMapData'],
+  () => {
+    console.log('map 2 map data changed..')
+    const reset = store.getters['resetMapData']
+    const total = store.getters['totalGeoData']
+
+    if (reset && total >= 50000) {
       fetchHeatmapData()
+      store.commit('setResetMapData', false)
     }
   }
 )
 
 onMounted(async () => {
-  console.log('onMounted', props.entry, props.from, props.reloadData)
+  console.log('onMounted largeMap')
 
-  const entryType = props.entry
-  const total = store.getters['totalRecords']
-
-  const isUrlPush = store.getters['isUrlPush']
+  const total = store.getters['totalGeoData']
+  const resetMapData = store.getters['resetMapData']
 
   await new Promise((r) => setTimeout(r, 1500))
 
-  let reloadMap = false
-  if (total >= 50000) {
-    if (entryType === 'first-visit' || entryType === 'reload') {
-      reloadMap = true
-    } else {
-      if (isUrlPush) {
-        reloadMap = true
-        store.commit('setIsUrlPush', false)
-      }
-    }
-    if (reloadMap) {
-      let params = store.getters['searchParams']
-      if (params === null) {
-        params = new URLSearchParams({
-          catchall: '*'
-        })
-      }
-      await fetchHeatmapData()
-    }
+  // let reloadMap = false
+  if (total >= 50000 && resetMapData) {
+    await fetchHeatmapData()
+    store.commit('setResetMapData', false)
   }
+  //   if (entryType === 'first-visit' || entryType === 'reload') {
+  //     reloadMap = true
+  //   } else {
+  //     if (isUrlPush) {
+  //       reloadMap = true
+  //       store.commit('setIsUrlPush', false)
+  //     }
+  //   }
+  //   if (reloadMap) {
+  //     let params = store.getters['searchParams']
+  //     if (params === null) {
+  //       params = new URLSearchParams({
+  //         catchall: '*'
+  //       })
+  //     }
+  //     await fetchHeatmapData()
+  //   }
+  // }
 })
 
 async function fetchHeatmapData() {
-  const totalRecords = store.getters['totalRecords']
+  const totalToFatch = store.getters['totalGeoData']
   // const params = buildParams()
 
   let params = store.getters['searchParams']
   if (params === null) {
     console.log('no params')
     params = buildParams()
-    // params = new URLSearchParams({
-    //   catchall: '*'
-    // })
   }
   await service
-    .apiHeatmap(params, 0, totalRecords)
+    .apiHeatmap(params, 0, totalToFatch)
     .then(async (response) => {
       const data = response
       if (data) {

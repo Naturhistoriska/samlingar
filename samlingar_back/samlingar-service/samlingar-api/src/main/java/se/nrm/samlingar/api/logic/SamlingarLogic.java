@@ -270,8 +270,7 @@ public class SamlingarLogic {
                 locality, localityKey, contains, true);
             log.info("locality : {}", locality);
         }
- 
-//        text = SolrSearchHelper.getInstance().buildFreeTextSearch(text);
+      
         catchall = catchall == null ? text : catchall; 
         log.info("catchall: {}", catchall);
         if(catchall != null && !catchall.equals(wildCard)) {
@@ -404,8 +403,9 @@ public class SamlingarLogic {
         }
          
         if(scientificName != null) {
-            scientificName = SolrSearchHelper.getInstance().buildSearchText(
-                scientificName, scientificNameKey, searchMode, isFuzzySearch);
+            scientificName = SolrSearchHelper.getInstance()
+                    .buildScientificName(scientificName, copyScientificNameKey, searchMode);
+             
             log.info("scientificName : {}", scientificName);
         }
         if(locality != null) {
@@ -422,7 +422,7 @@ public class SamlingarLogic {
         
         catchall = catchall == null ? text : catchall;
         if(catchall != null && !catchall.equals(wildCard)) {
-            catchall = SolrSearchHelper.getInstance().buildContainsQuery(text);
+            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
         }  
         
         log.info("text.... {}", catchall);
@@ -469,19 +469,7 @@ public class SamlingarLogic {
     
     
     
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
  
-    
     
     
      public String geoJson(MultivaluedMap<String, String> queryParams) {
@@ -531,13 +519,12 @@ public class SamlingarLogic {
                     paramMap.put(entry.getKey(), entry.getValue().get(0));
                     break;
             }
-        }
-        
-        
+        } 
         
         if(scientificName != null) {
-            scientificName = SolrSearchHelper.getInstance().buildSearchText(
-                scientificName, scientificNameKey, searchMode, isFuzzySearch);
+            scientificName = SolrSearchHelper.getInstance()
+                    .buildScientificName(scientificName, copyScientificNameKey, searchMode);
+             
             log.info("scientificName : {}", scientificName);
         }
         if(locality != null) {
@@ -552,7 +539,7 @@ public class SamlingarLogic {
         
         catchall = catchall == null ? text : catchall;
         if(catchall != null && !catchall.equals(wildCard)) {
-            catchall = SolrSearchHelper.getInstance().buildContainsQuery(text);
+            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
         }  
         
         dateRangeSb = new StringBuilder();
@@ -597,6 +584,9 @@ public class SamlingarLogic {
                 case textKey: 
                     text = queryParams.get(textKey).get(0); 
                     break;
+                case catchallKey: 
+                    catchall = queryParams.get(catchallKey).get(0);  
+                    break;
                 case startDateKey: 
                     startDate = queryParams.get(startDateKey).get(0); 
                     break;
@@ -626,13 +616,15 @@ public class SamlingarLogic {
         
               
         
-        if(scientificName != null) {
-            scientificName = SolrSearchHelper.getInstance().buildSearchText(
-                scientificName, scientificNameKey, isFuzzySearch);
+       if(scientificName != null) {
+            scientificName = SolrSearchHelper.getInstance()
+                    .buildScientificName(scientificName, copyScientificNameKey, searchMode);
+             
+            log.info("scientificName : {}", scientificName);
         }
-        if(text != null && !text.equals(wildCard)) {
-            text = SolrSearchHelper.getInstance().buildSearchText(
-                text, textKey, true);
+        catchall = catchall == null ? text : catchall;
+        if(catchall != null && !catchall.equals(wildCard)) {
+            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
         }  
         
         if(locality != null) {
@@ -665,7 +657,7 @@ public class SamlingarLogic {
 //        return buildZipButes(exportResult);
 
 
-        return solr.export(paramMap, text, scientificName, locality, dateRange, 
+        return solr.export(paramMap, catchall, scientificName, locality, dateRange, 
                 0, numperOfRows, sort); 
             
     }

@@ -160,9 +160,20 @@ public class Solr implements Serializable {
     final TermsFacetMap collectionFacet;
     final TermsFacetMap collectionCodeFacet;
     
-    final Map<String, Object> facetQuery; 
+    final Map<String, Object> facetCoordinates; 
+    final Map<String, Object> facetImages; 
+    final Map<String, Object> facetTypeStatus; 
+    final Map<String, Object> facetInSweden; 
+    final Map<String, Object> facetCollectionName; 
+    final Map<String, Object> facetCollectionCode; 
     
-    
+    private final String queryKey = "query";
+    private final String geoQuery = "geo:*";
+    private final String imagesQuery = "hasImage:*";
+    private final String typeStatusQuery = "typeStatus:*";
+    private final String inSwedenQuery = "country:Sweden*";
+    private final String collectionNameQuery = "collectionName:*";
+    private final String collectionCodeQuery = "collectionCode:*";
     
 //    
 //    private final String mapFacetQuery = "point-1: *";
@@ -190,9 +201,20 @@ public class Solr implements Serializable {
         
         collectionCodeFacet = new TermsFacetMap(collectionCodeKey); 
          
-        facetQuery = new HashMap<>();
-        facetQuery.put("query", "geo:*");
+        facetCoordinates = new HashMap<>();
+        facetImages = new HashMap<>();
+        facetTypeStatus = new HashMap<>();
+        facetInSweden = new HashMap<>();
+        facetCollectionName = new HashMap<>();
+        facetCollectionCode = new HashMap<>();
+
+        facetCoordinates.put(queryKey, geoQuery);
+        facetImages.put(queryKey, imagesQuery);
+        facetTypeStatus.put(queryKey, typeStatusQuery);
+        facetInSweden.put(queryKey, inSwedenQuery);
          
+        facetCollectionName.put(queryKey, collectionNameQuery);
+        facetCollectionCode.put(queryKey, collectionCodeQuery); 
     }
 
     @PostConstruct
@@ -209,11 +231,11 @@ public class Solr implements Serializable {
         log.info("getInitalData");
          
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(searchAll)  
-                .withFacet(associatedMediaKey, imageFacet) 
-                .withFacet(inSwedenKey, inSwedenFacet)
-                .withFacet(typeStatusKey, typeFacet.setLimit(1))
-                .withFacet(coordinatesKey, facetQuery)
+                .setQuery(searchAll)   
+                .withFacet(coordinatesKey, facetCoordinates)
+                .withFacet(associatedMediaKey, facetImages)
+                .withFacet(typeStatusKey, facetTypeStatus)
+                .withFacet(inSwedenKey, facetInSweden)
                 .setLimit(1);
          
         jsonRequest.setBasicAuthCredentials(username, password); 
@@ -292,33 +314,6 @@ public class Solr implements Serializable {
         }
     }
     
-     public String scientificNameSearch1(int start, int numPerPage, String text, String sort) {
-        log.info("scientificNameSearch: {} -- {}", text, sort);
-
-        sort = sort == null ? defaultSort : sort;
-        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)
-                .setOffset(start)
-                .setLimit(numPerPage)
-                .setSort(sort)
-                .withFacet(collectionNameKey, collectionCodeFacet.setLimit(20))
-                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20));
-        jsonRequest.setBasicAuthCredentials(username, password);
-        try {
-            response = jsonRequest.process(client);
-//            log.info("json: {}", response.jsonStr()); 
-            return response.jsonStr();
-        } catch (SolrServerException | IOException ex) {
-            log.error(ex.getMessage());
-            return null;
-        } finally {
-            try {
-                client.close();
-            } catch (IOException ex) {
-                log.error(ex.getMessage());
-            }
-        }
-    }
     
     public String simpleSearch(Map<String, String> paramMap) { 
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
@@ -326,6 +321,7 @@ public class Solr implements Serializable {
                 .setOffset(defaultStart)
                 .setLimit(defaultRows)
                 .setSort(defaultSort)
+                .withFacet(coordinatesKey, facetCoordinates) 
                 .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
                 .withFacet(collectionNameKey, collectionFacet.setLimit(20));
 
@@ -363,6 +359,7 @@ public class Solr implements Serializable {
                 .withParam(defType, edismax)
                 .withParam(qf, copyScientificNameKey)
                 .withParam(mmKey, mmValue) 
+                .withFacet(coordinatesKey, facetCoordinates)
                 .withFacet(collectionNameKey, collectionFacet.setLimit(20))
                 .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
                 .setOffset(defaultStart)
@@ -392,28 +389,14 @@ public class Solr implements Serializable {
                 .setQuery(text)
                 .withParam(defType, edismax)
                 .withParam(qf, catchall)
-                .withParam(mmKey, mmValue) 
+                .withParam(mmKey, mmValue)  
+                .withFacet(coordinatesKey, facetCoordinates)
                 .withFacet(collectionNameKey, collectionFacet.setLimit(20))
                 .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
                 .setOffset(defaultStart)
                 .setLimit(defaultRows)
                 .setSort(defaultSort);
-
-
-        
-        
-        
-        
-//           JsonQueryRequest jsonRequest = new JsonQueryRequest()
-//                .setQuery(text)
-//                .withParam(defType, edismax)
-//                .withParam(qf, catchall)
-//                .withParam(mmKey, mmValue) 
-//                .withFacet(collectionNameKey, collectionFacet.setLimit(20))
-//                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
-//                .setOffset(defaultStart)
-//                .setLimit(defaultRows)
-//                .setSort(defaultSort); 
+ 
            
             jsonRequest.setBasicAuthCredentials(username, password);
         try {
@@ -476,6 +459,7 @@ public class Solr implements Serializable {
                 .setOffset(start)
                 .setLimit(numPerPage)
                 .setSort(sort)
+                .withFacet(coordinatesKey, facetCoordinates)
                 .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
                 .withFacet(collectionNameKey, collectionFacet.setLimit(20));
 
@@ -638,34 +622,33 @@ public class Solr implements Serializable {
         }
     }
     
-    public String autocompolete(String text) {
-      
-        JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery("copy_scientificName:aves*")
-                .returnFields("scientificName")
-                .withParam("suggest", "true")
-                .withParam("suggest.build", "true")
-                .withParam("suggest.q", "copy_scientificName:aves*");   
-                 
-                 
-                    
-         jsonRequest.setBasicAuthCredentials(username, password);
-            
-        try {
-           response = jsonRequest.process(client);  
-           log.info(response.jsonStr());
-             
-        } catch (SolrServerException | IOException ex) {  
-            log.error(ex.getMessage());
-        }finally {
-            try {
-                client.close();
-            } catch (IOException ex) {
-                log.error(ex.getMessage());
-            }
-        }
-        return response.jsonStr();
-    }
+//    public String autocompolete(String text) {
+//      
+//        JsonQueryRequest jsonRequest = new JsonQueryRequest()
+//                .setQuery("copy_scientificName:aves*")
+//                .returnFields("scientificName")
+//                .withParam("suggest", "true")
+//                .withParam("suggest.build", "true")
+//                .withParam("suggest.q", "copy_scientificName:aves*");   
+//                  
+//                    
+//         jsonRequest.setBasicAuthCredentials(username, password);
+//            
+//        try {
+//           response = jsonRequest.process(client);  
+//           log.info(response.jsonStr());
+//             
+//        } catch (SolrServerException | IOException ex) {  
+//            log.error(ex.getMessage());
+//        }finally {
+//            try {
+//                client.close();
+//            } catch (IOException ex) {
+//                log.error(ex.getMessage());
+//            }
+//        }
+//        return response.jsonStr();
+//    }
 
 //    
 //    

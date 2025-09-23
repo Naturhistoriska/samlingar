@@ -5,6 +5,7 @@
         <div class="col-8" no-gutters>
           {{ $t('search.search') }}
         </div>
+
         <div class="col-2" no-gutters>
           <Button variant="text" @click="dialogVisible = !dialogVisible">
             <small>{{ $t('common.help') }}</small>
@@ -33,6 +34,7 @@
         <div class="col-12" no-gutters>
           <search-all style="padding-bottom: 5px" />
         </div>
+        <Divider class="custom-divider" />
         <filter-checkbox />
 
         <Panel
@@ -95,7 +97,10 @@ const scientificNamePanelNotVisible = computed(() => {
 })
 
 const collectionGroupPanelNotVisible = computed(() => {
-  return store.getters['collectionName'] === null
+  const collectionName = store.getters['collectionName']
+  console.log('collectionName', collectionName)
+  return collectionName === null
+  // return collectionName === null || collectionName === undefined
 })
 
 const eventDatePanelNotVisible = computed(() => {
@@ -147,5 +152,9 @@ function search() {
 
 .active-panel {
   background-color: #eefaeb;
+}
+
+.custom-divider.p-divider-horizontal::before {
+  border-top: 1px solid #144836; /* Change color here */
 }
 </style>

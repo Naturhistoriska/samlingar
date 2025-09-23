@@ -11,7 +11,7 @@
       optionGroupLabel="label"
       optionGroupChildren="items"
       display="chip"
-      placeholder="Add search fields"
+      :placeholder="$t('search.addFilters')"
       class="w-full md:w-80"
       @update:modelValue="onSelectionChange"
     >
