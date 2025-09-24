@@ -196,7 +196,7 @@ function onMapReady() {
   }
 
   const hasMarkers = hasMarkersInView(markers)
-  if (!hasMarkers) {
+  if (hasMarkers) {
     mapRef.value.fitBounds(markers.getBounds(), { padding: [50, 50] })
   }
 }
