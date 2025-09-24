@@ -97,9 +97,9 @@ const scientificNamePanelNotVisible = computed(() => {
 })
 
 const collectionGroupPanelNotVisible = computed(() => {
-  const collectionName = store.getters['collectionName']
-  console.log('collectionName', collectionName)
-  return collectionName === null
+  const selectedCollection = store.getters['selectedCollection']
+  console.log('selectedCollection', selectedCollection)
+  return selectedCollection === null
   // return collectionName === null || collectionName === undefined
 })
 
