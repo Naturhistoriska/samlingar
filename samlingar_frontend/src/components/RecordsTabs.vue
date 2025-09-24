@@ -97,3 +97,43 @@ function preparaDataExport() {
 //   emits('freeTextSearch', searchText, start, numPerPage)
 // }
 </script>
+<style scoped>
+/* .p-button-text {
+  color: #4a4949b6;
+  text-decoration: underline;
+}
+
+.p-button-text:hover {
+  text-decoration: none !important;
+  background: transparent !important;
+} */
+a {
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff !important;
+}
+
+a:hover {
+  color: rgb(166, 158, 158) !important;
+}
+/* 🔵 Inactive tab styling */
+:deep(.p-tabview-nav .p-tabview-nav-item .p-tabview-nav-link) {
+  background-color: #3474b4 !important;
+  color: red !important;
+  border-radius: 4px 4px 0 0;
+  padding: 0.75rem 1.25rem;
+}
+
+/* 🔥 Active tab styling */
+:deep(.p-tabview-nav .p-tabview-nav-item.p-highlight .p-tabview-nav-link) {
+  background-color: #007bff; /* blue background */
+  color: white; /* white text */
+  font-weight: bold;
+  border-radius: 4px 4px 0 0;
+}
+
+/* ✨ Hover effect */
+:deep(.p-tabview-nav .p-tabview-nav-item .p-tabview-nav-link:hover) {
+  background-color: #e9ecef;
+}
+</style>

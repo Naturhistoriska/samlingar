@@ -82,50 +82,13 @@ function onClick() {
   store.commit('setFields', [])
   store.commit('setDataResource', null)
 }
-
-// function onClick() {
-// store.commit('setShowResults', false)
-// store.commit('setIsAdvanceSearch', false)
-// store.commit('setShowDetail', false)
-
-// clearStore()
-// }
-
-// function clearStore() {
-//   store.commit('setFamily', [])
-//   store.commit('setGenus', [])
-
-//   store.commit('setCollections', [])
-//   store.commit('setTypeStatus', [])
-//   store.commit('setImageCount', 0)
-//   store.commit('setIsTypeCount', 0)
-//   store.commit('setHasCoordinatesCount', 0)
-//   store.commit('setInSwedenCount', 0)
-//   store.commit('setTotalRecords', 0)
-//   store.commit('setResults', [])
-
-//   store.commit('setScientificName', null)
-//   store.commit('setCatalogNumber', null)
-//   store.commit('setSynonym', null)
-//   store.commit('setSelectedDataset', null)
-//   store.commit('setDateRange', null)
-//   store.commit('setSelectedTypes', null)
-
-//   store.commit('setFilterCoordinates', false)
-//   store.commit('setFilterImage', false)
-//   store.commit('setFilterInSweden', false)
-//   store.commit('setFilterType', false)
-
-//   store.commit('setShowDetail', false)
-//   store.commit('setShowResults', false)
-// }
 </script>
 
 <style scoped>
 a {
   cursor: pointer;
   text-decoration: none;
-  color: #fff;
+  color: #fff !important;
 }
 
 a:hover {
@@ -134,6 +97,7 @@ a:hover {
 
 .navbg {
   background-color: #052b1e;
+  /* background-color: #1d634a; */
 }
 
 .p-tablist-tab-list {
@@ -173,5 +137,9 @@ a:hover {
 
 .pi:hover {
   background: #0b583d !important;
+}
+
+:deep(.p-link) {
+  color: #007bff !important;
 }
 </style>

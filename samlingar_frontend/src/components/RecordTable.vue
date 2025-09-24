@@ -36,8 +36,9 @@
           <div class="text-end pb-4">
             <Button
               icon="pi pi-external-link"
-              label="Export table to csv"
+              :label="$t('exportData.exportToCsv')"
               @click="exportCSV($event)"
+              class="my-custom-button"
             />
           </div>
         </div>
@@ -334,8 +335,6 @@ function exportCSV() {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
-
-  // Convert to worksheet
 }
 
 function clearFilters() {

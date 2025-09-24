@@ -28,7 +28,7 @@
         size="small"
         @click="onClick"
       />
-      <label for="excel" class="text-sm" style="padding-left: 1em">Excel</label>
+      <label for="excel" class="text-sm customRadio" style="padding-left: 1em">Excel</label>
     </div>
     <div class="col-2">
       <RadioButton
@@ -39,7 +39,7 @@
         size="small"
         @click="onClick"
       />
-      <label for="csv" class="text-sm" style="padding-left: 1em">CSV</label>
+      <label for="csv" class="text-sm customRadio" style="padding-left: 1em">CSV</label>
     </div>
 
     <VueSpinnerDots v-if="isLoading" size="20" color="red" />
@@ -154,13 +154,17 @@ function onClick() {
 }
 </script>
 <style scoped>
+.customRadio {
+  color: #144836 !important;
+}
 .preparaDataLink {
   font-size: 14px;
   text-decoration: underline;
+  color: #144836;
   /* cursor: pointer !important; */
 }
 .preparaDataLink:hover {
-  color: var(--p-emerald-500) !important;
+  color: #1d634a;
   font-size: 14px;
   text-decoration: none;
 }
@@ -168,6 +172,22 @@ function onClick() {
 .fade-in-text {
   animation: fadeIn 2s ease-in-out;
 }
+
+/* Change the dot inside the selected radio */
+:deep(.p-radiobutton-icon) {
+  background-color: #144836 !important;
+}
+
+/* Change the color of the selected radio button */
+/* :deep(.p-radiobutton-box.p-highlight) {
+  background-color: #144836 !important;
+} */
+
+/* Optional: unselected state styling */
+/* :deep(.p-radiobutton-box) { */
+/* border: 2px solid #144836 !important; */
+/* transition: all 0.3s ease !important; */
+/* } */
 
 @keyframes fadeIn {
   from {

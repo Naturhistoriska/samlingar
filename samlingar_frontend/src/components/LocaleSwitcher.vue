@@ -11,7 +11,7 @@
     />
     <Menu id="overlay_tmenu" ref="menu" :model="items" :popup="true" class="w-min flex">
       <template #item="{ item }" class="w-full">
-        <Button class="btn" :label="item.label" text />
+        <Button class="btn" :label="item.label" text style="color: #000 !important" />
       </template>
     </Menu>
   </div>
@@ -69,19 +69,16 @@ export default {
 </script>
 <style scoped>
 /* ::v-deep(.p-menu) {
-  background: #f0f0f0 !important;
+  background: #4d1b1b !important;
 } */
 
 /* ::v-deep(.p-menu .p-menuitem:hover) {
   background-color: #d0d0d0 !important;
 } */
-/* .p-menu {
-  background: #f0f0f0 !important;
-} */
+/* .p-menu { */
+/* background: red !important; */
+/* } */
 /*
-.p-menu.p-component {
-  background-color: #f0f0f0 !important;
-}
 
 ::v-deep(.p-menu.p-menu-overlay) {
   background-color: #f0f0f0 !important;
@@ -91,9 +88,7 @@ export default {
   background-color: #f0f0f0 !important;
 }
 
-::v-deep(.p-menu.p-component) {
-  background-color: #333 !important;
-}
+
 
 ::v-deep(.p-menu .p-menu-list) {
   background-color: #333 !important;
@@ -103,11 +98,25 @@ export default {
   background-color: #333 !important;
   color: white !important;
 } */
+
+/* ::v-deep(.p-menu .p-menuitem-link) {
+  background-color: #333 !important;
+  color: white !important;
+} */
+
+::v-deep(.p-menu.p-component) {
+  background-color: #333 !important;
+}
 .ui-menu {
   max-width: 50px;
 }
+
+/* .p-menu.p-component {
+  background-color: red !important;
+} */
+
 .p-button-text {
-  /* color: #fff !important; */
+  color: #fff !important;
   background: transparent !important;
   text-decoration: none;
 }

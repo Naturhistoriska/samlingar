@@ -9,7 +9,12 @@
         :size="size"
         class="w-full"
       />
-      <Button :icon="icon" @click="onClick" :loading="loading" />
+      <Button
+        :icon="icon"
+        @click="onClick"
+        :loading="loading"
+        style="background-color: #144836 !important"
+      />
     </InputGroup>
   </div>
 </template>

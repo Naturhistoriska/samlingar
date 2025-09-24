@@ -14,7 +14,13 @@
           inputId="ac"
           :inputStyle="acwidth"
         />
-        <Button icon="pi pi-search" :loading="loading" @click="apiSearch" text />
+        <Button
+          icon="pi pi-search"
+          :loading="loading"
+          @click="apiSearch"
+          text
+          style="background-color: #144836 !important; border-color: #1d634a !important"
+        />
         <label for="ac">{{ $t('search.searchSpecies') }} </label>
       </InputGroup>
     </FloatLabel>

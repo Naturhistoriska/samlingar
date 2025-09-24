@@ -71,7 +71,12 @@
     </template>
     <template #footer>
       <div class="flex gap-3 mt-1 grid justify-end" style="float: inline-end">
-        <Button :label="$t('search.search')" @click="search" id="searchRecordBtn" />
+        <Button
+          :label="$t('search.search')"
+          @click="search"
+          id="searchRecordBtn"
+          class="my-custom-button"
+        />
       </div>
     </template>
   </Card>
@@ -146,6 +151,17 @@ function search() {
 }
 </script>
 <style scoped>
+.p-button-text {
+  color: #4a4949b6;
+  text-decoration: underline;
+}
+
+.p-button-text:hover {
+  /* color: var(--p-emerald-500) !important; */
+  /* color: #fff !important; */
+  text-decoration: none !important;
+  background: transparent !important;
+}
 .p-panel {
   min-width: 100% !important;
 }
