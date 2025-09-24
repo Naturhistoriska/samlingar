@@ -11,7 +11,7 @@
           </span>
         </Tab>
         <Tab :value="value" style="border-color: transparent !important">
-          <div style="float: left; text-align: left; min-width: 400px">
+          <div style="float: left; text-align: left; min-width: 370px">
             <Download @exportData="preparaDataExport" />
           </div>
         </Tab>

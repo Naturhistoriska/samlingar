@@ -19,15 +19,28 @@
       </small>
       <small style="padding-left: 10px"><i class="pi pi-file-export"></i></small>
     </div>
-
-    <!-- <div class="flex items-center gap-2 col-2">
-      <RadioButton v-model="exportFormat" inputId="csv" name="CSV file" value="csv" />
-      <label for="csv" class="text-sm"> CSV </label>
+    <div class="col-2">
+      <RadioButton
+        v-model="exportFormat"
+        inputId="csv"
+        name="csv"
+        value="csv"
+        size="small"
+        @click="onClick"
+      />
+      <label for="csv" class="text-sm" style="padding-left: 1em">CSV</label>
     </div>
-    <div class="flex items-center gap-2 col-2"">
-      <RadioButton v-model="exportFormat" inputId="excel" name="Excel file" value="excel" />
-      <label for="excel" class="text-sm">Excel</label>
-    </div> -->
+    <div class="col-2">
+      <RadioButton
+        v-model="exportFormat"
+        inputId="excel"
+        name="csv"
+        value="excel"
+        size="small"
+        @click="onClick"
+      />
+      <label for="excel" class="text-sm" style="padding-left: 1em">Excel</label>
+    </div>
 
     <VueSpinnerDots v-if="isLoading" size="20" color="red" />
   </div>
@@ -52,7 +65,9 @@ const emits = defineEmits(['exportData'])
 let json_data = ref()
 const isLoading = ref(false)
 
-// const exportFormat = ref('csv')
+const size = ref(null)
+
+const exportFormat = ref('csv')
 
 watch(
   () => store.getters['exportData'],
@@ -114,6 +129,10 @@ async function downloadCSV(jsonData) {
     console.error('CSV download error:', error)
   }
   isLoading.value = false
+}
+
+function onClick() {
+  console.log('onClick', exportFormat.value)
 }
 </script>
 <style scoped>
