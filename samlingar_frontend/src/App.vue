@@ -16,13 +16,6 @@ import Navigation from './components/Navigation.vue'
 </script>
 
 <style>
-/* .p-inputtext {
-  background: #000 !important;
-  color: #fff !important;
-} */
-/* .p-fieldset {
-  color: #fff !important;
-} */
 .p-fieldset-legend {
   background: none !important;
 }
@@ -30,16 +23,11 @@ import Navigation from './components/Navigation.vue'
   background: #000 !important;
   /* color: #fff !important; */
 }
-/* .p-select-label {
-  color: #fff !important;
-} */
+
 .p-card {
   /* color: #fff !important; */
   background: transparent !important;
 }
-/* .p-menu {
-  background: transparent !important;
-} */
 
 .p-button-link {
   /* color: #fff !important; */
@@ -53,6 +41,37 @@ import Navigation from './components/Navigation.vue'
   text-decoration: none !important;
   background: transparent !important;
   font-size: 16px;
+}
+
+/* .p-tabview-nav .p-tabview-nav-item.p-highlight .p-tabview-nav-link {
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+.p-tab-active {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.p-link {
+  color: #007bff !important;
+  font-weight: 500;
+}
+
+.p-link:hover {
+  color: #0056b3 !important;
+  text-decoration: underline;
+} */
+
+.my-custom-button {
+  background-color: #144836 !important;
+  border: none !important;
+  color: white !important;
+}
+
+.my-custom-button:hover {
+  background-color: #43a047;
 }
 </style>
 <style scoped>
