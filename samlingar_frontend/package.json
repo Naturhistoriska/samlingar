@@ -29,7 +29,8 @@
     "vue-router": "^4.4.0",
     "vue3-lazyload": "^0.3.8",
     "vue3-spinners": "^1.2.2",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",

@@ -22,17 +22,6 @@
     <div class="col-2">
       <RadioButton
         v-model="exportFormat"
-        inputId="csv"
-        name="csv"
-        value="csv"
-        size="small"
-        @click="onClick"
-      />
-      <label for="csv" class="text-sm" style="padding-left: 1em">CSV</label>
-    </div>
-    <div class="col-2">
-      <RadioButton
-        v-model="exportFormat"
         inputId="excel"
         name="csv"
         value="excel"
@@ -40,6 +29,17 @@
         @click="onClick"
       />
       <label for="excel" class="text-sm" style="padding-left: 1em">Excel</label>
+    </div>
+    <div class="col-2">
+      <RadioButton
+        v-model="exportFormat"
+        inputId="csv"
+        name="csv"
+        value="csv"
+        size="small"
+        @click="onClick"
+      />
+      <label for="csv" class="text-sm" style="padding-left: 1em">CSV</label>
     </div>
 
     <VueSpinnerDots v-if="isLoading" size="20" color="red" />
@@ -49,6 +49,7 @@
 import { computed, ref, watch } from 'vue'
 
 import { Parser } from '@json2csv/plainjs'
+import * as XLSX from 'xlsx'
 
 import Service from '../Service'
 import { useStore } from 'vuex'
@@ -65,9 +66,7 @@ const emits = defineEmits(['exportData'])
 let json_data = ref()
 const isLoading = ref(false)
 
-const size = ref(null)
-
-const exportFormat = ref('csv')
+const exportFormat = ref('excel')
 
 watch(
   () => store.getters['exportData'],
@@ -97,7 +96,13 @@ function exportData() {
     .apiPreparaExport(params, totalRecords)
     .then((response) => {
       const jsonData = response
-      downloadCSV(jsonData)
+
+      if (exportFormat.value === 'csv') {
+        downloadCSV(jsonData)
+      } else {
+        downExcel(jsonData)
+      }
+
       setTimeout(() => {
         isLoading.value = false
       }, 2000)
@@ -106,6 +111,19 @@ function exportData() {
     .finally(() => {
       isLoading.value = false
     })
+}
+
+function downExcel(jsonData) {
+  const worksheet = XLSX.utils.json_to_sheet(jsonData)
+
+  const sheetName = 'Sheet1'
+  const fileName = 'data.xlsx'
+  // Create a new workbook and append the worksheet
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, sheetName)
+
+  // Write the Excel file and trigger download
+  XLSX.writeFile(workbook, fileName)
 }
 
 async function downloadCSV(jsonData) {
