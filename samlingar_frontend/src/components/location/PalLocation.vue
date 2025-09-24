@@ -29,12 +29,12 @@
 
       <div class="col-4 reducePadding">{{ $t('results.latitude') }}</div>
       <div class="col-8 reducePadding">
-        {{ latitude }}
+        {{ latitude.toFixed(5) }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.longitude') }}</div>
       <div class="col-8 reducePadding">
-        {{ longigude }}
+        {{ longigude.toFixed(5) }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.waterBody') }}</div>

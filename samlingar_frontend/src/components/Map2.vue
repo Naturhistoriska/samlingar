@@ -267,7 +267,7 @@ async function fetchRecord(id, marker) {
           <br><strong>Locality</strong>:<br> ${locality}, ${stateProvince}, ${country}
           <br>
           <br><strong>GPS-coordinate</strong>: <br>
-          ${decimalLatitude} -- ${decimalLongitude}
+          ${decimalLatitude.toFixed(5)} -- ${decimalLongitude.toFixed(5)}
           <br>
           <br><strong>Event date</strong>: ${eventDate}
           <br>
