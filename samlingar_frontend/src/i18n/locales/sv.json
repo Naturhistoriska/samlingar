@@ -197,6 +197,7 @@
     "downloading": "Downloading...",
     "export": "Export data (max: 50000 records)",
     "exportDatatable": "Export",
+    "exportToCsv": "Export table to csv",
     "prepareData": "Processing data...."
   },
   "footer": {
