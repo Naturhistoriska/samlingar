@@ -32,7 +32,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import moment from 'moment'
 
-import JsonExcel from 'vue-json-excel3'
+// import JsonExcel from 'vue-json-excel3'
 
 import VueLazyLoad from 'vue3-lazyload'
 
@@ -182,7 +182,7 @@ app.component('TabPanel', TabPanel)
 app.component('TieredMenu', TieredMenu)
 app.component('Toolbar', Toolbar)
 
-app.component('downloadExcel', JsonExcel)
+// app.component('downloadExcel', JsonExcel)
 
 app.directive('ripple', Ripple)
 

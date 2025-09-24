@@ -11,8 +11,8 @@
           </span>
         </Tab>
         <Tab :value="value" style="border-color: transparent !important">
-          <div class="col-12" style="float: left; text-align: left">
-            <Download @download="download" @exportData="preparaDataExport" />
+          <div style="float: left; text-align: left; min-width: 400px">
+            <Download @exportData="preparaDataExport" />
           </div>
         </Tab>
       </TabList>
@@ -21,7 +21,7 @@
           <RecordTable />
         </TabPanel>
         <TabPanel value="1" v-if="isLableView">
-          <RecordLabels @search="handleSearch" />
+          <RecordLabels />
         </TabPanel>
         <!-- <TabPanel value="2">
           <RecordMedia v-if="isMediaView" />
@@ -40,7 +40,7 @@ import RecordTable from './RecordTable.vue'
 
 const store = useStore()
 
-const emits = defineEmits(['download', 'exportData', 'search'])
+const emits = defineEmits(['exportData', 'search'])
 
 let value = ref('0')
 
@@ -64,13 +64,13 @@ function preparaDataExport() {
   emits('exportData')
 }
 
-function download() {
-  emits('download')
-}
+// function download() {
+//   emits('download')
+// }
 
-function handleSearch(start, numPerPage, saveData) {
-  emits('search', start, numPerPage, saveData)
-}
+// function handleSearch(start, numPerPage, saveData) {
+//   emits('search', start, numPerPage, saveData)
+// }
 
 // function fetchList() {
 //   console.log('fetchList', value.value)

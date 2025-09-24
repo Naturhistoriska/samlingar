@@ -1,16 +1,8 @@
 import axios from 'axios'
 
-const baseUrl = import.meta.env.VITE_SBDI_API
-// const speciesSearchUrl = import.meta.env.VITE_SBDI_SPECIES_SEARCH
-// const institutionId = import.meta.env.VITE_SUPPORTED_INSTITUTIONS
-const resultsPerPage = 10
-
 // const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
 const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
 
-const fiedList =
-  'id%2CcollectionName%2CcatalogNumber%2CscientificName%2C%20kingdom%2C%20phylum%2C%20class%2C%20order%2C%20family%2C%20genus%2C%20species'
-const facetList = 'collectionName,point-0.01,typeStatus,class,family,genus&flimit=40000'
 
 export default class Service {
   async apiInitdata() {

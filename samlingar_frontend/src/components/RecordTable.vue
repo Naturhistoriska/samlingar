@@ -353,7 +353,7 @@ function onSort(event) {
     .join(', ')
 
   firstPage.value = 0
-  const params = store.getters['searchParams']
+  let params = store.getters['searchParams']
   if (params === null) {
     params = buildParams()
   }
@@ -536,9 +536,7 @@ function buildParams() {
     params.set('endDate', endDate)
   }
 
-  console.log('filterArray.value', filterArray.value)
   const hasCollection = filterArray.value.some((obj) => obj.key === 'collectionName')
-  console.log('hasCollection', hasCollection)
   let dataResource
   if (hasCollection) {
     dataResource = filterArray.value.filter((item) => item.key === 'collectionName')[0].value

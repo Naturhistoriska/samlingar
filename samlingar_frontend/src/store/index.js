@@ -3,6 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     collectionGroup: null, // group collection code
+    collectons: [],
 
     dataResource: null, // group: zoo, pal, bot, geo
 
@@ -81,7 +82,6 @@ export default createStore({
     chartDataSmtpObject: [],
     chartDataSmtpList: [],
     chartDataVp: [],
-    collectons: [],
 
     classs: [],
     dataset: null,

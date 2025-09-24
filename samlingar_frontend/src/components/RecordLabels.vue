@@ -68,7 +68,7 @@ const service = new Service()
 const store = useStore()
 const router = useRouter()
 
-const emits = defineEmits(['search'])
+// const emits = defineEmits(['search'])
 
 let records = ref(Array.from({ length: 50 }))
 
