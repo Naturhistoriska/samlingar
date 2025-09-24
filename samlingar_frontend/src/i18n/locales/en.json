@@ -197,7 +197,7 @@
   "exportData": {
     "download": "Download",
     "downloading": "Downloading...",
-    "export": "Export data [Click to prepare data for download (max: 50000 records)]",
+    "export": "Export data (max: 50000 records)",
     "exportDatatable": "Export",
     "prepareData": "Processing data...."
   },

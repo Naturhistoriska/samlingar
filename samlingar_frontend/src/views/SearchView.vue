@@ -35,7 +35,7 @@
 
     <div class="grid">
       <div class="col-12" no-gutters>
-        <records-tabs @download="download" @exportData="preparaDataExport" @search="search" />
+        <records-tabs @search="search" />
       </div>
     </div>
   </div>
@@ -56,8 +56,6 @@ const service = new Service()
 
 const AsyncMap = defineAsyncComponent({
   loader: () => import('../components/MapSwitch.vue')
-  // loader: () => import('../components/NewMap.vue')
-  // loader: () => import('../components/Map2.vue')
 })
 
 let loading = ref(false)
@@ -113,32 +111,13 @@ onMounted(async () => {
   // }, 2000)
 })
 
-function download() {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 2000)
-}
-
-function preparaDataExport() {
-  loading.value = true
-  const totalRecords = store.getters['totalRecords']
-  let params = buildParams(false)
-
-  service
-    .apiPreparaExport(params, totalRecords)
-    .then((response) => {
-      const results = response
-
-      store.commit('setExportData', results)
-
-      setTimeout(() => {
-        loading.value = false
-      }, 2000)
-    })
-    .catch()
-    .finally(() => {})
-}
+// function download() {
+// loading.value = true
+//
+// setTimeout(() => {
+// loading.value = false
+// }, 2000)
+// }
 
 function handleSearch() {
   const params = buildParams(true)

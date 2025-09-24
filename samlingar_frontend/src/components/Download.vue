@@ -1,7 +1,11 @@
 <template>
-  <div>
+  <div v-if="isLoading" class="spinner-overlay">
+    <div class="spinner"></div>
+  </div>
+  <div class="grid">
     <div
-      v-if="!dataPrepared"
+      class="col-7"
+      no-gutters
       :class="exportCss"
       @click="exportData"
       :style="{
@@ -15,27 +19,25 @@
       </small>
       <small style="padding-left: 10px"><i class="pi pi-file-export"></i></small>
     </div>
-    <downloadexcel
-      v-else
-      @click="downloadFile"
-      class="btn btn-default"
-      :data="json_data"
-      :fields="json_fields"
-      type="csv"
-      name="data.csv"
-      :before-finish="finishDownload"
-      :before-generate="startDownload"
-      style="color: var(--p-emerald-500); font-size: 14px; cursor: pointer; padding-left: 8px"
-    >
-      <small>{{ downLoadText }}</small>
-      <small style="padding-left: 10px"><i class="pi pi-download"></i></small>
-    </downloadexcel>
+
+    <!-- <div class="flex items-center gap-2 col-2">
+      <RadioButton v-model="exportFormat" inputId="csv" name="CSV file" value="csv" />
+      <label for="csv" class="text-sm"> CSV </label>
+    </div>
+    <div class="flex items-center gap-2 col-2"">
+      <RadioButton v-model="exportFormat" inputId="excel" name="Excel file" value="excel" />
+      <label for="excel" class="text-sm">Excel</label>
+    </div> -->
+
     <VueSpinnerDots v-if="isLoading" size="20" color="red" />
   </div>
 </template>
 <script setup>
 import { computed, ref, watch } from 'vue'
-import downloadexcel from 'vue-json-excel3'
+
+import { Parser } from '@json2csv/plainjs'
+
+import Service from '../Service'
 import { useStore } from 'vuex'
 
 import { useI18n } from 'vue-i18n'
@@ -43,27 +45,24 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 const store = useStore()
+const service = new Service()
 
-const emits = defineEmits(['exportData', 'download'])
+const emits = defineEmits(['exportData'])
 
 let json_data = ref()
-let dataPrepared = ref(false)
 const isLoading = ref(false)
+
+// const exportFormat = ref('csv')
 
 watch(
   () => store.getters['exportData'],
   () => {
     json_data.value = store.getters['exportData']
     setTimeout(() => {
-      dataPrepared.value = true
       isLoading.value = false
     }, 2000)
   }
 )
-
-const downLoadText = computed(() => {
-  return isLoading.value ? t('exportData.downloading') : t('exportData.download')
-})
 
 const exportText = computed(() => {
   return isLoading.value ? t('exportData.prepareData') : t('exportData.export')
@@ -73,48 +72,48 @@ const exportCss = computed(() => {
   return isLoading.value ? 'fade-in-text' : 'preparaDataLink'
 })
 
-let json_fields = {
-  'Collection Name': 'collectionName',
-  'Catalogue Number': 'catalogNumber',
-  Locality: 'locality',
-  District: 'district',
-  'State Province': 'stateProvince',
-  Country: 'country',
-  Continent: 'continent',
-  Latitude: 'decimalLatitude',
-  Longitude: 'decimalLongitude',
-  'Station field number': 'fieldNumber',
-  Family: 'family',
-  Genus: 'genus',
-  Species: 'species',
-  Prepration: 'preparations',
-  Preservation: 'dynamicProperties_preservation',
-  'Vernacular Name': 'vernacularName',
-  'Event date': 'eventDate',
-  'Recorded by': 'recordedBy',
-  'Expedition name': 'dynamicProperties_expeditionNam'
-}
-
-function startDownload() {
-  console.log('start...')
-}
-
-function finishDownload() {
-  console.log('done....')
-  dataPrepared.value = false
-  isLoading.value = false
-}
-
 function exportData() {
-  console.log('exportData')
   isLoading.value = true
-  emits('exportData')
+  const totalRecords = store.getters['totalRecords']
+
+  const params = store.getters['searchParams']
+
+  service
+    .apiPreparaExport(params, totalRecords)
+    .then((response) => {
+      const jsonData = response
+      downloadCSV(jsonData)
+      setTimeout(() => {
+        isLoading.value = false
+      }, 2000)
+    })
+    .catch()
+    .finally(() => {
+      isLoading.value = false
+    })
 }
 
-function downloadFile() {
-  console.log('downloadFile')
-  isLoading.value = true
-  emits('download')
+async function downloadCSV(jsonData) {
+  try {
+    const parser = new Parser()
+    const csv = parser.parse(jsonData)
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'export.csv'
+    document.body.appendChild(link)
+    link.click()
+
+    // ♻️ Clean up
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('CSV download error:', error)
+  }
+  isLoading.value = false
 }
 </script>
 <style scoped>
@@ -125,7 +124,7 @@ function downloadFile() {
 }
 .preparaDataLink:hover {
   color: var(--p-emerald-500) !important;
-  font-size: 15px;
+  font-size: 14px;
   text-decoration: none;
 }
 
@@ -141,6 +140,34 @@ function downloadFile() {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>
