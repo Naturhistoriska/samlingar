@@ -1,6 +1,7 @@
 <template>
   <div class="grid nested-grid divbg nesteddiv">
     <div class="col-1 pt-5 pb-5 logodiv">
+      <!-- <img src="/nrm-logo-liggande-svensk-negativ.png" /> -->
       <img src="/nrm-logo.png" />
     </div>
     <div class="col-11">
