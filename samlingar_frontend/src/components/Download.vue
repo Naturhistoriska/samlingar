@@ -176,12 +176,13 @@ function onClick() {
 /* Change the dot inside the selected radio */
 :deep(.p-radiobutton-icon) {
   background-color: #144836 !important;
+  color: #144836 !important;
 }
 
 /* Change the color of the selected radio button */
-/* :deep(.p-radiobutton-box.p-highlight) {
+:deep(.p-radiobutton-box.p-highlight) {
   background-color: #144836 !important;
-} */
+}
 
 /* Optional: unselected state styling */
 /* :deep(.p-radiobutton-box) { */

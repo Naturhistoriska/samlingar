@@ -31,7 +31,8 @@ const chartData = computed(() => {
         label: t('startPage.monthChartLabel'),
         data: values,
         color: 'white',
-        backgroundColor: documentStyle.getPropertyValue('--p-emerald-500'),
+        backgroundColor: '#1d634a',
+        // backgroundColor: documentStyle.getPropertyValue('--p-emerald-500'),
         borderWidth: 1
       }
     ]

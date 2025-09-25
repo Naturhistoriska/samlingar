@@ -1,9 +1,9 @@
 <template>
   <div class="card">
     <Tabs v-model:value="value">
-      <TabList>
-        <Tab value="0">{{ $t('records.list') }}</Tab>
-        <Tab value="1">{{ $t('records.labels') }}</Tab>
+      <TabList class="my-tablist">
+        <Tab value="0" class="my-tab">{{ $t('records.list') }}</Tab>
+        <Tab value="1" class="my-tab">{{ $t('records.labels') }}</Tab>
         <!-- <Tab value="2">{{ $t('records.media') }}</Tab> -->
         <Tab value="2" disabled>
           <span class="text-900 font-bold">
@@ -98,16 +98,7 @@ function preparaDataExport() {
 // }
 </script>
 <style scoped>
-/* .p-button-text {
-  color: #4a4949b6;
-  text-decoration: underline;
-}
-
-.p-button-text:hover {
-  text-decoration: none !important;
-  background: transparent !important;
-} */
-a {
+/* a {
   cursor: pointer;
   text-decoration: none;
   color: #fff !important;
@@ -115,25 +106,29 @@ a {
 
 a:hover {
   color: rgb(166, 158, 158) !important;
-}
-/* 🔵 Inactive tab styling */
-:deep(.p-tabview-nav .p-tabview-nav-item .p-tabview-nav-link) {
-  background-color: #3474b4 !important;
-  color: red !important;
-  border-radius: 4px 4px 0 0;
+} */
+/* Base (inactive) tab style */
+:deep(.my-tablist .my-tab) {
   padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  color: #989797 !important; /* inactive text color */
+  /* background-color: #f0f0f0 !important;   */
+  /* border-bottom: 2px solid transparent; */
+  /* transition: all 0.3s ease; */
 }
 
-/* 🔥 Active tab styling */
-:deep(.p-tabview-nav .p-tabview-nav-item.p-highlight .p-tabview-nav-link) {
-  background-color: #007bff; /* blue background */
-  color: white; /* white text */
-  font-weight: bold;
-  border-radius: 4px 4px 0 0;
+/* Hover state (inactive) */
+:deep(.my-tablist .my-tab:hover) {
+  /* background-color: #e0e0e0 !important; */
+  color: #444444 !important;
 }
 
-/* ✨ Hover effect */
-:deep(.p-tabview-nav .p-tabview-nav-item .p-tabview-nav-link:hover) {
-  background-color: #e9ecef;
+/* Active tab style - when its value matches active val */
+:deep(.my-tablist .my-tab[aria-selected='true']) {
+  /* PrimeVue Tabs uses aria-selected on active Tab */
+  color: #1d634a !important;
+  /* background-color: #007bff !important; */
+  /* border-bottom-color: #0056b3 !important;
+  font-weight: bold; */
 }
 </style>
