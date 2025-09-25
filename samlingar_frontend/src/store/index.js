@@ -12,6 +12,8 @@ export default createStore({
     filterInSweden: false,
     filterType: false,
 
+    geoJson: null,
+
     hasCoordinatesCount: 0,
     imageCount: 0,
     inSwedenCount: 0,
@@ -127,6 +129,10 @@ export default createStore({
   getters: {
     collectionGroup(state) {
       return state.collectionGroup
+    },
+
+    geoJson(state) {
+      return state.geoJson
     },
 
     resetMapData(state) {
@@ -415,6 +421,7 @@ export default createStore({
 
   mutations: {
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
+    setGeoJson: (state, payload) => (state.geoJson = payload),
     setResetMapData: (state, payload) => (state.resetMapData = payload),
     setSelectedCollectionGroup: (state, payload) => (state.selectedCollectionGroup = payload),
     setTotalGeoData: (state, payload) => (state.totalGeoData = payload),

@@ -234,6 +234,7 @@ const fetchAndRender = async (params, { lat, lng }) => {
     })
     .finally(() => {
       loading.value = false
+      store.commit('setResetMapData', false)
     })
 }
 

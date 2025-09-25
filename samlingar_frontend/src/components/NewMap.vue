@@ -97,6 +97,8 @@ onMounted(async () => {
   if (total >= 50000 && resetMapData) {
     await fetchHeatmapData()
     store.commit('setResetMapData', false)
+  } else {
+    geojson.value = store.getters['geoJson']
   }
   //   if (entryType === 'first-visit' || entryType === 'reload') {
   //     reloadMap = true
@@ -133,8 +135,10 @@ async function fetchHeatmapData() {
       const data = response
       if (data) {
         geojson.value = data
+        store.commit('setGeoJson', data)
       }
     })
+
     .catch((error) => {
       console.log('error', error)
     })
