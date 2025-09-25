@@ -30,8 +30,7 @@ public class BotJsonConverter implements Serializable {
     private List<JsonArray> list;
     
     private JsonObjectBuilder attBuilder;
-    private JsonArrayBuilder arrayBuilder;
-    private JsonArrayBuilder imageArrayBuilder;
+    private JsonArrayBuilder arrayBuilder; 
     
     private final int batchSize = 6000;
     

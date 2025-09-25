@@ -1,15 +1,12 @@
 package se.nrm.samlingar.data.process.logic.coordinates;
-
-import ch.hsr.geohash.GeoHash; 
+ 
 import java.io.Serializable; 
 import javax.inject.Inject;
 import javax.json.JsonObjectBuilder;
 import lombok.extern.slf4j.Slf4j; 
-import org.apache.commons.lang3.StringUtils;
-import se.nrm.samlingar.data.process.logic.exception.ErrorMsg;
+import org.apache.commons.lang3.StringUtils; 
 import se.nrm.samlingar.data.process.logic.exception.SamlingarException;
-import se.nrm.samlingar.data.process.logic.json.JsonHelper; 
-import se.nrm.samlingar.data.process.logic.util.Util;
+import se.nrm.samlingar.data.process.logic.json.JsonHelper;  
 
 /**
  *
@@ -17,12 +14,9 @@ import se.nrm.samlingar.data.process.logic.util.Util;
  */
 @Slf4j
 public class CoordinatesBuilder implements Serializable {
-
-    private final int numberOfCharacters = 5; 
-    private final String emptySpace = " ";
+ 
     private final String slash = "/"; 
-    
-    private String geoHash; 
+     
     private double dblLat;
     private double dblLong; 
     
@@ -128,9 +122,8 @@ public class CoordinatesBuilder implements Serializable {
             double longitude) throws Exception {
  
         JsonHelper.getInstance().addCoordinates(attBuilder, latitude, longitude);  
-        JsonHelper.getInstance().addPoint(attBuilder, latitude, longitude); 
-        
-        log.info("point added....");
+//        JsonHelper.getInstance().addPoint(attBuilder, latitude, longitude); 
+         
         JsonHelper.getInstance().addLatAndLong(attBuilder, latitude, longitude); 
         log.info("latAndLong added....");
     } 

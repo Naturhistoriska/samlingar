@@ -30,7 +30,7 @@ public class CsvToJsonConverter implements Serializable  {
     private final String catalogNumberKey = "catalogNumber";
     private final String classificationKey = "classification";
     private final String startDateKey = "startDate";
-    private final String coordinateKey = "coordinate";
+    private final String coordinateKey = "coordinates";
     private final String synonymKey = "synonym";
     private final String catalogIdKey = "catalogId";
     private final String catalogedDateKey = "catalogedDate";
@@ -40,11 +40,7 @@ public class CsvToJsonConverter implements Serializable  {
     private final String degreeKey = "degree";
     private final String minuteKey = "minute";
     private final String secondKey = "second";
-    private final String directionKey = "direction";
-    private final String startDateYearKey = "collYear";
-    private final String startDateMonthKey = "collMonth";
-    private final String startDateDayKey = "collDay";
-    
+    private final String directionKey = "direction"; 
     private final String imageKey = "image";
     private final String associatedMediaKey = "associatedMedia";
 
@@ -61,6 +57,8 @@ public class CsvToJsonConverter implements Serializable  {
     private String csvLngMinuteKey;
     private String csvLngSecondKey;
     private String csvLngDirectionKey;
+    
+    private String csvCatalogNumberKey;
  
 
     private final int batchSize = 5000;
@@ -68,11 +66,12 @@ public class CsvToJsonConverter implements Serializable  {
     private String catalogNumber;
     private String catatlogId;
 
-    private JsonObject classificationJson;
-    private JsonObject startDateJson;
+    private JsonObject classificationJson; 
     private JsonObject coordinatesJson;
     private JsonObject latitudeJson;
     private JsonObject longitudeJson;
+    
+    private JsonObject mappingJson;
 
     private JsonObjectBuilder attBuilder;
     private JsonArrayBuilder arrayBuilder;
@@ -96,21 +95,32 @@ public class CsvToJsonConverter implements Serializable  {
     public List<JsonArray> vascularPlantsConvert(List<CSVRecord> records,
             Map<String, List<String>> synonysMap, Map<String, List<Determination>> determinationMap,
             Map<String, List<String>> imageMap, String idPrefix, String collectionName,
-            JsonObject mappingJson ) {
-        log.info("vascularPlantsConvert");
+            JsonObject json ) {
+        log.info("vascularPlantsConvert "  );
 
         list = new ArrayList();
         arrayBuilder = Json.createArrayBuilder();
         attBuilder = Json.createObjectBuilder();
+        
+        mappingJson = JsonHelper.getInstance().getMappingJson(json);
+        log.info("mappingJosn : {}", mappingJson);
 
-        csvCatalogIdKey = mappingJson.getJsonObject(synonymKey).getString(catalogIdKey);
-
+        
+        csvCatalogIdKey = json.getJsonObject(synonymKey).getString(catalogIdKey);
+        log.info("csvCatalogIdKey : {}", csvCatalogIdKey);
  
-        classificationJson = mappingJson.getJsonObject(classificationKey);
-        coordinatesJson = mappingJson.getJsonObject(coordinateKey);
+        classificationJson = json.getJsonObject(classificationKey);
+        log.info("classificationJson : {}", classificationJson);
+         
+        
+        coordinatesJson = json.getJsonObject(coordinateKey);
+        log.info("coordinatesJson : {}", coordinatesJson);
 
         latitudeJson = coordinatesJson.getJsonObject(latitudeKey);
+         log.info("latitudeJson : {}", latitudeJson);
+         
         longitudeJson = coordinatesJson.getJsonObject(longtitudeKey);
+         log.info("longitudeJson : {}", longitudeJson);
 
         csvLatDegreeKey = latitudeJson.getString(degreeKey);
         csvLatMinuteKey = latitudeJson.getString(minuteKey);
@@ -122,10 +132,12 @@ public class CsvToJsonConverter implements Serializable  {
         csvLngSecondKey = longitudeJson.getString(secondKey);
         csvLngDirectionKey = longitudeJson.getString(directionKey);
 
-        csvCatalogedDateKey = mappingJson.getString(catalogedDateKey);
-        csvTypeStatusKey = mappingJson.getString(typeStatusKey);
+        csvCatalogedDateKey = json.getString(catalogedDateKey);
+        csvTypeStatusKey = json.getString(typeStatusKey);
+        csvCatalogNumberKey =  json.getString(catalogNumberKey);
+        log.info("csvCatalogNumberKey : {}", csvCatalogNumberKey);
         
-        eventDateJson = JsonHelper.getInstance().getEventDateJson(mappingJson); 
+        eventDateJson = JsonHelper.getInstance().getEventDateJson(json); 
 
         AtomicInteger counter = new AtomicInteger(0);
         records.stream()
@@ -134,7 +146,7 @@ public class CsvToJsonConverter implements Serializable  {
                     attBuilder = Json.createObjectBuilder();
                     try {
                         counter.getAndIncrement();
-                        catalogNumber = record.get(0);
+                        catalogNumber = record.get(csvCatalogNumberKey);
                         log.info("catalogueId : {}", catalogNumber);
 
 //                        if (!StringUtils.isBlank(catalogNumber)) {
@@ -155,6 +167,10 @@ public class CsvToJsonConverter implements Serializable  {
                                 );
 
                         JsonHelper.getInstance().addCatalogDate(attBuilder, record.get(csvCatalogedDateKey));
+                                                    
+                        JsonHelper.getInstance().addModifedDate(attBuilder, 
+                                record.get(JsonHelper.getInstance().getModifiedDateCsvKey(json)));
+                        log.info("modified data added...");
  
                         imageList = imageMap.get(catalogNumber);
                         if(imageList != null && !imageList.isEmpty()) {
@@ -195,6 +211,6 @@ public class CsvToJsonConverter implements Serializable  {
     
     
     
-    private final Predicate<CSVRecord> isValid = record -> !StringUtils.isBlank(record.get(0));
+    private final Predicate<CSVRecord> isValid = record -> !StringUtils.isBlank(record.get(csvCatalogNumberKey));
 
 }

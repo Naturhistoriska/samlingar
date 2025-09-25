@@ -1,14 +1,13 @@
 package se.nrm.samlingar.data.process.logic;
 
-import java.io.Serializable;  
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.json.JsonArray;
-import javax.json.JsonValue;
-import lombok.extern.slf4j.Slf4j; 
+import lombok.extern.slf4j.Slf4j;
 import org.wildfly.swarm.Swarm;
 import se.nrm.samlingar.data.process.config.InitialProperties;
-import se.nrm.samlingar.data.process.logic.bot.BotDataProcessor; 
+import se.nrm.samlingar.data.process.logic.bot.BotDataProcessor;
 import se.nrm.samlingar.data.process.logic.bot.VascularPlantsDataProcess;
 import se.nrm.samlingar.data.process.logic.files.JsonFileHandler;
 import se.nrm.samlingar.data.process.logic.paleo.PaleoDataProcessor;
@@ -19,25 +18,25 @@ import se.nrm.samlingar.data.process.logic.zoo.ZooDataProcessor;
  * @author idali
  */
 @Slf4j
-public class DataProcessor implements Serializable  {
-     
-    private final String botCollection = "bot"; 
-    private final String paleoCollection = "paleo"; 
+public class DataProcessor implements Serializable {
+
+    private final String botCollection = "bot";
+    private final String paleoCollection = "paleo";
     private final String zooCollection = "zoo";
     private final String fboCollection = "fbo";
-     
-    private JsonArray array; 
+
+    private JsonArray array;
     private String collection;
-    private String csvFilePath; 
+    private String csvFilePath;
     private boolean deleteData;
 //    private String imageMappingFile;
-    private JsonArray imageArray; 
-    
+    private JsonArray imageArray;
+
     @Inject
     private InitialProperties propeties;
     @Inject
     private JsonFileHandler fileHander;
-    
+
     @Inject
     private BotDataProcessor bot;
     @Inject
@@ -48,78 +47,88 @@ public class DataProcessor implements Serializable  {
     private VascularPlantsDataProcess fbo;
     @Inject
     private JsonFileHandler jsonFileHander;
-  
+
     public DataProcessor() {
-        
+
     }
-    
-    public void run() {   
-        log.info("run");
-        try {  
+
+    public void run() {
+        log.info("run ");
+        try {
             collection = propeties.getCollection();
-            array = fileHander.readMappingJsonFile(getMappingFilePath(collection)); 
-            csvFilePath = getCsvFilePath(collection);
-            deleteData = delete(); 
-            imageArray = jsonFileHander.readMappingJsonFile(getImageMappingFilePath());
+            log.info("collection : {}", collection);
             
-            switch (collection) {
-            case zooCollection:  
-                zoo.process(csvFilePath, array,
-                        imageArray, getZooImageFilePath(),deleteData);
-                break;
-            case paleoCollection:
-                paleo.process(csvFilePath, array, deleteData);
-                break;
-            case botCollection:  
-                bot.process(propeties, array, imageArray, deleteData);
-                break;
-            case fboCollection:
+            imageArray = jsonFileHander.readMappingJsonFile(getImageMappingFilePath());
+
+            
+            if (collection.equals(fboCollection)) {
+                array = fileHander.readMappingJsonFile(getMappingFilePath(botCollection));
+  
+                deleteData = delete(); 
                 fbo.process(propeties, array, imageArray, deleteData);
-            default: 
-                break;
-        }  
+            } else {
+                array = fileHander.readMappingJsonFile(getMappingFilePath(collection));
+
+                csvFilePath = getCsvFilePath(collection);
+                deleteData = delete();
+  
+                switch (collection) {
+                    case zooCollection:
+                        zoo.process(csvFilePath, array,
+                                imageArray, getZooImageFilePath(), deleteData);
+                        break;
+                    case paleoCollection:
+                        paleo.process(csvFilePath, array, deleteData);
+                        break;
+                    case botCollection:
+                        bot.process(propeties, array, imageArray, deleteData);
+                        break; 
+                    default:
+                        break;
+                }
+
+            }
         } catch (RuntimeException e) {
             log.error("error... {}", e.getMessage());
-        }        
-        
+        }
+
         stopServer();
     }
-    
+
     /**
-     * 
+     *
      * @return boolean delete data from solr
      */
     private boolean delete() {
-       return propeties.getDeleteCollection();
+        return propeties.getDeleteCollection();
     }
-    
+
     /**
      *
      * @param collection
      * @return getCsvFile
      */
     private String getCsvFilePath(String collection) {
-       return propeties.getCsvFile(collection);
+        return propeties.getCsvFile(collection);
     }
-    
+
     private String getImageMappingFilePath() {
         return propeties.getImageMappingFilePath();
     }
-    
+
     /**
      *
      * @param collection
      * @return mappingFilePath
      */
     private String getMappingFilePath(String collection) {
-        return propeties.getMapingFilePath(collection); 
+        return propeties.getMapingFilePath(collection);
     }
- 
-    private String getZooImageFilePath() {  
+
+    private String getZooImageFilePath() {
         return propeties.getImageZooCsvPath();
     }
-    
-    
+
     private void stopServer() {
         log.info("stopServer");
         try {
@@ -131,6 +140,6 @@ public class DataProcessor implements Serializable  {
         } catch (Exception ex) {
             log.error(ex.getMessage());
         }
-    } 
-    
+    }
+
 }

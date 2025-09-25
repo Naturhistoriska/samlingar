@@ -1,9 +1,7 @@
 package se.nrm.samlingar.data.process.logic.coordinates;
 
 import java.io.Serializable;
-import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
+import javax.inject.Inject; 
 import javax.json.JsonObjectBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
@@ -16,39 +14,29 @@ import se.nrm.samlingar.data.process.logic.json.JsonHelper;
  */
 @Slf4j
 public class JsonCoordinatesConverter implements Serializable {
-
-    private final String latitudeKey = "latitude";
-    private final String longtitudeKey = "longitude";
-
-    private final String geoKey = "geo";
-    private final String geohashKey = "geohash";
-    private final String coordinateKey = "coordinate";
-    private final String mapKey = "map";
-
-    private String latitude;
-    private String longitude;
-    private double doubleLat;
-    private double doubleLng;
-
-    private String[] latLngArray;
-
-//    private String coordinates;
-    private final String comma = ",";
-    private final String underScore = "_";
-    private final String slash = "/";
+ 
     private final String emptySpace = " ";
-
-    private final int numberOfCharacters = 9;
-    private final String north = "N";
-    private final String east = "E";
-
-    private final String latitudeTextKey = "latitudeText";
-    private final String longitudeTextKey = "longitudeText";
-
-    private StringBuilder sb;
-    private StringBuilder geoHashSb;
-
-    private JsonArrayBuilder georHashArrayBuilder;
+     
+    private final String degreeSign = "°";
+    private final String minuteSign = "'"; 
+    private final String secondSign = "\"";
+    private final String slash = "/";
+ 
+    private double doubleLat;
+    private double doubleLng; 
+    
+    private String latDegree;
+    private String latMinute;
+    private String latSecond;
+    private String lonDegree;
+    private String lonMinute;
+    private String lonSecond;
+    
+    private String latDirection;
+    private String lonDirection;
+    
+    private StringBuilder verbatimCoordinatesSb;
+ 
 
     private final double double200 = 200.0;
 
@@ -70,11 +58,21 @@ public class JsonCoordinatesConverter implements Serializable {
             String latDegreeKey, String latMinuteKey, String latSecondKey,
             String latDirectionKey, String lngDegreeKey, String lngMinuteKey,
             String lngSecondKey, String lngDirectionKey, CSVRecord record) {
+        
+        latDegree = record.get(latDegreeKey).trim();
+        latMinute = record.get(latMinuteKey).trim();
+        latSecond = record.get(latSecondKey).trim(); 
+        latDirection = record.get(latDirectionKey).trim();
+        
+        lonDegree = record.get(lngDegreeKey).trim();
+        lonMinute = record.get(lngMinuteKey).trim();
+        lonSecond = record.get(lngSecondKey).trim(); 
+        lonDirection = record.get(lngDirectionKey).trim();
 
-        doubleLat = botConvert.convertVascularPlantsLatLng(latDegreeKey,
-                latMinuteKey, latSecondKey, latDirectionKey, record);
-        doubleLng = botConvert.convertVascularPlantsLatLng(lngDegreeKey,
-                lngMinuteKey, lngSecondKey, lngDirectionKey, record);
+        doubleLat = botConvert.convertVascularPlantsLatLng(latDegree,
+                latMinute, latSecond, latDirection );
+        doubleLng = botConvert.convertVascularPlantsLatLng(lonDegree,
+                lonMinute, lonSecond, lonDirection);
 
         if (doubleLat != double200 && doubleLng != double200) {
             log.info("coordinates : {} -- {}", doubleLat, doubleLng);
@@ -86,15 +84,48 @@ public class JsonCoordinatesConverter implements Serializable {
                 log.error("builderCoordinates : {}", ex.getMessage());
             } 
         }
+        addVerbatimCoordinates(attBuilder);
+    }
+    
+    private void addVerbatimCoordinates(JsonObjectBuilder attBuilder ) {
+          
+        verbatimCoordinatesSb = new StringBuilder();
+        verbatimCoordinatesSb.append(latDegree);
+        verbatimCoordinatesSb.append(degreeSign);
+        verbatimCoordinatesSb.append(emptySpace);
+        verbatimCoordinatesSb.append(latMinute);
+        verbatimCoordinatesSb.append(minuteSign);
+        verbatimCoordinatesSb.append(emptySpace);
+        verbatimCoordinatesSb.append(latSecond);
+        verbatimCoordinatesSb.append(secondSign);
+        verbatimCoordinatesSb.append(emptySpace);
+        verbatimCoordinatesSb.append(latDirection);
+        verbatimCoordinatesSb.append(emptySpace);
+        verbatimCoordinatesSb.append(slash);
+        verbatimCoordinatesSb.append(emptySpace);
+         
+        verbatimCoordinatesSb.append(lonDegree);
+        verbatimCoordinatesSb.append(degreeSign);
+        verbatimCoordinatesSb.append(emptySpace);
+        verbatimCoordinatesSb.append(lonMinute);
+        verbatimCoordinatesSb.append(minuteSign);
+        verbatimCoordinatesSb.append(emptySpace);
+        verbatimCoordinatesSb.append(lonSecond);
+        verbatimCoordinatesSb.append(secondSign);
+        verbatimCoordinatesSb.append(emptySpace);
+        verbatimCoordinatesSb.append(lonDirection);
+        
+        JsonHelper.getInstance()
+                .addVerbatimCoordinates(attBuilder, verbatimCoordinatesSb.toString());
+        
     }
 
     private void addGeoData(JsonObjectBuilder attBuilder, double latitude,
             double longitude) throws Exception {
 
         JsonHelper.getInstance().addCoordinates(attBuilder, latitude, longitude);
-        JsonHelper.getInstance().addPoint(attBuilder, latitude, longitude);
-
-        log.info("point added....");
+//        JsonHelper.getInstance().addPoint(attBuilder, latitude, longitude);
+ 
         JsonHelper.getInstance().addLatAndLong(attBuilder, latitude, longitude);
         log.info("latAndLong added....");
     }

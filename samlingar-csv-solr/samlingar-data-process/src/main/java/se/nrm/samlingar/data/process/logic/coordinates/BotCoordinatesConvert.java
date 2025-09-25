@@ -47,10 +47,10 @@ public class BotCoordinatesConvert implements Serializable {
     private double dblMinuts;
     private double dblLatOrLong;
 
-    private String strDegree;
-    private String strMinute;
-    private String strSeconds;
-    private String direction;
+//    private String strDegree;
+//    private String strMinute;
+//    private String strSeconds;
+//    private String direction;
     private int degree;
     private int minute;
     private double latLngDouble;
@@ -64,22 +64,22 @@ public class BotCoordinatesConvert implements Serializable {
         
     }
     
-    public double  convertVascularPlantsLatLng(String degreeKey, String minuteKey,
-            String secondKey, String directionKey, CSVRecord record) { 
+    public double  convertVascularPlantsLatLng(String strDegree, String strMinut,
+            String strSecond, String direction ) { 
+//        
+//        strDegree = record.get(degreeKey).trim();
+//        strMinute = record.get(minuteKey).trim();
+//        strSeconds = record.get(secondKey).trim();
+//        strSeconds = StringUtils.replace(strSeconds, comma, dot);
+//        direction = record.get(directionKey).trim();
         
-        strDegree = record.get(degreeKey).trim();
-        strMinute = record.get(minuteKey).trim();
-        strSeconds = record.get(secondKey).trim();
-        strSeconds = StringUtils.replace(strSeconds, comma, dot);
-        direction = record.get(directionKey).trim();
-        
-        if(StringUtils.isAnyEmpty(strDegree, strMinute, strSeconds)) {
+        if(StringUtils.isAnyEmpty(strDegree, strMinut, strSecond)) {
             return double200;
         }
         try {
             degree = Util.getInstance().stringToInt(strDegree);
-            minute = Util.getInstance().stringToInt(strMinute);
-            seconds = Util.getInstance().stringToDouble(strSeconds); 
+            minute = Util.getInstance().stringToInt(strMinut);
+            seconds = Util.getInstance().stringToDouble(strSecond); 
            
             latLngDouble = convert(degree, minute, seconds); 
             return direction.equals(north) || direction.equals(east)
@@ -89,7 +89,7 @@ public class BotCoordinatesConvert implements Serializable {
         }
         return double200;
     }
-    
+      
     public double convert(String latOrLong, boolean isLatitude) {
         if (StringUtils.isBlank(latOrLong)) {
             throw new SamlingarException(ErrorMsg.getInstance().getNoCoordinatesErrorMsg());

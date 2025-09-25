@@ -28,14 +28,13 @@ public class BotDataProcessor implements Serializable {
     private final String vascularPlants = "vascularPlants";
 
     private final String fungi = "fungi";
-    private final String kboDateset = "kbo";
-    private final String fboDateset = "fbo";
+    private final String kboDateset = "kbo"; 
     private final String datasetKey = "dataset";
 
     private final String determinationkey = "determination";
 
     private String fileName;
-    private String imageFileName;
+//    private String imageFileName;
 
     private String mainCsvFilePath;
     private String catalogCsvFilePath;
@@ -79,6 +78,7 @@ public class BotDataProcessor implements Serializable {
 
     @Inject
     private DeterminationData datermination;
+    
     @Inject
     private CsvDataExtraction extractor;
 
@@ -280,7 +280,7 @@ public class BotDataProcessor implements Serializable {
         delimiter = JsonHelper.getInstance().getDelimiter(imageJson,
                 CommonString.getInstance().getSeparatorKey());
 
-        imageFileName = JsonHelper.getInstance().getFileName(imageJson);
+//        imageFileName = JsonHelper.getInstance().getFileName(imageJson);
 
         return fileProcessor.read(imageFilePath, delimiter, null);
     }
