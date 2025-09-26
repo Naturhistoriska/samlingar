@@ -39,8 +39,8 @@ export default class Service {
     return response.data
   }
 
-  async apiFreeTextSearch(searchText) {
-    let url = `${samlingApi}/freeTextSearch?catchall=${searchText}`
+  async apiFreeTextSearch(params) {
+    let url = `${samlingApi}/freeTextSearch?${params.toString()}`
 
     const response = await axios.get(url)
     return response.data

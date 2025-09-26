@@ -109,7 +109,6 @@ function buildRecordData(record) {
   code.value = collectionCode
 
   const higherClassification = new Array(kingdom, phylum, clazz, order, family, genus, subgenus)
-  console.log(higherClassification)
 
   classification.value = higherClassification.filter((str) => str !== undefined).join(' > ')
 

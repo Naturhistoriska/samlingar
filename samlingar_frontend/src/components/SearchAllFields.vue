@@ -1,6 +1,6 @@
 <template>
   <div class="grid">
-    <div>
+    <div class="col-12" no-gutters>
       {{ $t('search.freeTextSearch') }}
       <small style="font-size: 11px">[{{ $t('search.searchAll') }}]</small>
     </div>
@@ -12,6 +12,52 @@
           v-bind:size="size"
           v-bind:icon="icon"
         />
+      </div>
+    </div>
+    <div class="col-12" no-gutters>
+      <div class="flex flex flex-wrap gap-3">
+        <div class="flex items-center">
+          <RadioButton
+            v-model="searchOptions"
+            inputId="optionEquals"
+            name="option1"
+            value="equals"
+            size="small"
+            class="mt-1"
+            @value-change="change"
+          />
+          <label for="searchOption1" class="ml-2">
+            <small>{{ $t('search.exact') }}</small>
+          </label>
+        </div>
+        <div class="flex items-center">
+          <RadioButton
+            v-model="searchOptions"
+            inputId="optionContains"
+            name="option2"
+            value="contains"
+            class="mt-1"
+            size="small"
+            @value-change="change"
+          />
+          <label for="searchOptions2" class="ml-2">
+            <small>{{ $t('search.contains') }}</small>
+          </label>
+        </div>
+        <div class="flex items-center">
+          <RadioButton
+            v-model="searchOptions"
+            inputId="optionStartWith"
+            name="option3"
+            value="startsWith"
+            size="small"
+            class="mt-1"
+            @value-change="change"
+          />
+          <label for="searchOptions3" class="ml-2">
+            <small>{{ $t('search.startsWith') }}</small>
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -29,11 +75,18 @@ const icon = ref('pi pi-search')
 const size = ref('small')
 
 const label = ref('search.searchAll')
+let searchOptions = ref('contains')
+
+function change() {
+  console.log('change', searchOptions.value)
+}
 
 function handleFreeTextSearch(value) {
-  console.log('is here...')
+  console.log('is here...', searchOptions.value)
+
   const searchText = value ? value : '*'
   store.commit('setSearchText', searchText)
+  store.commit('setFullTextSearchMode', searchOptions.value)
 
   store.commit('setScientificName', null)
 
@@ -49,7 +102,7 @@ function handleFreeTextSearch(value) {
 
   store.commit('setSearchParams', null)
 
-  emits('freeTextSearch', searchText)
+  emits('freeTextSearch', searchText, searchOptions.value)
 }
 </script>
 <style scoped>

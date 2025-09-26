@@ -141,13 +141,14 @@ async function filterSearch(params) {
     })
 }
 
-async function freeTextSearch(value) {
+async function freeTextSearch(value, mode) {
   loading.value = true
   const params = new URLSearchParams({
-    catchall: value
+    catchall: value,
+    mode: mode
   })
   await service
-    .apiFreeTextSearch(value)
+    .apiFreeTextSearch(params)
     .then((response) => {
       const total = response.facets.count
       const results = response.response

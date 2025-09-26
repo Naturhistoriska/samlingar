@@ -5,6 +5,7 @@
         id="freeTextSearch"
         v-model="value"
         @blur="valueChange"
+        @keydown.enter="handleEnter"
         :placeholder="$t('search.searchAllFields')"
         size="small"
         class="w-full"
@@ -16,6 +17,8 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+
+const emits = defineEmits(['freeTextSearch'])
 
 const store = useStore()
 
@@ -36,6 +39,12 @@ onMounted(() => {
   const freeText = store.getters['searchText']
   value.value = freeText == '*' ? null : freeText
 })
+
+function handleEnter() {
+  const searchText = value.value ? value.value : '*'
+  store.commit('setSearchText', searchText)
+  emits('freeTextSearch', searchText)
+}
 
 function valueChange() {
   const searchText = value.value ? value.value : '*'

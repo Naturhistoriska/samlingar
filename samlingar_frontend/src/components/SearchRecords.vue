@@ -32,7 +32,7 @@
       </Dialog>
       <div class="grid">
         <div class="col-12" no-gutters>
-          <search-all style="padding-bottom: 5px" />
+          <search-all style="padding-bottom: 5px" @freeTextSearch="search" />
         </div>
         <Divider class="custom-divider" />
 

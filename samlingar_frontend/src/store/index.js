@@ -16,6 +16,7 @@ export default createStore({
     filterInSweden: false,
     filterType: false,
 
+    fullTextSearchMode: 'contains',
     geoJson: null,
 
     hasCoordinatesCount: 0,
@@ -29,6 +30,7 @@ export default createStore({
     selectedCollection: null, // selectedCollections Code
     selectedCollectionGroup: null, // selectedCollections name
 
+    searchMode: 'contains',
     searchParams: null, // saved search params
     searchText: null,
 
@@ -36,6 +38,7 @@ export default createStore({
 
     totalRecords: 0,
     totalGeoData: 0,
+
     //
     //
     //
@@ -54,8 +57,6 @@ export default createStore({
     isFuzzySearch: undefined,
     // isUrlPush: false,
     results: [],
-
-    searchMode: 'contains',
 
     selectedRecord: null,
 
@@ -137,6 +138,10 @@ export default createStore({
     },
     collectionGroup(state) {
       return state.collectionGroup
+    },
+
+    fullTextSearchMode(state) {
+      return state.fullTextSearchMode
     },
 
     geoJson(state) {
@@ -430,6 +435,7 @@ export default createStore({
   mutations: {
     setClearSearch: (state, payload) => (state.clearSearch = payload),
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
+    setFullTextSearchMode: (state, payload) => (state.fullTextSearchMode = payload),
     setGeoJson: (state, payload) => (state.geoJson = payload),
     setResetMapData: (state, payload) => (state.resetMapData = payload),
     setSelectedCollectionGroup: (state, payload) => (state.selectedCollectionGroup = payload),

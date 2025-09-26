@@ -6,10 +6,4 @@
   </div>
 </template>
 <script setup></script>
-<style scoped>
-.textStyle {
-  padding-top: 2em;
-  padding-right: 2em;
-  font-size: 15px;
-}
-</style>
+<style scoped></style>
