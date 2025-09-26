@@ -62,12 +62,12 @@ let loading = ref(false)
 let isLargeMap = ref(true)
 // let totalCount = ref()
 
-watch(
-  () => store.getters['totalRecords'],
-  (newValue, oldValue) => {
-    console.log('TotalRecord', newValue)
-  }
-)
+// watch(
+//   () => store.getters['totalRecords'],
+//   (newValue, oldValue) => {
+//     console.log('TotalRecord', newValue)
+//   }
+// )
 
 onMounted(async () => {
   console.log('onMounted SearchView')
