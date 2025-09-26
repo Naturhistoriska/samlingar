@@ -27,10 +27,15 @@ const verbatimEventDateData = ref()
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
-  const { habitat, verbatimEventDate } = record
+  const { endday, endmonth, endyear, habitat, verbatimEventDate } = record
+
+  const endDate = new Array(endyear, endmonth, endday)
+  const eventEndDate = endDate.filter((str) => str !== undefined).join('-')
 
   habitatData.value = habitat
-  verbatimEventDateData.value = verbatimEventDate
+  verbatimEventDateData.value = eventEndDate
+    ? verbatimEventDate + ' - ' + eventEndDate
+    : verbatimEventDate
 })
 </script>
 <style scoped>
