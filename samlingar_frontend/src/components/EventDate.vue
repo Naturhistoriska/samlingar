@@ -27,7 +27,7 @@
   </div>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import DatePicker from 'primevue/datepicker'
 
@@ -38,6 +38,15 @@ const dates = ref()
 const displayButton = computed(() => {
   return dates.value
 })
+
+watch(
+  () => store.getters['dates'],
+  (newValue, oldValue) => {
+    if (store.getters['dates'] === null) {
+      removeDates()
+    }
+  }
+)
 
 onMounted(async () => {
   dates.value = store.getters['dates']
@@ -56,7 +65,6 @@ function onSelect() {
 
   const endDate = utcEndDate.toISOString() // Includes time and Z
 
-  console.log('startDate', startDate, endDate)
   store.commit('setStartDate', startDate)
   store.commit('setEndDate', endDate)
   store.commit('setDates', startDate + ' - ' + endDate)

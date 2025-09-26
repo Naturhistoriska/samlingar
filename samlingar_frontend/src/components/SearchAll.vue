@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
@@ -24,6 +24,13 @@ const value = ref()
 const showClearBtn = computed(() => {
   return value.value
 })
+
+watch(
+  () => store.getters['setSearchText'],
+  (newValue, oldValue) => {
+    value.value = newValue == '*' ? null : freeText
+  }
+)
 
 onMounted(() => {
   const freeText = store.getters['searchText']

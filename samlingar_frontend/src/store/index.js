@@ -2,10 +2,14 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    clearSearch: false,
     collectionGroup: null, // group collection code
     collectons: [],
 
+    dates: null,
     dataResource: null, // group: zoo, pal, bot, geo
+
+    endDate: null,
 
     filterCoordinates: false,
     filterImage: false,
@@ -28,6 +32,8 @@ export default createStore({
     searchParams: null, // saved search params
     searchText: null,
 
+    startDate: null,
+
     totalRecords: 0,
     totalGeoData: 0,
     //
@@ -42,9 +48,7 @@ export default createStore({
     //
     collections: null,
     clusterGroup: null,
-    dates: null,
 
-    endDate: null,
     fields: [],
 
     isFuzzySearch: undefined,
@@ -54,7 +58,7 @@ export default createStore({
     searchMode: 'contains',
 
     selectedRecord: null,
-    startDate: null,
+
     totalCount: 0,
 
     //
@@ -63,6 +67,8 @@ export default createStore({
     //
     //
     //
+
+    dateRange: null,
     showDetail: false,
     botanyCollectionTotal: 0,
     catalogNumber: null,
@@ -87,7 +93,6 @@ export default createStore({
 
     classs: [],
     dataset: null,
-    dateRange: null,
 
     exportData: [],
     family: [],
@@ -127,6 +132,9 @@ export default createStore({
   },
 
   getters: {
+    clearSearch(state) {
+      return state.clearSearch
+    },
     collectionGroup(state) {
       return state.collectionGroup
     },
@@ -420,6 +428,7 @@ export default createStore({
   },
 
   mutations: {
+    setClearSearch: (state, payload) => (state.clearSearch = payload),
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
     setGeoJson: (state, payload) => (state.geoJson = payload),
     setResetMapData: (state, payload) => (state.resetMapData = payload),

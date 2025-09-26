@@ -58,10 +58,10 @@ let type = ref(false)
 let sweden = ref(false)
 
 // watch(
-// () => store.getters['filterImage'],
-// (newValue, oldValue) => {
-// image.value = newValue
-// }
+//   () => store.getters['filterImage'],
+//   (newValue, oldValue) => {
+//     image.value = newValue
+//   }
 // )
 
 // watch(
@@ -74,6 +74,7 @@ let sweden = ref(false)
 // watch(
 //   () => store.getters['filterInSweden'],
 //   (newValue, oldValue) => {
+//     console.log('old and new', oldValue, newValue)
 //     sweden.value = newValue
 //   }
 // )
@@ -85,6 +86,21 @@ let sweden = ref(false)
 //     type.value = newValue
 //   }
 // )
+
+watch(
+  () => store.getters['clearSearch'],
+  () => {
+    const reset = store.getters['clearSearch']
+    if (reset) {
+      image.value = store.getters['filterImage']
+      coordinates.value = store.getters['filterCoordinates']
+      type.value = store.getters['filterType']
+      sweden.value = store.getters['filterInSweden']
+
+      store.commit('setClearSearch', false)
+    }
+  }
+)
 
 onMounted(() => {
   console.log('onMounted')

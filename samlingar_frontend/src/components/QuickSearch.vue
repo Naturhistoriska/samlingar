@@ -121,6 +121,7 @@ function apiSearch() {
         store.commit('setTotalGeoData', 0)
         store.commit('setSelectedCollectionGroup', null)
       }
+      reset()
     })
     .catch((error) => {
       console.log('error', error)
@@ -128,15 +129,17 @@ function apiSearch() {
     .finally(() => {
       search.value = undefined
       store.commit('setResetMapData', true)
-      reset()
+
       if (currentUrl.value !== '/search') {
         router.push('/search')
+      } else {
+        store.commit('setClearSearch', true)
       }
-      // router.push('/search')
     })
 }
 
 function reset() {
+  store.commit('setSearchText', null)
   store.commit('setCollectionGroup', null)
   store.commit('setSelectedCollection', null)
 
@@ -147,6 +150,11 @@ function reset() {
 
   store.commit('setFields', [])
   store.commit('setDataResource', null)
+  store.commit('setDates', null)
+
+  store.commit('setStartDate', null)
+  store.commit('setEndDate', null)
+  store.commit('setDates', null)
 }
 </script>
 

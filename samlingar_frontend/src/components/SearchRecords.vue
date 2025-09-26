@@ -35,7 +35,8 @@
           <search-all style="padding-bottom: 5px" />
         </div>
         <Divider class="custom-divider" />
-        <filter-checkbox />
+
+        <filter-checkbox style="margin-bottom: 1rem" />
 
         <Panel
           :class="scientificNamePanelClass"
