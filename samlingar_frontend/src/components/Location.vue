@@ -47,7 +47,10 @@ onMounted(async () => {
   isPalCollection.value = props.code === 'pb' || props.code === 'pz'
 
   isBotCollection.value =
-    props.code === 'algae' || props.code === 'fungi' || props.code === 'mosses'
+    props.code === 'algae' ||
+    props.code === 'fungi' ||
+    props.code === 'mosses' ||
+    props.code === 'vp'
 })
 </script>
 <style scoped>

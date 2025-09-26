@@ -39,7 +39,10 @@ onMounted(async () => {
 
   isBirdCollection.value = props.code === 'AV' || props.code === 'MA'
   isBotCollection.value =
-    props.code === 'algae' || props.code === 'fungi' || props.code === 'mosses'
+    props.code === 'algae' ||
+    props.code === 'fungi' ||
+    props.code === 'mosses' ||
+    props.code === 'vp'
   isFishCollection.value = props.code === 'PI' || props.code === 'HE'
   isGeoCollection.value =
     props.code === 'NRMMIN' || props.code === 'NRMNOD' || props.code === 'NRMLIG'
