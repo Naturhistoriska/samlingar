@@ -68,6 +68,7 @@ public class InitialProperties implements Serializable {
     private String collection;
 
     private boolean delectCollection;
+    private String prefix;
 
     private String username;
     private String password;
@@ -117,6 +118,7 @@ public class InitialProperties implements Serializable {
             @ConfigurationValue("swarm.mapping.files.bot") String botMappingfilePath,
             @ConfigurationValue("swarm.mapping.files.zoo") String zooMappingFilePath,
             @ConfigurationValue("swarm.mapping.files.image") String imageMappingFilePath,
+            @ConfigurationValue("swarm.prefix") String prefix,
             @ConfigurationValue("swarm.collection") String collection,
             @ConfigurationValue("swarm.delect.collection") boolean deleteCollection
     //          @ConfigurationValue("swarm.date.toDate") String toDate) {
@@ -160,6 +162,7 @@ public class InitialProperties implements Serializable {
         this.botMappingfilePath = botMappingfilePath;
         this.zooMappingFilePath = zooMappingFilePath;
         this.imageMappingFilePath = imageMappingFilePath;
+        this.prefix = prefix;
         this.collection = collection;
         this.delectCollection = deleteCollection;
         log.info("InitialProperties : {} -- {}", collection, delectCollection);
@@ -502,5 +505,9 @@ public class InitialProperties implements Serializable {
 
     public boolean getDeleteCollection() {
         return delectCollection;
+    }
+    
+    public String getPrefix() {
+        return prefix;
     }
 }

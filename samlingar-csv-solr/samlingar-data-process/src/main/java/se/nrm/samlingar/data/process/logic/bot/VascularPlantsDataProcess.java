@@ -19,8 +19,7 @@ import se.nrm.samlingar.data.process.logic.files.CSVFileProcessor;
 import se.nrm.samlingar.data.process.logic.json.JsonHelper;
 import se.nrm.samlingar.data.process.logic.solr.Solr;
 import se.nrm.samlingar.data.process.logic.util.CommonString;
-import se.nrm.samlingar.data.process.vo.Determination;
-import se.nrm.samlingar.data.process.vo.NameSynonyms;
+import se.nrm.samlingar.data.process.vo.Determination; 
 
 /**
  *
@@ -31,8 +30,10 @@ public class VascularPlantsDataProcess implements Serializable {
 
     private final String synonymKey = "synonym";
 
-    private final String prefix = "file_";
+//    private final String prefix = "file_";
 //    private final String prefix = "naturarvkollekt_del";
+    
+    private String filePrefix;
 
     private List<CSVRecord> records;
     private List<JsonArray> list;
@@ -54,11 +55,11 @@ public class VascularPlantsDataProcess implements Serializable {
 
     private final String fboDateset = "fbo";
 
-    private String mainCsvFilePath;
-    private String catalogCsvFilePath;
+//    private String mainCsvFilePath;
+//    private String catalogCsvFilePath;
     private String nameCsvFilePath;
     private String determinationCsvFilePath;
-    private String exsiccateCsvFilePath;
+//    private String exsiccateCsvFilePath;
     private String collectionName;
     private String idPrefix;
     
@@ -97,13 +98,16 @@ public class VascularPlantsDataProcess implements Serializable {
 
         log.info("imagemap : {}", imageMap.size());
 
-        mainCsvFilePath = properties.getVascularPlantsCsvFilePath();
-        catalogCsvFilePath = properties.getVascularPlantsCatalogCsvFilePath();
+//        mainCsvFilePath = properties.getVascularPlantsCsvFilePath();
+//        catalogCsvFilePath = properties.getVascularPlantsCatalogCsvFilePath();
         nameCsvFilePath = properties.getVascularPlantsNameCsvFilePath();
         determinationCsvFilePath = properties.getVascularPlantsBestCsvFilePath();
-        exsiccateCsvFilePath = properties.getVascularPlantsExsickatCsvFilePath();
+//        exsiccateCsvFilePath = properties.getVascularPlantsExsickatCsvFilePath();
  
         vascularPlantsDirPath = properties.getVascularPlantsCsvFilePath(); 
+        
+        filePrefix = properties.getPrefix();
+        log.info("filePrefix : {}", filePrefix);
 
         array.getValuesAs(JsonObject.class)
                 .stream()
@@ -138,7 +142,7 @@ public class VascularPlantsDataProcess implements Serializable {
                         Files.list(Paths.get(vascularPlantsDirPath))
                                 .map(Path::toFile)
                                 .filter(File::isFile)
-                                .filter(f -> f.getName().startsWith(prefix))
+                                .filter(f -> f.getName().startsWith(filePrefix))
                                 .sorted()
                                 .forEach(file -> { 
                                     records = fileProcessor.read(file, delimiter, encoding);
@@ -178,7 +182,7 @@ public class VascularPlantsDataProcess implements Serializable {
             Files.list(Paths.get(vascularPlantsDirPath))
                     .map(Path::toFile)
                     .filter(File::isFile)
-                    .filter(f -> f.getName().startsWith(prefix))
+                    .filter(f -> f.getName().startsWith(filePrefix))
                     .sorted()
                     .forEach(file -> {
                         log.info("file name : {}", file.getName());

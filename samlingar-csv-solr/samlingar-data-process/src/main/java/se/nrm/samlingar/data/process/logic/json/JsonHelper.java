@@ -300,7 +300,7 @@ public class JsonHelper {
     public String getDateIdentifiedCsvKey(JsonObject json) {
         return json.containsKey(dateIdentifiedKey) ? json.getString(dateIdentifiedKey) : null;
     }
-
+ 
     public void addClassification(JsonObjectBuilder attBuilder,
             JsonObject classificationJson, CSVRecord record) {
        
@@ -478,8 +478,10 @@ public class JsonHelper {
         }
     }
     
-    public void addSynonyms(JsonObjectBuilder attBuilder, JsonObject json, CSVRecord record) {  
-        synonyms = record.get(json.getString(synonymsKey));
+    // used by zoo
+    public void addSynonyms(JsonObjectBuilder attBuilder,  String synonyms) {  
+//        synonyms = record.get(json.getString(synonymsKey));
+        
         if(!StringUtils.isBlank(synonyms)) {
             synomysBuilder = Json.createArrayBuilder();
             synonymsList = Arrays.asList(synonyms.split(pipe));
@@ -489,13 +491,13 @@ public class JsonHelper {
                     });
             attBuilder.add(synonymsKey, synomysBuilder);
         }  
-    }
+    } 
     
-    
+    // Used by bot
     public void addSynonyms(JsonObjectBuilder attBuilder, List<String> synonyms) {
 
         if (synonyms != null && !synonyms.isEmpty()) {
-            log.info("addSynonyms : {}", synonyms.size());
+//            log.info("addSynonyms : {}", synonyms.size());
             synonymsArrayBuilder = Json.createArrayBuilder();
             synonymAuthorsArrayBuilder = Json.createArrayBuilder();
             synonyms.stream()
@@ -653,7 +655,8 @@ public class JsonHelper {
     public void addTypeStatus(JsonObjectBuilder attBuilder, String typeStatus) {
         log.info("addTypeStatus : {}", typeStatus);
         if (!StringUtils.isBlank(typeStatus)) {
-            addAttValue(attBuilder, typeStatusKey, StringUtils.capitalize(typeStatus).trim());
+            addAttValue(attBuilder, typeStatusKey, 
+                    StringUtils.capitalize(typeStatus).trim());
         }
     }
 

@@ -69,7 +69,7 @@ public class ZooDataProcessor implements Serializable {
                             encoding = JsonHelper.getInstance().getJsonValue(
                                     json, CommonString.getInstance().getEncodingKey());
                             log.info("encoding... {} -- {}", encoding, fileName);
-  
+                             
                             records = fileProcessor.read(filePath, fileName, delimiter, encoding);
                              
                             collectionId = JsonHelper.getInstance().getIdPrefix(json);
@@ -79,7 +79,7 @@ public class ZooDataProcessor implements Serializable {
                                 if (delete) {
                                     solr.deleteCollection(collectionId);
                                 }
-
+                                 
                                 imageMap = null;                 
                                 if(json.getBoolean(CommonString.getInstance().getAddImagesKey())) { 
                                     imageRecords = getImageCsvRecord(imageArray, imageFilePath);
@@ -105,11 +105,11 @@ public class ZooDataProcessor implements Serializable {
             log.error("error... {}", e.getMessage());
         } 
     }  
-    
-    private boolean isBirdCollection(String id) {
-        return id.equals(av);
-    }
-    
+//    
+//    private boolean isBirdCollection(String id) {
+//        return id.equals(av);
+//    }
+//    
     private JsonObject getImageMappingJson(JsonArray imageArray) {
         log.info("getImageMappingJson" ); 
 
