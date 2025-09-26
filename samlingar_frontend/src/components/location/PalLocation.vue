@@ -29,12 +29,12 @@
 
       <div class="col-4 reducePadding">{{ $t('results.latitude') }}</div>
       <div class="col-8 reducePadding">
-        {{ latitude.toFixed(5) }}
+        {{ latitude }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.longitude') }}</div>
       <div class="col-8 reducePadding">
-        {{ longigude.toFixed(5) }}
+        {{ longigude }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.waterBody') }}</div>
@@ -99,8 +99,14 @@ onMounted(async () => {
   state.value = stateProvince
   theContinent.value = continent
 
-  latitude.value = decimalLatitude
-  longigude.value = decimalLongitude
+  if (decimalLatitude) {
+    latitude.value = decimalLatitude.toFixed(5)
+  }
+
+  if (decimalLongitude) {
+    longigude.value = decimalLongitude.toFixed(5)
+  }
+
   localityName.value = locality
 
   lithostratigraphy.value = lithostratigraphicTerms
