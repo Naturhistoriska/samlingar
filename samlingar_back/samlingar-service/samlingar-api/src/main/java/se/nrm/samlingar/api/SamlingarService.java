@@ -65,6 +65,50 @@ public class SamlingarService {
         return Response.ok(logic.getChart(collectionCode, isYearChart)).build(); 
     }
     
+    
+    @GET
+    @Path("/freeTextSearch")
+    @ApiOperation(value = "freeTextSearch",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response freeTextSearch(@QueryParam("catchall") String text) {
+        log.info("freeTextSearch {} ", text);
+          
+        return Response.ok(logic.freeTextSearch(text )).build();
+    }
+    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    
     @GET
     @Path("/autocomplete")
     @ApiOperation(value = "autocomplete",
@@ -121,19 +165,6 @@ public class SamlingarService {
         return Response.ok(logic.simpleSearch(uriInfo.getQueryParameters())).build(); 
     }
      
-    @GET
-    @Path("/freeTextSearch")
-    @ApiOperation(value = "freeTextSearch",
-            notes = "Return search results in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response freeTextSearch(@QueryParam("catchall") String text) {
-        log.info("freeTextSearch {} ", text);
-          
-        return Response.ok(logic.freeTextSearch(text )).build();
-    }
-    
     
                 
     @GET
