@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.json.JsonObjectBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.data.process.logic.exception.SamlingarException;
 import se.nrm.samlingar.data.process.logic.json.JsonHelper;
 
@@ -83,12 +84,12 @@ public class JsonCoordinatesConverter implements Serializable {
             } catch (Exception ex) {
                 log.error("builderCoordinates : {}", ex.getMessage());
             } 
-        }
-        addVerbatimCoordinates(attBuilder);
+            addVerbatimCoordinates(attBuilder);
+        } 
     }
     
     private void addVerbatimCoordinates(JsonObjectBuilder attBuilder ) {
-          
+           
         verbatimCoordinatesSb = new StringBuilder();
         verbatimCoordinatesSb.append(latDegree);
         verbatimCoordinatesSb.append(degreeSign);
