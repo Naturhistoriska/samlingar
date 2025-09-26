@@ -54,6 +54,7 @@
             value="startsWith"
             size="small"
             class="mt-1"
+            :disabled="checkboxDisabled"
             @value-change="change"
           />
           <label for="searchOptions3" class="ml-2">
