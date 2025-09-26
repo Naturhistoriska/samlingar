@@ -27,6 +27,7 @@
       @page="onPage($event)"
       @rowExpand="onRowExpand"
       @rowCollapse="onRowCollapse"
+      @row-select="onRowSelect"
       @sort="onSort"
     >
       <template #header>
@@ -618,11 +619,12 @@ function buildParams() {
   return params
 }
 
-// function onSelect() {
-//   store.commit('setSelectedRecord', selectedRecord)
+function onRowSelect(event) {
+  selectedRecord.value = event.data
+  store.commit('setSelectedRecord', selectedRecord)
 
-//   router.push(`/record/${selectedRecord.value.id}`)
-// }
+  router.push(`/record/${selectedRecord.value.id}`)
+}
 
 function selectRow(data) {
   selectedRecord.value = data
