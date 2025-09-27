@@ -25,19 +25,20 @@
       </div>
     </template>
   </MultiSelect>
+
   <ul>
     <li v-for="val in selectedItems" :key="val">
-      <small>{{ val.label }}</small>
+      <small>{{ val.locale[currentLocale] }}</small>
     </li>
   </ul>
 </template>
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from 'vuex'
 
 const store = useStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const selectedItems = ref([])
 const multiSelectRef = ref(null)
@@ -47,11 +48,27 @@ const groupedSelections = ref([
     label: t('collectionLabel.botCollection'),
     code: 'bot',
     items: [
-      { label: t('collectionLabel.algae'), value: 'Algae', code: 'algae' },
-      { label: t('collectionLabel.fungi'), value: 'Fungi/Lichens', code: 'fungi' },
-      { label: t('collectionLabel.mosses'), value: 'Mosses', code: 'mosses' },
+      {
+        label: t('collectionLabel.algae'),
+        locale: { en: 'Algae Collection', sv: 'Alger samling' },
+        value: 'Algae',
+        code: 'algae'
+      },
+      {
+        label: t('collectionLabel.fungi'),
+        locale: { en: 'Fungi Collection', sv: 'Svampar/Lavar samling' },
+        value: 'Fungi/Lichens',
+        code: 'fungi'
+      },
+      {
+        label: t('collectionLabel.mosses'),
+        locale: { en: 'Moss Collection', sv: 'Mossor samling' },
+        value: 'Mosses',
+        code: 'mosses'
+      },
       {
         label: t('collectionLabel.phanerogamic'),
+        locale: { en: 'Vascular plant Collections', sv: 'Kärlväxter samling' },
         value: 'Vascular Plants',
         code: 'vp'
       }
@@ -63,34 +80,64 @@ const groupedSelections = ref([
     items: [
       {
         label: t('collectionLabel.ent'),
+        locale: { en: 'Entomological Collections', sv: 'Entomologisk samling' },
         value: 'NRM Entomology Collection Objects',
         code: 'NHRS'
       },
       {
         label: t('collectionLabel.smtpObj'),
+        locale: {
+          en: 'Swedish Malaise Trap Project (SMTP) Collection Obj',
+          sv: 'Swedish Malaise Trap Project (SMTP) Collection Obj'
+        },
         value: 'Swedish Malaise Trap Project (SMTP) Collection Obj',
         code: 'SMTP_INV'
       },
       {
         label: t('collectionLabel.smtpList'),
+        locale: {
+          en: 'Swedish Malaise Trap Project (SMTP) Species Lists',
+          sv: 'Swedish Malaise Trap Project (SMTP) Species Lists'
+        },
         value: 'Swedish Malaise Trap Project (SMTP) Species Lists',
         code: 'SMTP_SPPLST'
       },
       {
         label: t('collectionLabel.ev'),
+        locale: { en: 'Invertebrate Main Collection', sv: 'Evertebrater samling' },
         value: 'Invertebrate main collection',
         code: 'ev'
       },
       {
         label: t('collectionLabel.et'),
+        locale: { en: 'Invertebrate Type Specimen Collection"', sv: 'Evertebrater typsamling' },
         value: 'Invertebrate type collection',
         code: 'et'
       },
-      { label: t('collectionLabel.fish'), value: 'Fish', code: 'PI' },
-
-      { label: t('collectionLabel.bird'), value: 'Bird', code: 'AV' },
-      { label: t('collectionLabel.mammal'), value: 'Mammals', code: 'MA' },
-      { label: t('collectionLabel.herp'), value: 'Amphibians and reptiles', code: 'HE' }
+      {
+        label: t('collectionLabel.fish'),
+        locale: { en: 'Fish Collection', sv: 'Fisk samling' },
+        value: 'Fish',
+        code: 'PI'
+      },
+      {
+        label: t('collectionLabel.bird'),
+        locale: { en: 'Bird Collection', sv: 'Fågel samling' },
+        value: 'Bird',
+        code: 'AV'
+      },
+      {
+        label: t('collectionLabel.mammal'),
+        locale: { en: 'Mammal Collection', sv: 'Däggdjur samling' },
+        value: 'Mammals',
+        code: 'MA'
+      },
+      {
+        label: t('collectionLabel.herp'),
+        locale: { en: 'Amphibians and reptiles Collections', sv: 'Grod och kräldjur samlingar' },
+        value: 'Amphibians and reptiles',
+        code: 'HE'
+      }
     ]
   },
   {
@@ -99,11 +146,13 @@ const groupedSelections = ref([
     items: [
       {
         label: t('collectionLabel.pz'),
+        locale: { en: 'Palaeozoological Collections', sv: 'Paleozoologisk samling' },
         value: 'Paleozoology',
         code: 'pz'
       },
       {
         label: t('collectionLabel.pb'),
+        locale: { en: 'Palaeobotanical Collections', sv: 'Paleobotanisk samling' },
         value: 'Paleobotany',
         code: 'pb'
       }
@@ -113,9 +162,24 @@ const groupedSelections = ref([
     label: t('collectionLabel.geoCollection'),
     code: 'geo',
     items: [
-      { label: t('collectionLabel.nrmlig'), value: 'NRM Isotope Geology', code: 'NRMLIG' },
-      { label: t('collectionLabel.nrmmin'), value: 'NRM Mineralogy', code: 'NRMMIN' },
-      { label: t('collectionLabel.nrmnod'), value: 'NRM Nodules', code: 'NRMNOD' }
+      {
+        label: t('collectionLabel.nrmlig'),
+        locale: { en: 'Isotope Geology Collection', sv: 'Isotopgeologi samling' },
+        value: 'NRM Isotope Geology',
+        code: 'NRMLIG'
+      },
+      {
+        label: t('collectionLabel.nrmmin'),
+        locale: { en: 'Mineralogy Collection', sv: 'Mineralogisk samling' },
+        value: 'NRM Mineralogy',
+        code: 'NRMMIN'
+      },
+      {
+        label: t('collectionLabel.nrmnod'),
+        locale: { en: 'Nodules Collection', sv: 'Noduler samling' },
+        value: 'NRM Nodules',
+        code: 'NRMNOD'
+      }
     ]
   }
 ])
@@ -128,6 +192,21 @@ watch(
     }
   }
 )
+
+// watch(
+//   () => store.getters['locale'],
+//   (newValue, oldValue) => {
+//     console.log('locale changed... ', newValue)
+//     const dataSet = store.getters['dataResource']
+//     console.log('dataset', dataSet)
+
+//     selectedItems.value = groupedSelections.value
+//       .filter((group) => group.code === dataSet)
+//       .map((item) => item.items)[0]
+//   }
+// )
+
+const currentLocale = computed(() => locale.value)
 
 onMounted(() => {
   const dataSet = store.getters['dataResource']
