@@ -19,7 +19,7 @@
   </div>
 </template>
 <script setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 const emits = defineEmits(['doAction'])
 
 const props = defineProps(['icon', 'loading', 'placehold', 'size'])
