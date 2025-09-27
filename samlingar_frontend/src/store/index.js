@@ -6,11 +6,12 @@ export default createStore({
     collectionGroup: null, // group collection code
     collectons: [],
 
-    dates: null,
     dataResource: null, // group: zoo, pal, bot, geo
+    dates: null,
+    dateFilter: "date",
 
     endDate: null,
-
+    endYear: null,
     filterCoordinates: false,
     filterImage: false,
     filterInSweden: false,
@@ -35,6 +36,7 @@ export default createStore({
     searchText: null,
 
     startDate: null,
+    startYear: null,
 
     totalRecords: 0,
     totalGeoData: 0,
@@ -139,7 +141,12 @@ export default createStore({
     collectionGroup(state) {
       return state.collectionGroup
     },
-
+    dateFilter(state) {
+      return state.dateFilter
+    },
+    endYear(state) {
+      return state.endYear
+    },
     fullTextSearchMode(state) {
       return state.fullTextSearchMode
     },
@@ -154,6 +161,9 @@ export default createStore({
 
     selectedCollectionGroup(state) {
       return state.selectedCollectionGroup
+    },
+    startYear(state) {
+      return state.startYear
     },
 
     totalGeoData(state) {
@@ -435,10 +445,13 @@ export default createStore({
   mutations: {
     setClearSearch: (state, payload) => (state.clearSearch = payload),
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
+    setDateFilter: (state, payload) => (state.dateFilter = payload),
+    setEndYear: (state, payload) => (state.endYear = payload),
     setFullTextSearchMode: (state, payload) => (state.fullTextSearchMode = payload),
     setGeoJson: (state, payload) => (state.geoJson = payload),
     setResetMapData: (state, payload) => (state.resetMapData = payload),
     setSelectedCollectionGroup: (state, payload) => (state.selectedCollectionGroup = payload),
+    setStartYear: (state, payload) => (state.startYear = payload),
     setTotalGeoData: (state, payload) => (state.totalGeoData = payload),
     //
     //

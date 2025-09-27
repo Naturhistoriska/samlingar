@@ -197,7 +197,7 @@
   "exportData": {
     "download": "Download",
     "downloading": "Downloading...",
-    "export": "Export data (max: 50000 records)",
+    "export": "Export data (max: 20000 records)",
     "exportDatatable": "Export",
     "exportToCsv": "Export table to csv",
     "prepareData": "Processing data...."

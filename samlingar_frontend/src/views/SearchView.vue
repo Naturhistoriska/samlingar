@@ -178,7 +178,10 @@ function buildParams() {
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
 
-  // const collectionGroup = store.getters['collectionGroup']
+  const startYear = store.getters['startYear']
+  const endYear = store.getters['endYear']
+
+  const dateFilter = store.getters['dateFilter']
 
   const params = new URLSearchParams({
     catchall: searchText,
@@ -206,26 +209,17 @@ function buildParams() {
     params.set('geo', '*')
   }
 
-  // if (collectionGroup) {
-  //   params.set('collectionCode', collectionGroup)
-  // }
-
-  if (startDate) {
-    params.set('startDate', startDate)
+  if (dateFilter === 'date') {
+    if (startDate) {
+      params.set('startDate', startDate)
+    }
+    if (endDate) {
+      params.set('endDate', endDate)
+    }
+  } else {
+    const yearQuery = `[${startYear} TO ${endYear}]`
+    params.set('year', yearQuery)
   }
-
-  if (endDate) {
-    params.set('endDate', endDate)
-  }
-
-  // if (selectedCollectionName !== null) {
-  //   const names = selectedCollectionName ? selectedCollectionName.map((item) => item.val) : []
-
-  //   const list = `(${names.map((item) => `"${item}"`).join(' ')})`
-  //   console.log('selectedCollectionName', list)
-  //   let newValue = list.replace(/'/g, '"')
-  //   params.set('collectionName', newValue)
-  // }
 
   if (selectedCollection !== null) {
     const newValue = selectedCollection.replace(/'/g, '"')

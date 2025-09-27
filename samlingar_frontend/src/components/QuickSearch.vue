@@ -150,6 +150,10 @@ function reset() {
   store.commit('setStartDate', null)
   store.commit('setEndDate', null)
   store.commit('setDates', null)
+
+  store.commit('setStartYear', null)
+  store.commit('setEndYear', null)
+  store.commit('setDateFilter', 'date')
 }
 </script>
 

@@ -62,7 +62,7 @@
           toggleable
           :collapsed="eventDatePanelNotVisible"
         >
-          <event-date />
+          <event-date @dateSearch="search" />
         </Panel>
 
         <Panel :class="fieldsPanelClass">
@@ -104,13 +104,15 @@ const scientificNamePanelNotVisible = computed(() => {
 
 const collectionGroupPanelNotVisible = computed(() => {
   const selectedCollection = store.getters['selectedCollection']
-  console.log('selectedCollection', selectedCollection)
   return selectedCollection === null
-  // return collectionName === null || collectionName === undefined
 })
 
 const eventDatePanelNotVisible = computed(() => {
-  return store.getters['dates'] === null
+  const isDatesEmpty = store.getters['dates'] === null
+  const isStartYearEmpty = store.getters['startYear'] === null
+  const isEndYearEmpty = store.getters['endYear'] === null
+
+  return isStartYearEmpty && isEndYearEmpty && isDatesEmpty
 })
 
 const scientificNamePanelClass = computed(() => {
@@ -133,6 +135,7 @@ function reset() {
   store.commit('setFullTextSearchMode', 'contains')
   store.commit('setScientificName', null)
   store.commit('setSearchMode', 'contains')
+
   store.commit('setCollectionGroup', null)
   store.commit('setSelectedCollection', null)
 
@@ -140,6 +143,14 @@ function reset() {
   store.commit('setFilterInSweden', false)
   store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
+
+  store.commit('setStartDate', null)
+  store.commit('setEndDate', null)
+  store.commit('setDates', null)
+
+  store.commit('setStartYear', null)
+  store.commit('setEndYear', null)
+  store.commit('setDateFilter', 'date')
 
   store.commit('setSearchParams', null)
 

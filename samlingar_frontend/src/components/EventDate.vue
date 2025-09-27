@@ -36,52 +36,95 @@
         <DatePicker
           v-model="dates"
           size="small"
+          ref="datepickerRef"
           selectionMode="range"
           showIcon
           @date-select="onSelect"
           dateFormat="yy-mm-dd"
           :manualInput="false"
           class="w-full sm:w-[30rem]"
-        />
-        <Button
-          icon="pi pi-times"
-          @click="removeDates()"
-          variant="text"
-          rounded
-          :aria-label="$t('btnLabel.removeDates')"
-          v-if="displayButton"
-        />
+        >
+          <template #footer>
+            <div class="p-d-flex p-jc-end p-w-full" style="float: right">
+              <button type="button" class="p-button p-component p-button-text" @click="removeDates">
+                {{ $t('btnLabel.removeDates') }}
+              </button>
+            </div>
+          </template>
+        </DatePicker>
       </div>
 
       <div class="card flex justify-center" v-else>
         <div class="col-6">
           <DatePicker
             size="small"
+            ref="startyearpickerRef"
             v-model="startYear"
             view="year"
-            dateFormat="yyyy"
-            style="min-width: 200px"
+            dateFormat="yy"
+            style="min-width: 210px"
+            @date-select="onStartYearSelected"
             :placeholder="$t('search.startYear')"
-          />
+            :showIcon="true"
+          >
+            <template #footer>
+              <div class="p-d-flex p-jc-end p-w-full" style="float: right">
+                <button
+                  type="button"
+                  class="p-button p-component p-button-text"
+                  @click="removeStartYear"
+                >
+                  {{ $t('btnLabel.removeDates') }}
+                </button>
+              </div>
+            </template>
+          </DatePicker>
         </div>
         <div class="col-6">
           <DatePicker
             size="small"
+            ref="endyearpickerRef"
             v-model="endYear"
             view="year"
-            dateFormat="yyyy"
-            style="min-width: 200px"
+            dateFormat="yy"
+            :minDate="minDate"
+            style="min-width: 210px"
+            @date-select="onEndYearSelected"
             :placeholder="$t('search.endYear')"
-          />
+            :showIcon="true"
+          >
+            <template #footer>
+              <div class="p-d-flex p-jc-end p-w-full" style="float: right">
+                <button
+                  type="button"
+                  class="p-button p-component p-button-text"
+                  @click="removeEndYear"
+                >
+                  {{ $t('btnLabel.removeDates') }}
+                </button>
+              </div>
+            </template>
+          </DatePicker>
         </div>
+      </div>
+
+      <div class="flex gap-3 mt-1 grid justify-end" style="float: inline-end">
+        <Button
+          :label="$t('search.search')"
+          @click="search"
+          id="searchRecordBtn"
+          class="my-custom-button"
+        />
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import DatePicker from 'primevue/datepicker'
+
+const emits = defineEmits(['dateSearch'])
 
 const store = useStore()
 
@@ -90,13 +133,19 @@ const startYear = ref()
 const endYear = ref()
 
 const searchOptions = ref('date')
-
-const displayButton = computed(() => {
-  return dates.value
-})
+const datepickerRef = ref(null)
+const startyearpickerRef = ref(null)
+const endyearpickerRef = ref(null)
 
 const isFilterByDate = computed(() => {
   return searchOptions.value === 'date'
+})
+
+const minDate = computed(() => {
+  if (startYear.value === null) {
+    return null
+  }
+  return startYear.value
 })
 
 watch(
@@ -108,11 +157,53 @@ watch(
   }
 )
 
+watch(
+  () => store.getters['startYear'],
+  (newValue, oldValue) => {
+    if (store.getters['startYear'] === null) {
+      startYear.value = null
+      store.commit('setStartYear', null)
+    }
+  }
+)
+
+watch(
+  () => store.getters['endYear'],
+  (newValue, oldValue) => {
+    if (store.getters['endYear'] === null) {
+      endYear.value = null
+      store.commit('setEndYear', null)
+    }
+  }
+)
+
 onMounted(async () => {
   dates.value = store.getters['dates']
+
+  searchOptions.value = store.getters['dateFilter']
+  startYear.value = store.getters['startYear']
+  endYear.value = store.getters['endYear']
 })
 
-function change() {}
+function search() {
+  emits('dateSearch')
+}
+
+function change() {
+  store.commit('setDateFilter', searchOptions.value)
+}
+
+function onStartYearSelected() {
+  const date = new Date(startYear.value)
+  const year = date.getFullYear()
+  store.commit('setStartYear', year)
+}
+
+function onEndYearSelected() {
+  const date = new Date(endYear.value)
+  const year = date.getFullYear()
+  store.commit('setEndYear', year)
+}
 
 function onSelect() {
   const start = new Date(dates.value[0])
@@ -129,7 +220,29 @@ function onSelect() {
 
   store.commit('setStartDate', startDate)
   store.commit('setEndDate', endDate)
-  store.commit('setDates', startDate + ' - ' + endDate)
+  store.commit('setDates', dates.value)
+
+  if (dates.value[0] && dates.value[1]) {
+    if (datepickerRef.value) {
+      datepickerRef.value.overlayVisible = false
+    }
+  }
+}
+
+function removeStartYear() {
+  startYear.value = null
+  store.commit('setStartYear', null)
+  if (startyearpickerRef.value) {
+    startyearpickerRef.value.overlayVisible = false
+  }
+}
+
+function removeEndYear() {
+  endYear.value = null
+  store.commit('setEndYear', null)
+  if (endyearpickerRef.value) {
+    endyearpickerRef.value.overlayVisible = false
+  }
 }
 
 function removeDates() {
@@ -138,10 +251,22 @@ function removeDates() {
   store.commit('setStartDate', null)
   store.commit('setEndDate', null)
   store.commit('setDates', null)
+
+  if (datepickerRef.value) {
+    datepickerRef.value.overlayVisible = false
+  }
 }
 </script>
 <style scoped>
 .searchLabel {
   font-size: 10px;
+}
+.p-button-text {
+  color: #144836;
+}
+
+.p-button-text:hover {
+  color: #fff !important;
+  background: #1d634a !important;
 }
 </style>
