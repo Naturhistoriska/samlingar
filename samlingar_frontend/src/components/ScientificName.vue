@@ -6,11 +6,17 @@
           id="searchScientificName"
           v-model="scientificName"
           @input="onInputScientificName"
+          @keydown.enter="handleEnter"
           :placeholder="$t('search.filterScientificname')"
           size="small"
           class="w-full"
         />
-        <Button icon="pi pi-times" v-if="showClearScentificName" @click="clearScientificName" />
+        <Button
+          icon="pi pi-times"
+          v-if="showClearScentificName"
+          @click="clearScientificName"
+          style="background-color: #144836 !important; border-color: #1d634a !important"
+        />
       </InputGroup>
     </div>
 
@@ -70,7 +76,9 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 const store = useStore()
 
-let scientificName = ref()
+const emits = defineEmits(['scientificNameSearch'])
+
+const scientificName = ref()
 let searchOptions = ref()
 let showClearScentificName = ref(false)
 
@@ -102,13 +110,11 @@ function setSearchOption() {
 function change() {
   console.log('change', searchOptions.value)
   const option = searchOptions.value
-  const isFuzzySearch = option !== 'equals'
-
-  store.commit('setIsFuzzySearch', isFuzzySearch)
   store.commit('setSearchMode', option)
 }
 
 function onInputScientificName() {
+  console.log('onInputScientificName')
   showClearScentificName = scientificName.value
 
   let isFuzzy = false
@@ -127,11 +133,15 @@ function clearScientificName() {
   search(null, false)
 }
 
-function search(scientificName, searchMode, fuzzy) {
+function handleEnter() {
+  console.log('handleEnter')
+  search(scientificName.value, searchOptions.value)
+  emits('scientificNameSearch')
+}
+
+function search(scientificName, searchMode) {
   store.commit('setScientificName', scientificName)
   store.commit('setSearchMode', searchMode)
-  store.commit('setIsFuzzySearch', fuzzy)
-  // emits('search')
 }
 </script>
 <style scoped>
