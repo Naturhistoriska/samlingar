@@ -77,18 +77,20 @@ onMounted(async () => {
 
   await new Promise((r) => setTimeout(r, 1500))
 
-  const total = store.getters['totalGeoData']
   const resetMapData = store.getters['resetMapData']
 
-  if (resetMapData && total < 50000 && total > 0) {
-    let params = store.getters['searchParams']
-    if (params === null) {
-      params = new URLSearchParams({
-        catchall: '*'
-      })
+  if (resetMapData) {
+    const total = store.getters['totalGeoData']
+    if (total < 50000 && total > 0) {
+      let params = store.getters['searchParams']
+      if (params === null) {
+        params = new URLSearchParams({
+          catchall: '*'
+        })
+      }
+      await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
+      store.commit('setResetMapData', false)
     }
-    await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
-    store.commit('setResetMapData', false)
   } else {
     onMapReady()
   }
@@ -138,55 +140,18 @@ watch(
   () => {
     console.log('map 2 map data changed..')
     const reset = store.getters['resetMapData']
-    const total = store.getters['totalGeoData'] < 50000
-    if (reset && total) {
-      const params = store.getters['searchParams']
+    if (reset) {
+      const total = store.getters['totalGeoData']
       removeOldMarkers()
-      fetchAndRender(params, { lat: 59.0, lng: 15.0 })
+      if (total < 50000 && total > 0) {
+        const params = store.getters['searchParams']
+        fetchAndRender(params, { lat: 59.0, lng: 15.0 })
+      }
+
       store.commit('setResetMapData', false)
     }
   }
 )
-
-function addClustringPopup() {
-  console.log('addClustringPopup')
-
-  const SPIDERFY_THRESHOLD = 3
-
-  mapRef.value.eachLayer((layer) => {
-    if (layer instanceof L.MarkerClusterGroup) {
-      layer.on('clusterclick', (e) => {
-        // Get the actual cluster clicked
-        const cluster = e.propagatedFrom || e.target
-        const children = cluster.getAllChildMarkers()
-
-        const maxZoom = mapRef.value.getMaxZoom()
-        const childCount = children.length
-
-        if (childCount <= SPIDERFY_THRESHOLD) {
-          cluster.spiderfy()
-        } else {
-          mapRef.value.fitBounds(cluster.getBounds())
-
-          if (mapRef.value.getZoom() === maxZoom) {
-            const data = children[0]
-            const locality = data.myData.locality
-
-            const content =
-              `<b>Total: ${children.length} </b> <br> Locality: ${locality} [ ${data._latlng.lat}, ${data._latlng.lng} ]<br><br>` +
-              children.map((m, i) => `Scientific name:  ${m.myData.scientificName} `).join('<br>')
-
-            // Open popup at cluster position
-            L.popup().setLatLng(cluster.getLatLng()).setContent(content).openOn(mapRef.value)
-
-            e.originalEvent.preventDefault()
-            e.originalEvent.stopPropagation()
-          }
-        }
-      })
-    }
-  })
-}
 
 function onMapReady() {
   const markers = store.getters['clusterGroup']
@@ -409,6 +374,46 @@ function buildParams() {
       })
   }
   return params
+}
+
+function addClustringPopup() {
+  console.log('addClustringPopup')
+
+  const SPIDERFY_THRESHOLD = 3
+
+  mapRef.value.eachLayer((layer) => {
+    if (layer instanceof L.MarkerClusterGroup) {
+      layer.on('clusterclick', (e) => {
+        // Get the actual cluster clicked
+        const cluster = e.propagatedFrom || e.target
+        const children = cluster.getAllChildMarkers()
+
+        const maxZoom = mapRef.value.getMaxZoom()
+        const childCount = children.length
+
+        if (childCount <= SPIDERFY_THRESHOLD) {
+          cluster.spiderfy()
+        } else {
+          mapRef.value.fitBounds(cluster.getBounds())
+
+          if (mapRef.value.getZoom() === maxZoom) {
+            const data = children[0]
+            const locality = data.myData.locality
+
+            const content =
+              `<b>Total: ${children.length} </b> <br> Locality: ${locality} [ ${data._latlng.lat}, ${data._latlng.lng} ]<br><br>` +
+              children.map((m, i) => `Scientific name:  ${m.myData.scientificName} `).join('<br>')
+
+            // Open popup at cluster position
+            L.popup().setLatLng(cluster.getLatLng()).setContent(content).openOn(mapRef.value)
+
+            e.originalEvent.preventDefault()
+            e.originalEvent.stopPropagation()
+          }
+        }
+      })
+    }
+  })
 }
 </script>
 <style scoped>

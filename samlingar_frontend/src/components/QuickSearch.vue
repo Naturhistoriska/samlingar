@@ -89,7 +89,6 @@ function apiSearch() {
   const params = new URLSearchParams({
     copy_scientificName: searchText,
     searchMode
-    // fuzzySearch
   })
 
   service
@@ -111,12 +110,6 @@ function apiSearch() {
 
         const collectionfacet = facets.collectionName.buckets
         store.commit('setSelectedCollectionGroup', collectionfacet)
-
-        // const collectionCodefacet = facets.collectionCode.buckets
-        // const collectionNamefacet = facets.collectionName.buckets
-
-        // store.commit('setSelectedCollectionGroup', collectionNamefacet)
-        // store.commit('setSelectedCollection', collectionCodefacet)
       } else {
         store.commit('setTotalGeoData', 0)
         store.commit('setSelectedCollectionGroup', null)
@@ -140,6 +133,8 @@ function apiSearch() {
 
 function reset() {
   store.commit('setSearchText', null)
+  store.commit('setFullTextSearchMode', 'contains')
+
   store.commit('setCollectionGroup', null)
   store.commit('setSelectedCollection', null)
 
