@@ -65,49 +65,38 @@ public class SamlingarService {
         return Response.ok(logic.getChart(collectionCode, isYearChart)).build(); 
     }
     
-    
     @GET
-    @Path("/freeTextSearch")
-    @ApiOperation(value = "freeTextSearch",
-            notes = "Return search results in json",
+    @Path("/geojson")
+    @ApiOperation(value = "geojson",
+            notes = "Return data in json",
             response = String.class
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response freeTextSearch(@QueryParam("catchall") String text) {
-        log.info("freeTextSearch {} ", text);
-          
-        return Response.ok(logic.freeTextSearch(text )).build();
+    public Response geojson(@Context UriInfo uriInfo ) { 
+        log.info("start....");
+        
+        return Response.ok(logic
+                .geoJson(uriInfo.getQueryParameters())).build(); 
+    }
+     
+    @GET
+    @Path("/heatmap")  
+    @ApiOperation(value = "heatmap",
+            notes = "Return data in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response heatmap(@Context UriInfo uriInfo ) { 
+        log.info("start....");
+         
+        Response res = Response.ok(logic
+                .getHeatmap(uriInfo.getQueryParameters())).build();
+        
+        
+        log.info("end.....");
+        return res;
     }
     
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
     
     @GET
     @Path("/autocomplete")
@@ -123,6 +112,46 @@ public class SamlingarService {
         return Response.ok(logic.autoCompleteSearch(text, field)).build();
     }
      
+     
+    @GET
+    @Path("/freeTextSearch")
+    @ApiOperation(value = "freeTextSearch",
+            notes = "Return search results in json",
+            response = String.class
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response freeTextSearch(@QueryParam("catchall") String text, 
+            @QueryParam("mode") String mode) {
+        log.info("freeTextSearch {} ", text, mode);
+          
+        return Response.ok(logic.freeTextSearch(text, mode)).build();
+    }
+    
+    @GET
+    @Path("/simpleSearch")
+    @ApiOperation(value = "SimpleSearch",
+            notes = "Return search results in json",
+            response = String.class
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response simpleSearch(@Context UriInfo uriInfo) { 
+        log.info("simpleSearch");
+        return Response.ok(logic.simpleSearch(uriInfo.getQueryParameters())).build(); 
+    }
+     
+    
+    @GET
+    @Path("/search")
+    @ApiOperation(value = "Search",
+            notes = "Return search results in json",
+            response = String.class
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSearchResults(@Context UriInfo uriInfo) { 
+        log.info("getSearchResults");
+        return Response.ok(logic.search(uriInfo.getQueryParameters())).build(); 
+    }
+    
     @GET
     @Path("/scientificname")
     @ApiOperation(value = "scientificname",
@@ -142,32 +171,6 @@ public class SamlingarService {
     }
     
     @GET
-    @Path("/search")
-    @ApiOperation(value = "Search",
-            notes = "Return search results in json",
-            response = String.class
-    ) 
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getSearchResults(@Context UriInfo uriInfo) { 
-        log.info("getSearchResults");
-        return Response.ok(logic.search(uriInfo.getQueryParameters())).build(); 
-    }
-    
-    @GET
-    @Path("/simpleSearch")
-    @ApiOperation(value = "SimpleSearch",
-            notes = "Return search results in json",
-            response = String.class
-    ) 
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response simpleSearch(@Context UriInfo uriInfo) { 
-        log.info("simpleSearch");
-        return Response.ok(logic.simpleSearch(uriInfo.getQueryParameters())).build(); 
-    }
-     
-    
-                
-    @GET
     @Path("/id")
     @ApiOperation(value = "Search by id",
             notes = "Return search results in json",
@@ -179,20 +182,47 @@ public class SamlingarService {
         return Response.ok(logic.searchWithId(id)).build();
     }
     
-    @GET
-    @Path("/geojson")
-    @ApiOperation(value = "geojson",
-            notes = "Return data in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response geojson(@Context UriInfo uriInfo ) { 
-        log.info("start....");
-        
-        return Response.ok(logic
-                .geoJson(uriInfo.getQueryParameters())).build(); 
-    }
     
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    
+
+   
+    
+
+    
+ 
+    
+                
+   
+
         
     
 
@@ -220,25 +250,7 @@ public class SamlingarService {
  
         
 
-    
-    @GET
-    @Path("/heatmap")  
-    @ApiOperation(value = "heatmap",
-            notes = "Return data in json",
-            response = String.class
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response heatmap(@Context UriInfo uriInfo ) { 
-        log.info("start....");
-         
-        Response res = Response.ok(logic
-                .getHeatmap(uriInfo.getQueryParameters())).build();
-        
-        
-        log.info("end.....");
-        return res;
-    }
-    
+
     
 //    
 //    

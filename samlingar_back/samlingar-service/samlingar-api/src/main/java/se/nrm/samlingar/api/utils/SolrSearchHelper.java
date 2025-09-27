@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List; 
 import lombok.extern.slf4j.Slf4j; 
 import org.apache.commons.lang3.StringUtils; 
+import org.apache.solr.client.solrj.util.ClientUtils;
 
 /**
  *
@@ -23,12 +24,7 @@ public class SolrSearchHelper {
     private final String colon = ":";
     private final String spaceSeparate = "\\s+";
     
-    
-    
-    
-    
-    
-    
+     
     
     
 
@@ -125,15 +121,33 @@ public class SolrSearchHelper {
 //    
 //    
 //    
-    private final String catchallKey = "catchall:";
+    
+    
+         
+    private final String leftBlacket = "[";
+    private final String rightBlacket = "]";
+    
+    private final String to = " TO ";
+    private final String toWithStar = " TO *]";
+    
+    private final String catchallWithStar = "catchall:*";
+    private final String catchallFieldKey = "catchall:";
+    private final String catchallKey = "catchall";
+    
+    
+    
+    
     private final String scientificNameKey = "scientificName";
 
     private StringBuilder fuzzySeachTextSb;
     private StringBuilder freeTextSearchSb;
+    private StringBuilder dateRangeSb;
+    
+    
     private StringBuilder synonymsSb;
 
     private final String star = "*";
-    private final String catchallWithStar = "catchall:*";
+
     private final String scientificNameWithStar = "copy_scientificName:*";
     private final String and = " AND ";
 
@@ -145,14 +159,39 @@ public class SolrSearchHelper {
         }
         return instance;
     }
-
+    
+    public String buildFreeTextSearch(String text, String mode) {
+        if(text == null || text.isEmpty() || text.equals(star)) {
+            return catchallWithStar;
+        } 
+        
+        text = text.replaceAll(regex, regexReplecement);
+        if(mode == null) {
+             return buildCaseInsensitiveContainsSearchText(text, catchallKey);
+        }
+        
+        switch (mode) {
+            case contains:
+                return buildCaseInsensitiveContainsSearchText(text, catchallKey);
+            case equals:
+                return buildCaseInsensitivEqualsSearchText(text, catchallKey);
+            case startsWith:
+                return buildCaseInsensitiveStartsWithSearchText(text, catchallKey);
+            default:
+                return buildCaseInsensitiveContainsSearchText(text, catchallKey); 
+        } 
+    }
+    
+    
     public String buildContainsQuery(String text) {
         seachTextSb = new StringBuilder();
         if (text == null || text.isEmpty() || text.equals(star)) {
             seachTextSb.append(catchallWithStar); 
         } else { 
             text = text.replaceAll(regex, regexReplecement);
+            
             String[] terms = text.split(spaceSeparate); 
+            
             for (int i = 0; i < terms.length; i++) {
                 seachTextSb.append(catchallWithStar).append(terms[i]).append(star);
                 if (i < terms.length - 1) {
@@ -162,59 +201,34 @@ public class SolrSearchHelper {
         } 
         return seachTextSb.toString();
     }
-    
-    public String buildScientificNameContainsQuery(String text) {
-        seachTextSb = new StringBuilder();
-
-        text = text.replaceAll(regex, regexReplecement);
-        String[] terms = text.split(spaceSeparate);
-        for (int i = 0; i < terms.length; i++) { 
-            seachTextSb.append(scientificNameWithStar).append(terms[i]).append(star);
-            if (i < terms.length - 1) {
-                seachTextSb.append(and);
+     
+    public String buildDateRange(String startDate, String endDate) {
+        
+        dateRangeSb = new StringBuilder();
+        if(!StringUtils.isBlank(startDate)) {
+            dateRangeSb.append(eventDateKey);
+            dateRangeSb.append(leftBlacket);
+            dateRangeSb.append(startDate);
+            
+            if(!StringUtils.isBlank(endDate)) {
+                dateRangeSb.append(to);
+                dateRangeSb.append(endDate);
+                dateRangeSb.append(rightBlacket);
+            } else {
+                dateRangeSb.append(toWithStar);
             }
-        }
-
-        return seachTextSb.toString();
-    }
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    public String buildAutoCompleteSearchText(String text, String key, 
-            boolean isCaseSensitive) {
-        
-        log.info("buildAutoCompleteSearchText: {}--{}", text, key);
-        
-        seachTextSb = new StringBuilder();
-        if(isCaseSensitive) {
-            log.info("here...");
-            return buildContainsSearchText(text, key);
+            return dateRangeSb.toString().trim();
         } else {
-            return buildCaseInsensitiveContainsSearchText(text, key);
+            return null;
         } 
     }
-     
+    
+    
     public String buildScientificName(String text, String key, String searchMode ) {
 
-        searchMode = searchMode == null ? equals : searchMode; 
+        searchMode = searchMode == null ? contains : searchMode; 
          
+        text = text.replaceAll(regex, regexReplecement);
         switch (searchMode) {
             case equals:
                 return buildCaseInsensitivEqualsSearchText(text, key);
@@ -225,6 +239,126 @@ public class SolrSearchHelper {
 //                return buildCaseInsensitiveContainsSearchText(text, key); 
         }
     }
+     
+    public String buildScientificNameContainsQuery(String text) {
+        seachTextSb = new StringBuilder();
+ 
+        String[] terms = text.split(spaceSeparate);
+        for (int i = 0; i < terms.length; i++) { 
+            seachTextSb.append(scientificNameWithStar).append(terms[i]).append(star);
+            if (i < terms.length - 1) {
+                seachTextSb.append(and);
+            }
+        } 
+        return seachTextSb.toString();
+    }
+        
+    public String buildSynonyms(String synonyms) {
+        synonymsSb = new StringBuilder(); 
+        synonyms = synonyms.replaceAll(regex, regexReplecement);
+         
+        return buildStartsWithSearchText(synonyms, synonymsKey);
+    }
+    
+        
+    public String buildAutoCompleteSearchText(String text, String key, 
+            boolean isCaseSensitive) {
+        
+        log.info("buildAutoCompleteSearchText: {}--{}", text, key);
+        
+        seachTextSb = new StringBuilder();
+        if(isCaseSensitive) { 
+            return buildContainsSearchText(text, key);
+        } else {
+            return buildCaseInsensitiveContainsSearchText(text, key);
+        } 
+    }
+    
+    
+    private String buildStartsWithSearchText(String text, String key) {
+        fuzzySeachTextSb = new StringBuilder();
+        if (text.contains(emptySpace)) {
+            searchText = text.split(emptySpace);
+
+            fuzzySeachTextSb.append(plusSign);
+            fuzzySeachTextSb.append(key);
+            fuzzySeachTextSb.append(colon);
+            fuzzySeachTextSb.append(StringUtils.capitalize(searchText[0]));
+            fuzzySeachTextSb.append(star);
+
+            for (int i = 1; i < searchText.length; i++) {
+                fuzzySeachTextSb.append(emptySpace);
+                fuzzySeachTextSb.append(plusSign);
+                fuzzySeachTextSb.append(key);
+                fuzzySeachTextSb.append(colon);
+                fuzzySeachTextSb.append(star);
+                fuzzySeachTextSb.append(searchText[i]);
+                fuzzySeachTextSb.append(star);
+            }
+        } else {
+            fuzzySeachTextSb.append(key);
+            fuzzySeachTextSb.append(colon);
+            fuzzySeachTextSb.append(StringUtils.capitalize(text));
+            fuzzySeachTextSb.append(star);
+        }
+
+        return fuzzySeachTextSb.toString().trim();
+    }
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+
+     
     
     private String buildCaseInsensitivEqualsSearchText(String text, String key) {
         seachTextSb = new StringBuilder();
@@ -427,19 +561,14 @@ public class SolrSearchHelper {
     
     
     
-    
-    public String buildSynonyms(String synonyms) {
-        synonymsSb = new StringBuilder();
 
-        return buildStartsWithSearchText(synonyms, synonymsKey);
-    }
 
     public String buildFreeTextSearch(String text) {
 
         freeTextSearchSb = new StringBuilder();
 
         if (text == null || text.isEmpty() || text.equals(star)) {
-            freeTextSearchSb.append(catchallKey);
+            freeTextSearchSb.append(catchallFieldKey);
             freeTextSearchSb.append(star);
             return freeTextSearchSb.toString().trim();
         }
@@ -447,14 +576,14 @@ public class SolrSearchHelper {
         if (text.contains(emptySpace)) {
             searchText = text.split(emptySpace);
             for (String value : searchText) {
-                freeTextSearchSb.append(catchallKey);
+                freeTextSearchSb.append(catchallFieldKey);
                 freeTextSearchSb.append(star);
                 freeTextSearchSb.append(value);
                 freeTextSearchSb.append(star);
                 freeTextSearchSb.append(emptySpace);
             }
         } else {
-            freeTextSearchSb.append(catchallKey);
+            freeTextSearchSb.append(catchallFieldKey);
             freeTextSearchSb.append(star);
             freeTextSearchSb.append(text);
             freeTextSearchSb.append(star);
@@ -581,35 +710,7 @@ public class SolrSearchHelper {
         return collectionCodeSearchSb.toString().trim();
     }
 
-    private String buildStartsWithSearchText(String text, String key) {
-        fuzzySeachTextSb = new StringBuilder();
-        if (text.contains(emptySpace)) {
-            searchText = text.split(emptySpace);
-
-            fuzzySeachTextSb.append(plusSign);
-            fuzzySeachTextSb.append(key);
-            fuzzySeachTextSb.append(colon);
-            fuzzySeachTextSb.append(StringUtils.capitalize(searchText[0]));
-            fuzzySeachTextSb.append(star);
-
-            for (int i = 1; i < searchText.length; i++) {
-                fuzzySeachTextSb.append(emptySpace);
-                fuzzySeachTextSb.append(plusSign);
-                fuzzySeachTextSb.append(key);
-                fuzzySeachTextSb.append(colon);
-                fuzzySeachTextSb.append(star);
-                fuzzySeachTextSb.append(searchText[i]);
-                fuzzySeachTextSb.append(star);
-            }
-        } else {
-            fuzzySeachTextSb.append(key);
-            fuzzySeachTextSb.append(colon);
-            fuzzySeachTextSb.append(StringUtils.capitalize(text));
-            fuzzySeachTextSb.append(star);
-        }
-
-        return fuzzySeachTextSb.toString().trim();
-    }
+    
 
    
 

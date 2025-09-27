@@ -62,14 +62,13 @@ public class SamlingarLogic {
      
     
     
-    private final String endDateKey = "endDate";
-    private final String fuzzySearch = "fuzzySearch";
+    private final String endDateKey = "endDate"; 
     private final String numPerPageKey = "numPerPage"; 
     private final String scientificNameKey = "scientificName";
-    private final String searchModeKey = "searchMode";
+
+    
     private final String startKey = "start";
-    private final String startDateKey = "startDate";
-    private final String textKey = "text";
+    private final String startDateKey = "startDate"; 
     private final String localityKey = "locality";
     private final String eventDateKey = "eventDate:";
     private final String synonymsKey = "synonyms";
@@ -77,9 +76,7 @@ public class SamlingarLogic {
     
     
     private final String sortKey = "sort";
-     
-    private final String csvFileName = "results.csv";
-     
+      
     private final String numRowsKey = "numRows";
     private final String contains = "contains";
     
@@ -91,22 +88,18 @@ public class SamlingarLogic {
     private final String toWithStar = " TO *]";
     
     private int start = 0;
-    private int numPerPage = 20;
-    private boolean isFuzzySearch;
+    private int numPerPage = 20; 
     private String scientificName;
     private String locality;
-    private String searchMode; 
-    private String text;
+    private String searchMode;  
     private String sort;
     private String startDate;
-    private String endDate;
-    private String facets;
+    private String endDate; 
     private String dateRange;
     private boolean yearChart;
     private String synonyms;
     private String catchall;
-    
-    private String pt;
+     
     
     private final String catchallKey = "catchall";
     private final String copyScientificNameKey = "copy_scientificName";
@@ -140,7 +133,11 @@ public class SamlingarLogic {
     
     
     
+    private final String searchModeKey = "searchMode";
+    private final String modeKey = "mode";
     
+    private String mode;
+     
     
      
     public String getInitalData() {
@@ -156,30 +153,16 @@ public class SamlingarLogic {
 
         return solr.getChart(collectionCode, startDate, endDate, yearChart); 
     }
-     
+    
     public String autoCompleteSearch(String text, String field) {
-         
-        if(field.equals(copyScientificNameKey)) {
-            text = SolrSearchHelper.getInstance()
-                    .buildAutoCompleteSearchText(text, field, false );
-        } else {
-            text = SolrSearchHelper.getInstance()
-                .buildAutoCompleteSearchText(text, field, true);
-        }
+          
+        text =  SolrSearchHelper.getInstance()
+                    .buildAutoCompleteSearchText(text, field, 
+                            field.equals(copyScientificNameKey) );
+      
         log.info("autoCompleteSearch text : {}", text);
         return solr.autoCompleteSearch(text, field);
 //        return solr.autocompolete(text);
-    }
-
-           
-    public String scientificNameSearch(String text, String searchMode, int start, int numPerPage, String sort ) {
-        log.info("scientificNameSearch : {}", text);
-        
-//        text = SolrSearchHelper.getInstance().buildScientificName(text, copyScientificNameKey, searchMode);
-//        log.info("text... {}", text);
-        
-        text = text.replaceAll(regex, regexReplecement);
-        return solr.scientificNameSearch(text);
     }
     
     public String simpleSearch(MultivaluedMap<String, String> queryParams ) {
@@ -191,66 +174,93 @@ public class SamlingarLogic {
         return solr.simpleSearch(paramMap);
     }
     
-    
-    public String freeTextSearch(String text) {
+    public String freeTextSearch(String text, String mode) {
+        
         log.info("freeTextSearch : {}", text);  
-        text = SolrSearchHelper.getInstance().buildContainsQuery(text);
+        
+        text = SolrSearchHelper.getInstance().buildFreeTextSearch(text, mode); 
         log.info("text... : {}", text); 
         return solr.freeTextSearch(text);
+    }
+    
+    public String search(MultivaluedMap<String, String> queryParams) {
+         
+        buildQueryParam(queryParams);
+        return solr.search(paramMap, catchall, scientificName, locality, synonyms, 
+                dateRange,  start, numPerPage, sort); 
+    } 
+     
+    public String scientificNameSearch(String text, String searchMode, 
+            int start, int numPerPage, String sort ) {
+        log.info("scientificNameSearch : {}", text);
+         
+        text = text.replaceAll(regex, regexReplecement); 
+        if(text != null) {
+            text = SolrSearchHelper.getInstance()
+                    .buildScientificName(text, copyScientificNameKey, searchMode); 
+            log.info("scientificName : {}", text);
+        }
+        
+        return solr.scientificNameSearch(text);
     }
     
     public String searchWithId(String id) { 
         return solr.searchWithId(id);
     }
  
-    
-    
-    public String search(MultivaluedMap<String, String> queryParams) {
+      
+    public String geoJson(MultivaluedMap<String, String> queryParams) { 
+        buildQueryParam(queryParams); 
          
+        return solr.geojson(paramMap, catchall, scientificName, locality, synonyms, 
+                dateRange, start, numPerPage ); 
+    } 
+    
+    public String getHeatmap(MultivaluedMap<String, String> queryParams) {
+        buildQueryParam(queryParams); 
+        return  solr.getHeatmap(paramMap, catchall, scientificName, locality, synonyms, dateRange );
+    }
+    
+    
+    private void buildQueryParam(MultivaluedMap<String, String> queryParams) {
         paramMap = new HashMap<>();
-        text = wildCard;
+        
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
              
             switch (entry.getKey()) {
                 case scientificNameKey: 
                     scientificName = queryParams.get(scientificNameKey).get(0); 
                     break;
-                case localityKey: 
-                    locality = queryParams.get(localityKey).get(0); 
-                    break;
-                case textKey: 
-                    text = queryParams.get(textKey).get(0); 
+                case searchModeKey: 
+                    searchMode = queryParams.get(searchModeKey).get(0); 
                     break;
                 case catchallKey: 
                     catchall = queryParams.get(catchallKey).get(0);  
                     break;
+                case modeKey: 
+                    mode = queryParams.get(modeKey).get(0);  
+                    break;
+                case synonymsKey: 
+                    synonyms = queryParams.get(synonymsKey).get(0);
+                    break;    
+                case localityKey: 
+                    locality = queryParams.get(localityKey).get(0); 
+                    break; 
                 case startDateKey: 
                     startDate = queryParams.get(startDateKey).get(0); 
                     break;
                 case endDateKey: 
                     endDate = queryParams.get(endDateKey).get(0); 
-                    break;
+                    break; 
                 case startKey:
                     start = Integer.parseInt(queryParams.get(startKey).get(0)); 
                     break;
-                case synonymsKey: 
-                    synonyms = queryParams.get(synonymsKey).get(0);
-                    break;
                 case numPerPageKey:
                     numPerPage = Integer.parseInt(queryParams.get(numPerPageKey).get(0));
-                    break;  
-                case fuzzySearch:
-                    isFuzzySearch = Boolean.parseBoolean(queryParams.get(fuzzySearch).get(0));
-                    break; 
-                case searchModeKey: 
-                    searchMode = queryParams.get(searchModeKey).get(0); 
-                    break;
+                    break;   
                 case sortKey:
                     sort =  queryParams.get(sortKey).get(0);
-                    break;
-                case facetsKey:
-                    facets = queryParams.get(facetsKey).get(0);
-                    break;
+                    break; 
                 default:
                     paramMap.put(entry.getKey(), entry.getValue().get(0));
                     break;
@@ -263,191 +273,116 @@ public class SamlingarLogic {
              
             log.info("scientificName : {}", scientificName);
         }
-        
         if(locality != null) {
             log.info("locality 1 : {}", locality);
             locality = SolrSearchHelper.getInstance().buildSearchText(
                 locality, localityKey, contains, true);
             log.info("locality : {}", locality);
         }
-      
-        catchall = catchall == null ? text : catchall; 
-        log.info("catchall: {}", catchall);
-        if(catchall != null && !catchall.equals(wildCard)) {
-            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
-        }   
-        log.info("catchall 1: {}", catchall);
         
-        dateRangeSb = new StringBuilder();
-        if(!StringUtils.isBlank(startDate)) {
-            dateRangeSb.append(eventDateKey);
-            dateRangeSb.append(leftBlacket);
-            dateRangeSb.append(startDate);
-            
-            if(!StringUtils.isBlank(endDate)) {
-                dateRangeSb.append(to);
-                dateRangeSb.append(endDate);
-                dateRangeSb.append(rightBlacket);
-            } else {
-                dateRangeSb.append(toWithStar);
-            }
-            dateRange = dateRangeSb.toString().trim();
-        } else {
-            dateRange = null;
-        }
-        
-        log.info("scientificName : {} -- {}", scientificName, locality);
-        log.info("synonyms : {}  ", synonyms );
-
         if (synonyms != null) {
             synonyms = SolrSearchHelper.getInstance().buildSynonyms(synonyms);
             log.info("syynonyms : {}", synonyms);
         }
-        log.info("sort... {}", sort);
-        return solr.search(paramMap, catchall, scientificName, locality, synonyms, dateRange, facets,
-                start, numPerPage, sort); 
-    } 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
- 
- 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    public String getHeatmap(MultivaluedMap<String, String> queryParams) {
-        paramMap = new HashMap<>();
-        text = wildCard;
-        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
-             
-            switch (entry.getKey()) {
-                case scientificNameKey: 
-                    scientificName = queryParams.get(scientificNameKey).get(0); 
-                    break;
-                case localityKey: 
-                    locality = queryParams.get(localityKey).get(0); 
-                    break;
-                case textKey: 
-                    text = queryParams.get(textKey).get(0); 
-                     log.info("why... {}", text);
-                    break;
-                case catchallKey: 
-                    catchall = queryParams.get(catchallKey).get(0);  
-                    break;
-                case startDateKey: 
-                    startDate = queryParams.get(startDateKey).get(0); 
-                    break;
-                case endDateKey: 
-                    endDate = queryParams.get(endDateKey).get(0); 
-                    break; 
-                case startKey:
-                    start = Integer.parseInt(queryParams.get(startKey).get(0)); 
-                    break;
-                case numPerPageKey:
-                    numPerPage = Integer.parseInt(queryParams.get(numPerPageKey).get(0));
-                    break;  
-                case fuzzySearch:
-                    isFuzzySearch = Boolean.parseBoolean(queryParams.get(fuzzySearch).get(0));
-                    break;
-                case searchModeKey: 
-                    searchMode = queryParams.get(searchModeKey).get(0); 
-                    break;
-                case sortKey:
-                    sort =  queryParams.get(sortKey).get(0);
-                    break;
-                case facetsKey:
-                    facets = queryParams.get(facetsKey).get(0);
-                    break;
-                default:
-                    paramMap.put(entry.getKey(), entry.getValue().get(0));
-                    break;
-            }
-        }
-         
-        if(scientificName != null) {
-            scientificName = SolrSearchHelper.getInstance()
-                    .buildScientificName(scientificName, copyScientificNameKey, searchMode);
-             
-            log.info("scientificName : {}", scientificName);
-        }
-        if(locality != null) {
-            log.info("locality 1 : {}", locality);
-            locality = SolrSearchHelper.getInstance().buildSearchText(
-                locality, localityKey, contains, true);
-            log.info("locality : {}", locality);
-        }
-         
-        if(text != null && !text.equals(wildCard)) {
-            text = SolrSearchHelper.getInstance().buildFreeTextSearch(text);
-        }  
-        
-        
-        catchall = catchall == null ? text : catchall;
-        if(catchall != null && !catchall.equals(wildCard)) {
-            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
-        }  
-        
-        log.info("text.... {}", catchall);
-        
-        dateRangeSb = new StringBuilder();
-        if(!StringUtils.isBlank(startDate)) {
-            dateRangeSb.append(eventDateKey);
-            dateRangeSb.append(leftBlacket);
-            dateRangeSb.append(startDate);
-            
-            if(!StringUtils.isBlank(endDate)) {
-                dateRangeSb.append(to);
-                dateRangeSb.append(endDate);
-                dateRangeSb.append(rightBlacket);
-            } else {
-                dateRangeSb.append(toWithStar);
-            }
-            dateRange = dateRangeSb.toString().trim();
-        } else {
-            dateRange = null;
-        }
   
-        
-        return  solr.getHeatmap(paramMap, text, scientificName, locality, dateRange, pt, start, start);
+        catchall = catchall == null ? wildCard : catchall;
+        if(catchall != null && !catchall.equals(wildCard)) {
+            catchall  = SolrSearchHelper.getInstance().buildFreeTextSearch(catchall, mode);
+//            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
+        }  
+        log.info("catchall: ---- {}", catchall);
+         
+        dateRange = SolrSearchHelper.getInstance().buildDateRange(startDate, endDate); 
     }
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+    
+    
+    
+    
+    
+     
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+ 
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
     
     
     
@@ -472,106 +407,12 @@ public class SamlingarLogic {
  
     
     
-     public String geoJson(MultivaluedMap<String, String> queryParams) {
-         
-        paramMap = new HashMap<>();
-        text = wildCard;
-        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
-             
-            switch (entry.getKey()) {
-                case scientificNameKey: 
-                    scientificName = queryParams.get(scientificNameKey).get(0); 
-                    break;
-                case localityKey: 
-                    locality = queryParams.get(localityKey).get(0); 
-                    break;
-                case textKey: 
-                    text = queryParams.get(textKey).get(0);  
-                    break;
-                case catchallKey: 
-                    catchall = queryParams.get(catchallKey).get(0);  
-                    break;
-                case startDateKey: 
-                    startDate = queryParams.get(startDateKey).get(0); 
-                    break;
-                case endDateKey: 
-                    endDate = queryParams.get(endDateKey).get(0); 
-                    break; 
-                case startKey:
-                    start = Integer.parseInt(queryParams.get(startKey).get(0)); 
-                    break;
-                case numPerPageKey:
-                    numPerPage = Integer.parseInt(queryParams.get(numPerPageKey).get(0));
-                    break;  
-                case fuzzySearch:
-                    isFuzzySearch = Boolean.parseBoolean(queryParams.get(fuzzySearch).get(0));
-                    break;
-                case searchModeKey: 
-                    searchMode = queryParams.get(searchModeKey).get(0); 
-                    break;
-                case sortKey:
-                    sort =  queryParams.get(sortKey).get(0);
-                    break;
-                case facetsKey:
-                    facets = queryParams.get(facetsKey).get(0);
-                    break;
-                default:
-                    paramMap.put(entry.getKey(), entry.getValue().get(0));
-                    break;
-            }
-        } 
-        
-        if(scientificName != null) {
-            scientificName = SolrSearchHelper.getInstance()
-                    .buildScientificName(scientificName, copyScientificNameKey, searchMode);
-             
-            log.info("scientificName : {}", scientificName);
-        }
-        if(locality != null) {
-            log.info("locality 1 : {}", locality);
-            locality = SolrSearchHelper.getInstance().buildSearchText(
-                locality, localityKey, contains, true);
-            log.info("locality : {}", locality);
-        }
-//        if(text != null && !text.equals(wildCard)) {
-//            text = SolrSearchHelper.getInstance().buildContainsQuery(text);
-//        }  
-        
-        catchall = catchall == null ? text : catchall;
-        if(catchall != null && !catchall.equals(wildCard)) {
-            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
-        }  
-        
-        dateRangeSb = new StringBuilder();
-        if(!StringUtils.isBlank(startDate)) {
-            dateRangeSb.append(eventDateKey);
-            dateRangeSb.append(leftBlacket);
-            dateRangeSb.append(startDate);
-            
-            if(!StringUtils.isBlank(endDate)) {
-                dateRangeSb.append(to);
-                dateRangeSb.append(endDate);
-                dateRangeSb.append(rightBlacket);
-            } else {
-                dateRangeSb.append(toWithStar);
-            }
-            dateRange = dateRangeSb.toString().trim();
-        } else {
-            dateRange = null;
-        }
-        
-        log.info("scientificName : {} -- {}", scientificName, locality);
-         
-        return solr.geojson(paramMap, catchall, scientificName, locality, dateRange,  
-                start, numPerPage );
-        
-    } 
+    
        
     public String export(MultivaluedMap<String, String> queryParams) {
         int numperOfRows = 0;
 
-        paramMap = new HashMap<>();
-        text = wildCard;
+        paramMap = new HashMap<>(); 
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
             
             switch (entry.getKey()) {
@@ -580,10 +421,7 @@ public class SamlingarLogic {
                     break;
                 case localityKey: 
                     locality = queryParams.get(localityKey).get(0); 
-                    break;
-                case textKey: 
-                    text = queryParams.get(textKey).get(0); 
-                    break;
+                    break; 
                 case catchallKey: 
                     catchall = queryParams.get(catchallKey).get(0);  
                     break;
@@ -598,10 +436,7 @@ public class SamlingarLogic {
                     break;
                 case numRowsKey:
                     numperOfRows = Integer.parseInt(queryParams.get(numRowsKey).get(0));
-                    break;  
-                case fuzzySearch:
-                    isFuzzySearch = Boolean.parseBoolean(queryParams.get(fuzzySearch).get(0));
-                    break;
+                    break;   
                 case searchModeKey: 
                     searchMode = queryParams.get(searchModeKey).get(0); 
                     break;
@@ -622,7 +457,7 @@ public class SamlingarLogic {
              
             log.info("scientificName : {}", scientificName);
         }
-        catchall = catchall == null ? text : catchall;
+        catchall = catchall == null ? wildCard : catchall;
         if(catchall != null && !catchall.equals(wildCard)) {
             catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
         }  
