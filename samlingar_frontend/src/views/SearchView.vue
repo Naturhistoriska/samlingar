@@ -163,7 +163,6 @@ function buildParams() {
 
   const scientificName = store.getters['scientificName']
   const searchMode = store.getters['searchMode']
-  const isFuzzy = store.getters['isFuzzySearch']
 
   const isType = store.getters['filterType']
   const isInSweden = store.getters['filterInSweden']
@@ -172,6 +171,7 @@ function buildParams() {
 
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
+  const fullTextSearchMode = store.getters['fullTextSearchMode']
 
   const selectedCollection = store.getters['selectedCollection']
 
@@ -181,13 +181,13 @@ function buildParams() {
   // const collectionGroup = store.getters['collectionGroup']
 
   const params = new URLSearchParams({
-    catchall: searchText
+    catchall: searchText,
+    mode: fullTextSearchMode
   })
 
   if (scientificName) {
     params.set('scientificName', scientificName)
     params.set('searchMode', searchMode)
-    params.set('fuzzySearch', isFuzzy)
   }
 
   if (isType) {
@@ -232,7 +232,6 @@ function buildParams() {
     params.set('collectionCode', newValue)
   }
 
-  console.log('fields...', fields)
   if (fields) {
     fields
       .filter((field) => field.text)

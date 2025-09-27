@@ -26,7 +26,7 @@
             class="mt-1"
             @value-change="change"
           />
-          <label for="searchOption1" class="ml-2">
+          <label for="optionEquals" class="ml-2">
             <small>{{ $t('search.exact') }}</small>
           </label>
         </div>
@@ -40,7 +40,7 @@
             size="small"
             @value-change="change"
           />
-          <label for="searchOptions2" class="ml-2">
+          <label for="optionContains" class="ml-2">
             <small>{{ $t('search.contains') }}</small>
           </label>
         </div>
@@ -54,7 +54,7 @@
             class="mt-1"
             @value-change="change"
           />
-          <label for="searchOptions3" class="ml-2">
+          <label for="optionStartWith" class="ml-2">
             <small>{{ $t('search.startsWith') }}</small>
           </label>
         </div>
@@ -82,8 +82,6 @@ function change() {
 }
 
 function handleFreeTextSearch(value) {
-  console.log('is here...', searchOptions.value)
-
   const searchText = value ? value : '*'
   store.commit('setSearchText', searchText)
   store.commit('setFullTextSearchMode', searchOptions.value)

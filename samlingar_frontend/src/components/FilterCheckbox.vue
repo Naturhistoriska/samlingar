@@ -50,6 +50,8 @@
 import { onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 
+const emits = defineEmits(['search'])
+
 const store = useStore()
 
 let image = ref(false)
@@ -96,7 +98,6 @@ watch(
       coordinates.value = store.getters['filterCoordinates']
       type.value = store.getters['filterType']
       sweden.value = store.getters['filterInSweden']
-
       store.commit('setClearSearch', false)
     }
   }
@@ -114,21 +115,35 @@ onMounted(() => {
 function swedenClicked() {
   const searchInSweden = !sweden.value
   store.commit('setFilterInSweden', searchInSweden)
+  search()
 }
 
 function typeClicked() {
-  console.log('type.value', type.value)
   store.commit('setFilterType', !type.value)
+  search()
 }
 
 function coordinatesClicked() {
   const searchMap = !coordinates.value
-
   store.commit('setFilterCoordinates', searchMap)
+  search()
 }
 
 function imageClicked() {
   const searchImage = !image.value
   store.commit('setFilterImage', searchImage)
+  search()
+}
+
+function search() {
+  emits('search')
 }
 </script>
+<style scoped>
+.p-checkbox-box.p-highlight,
+.p-checkbox.p-highlight .p-checkbox-box {
+  background-color: #007bff !important;
+  border-color: #007bff !important;
+  color: white !important;
+}
+</style>

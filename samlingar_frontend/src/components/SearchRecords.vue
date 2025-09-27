@@ -36,7 +36,7 @@
         </div>
         <Divider class="custom-divider" />
 
-        <filter-checkbox style="margin-bottom: 1rem" />
+        <filter-checkbox style="margin-bottom: 1rem" @search="search" />
 
         <Panel
           :class="scientificNamePanelClass"
@@ -44,7 +44,7 @@
           :header="$t('labels.scientificName')"
           toggleable
         >
-          <scientific-name />
+          <scientific-name @scientificNameSearch="search" />
         </Panel>
 
         <Panel
@@ -129,7 +129,8 @@ const fieldsPanelClass = computed(() => {
 })
 
 function reset() {
-  store.commit('setSearchText', '*')
+  store.commit('setSearchText', null)
+  store.commit('setFullTextSearchMode', 'contains')
   store.commit('setScientificName', null)
   store.commit('setSearchMode', 'contains')
   store.commit('setCollectionGroup', null)
