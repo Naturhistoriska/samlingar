@@ -12,7 +12,12 @@
         style="min-width: 350px"
         @input="onInputAction"
       />
-      <Button icon="pi pi-times" v-if="showClearField" @click="clearField" />
+      <Button
+        icon="pi pi-times"
+        v-if="showClearField"
+        @click="clearField"
+        style="background-color: #144836 !important"
+      />
     </InputGroup>
   </div>
   <!-- <div class="grid" id="inputbox" style="float: left; margin-top: 10px">
