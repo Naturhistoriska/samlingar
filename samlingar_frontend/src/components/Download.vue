@@ -17,7 +17,7 @@
       <small>
         <i>{{ exportText }}</i>
       </small>
-      <small style="padding-left: 10px"><i class="pi pi-file-export"></i></small>
+      <small style="padding-left: 10px"><i class="pi pi-download"></i></small>
     </div>
     <div class="col-2">
       <RadioButton
