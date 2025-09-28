@@ -59,7 +59,7 @@ public class EntityToJson implements Serializable {
     private final String catalogedDateKey = "catalogedDate";
     private final String catalogedYearKey = "catalogedYear";
     private final String catalogedMonthKey = "catalogedMonth"; 
-    private final String collectorKey = "recordedBy";
+    private final String collectorKey = "collectors";
     private final String countryKey = "country";
     private final String countyKey = "county";
     private final String continentKey = "continent";
@@ -460,10 +460,9 @@ public class EntityToJson implements Serializable {
              
             typeStatusName = currentDetermination.getTypeStatusName();
             if (!StringUtils.isBlank(typeStatusName)) {
-                isType = true;
-                typeStatusName = typeStatusName.equals(possibleType) 
-                        ? possibleTypeConvert : typeStatusName;
-                addAttValue(attBuilder, typeStatusKey, typeStatusName); 
+                isType = true; 
+                addAttValue(attBuilder, typeStatusKey,  
+                        StringUtils.capitalize(typeStatusName).trim()); 
             }
             addTaxon(attBuilder, currentDetermination.getPreferredTaxon(),
                     currentDetermination.getTaxon(), isType );
