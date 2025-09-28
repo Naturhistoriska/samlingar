@@ -110,7 +110,8 @@
         :filterMatchModeOptions="nameFilterMatchModes"
       >
         <template #body="{ data }">
-          {{ data.scientificName }}
+          <!-- {{ data.scientificName }} -->
+          {{ getTaxon(data) }}
           <br />
           {{ buildClassification(data) }}
         </template>
@@ -158,8 +159,7 @@
       >
         <template #body="{ data }">
           {{ data.locality }}<br />
-          {{ data.continent }} {{ data.country }}
-          {{ data.stateProvince }}
+          {{ data.continent }} {{ data.country }} {{ data.stateProvince }} {{ data.county }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <InputText
@@ -177,9 +177,9 @@
         <template #body="{ data }">
           <Button
             text
+            icon="pi pi-external-link"
             @click="selectRow(data)"
             severity="secondary"
-            :label="$t('records.view')"
           ></Button>
         </template>
       </Column>
@@ -189,8 +189,8 @@
             {{ slotProps.data.scientificName }}
           </b>
           <span v-if="slotProps.data.scientificNameAuthorship"
-            >({{ slotProps.data.scientificNameAuthorship }})</span
-          >
+            >({{ slotProps.data.scientificNameAuthorship }})
+          </span>
           <br />
           {{ buildClassification(slotProps.data) }}<br />
           {{ slotProps.data.locality }}
@@ -292,6 +292,37 @@ onMounted(async () => {
   collectionOptions.value = collections ? collections.map((item) => item.val) : []
   columns.value = defaultColumns.value
 })
+
+function getTaxon(data) {
+  const { collectionCode, genus, scientificName, species, taxonRank } = data
+
+  // if (
+  //   collectionCode === 'NHRS' ||
+  //   collectionCode === 'ev' ||
+  //   collectionCode === 'et' ||
+  //   collectionCode === 'AV' ||
+  //   collectionCode === 'MA' ||
+  //   collectionCode === 'PI' ||
+  //   collectionCode === 'HE' ||
+  //   collectionCode === 'SMTP_INV' ||
+  //   collectionCode === 'SMTP_SPPLST' ||
+  //   collectionCode === 'mosses' ||
+  //   collectionCode === 'fungi' ||
+  //   collectionCode === 'algae'
+  // ) {
+  //   return scientificName
+  // }
+
+  if (collectionCode === 'pz' || collectionCode === 'pb') {
+    return taxonRank === 'species' ? genus + ' ' + species : scientificName
+  } else if (collectionCode === 'vp') {
+    if (species) {
+      return genus ? genus + ' ' + species : species
+    }
+  } else {
+    return scientificName
+  }
+}
 
 function exportCSV() {
   console.log('exportCSV')
@@ -500,40 +531,47 @@ function buildParams() {
   const isInSweden = store.getters['filterInSweden']
   const hasCoordinates = store.getters['filterCoordinates']
   const hasImages = store.getters['filterImage']
+
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
+  const fullTextSearchMode = store.getters['fullTextSearchMode']
 
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
+  const startYear = store.getters['startYear']
+  const endYear = store.getters['endYear']
+  const dateFilter = store.getters['dateFilter']
 
   // const collectionGroup = store.getters['collectionGroup']
 
   const params = new URLSearchParams({
-    catchall: searchText
+    catchall: searchText,
+    mode: fullTextSearchMode
   })
 
   if (isType) {
     params.set('typeStatus', '*')
   }
-
   if (isInSweden) {
     params.set('country', 'Sweden')
   }
-
   if (hasImages) {
     params.set('hasImage', hasImages)
   }
-
   if (hasCoordinates) {
     params.set('geo', '*')
   }
 
-  if (startDate) {
-    params.set('startDate', startDate)
-  }
-
-  if (endDate) {
-    params.set('endDate', endDate)
+  if (dateFilter === 'date') {
+    if (startDate) {
+      params.set('startDate', startDate)
+    }
+    if (endDate) {
+      params.set('endDate', endDate)
+    }
+  } else {
+    const yearQuery = `[${startYear} TO ${endYear}]`
+    params.set('year', yearQuery)
   }
 
   const hasCollection = filterArray.value.some((obj) => obj.key === 'collectionName')
@@ -552,24 +590,20 @@ function buildParams() {
 
   let scientificName
   let searchMode
-  let isFuzzy
   const hasScientificName = filterArray.value.some((obj) => obj.key === 'scientificName')
   if (hasScientificName) {
     const scientificNameData = filterArray.value.filter((item) => item.key === 'scientificName')[0]
     scientificName = scientificNameData.value
     searchMode = scientificNameData.matchMode
-    isFuzzy = searchMode !== 'equals'
   } else {
     scientificName = store.getters['scientificName']
     if (scientificName) {
-      isFuzzy = store.getters['isFuzzySearch']
       searchMode = store.getters['searchMode']
     }
   }
   if (scientificName) {
     params.set('scientificName', scientificName)
     params.set('searchMode', searchMode)
-    params.set('fuzzySearch', isFuzzy)
   }
 
   const hasCatalogNumber = filterArray.value.some((obj) => obj.key === 'catalogNumber')
@@ -577,40 +611,44 @@ function buildParams() {
     const catalogNumber =
       filterArray.value.filter((item) => item.key === 'catalogNumber')[0].value + '*'
 
-    const firstUpCatalogNumber = catalogNumber.charAt(0).toUpperCase() + catalogNumber.slice(1)
-    const upcaseCatalogNumber = catalogNumber.toUpperCase()
-    const value = `(${firstUpCatalogNumber} ${upcaseCatalogNumber} ${catalogNumber})`
+    // const firstUpCatalogNumber = catalogNumber.charAt(0).toUpperCase() + catalogNumber.slice(1)
+    // const upcaseCatalogNumber = catalogNumber.toUpperCase()
+    // const value = `(${firstUpCatalogNumber} ${upcaseCatalogNumber} ${catalogNumber})`
 
-    params.set('catalogNumber', value)
-  } else {
-    fields
-      .filter((field) => field.value === 'catalogNumber')
-      .forEach((field) => {
-        if (field.text) {
-          params.set(field.value, field.text)
-        }
-      })
+    params.set('copy_catalogNumber', catalogNumber)
   }
+
+  // else {
+  // fields
+  // .filter((field) => field.value === 'catalogNumber')
+  // .forEach((field) => {
+  // if (field.text) {
+  // params.set(field.value, field.text)
+  // }
+  // })
+  // }
 
   const hasLocality = filterArray.value.some((obj) => obj.key === 'locality')
   if (hasLocality) {
     const locality = filterArray.value.filter((item) => item.key === 'locality')[0].value
 
-    params.set('locality', locality)
-  } else {
-    fields
-      .filter((field) => field.value === 'locality')
-      .forEach((field) => {
-        if (field.text) {
-          params.set(field.value, field.text)
-        }
-      })
+    params.set('location', locality)
   }
+  // else {
+  //   fields
+  //     .filter((field) => field.value === 'locality')
+  //     .forEach((field) => {
+  //       if (field.text) {
+  //         params.set(field.value, field.text)
+  //       }
+  //     })
+  // }
 
   if (fields) {
     fields
       .filter(
-        (field) => field.text && field.value !== 'catalogNumber' && field.value !== 'locality'
+        (field) => field.text
+        // (field) => field.text && field.value !== 'catalogNumber' && field.value !== 'locality'
       )
       .forEach((field) => {
         params.set(field.value, field.text)
@@ -627,10 +665,13 @@ function onRowSelect(event) {
 }
 
 function selectRow(data) {
-  selectedRecord.value = data
-  store.commit('setSelectedRecord', selectedRecord)
+  // selectedRecord.value = data
+  // store.commit('setSelectedRecord', selectedRecord)
 
-  router.push(`/record/${data.id}`)
+  // router.push(`/record/${data.id}`)
+  const user = event.data
+  const url = `/record/${data.id}` // Example URL
+  window.open(url, '_blank')
 }
 
 const onPage = async (event) => {
@@ -644,6 +685,7 @@ const onPage = async (event) => {
 const onRowExpand = (event) => {
   toast.add({ severity: 'info', summary: 'Record Expanded', detail: event.data.name, life: 3000 })
 }
+
 const onRowCollapse = (event) => {
   toast.add({
     severity: 'success',

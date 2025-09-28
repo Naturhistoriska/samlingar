@@ -25,7 +25,7 @@
                 <template #title>
                   <div class="grid">
                     <div class="col-10" no-gutters>
-                      <small>{{ item.scientificName }}</small>
+                      <small>{{ getTaxon(item) }}</small>
                     </div>
                     <div class="col-2" no-gutters>
                       <Button variant="link" @click="view(item)">
@@ -42,7 +42,10 @@
                     {{ item.catalogNumber }}
                   </div>
                   <div style="font-size: 0.7em">
-                    {{ item.locality }} {{ item.country }} {{ item.continent }}
+                    {{ item.locality }}
+                    <br />
+                    {{ item.continent }} {{ item.country }} {{ item.stateProvince }}
+                    {{ item.county }}
                   </div>
                   <div v-if="item.decimalLatitude != null" style="font-size: 0.7em">
                     Lat: {{ item.decimalLatitude }} Lon: {{ item.decimalLongitude }}
@@ -119,6 +122,37 @@ const onPage = async (event) => {
   loadRecordsLazy(params, first, rows)
 }
 
+function getTaxon(data) {
+  const { collectionCode, genus, scientificName, species, taxonRank } = data
+
+  // if (
+  //   collectionCode === 'NHRS' ||
+  //   collectionCode === 'ev' ||
+  //   collectionCode === 'et' ||
+  //   collectionCode === 'AV' ||
+  //   collectionCode === 'MA' ||
+  //   collectionCode === 'PI' ||
+  //   collectionCode === 'HE' ||
+  //   collectionCode === 'SMTP_INV' ||
+  //   collectionCode === 'SMTP_SPPLST' ||
+  //   collectionCode === 'mosses' ||
+  //   collectionCode === 'fungi' ||
+  //   collectionCode === 'algae'
+  // ) {
+  //   return data.scientificName
+  // }
+
+  if (collectionCode === 'pz' || collectionCode === 'pb') {
+    return taxonRank === 'species' ? genus + ' ' + species : scientificName
+  } else if (collectionCode === 'vp') {
+    if (species) {
+      return genus ? genus + ' ' + species : species
+    }
+  } else {
+    return scientificName
+  }
+}
+
 async function loadRecordsLazy(params, first, rows) {
   loading.value = true
 
@@ -151,4 +185,16 @@ function view(data) {
   router.push(`/record/${data.id}`)
 }
 </script>
-<style scoped></style>
+<style scoped>
+::v-deep(.p-card-title) {
+  font-size: 15px;
+  font-weight: bold;
+  font-style: italic;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+::v-deep(.p-card-subtitle) {
+  margin-top: 0 !important;
+}
+</style>

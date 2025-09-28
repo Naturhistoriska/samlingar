@@ -67,12 +67,13 @@ const hasData = ref(false)
 const clazz = ref()
 
 const code = ref()
+const isPalCollection = ref(false)
 
-const isPalCollection = computed(() => {
-  const record = store.getters['selectedRecord']
-  const collectionCode = record.collectionCode
-  return collectionCode === 'pz' || collectionCode == 'pb'
-})
+// const isPalCollection = computed(() => {
+//   const record = store.getters['selectedRecord']
+//   const collectionCode = record.collectionCode
+//   return collectionCode === 'pz' || collectionCode == 'pb'
+// })
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -102,17 +103,40 @@ function fetchRecord(id) {
 }
 
 function buildRecordData(record) {
-  console.log('record', record)
-  const { collectionCode, kingdom, phylum, clazz, order, family, genus, subgenus, scientificName } =
-    record
+  const {
+    collectionCode,
+    kingdom,
+    phylum,
+    clazz,
+    order,
+    family,
+    genus,
+    subgenus,
+    scientificName,
+    species,
+    taxonRank
+  } = record
 
   code.value = collectionCode
+  isPalCollection.value = collectionCode === 'pz' || collectionCode === 'pb'
 
   const higherClassification = new Array(kingdom, phylum, clazz, order, family, genus, subgenus)
 
   classification.value = higherClassification.filter((str) => str !== undefined).join(' > ')
 
-  name.value = scientificName
+  // const addGenus = collectionCode === 'pz' || collectionCode === 'pb' || collectionCode === 'vp'
+  // if (addGenus) {
+  //   name.value = taxonRank === 'species' ? genus + ' ' + species : scientificName
+  // } else {
+  //   name.value = scientificName
+  // }
+  if (collectionCode === 'pz' || collectionCode === 'pb') {
+    name.value = taxonRank === 'species' ? genus + ' ' + species : scientificName
+  } else if (collectionCode === 'vp') {
+    name.value = genus + ' ' + species
+  } else {
+    name.value = scientificName
+  }
 
   store.commit('setSelectedRecord', record)
   hasData.value = true

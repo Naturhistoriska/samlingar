@@ -15,6 +15,8 @@ import markerIconUrl from '/node_modules/leaflet/dist/images/marker-icon.png'
 import markerIconRetinaUrl from '/node_modules/leaflet/dist/images/marker-icon-2x.png'
 import markerShadowUrl from '/node_modules/leaflet/dist/images/marker-shadow.png'
 
+import moment from 'moment-timezone'
+
 const emits = defineEmits(['searchDetial', 'resetView', 'search'])
 
 const store = useStore()
@@ -62,26 +64,31 @@ function addSamlingarSinglemMarker(record) {
     country,
     decimalLatitude,
     decimalLongitude,
+    eventDate,
     locality,
-    scientificName,
-    stateProvince,
-    eventDate
+    stateProvince
   } = record
 
   if (decimalLatitude && decimalLongitude) {
     const div = document.createElement('div')
 
+    const taxon = getTaxon(record)
+
+    const collectingDate = eventDate
+      ? moment.tz(eventDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET').format('YYYY-MM-DD')
+      : ''
+
     div.innerHTML = `<strong>Catalogue number: ${catalogNumber}  </strong>
       <br> <strong>Collection</strong>: ${collectionName}
-      <br><strong>Scientific Name</strong>: ${scientificName}
+      <br><strong>Scientific Name</strong>: ${taxon}
       <br>
       <br><strong>Locality</strong>:<br> ${locality}, ${stateProvince}, ${country}, ${continent}
       <br>
       <br><strong>GPS-coordinate</strong>:
-      <br>Latitude: ${decimalLatitude}
-      <br>Longitude: ${decimalLongitude}
+      <br>Latitude: ${decimalLatitude.toFixed(5)}
+      <br>Longitude: ${decimalLongitude.toFixed(5)}
       <br>
-      <br><strong>Event date</strong>: ${eventDate}
+      <br><strong>Event date</strong>: ${collectingDate}
       <br>
       <br>`
 
@@ -96,6 +103,25 @@ function addSamlingarSinglemMarker(record) {
     marker.on('click', () => {})
 
     marker.addTo(initialMap.value)
+  }
+}
+
+function getTaxon(data) {
+  const { collectionCode, genus, scientificName, species, taxonRank } = data
+
+  // return collectionCode === 'pz' || collectionCode === 'pb'
+  //   ? taxonRank === 'species'
+  //     ? genus + ' ' + species
+  //     : scientificName
+  //   : scientificName
+  if (collectionCode === 'pz' || collectionCode === 'pb') {
+    return taxonRank === 'species' ? genus + ' ' + species : scientificName
+  } else if (collectionCode === 'vp') {
+    if (species) {
+      return genus ? genus + ' ' + species : species
+    }
+  } else {
+    return scientificName
   }
 }
 </script>
