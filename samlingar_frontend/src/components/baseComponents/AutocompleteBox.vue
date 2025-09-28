@@ -62,10 +62,6 @@ const apiAutoComplete = (event) => {
   const field = props.field.value
   let value = event.query
 
-  console.log('value', value)
-  // if (field === 'typeStatus') {
-  //   value = value.toUpperCase()
-  // }
   if (value) {
     service
       .apiAutoCompleteSearch(value, field)
@@ -80,6 +76,10 @@ const apiAutoComplete = (event) => {
       })
       .finally(() => {})
   }
+}
+
+function onfocus(event) {
+  console.log('onFocus', event)
 }
 
 function onItemRemove(event) {
@@ -103,7 +103,7 @@ function itemsChanged() {
       .map((str) => `"${str}"`) // Wrap each string in single quotes
       .join(' ')
   } else {
-    value = values.value
+    value = `"${values.value}"`
   }
 
   if (value.trim() !== '') {
