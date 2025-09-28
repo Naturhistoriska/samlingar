@@ -119,7 +119,7 @@ export default class Service {
   // }
 
   async apiPreparaExport(params, total) {
-    let url = `${samlingApi}/download?${params.toString()}&numRows=${total}&sort=catalogedDate desc`
+    let url = `${samlingApi}/download?${params.toString()}&numPerPage=${total}&sort=catalogedDate desc`
 
     const response = await axios.get(url)
 
