@@ -41,19 +41,19 @@ const groupedSelections = ref([
     label: 'Taxonomy',
     code: 'tx',
     items: [
-      { label: 'Phylum', value: 'phylum', key: 'phylum:', code: 'tx', multiple: true },
-      { label: 'Class', value: 'clazz', key: 'clazz:', code: 'tx', multiple: true },
-      { label: 'Order', value: 'order', key: 'order:', code: 'tx', multiple: true },
-      { label: 'Family', value: 'family', key: 'family:', code: 'tx', multiple: true },
-      { label: 'Genus', value: 'genus', key: 'genus:', code: 'tx', multiple: true },
-      { label: 'Subgenus', value: 'subgenus', key: 'subgenus:', code: 'tx', multiple: true },
-      { label: 'Species', value: 'species', key: 'species:', code: 'tx', multiple: true },
+      { label: 'Phylum', value: 'phylum', key: 'phylum:', code: 'tx', multiple: false },
+      { label: 'Class', value: 'clazz', key: 'clazz:', code: 'tx', multiple: false },
+      { label: 'Order', value: 'order', key: 'order:', code: 'tx', multiple: false },
+      { label: 'Family', value: 'family', key: 'family:', code: 'tx', multiple: false },
+      { label: 'Genus', value: 'genus', key: 'genus:', code: 'tx', multiple: false },
+      { label: 'Subgenus', value: 'subgenus', key: 'subgenus:', code: 'tx', multiple: false },
+      { label: 'Species', value: 'species', key: 'species:', code: 'tx', multiple: false },
       {
         label: 'Vernacular name',
         value: 'vernacularName',
         key: 'vernacularName:',
         code: 'tx',
-        multiple: true
+        multiple: false
       },
       {
         label: 'Synonyms',
@@ -62,7 +62,7 @@ const groupedSelections = ref([
         code: 'tx',
         multiple: false
       },
-      { label: 'Taxon rank', value: 'taxonRank', key: 'taxonRank:', code: 'tx', multiple: true }
+      { label: 'Taxon rank', value: 'taxonRank', key: 'taxonRank:', code: 'tx', multiple: false }
     ]
   },
   {
@@ -74,21 +74,21 @@ const groupedSelections = ref([
         value: 'catalogNumber',
         key: 'catalogNumber:',
         code: 'specimen',
-        multiple: true
+        multiple: false
       },
       {
         label: 'Type status',
         value: 'typeStatus',
         key: 'typeStatus:',
         code: 'specimen',
-        multiple: true
+        multiple: false
       },
       {
         label: 'Collection name',
         value: 'collectionName',
         key: 'collectionName:',
         code: 'specimen',
-        multiple: true
+        multiple: false
       }
     ]
   },
@@ -101,14 +101,14 @@ const groupedSelections = ref([
         value: 'collector',
         key: 'collector:',
         code: 'event',
-        multiple: true
+        multiple: false
       },
       {
         label: 'Field number',
         value: 'fieldNumber',
         key: 'fieldNumber:',
         code: 'event',
-        multiple: true
+        multiple: false
       }
     ]
   },
@@ -116,17 +116,29 @@ const groupedSelections = ref([
     label: 'Locality',
     code: 'locality',
     items: [
-      { label: 'Country', value: 'country', key: 'country:', code: 'locality', multiple: true },
+      { label: 'Country', value: 'country', key: 'country:', code: 'locality', multiple: false },
       {
         label: 'State/Province',
         value: 'stateProvince',
         key: 'stateProvince:',
         code: 'locality',
-        multiple: true
+        multiple: false
       },
-      { label: 'County/Parish', value: 'county', key: 'county:', code: 'locality', multiple: true },
+      {
+        label: 'County/Parish',
+        value: 'county',
+        key: 'county:',
+        code: 'locality',
+        multiple: false
+      },
 
-      { label: 'Locality', value: 'locality', key: 'locality:', code: 'locality', multiple: false }
+      {
+        label: 'Locality',
+        value: 'locality',
+        key: 'locality:',
+        code: 'locality',
+        multiple: false
+      }
     ]
   }
 ])
