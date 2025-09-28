@@ -33,6 +33,8 @@ import markerIconRetinaUrl from '/node_modules/leaflet/dist/images/marker-icon-2
 import markerShadowUrl from '/node_modules/leaflet/dist/images/marker-shadow.png'
 
 import Service from '../Service'
+import moment from 'moment-timezone'
+
 const service = new Service()
 
 const store = useStore()
@@ -66,7 +68,7 @@ onMounted(async () => {
 
   L.tileLayer(tileUrl, {
     minZoom: 0,
-    maxZoom: 17,
+    maxZoom: 12,
     attribution
   }).addTo(mapRef.value)
 
@@ -212,43 +214,52 @@ async function fetchRecord(id, marker) {
     .then((response) => {
       if (response) {
         const data = response.response[0]
-        const {
-          catalogNumber,
-          collectionName,
-          country,
-          decimalLatitude,
-          decimalLongitude,
-          eventDate,
-          locality,
-          stateProvince,
-          scientificName
-        } = data
-
         const div = document.createElement('div')
+        if (data) {
+          const {
+            catalogNumber,
+            collectionName,
+            country,
+            decimalLatitude,
+            decimalLongitude,
+            eventDate,
+            locality,
+            stateProvince
+          } = data
 
-        div.innerHTML = `<strong> Catalogue number: ${catalogNumber}  </strong>
+          const taxon = getTaxon(data)
+
+          const collectingDate = eventDate
+            ? moment.tz(eventDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET').format('YYYY-MM-DD')
+            : ''
+
+          div.innerHTML = `<strong> Catalogue number: ${catalogNumber}  </strong>
           <br> <strong>Collection</strong>: ${collectionName}
-          <br><strong>Scientific Name</strong>: ${scientificName}
+          <br><strong>Scientific Name</strong>: ${taxon}
           <br>
           <br><strong>Locality</strong>:<br> ${locality}, ${stateProvince}, ${country}
           <br>
           <br><strong>GPS-coordinate</strong>: <br>
           ${decimalLatitude.toFixed(5)} -- ${decimalLongitude.toFixed(5)}
           <br>
-          <br><strong>Event date</strong>: ${eventDate}
+          <br><strong>Event date</strong>: ${collectingDate}
           <br>
           <br>`
 
-        const button = document.createElement('button')
-        button.innerHTML = 'More details'
+          const button = document.createElement('button')
+          button.innerHTML = 'More details'
 
-        button.onclick = function () {
-          displayDetail(data)
+          button.onclick = function () {
+            displayDetail(data)
+          }
+          div.style.cssText = ' overflow-wrap: break-word;   '
+          div.appendChild(button)
+
+          marker.bindPopup(div).openPopup()
+        } else {
+          div.innerHTML = `<strong> No data </strong>`
+          marker.bindPopup(div).openPopup()
         }
-        div.style.cssText = ' overflow-wrap: break-word;   '
-        div.appendChild(button)
-
-        marker.bindPopup(div).openPopup()
       }
       setTimeout(() => {}, 2000)
     })
@@ -256,6 +267,26 @@ async function fetchRecord(id, marker) {
       console.log('error', error)
     })
     .finally(() => {})
+}
+
+function getTaxon(data) {
+  const { collectionCode, genus, scientificName, species, taxonRank } = data
+
+  if (collectionCode === 'pz' || collectionCode === 'pb') {
+    return taxonRank === 'species' ? genus + ' ' + species : scientificName
+  } else if (collectionCode === 'vp') {
+    if (species) {
+      return genus ? genus + ' ' + species : species
+    }
+  } else {
+    return scientificName
+  }
+
+  // return collectionCode === 'pz' || collectionCode === 'pb' || collectionCode === 'vp'
+  //   ? taxonRank === 'species'
+  //     ? genus + ' ' + species
+  //     : scientificName
+  //   : scientificName
 }
 
 function displayDetail(data) {
