@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.dataResource') }}</div>
       <div class="col-8 reducePadding">
@@ -10,11 +10,6 @@
       <div class="col-4 reducePadding">{{ $t('results.institiutionCode') }}</div>
       <div class="col-8 reducePadding">
         {{ institution }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.collectionCode') }}</div>
-      <div class="col-8 reducePadding">
-        {{ code }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
@@ -30,6 +25,10 @@
       <div class="col-4 reducePadding">{{ $t('results.catalogedDate') }}</div>
       <div class="col-8 reducePadding">
         {{ dateCataloged }}
+      </div>
+      <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
+      <div class="col-8 reducePadding">
+        {{ modifiedDate }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.recordType') }}</div>
@@ -50,21 +49,6 @@
       <div class="col-4 reducePadding">{{ $t('results.preservation') }}</div>
       <div class="col-8 reducePadding">
         {{ preservations }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.identifiedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ identifier }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.dateIdentified') }}</div>
-      <div class="col-8 reducePadding">
-        {{ identifiedDate }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collectors }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.sex') }}</div>
@@ -92,11 +76,6 @@
         {{ specimenLicense }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
-      <div class="col-8 reducePadding">
-        {{ modifiedDate }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
       <div class="col-8 reducePadding">
         {{ occurrenceAttRemarks }}
@@ -119,23 +98,16 @@ const { t } = useI18n()
 
 const store = useStore()
 
-const additionalDetermination = ref()
 const dateCataloged = ref()
-const dateCreated = ref()
 const catNumber = ref()
-const code = ref()
 const collection = ref()
-const collectors = ref()
 const count = ref()
 const expeditionNameData = ref()
-const identifiedDate = ref()
-const identifier = ref()
 const institution = ref()
 const modifiedDate = ref()
 const occurrenceAttRemarks = ref()
 const otherCatNumbers = ref()
 const specimenLicense = ref()
-const preparationList = ref()
 const preparationString = ref()
 const preservations = ref()
 const recordType = ref()
@@ -150,14 +122,10 @@ onMounted(async () => {
   const {
     basisOfRecord,
     catalogNumber,
-    collectionCode,
     collectionName,
     catalogedDate,
-    createdDate,
-    dateIdentified,
     expeditionName,
     preservation,
-    identifiedBy,
     institutionCode,
     institutionName,
     individualCount,
@@ -166,14 +134,11 @@ onMounted(async () => {
     modified,
     occurrenceAttributeRemarks,
     occurrenceRemarks,
-    previousIdentifications,
     preparations,
-    recordedBy,
     otherCatalogNumbers,
     sex
   } = record
 
-  additionalDetermination.value = previousIdentifications
   catNumber.value = catalogNumber
 
   if (catalogedDate) {
@@ -182,21 +147,9 @@ onMounted(async () => {
       .format('YYYY-MM-DD')
   }
 
-  // if (createdDate) {
-  //   dateCreated.value = moment
-  //     .tz(createdDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
-  //     .format('YYYY-MM-DD')
-  // }
-
-  code.value = collectionCode
   collection.value = collectionName
-  collectors.value = recordedBy ? recordedBy.toString() : ''
   count.value = individualCount
-
   expeditionNameData.value = expeditionName
-
-  identifier.value = identifiedBy
-  identifiedDate.value = dateIdentified
 
   institution.value = institutionName + ' [ ' + institutionCode + ' ] '
 
@@ -210,8 +163,8 @@ onMounted(async () => {
   otherCatNumbers.value = otherCatalogNumbers
 
   if (preparations) {
-    preparationList.value = preparations
-    preparationString.value = preparationList.value.join(', ')
+    const preparationList = preparations
+    preparationString.value = preparationList.join(', ')
   }
 
   preservations.value = preservation

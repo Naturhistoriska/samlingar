@@ -1,9 +1,14 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.taxonomy') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.taxonomy') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.scientificName') }}</div>
       <div class="col-8 reducePadding">{{ taxonName }}</div>
+
+      <div class="col-4 reducePadding">{{ $t('results.rank') }}</div>
+      <div class="col-8 reducePadding">
+        {{ rank }}
+      </div>
 
       <div class="col-4 reducePadding" v-if="hasKindomAndSynonyms">{{ $t('results.kingdom') }}</div>
       <div class="col-8 reducePadding" v-if="hasKindomAndSynonyms">
@@ -96,6 +101,7 @@ const infragenericEpithetData = ref()
 
 const specificEpithetData = ref()
 const synonymsData = ref()
+const rank = ref()
 const commonName = ref()
 
 const isEvCollection = computed(() => {
@@ -138,6 +144,7 @@ onMounted(async () => {
     specificEpithet,
     subgenus, // ev, et
     synonyms, // ev, et, pi, he
+    taxonRank,
     vernacularName // ma, av
   } = record
 
@@ -163,6 +170,10 @@ onMounted(async () => {
   theGenus.value = genus
   theSpecies.value = species
   theSubgenus.value = subgenus
+
+  const str = taxonRank == 'clazz' ? 'class' : taxonRank
+
+  rank.value = str.replace(/\b\w/g, (char) => char.toUpperCase())
 
   taxonName.value = scientificName
 })

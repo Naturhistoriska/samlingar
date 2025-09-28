@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.locality') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.locality') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.locality') }}</div>
       <div class="col-8 reducePadding">
@@ -40,45 +40,45 @@
   </div>
 </template>
 <script setup>
-  import { onMounted, ref } from 'vue'
-  import { useStore } from 'vuex'
+import { onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
 
-  const store = useStore()
+const store = useStore()
 
-  const theCountry = ref()
-  const theContinent = ref()
-  const latitude = ref()
-  const longigude = ref()
-  const localityName = ref()
-  const state = ref()
-  const water = ref()
+const theCountry = ref()
+const theContinent = ref()
+const latitude = ref()
+const longigude = ref()
+const localityName = ref()
+const state = ref()
+const water = ref()
 
-  onMounted(async () => {
-    const record = store.getters['selectedRecord']
+onMounted(async () => {
+  const record = store.getters['selectedRecord']
 
-    const {
-      country,
-      continent,
-      decimalLongitude,
-      decimalLatitude,
-      locality,
-      stateProvince,
-      waterBody
-    } = record
+  const {
+    country,
+    continent,
+    decimalLongitude,
+    decimalLatitude,
+    locality,
+    stateProvince,
+    waterBody
+  } = record
 
-    latitude.value = decimalLatitude
-    longigude.value = decimalLongitude
-    localityName.value = locality
+  latitude.value = decimalLatitude
+  longigude.value = decimalLongitude
+  localityName.value = locality
 
-    state.value = stateProvince
-    theCountry.value = country
-    theContinent.value = continent
-    water.value = waterBody
-  })
+  state.value = stateProvince
+  theCountry.value = country
+  theContinent.value = continent
+  water.value = waterBody
+})
 </script>
 <style scoped>
-  .reducePadding {
-    padding-top: 0px;
-    padding-bottom: 1px;
-  }
+.reducePadding {
+  padding-top: 0px;
+  padding-bottom: 1px;
+}
 </style>

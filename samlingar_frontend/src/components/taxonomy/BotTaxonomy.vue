@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.taxonomy') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.taxonomy') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.scientificName') }}</div>
       <div class="col-8 reducePadding">{{ taxonName }}</div>
@@ -29,11 +29,6 @@
       <div class="col-8 reducePadding">
         <span v-for="(item, index) in synonymsData" :key="index"> {{ item }}<br /> </span>
       </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.species') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theSpecies }}
-      </div>
     </div>
   </div>
 </template>
@@ -55,12 +50,12 @@ onMounted(async () => {
   const record = store.getters['selectedRecord']
 
   const {
+    collectionCode,
     genus,
     family,
     scientificName,
     scientificNameAuthorship,
     species,
-    synonyms,
     synonymAuthor
   } = record
 
@@ -73,7 +68,11 @@ onMounted(async () => {
   theGenus.value = genus
   theSpecies.value = species
 
-  taxonName.value = scientificName
+  if (collectionCode === 'vp' && species) {
+    taxonName.value = genus ? genus + ' ' + species : species
+  } else {
+    taxonName.value = scientificName
+  }
 })
 </script>
 <style scoped>

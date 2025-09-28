@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.taxonomy') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.taxonomy') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.scientificName') }}</div>
       <div class="col-8 reducePadding">{{ taxonName }}</div>
@@ -8,6 +8,11 @@
       <div class="col-4 reducePadding">{{ $t('results.scientificNameAuthorship') }}</div>
       <div class="col-8 reducePadding">
         {{ scientificNameAuthorshipData }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.rank') }}</div>
+      <div class="col-8 reducePadding">
+        {{ rank }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.phylum') }}</div>
@@ -63,6 +68,7 @@ const theGenus = ref()
 const theSpecies = ref()
 const scientificNameAuthorshipData = ref()
 const synonymsData = ref()
+const rank = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -77,7 +83,8 @@ onMounted(async () => {
     scientificNameAuthorship,
     species,
     synonyms,
-    synonymAuthor
+    synonymAuthor,
+    taxonRank
   } = record
 
   theClazz.value = clazz
@@ -92,7 +99,11 @@ onMounted(async () => {
   theFamily.value = family
   theGenus.value = genus
   theSpecies.value = species
-  taxonName.value = scientificName
+
+  const str = taxonRank == 'clazz' ? 'class' : taxonRank
+  rank.value = str.replace(/\b\w/g, (char) => char.toUpperCase())
+
+  taxonName.value = taxonRank === 'species' ? genus + ' ' + species : scientificName
 })
 </script>
 <style scoped>

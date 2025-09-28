@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.dataResource') }}</div>
       <div class="col-8 reducePadding">
@@ -22,11 +22,6 @@
         {{ dateCataloged }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.recordNumber') }}</div>
-      <div class="col-8 reducePadding">
-        {{ recordNu }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
       <div class="col-8 reducePadding">
         {{ modifiedDate }}
@@ -35,11 +30,6 @@
       <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
       <div class="col-8 reducePadding">
         {{ preparationString }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collectors }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
@@ -62,14 +52,10 @@ const store = useStore()
 const dateCataloged = ref()
 const catNumber = ref()
 const collection = ref()
-const collectors = ref()
-
 const institution = ref()
 const modifiedDate = ref()
-const preparationList = ref()
 const preparationString = ref()
 const remarks = ref()
-const recordNu = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -80,8 +66,6 @@ onMounted(async () => {
     collectionName,
     modified,
     preparations,
-    recordedBy,
-    recordNumber,
     occurrenceRemarks
   } = record
 
@@ -93,23 +77,21 @@ onMounted(async () => {
       .format('YYYY-MM-DD')
   }
 
-  collection.value = collectionName
-  collectors.value = recordedBy ? recordedBy.toString() : ''
-
-  institution.value = t('common.institution') + ' [  NRM  ]'
-
   if (modified) {
     modifiedDate.value = moment
       .tz(modified, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
       .format('YYYY-MM-DD')
   }
 
+  collection.value = collectionName
+
+  institution.value = t('common.institution') + ' [  NRM  ]'
+
   if (preparations) {
-    preparationList.value = preparations
-    preparationString.value = preparationList.value.join(', ')
+    const preparationList = preparations
+    preparationString.value = preparationList.join(', ')
   }
   remarks.value = occurrenceRemarks
-  recordNu.value = recordNumber
 })
 </script>
 <style scoped>

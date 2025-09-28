@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.dataResource') }}</div>
       <div class="col-8 reducePadding">
@@ -42,11 +42,6 @@
         {{ count }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collectors }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
       <div class="col-8 reducePadding">
         {{ remarks }}
@@ -67,7 +62,7 @@ const store = useStore()
 const dateCataloged = ref()
 const catNumber = ref()
 const collection = ref()
-const collectors = ref()
+
 const count = ref()
 const expeditionNameData = ref()
 const institution = ref()
@@ -87,8 +82,7 @@ onMounted(async () => {
     expeditionName,
     individualCount,
     occurrenceRemarks,
-    preparations,
-    recordedBy
+    preparations
   } = record
 
   catNumber.value = catalogNumber
@@ -100,7 +94,7 @@ onMounted(async () => {
   }
 
   collection.value = collectionName
-  collectors.value = recordedBy ? recordedBy.toString() : ''
+
   count.value = individualCount
 
   expeditionNameData.value = expeditionName

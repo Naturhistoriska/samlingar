@@ -1,12 +1,16 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.geologicalContext') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.geologicalContext') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.lithostratigraphy') }}</div>
       <div class="col-8 reducePadding">
         {{ lithostratigraphy }}
       </div>
 
+      <div class="col-4 reducePadding">{{ $t('results.site') }}</div>
+      <div class="col-8 reducePadding">
+        {{ site }}
+      </div>
       <div class="col-4 reducePadding">{{ $t('results.earliestAgeOrLowestStage') }}</div>
       <div class="col-8 reducePadding">
         {{ stageMin }}
@@ -54,8 +58,7 @@ const epochMin = ref()
 const stageMax = ref()
 const stageMin = ref()
 
-const state = ref()
-const water = ref()
+const site = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -67,7 +70,7 @@ onMounted(async () => {
     earliestEpochOrLowestSeries,
     latestAgeOrHighestStage,
     earliestAgeOrLowestStage,
-
+    fieldNumber,
     lithostratigraphicTerms
   } = record
 
@@ -81,6 +84,7 @@ onMounted(async () => {
 
   stageMin.value = earliestAgeOrLowestStage
   stageMax.value = latestAgeOrHighestStage
+  site.value = fieldNumber
 })
 </script>
 <style scoped>

@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.collectionName') }}</div>
       <div class="col-8 reducePadding">
@@ -40,11 +40,6 @@
       <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
       <div class="col-8 reducePadding">
         {{ preparationString }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collectors }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.sex') }}</div>
@@ -102,7 +97,6 @@ const catNumber = ref()
 const dateCataloged = ref()
 
 const collection = ref()
-const collectors = ref()
 
 const recordType = ref()
 const preparationList = ref()
@@ -122,11 +116,11 @@ const otherCatNumbers = ref()
 const reproductCondition = ref()
 const remarks = ref()
 
-const isSmty = computed(() => {
-  const record = store.getters['selectedRecord']
-  const collectionCode = record.collectionCode
-  return collectionCode === 'SMTP_INV' || collectionCode === 'SMTP_SPPLST'
-})
+// const isSmty = computed(() => {
+//   const record = store.getters['selectedRecord']
+//   const collectionCode = record.collectionCode
+//   return collectionCode === 'SMTP_INV' || collectionCode === 'SMTP_SPPLST'
+// })
 
 const isNHRS = computed(() => {
   const record = store.getters['selectedRecord']
@@ -156,7 +150,6 @@ onMounted(async () => {
     otherCatalogNumbers,
     preparations,
     prepCount,
-    recordedBy,
     reproductiveCondition,
     sex
   } = record
@@ -165,7 +158,6 @@ onMounted(async () => {
 
   catNumber.value = catalogNumber
   collection.value = collectionName
-  collectors.value = recordedBy ? recordedBy.toString() : ''
   count.value = individualCount
 
   if (catalogedDate) {

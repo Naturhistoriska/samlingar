@@ -1,7 +1,19 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.identification') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.identification') }}</p>
     <div class="grid">
+      <div class="col-4 reducePadding" v-if="hasAdditionalDetimenations">
+        {{ $t('results.previousIdentifications') }}
+      </div>
+      <div class="col-8 reducePadding" v-if="hasAdditionalDetimenations">
+        {{ additionalDeterminations }}
+      </div>
+
+      <div class="col-4 reducePadding" v-if="hasIdentifiedBy">{{ $t('results.identifiedBy') }}</div>
+      <div class="col-8 reducePadding" v-if="hasIdentifiedBy">
+        {{ identifiedByData }}
+      </div>
+
       <div class="col-4 reducePadding" v-if="hasDateIdentified">
         {{ $t('results.dateIdentified') }}
       </div>
@@ -14,11 +26,6 @@
       </div>
       <div class="col-8 reducePadding" v-if="hasIdentifiedYear">
         {{ yearIdentified }}
-      </div>
-
-      <div class="col-4 reducePadding" v-if="hasIdentifiedBy">{{ $t('results.identifiedBy') }}</div>
-      <div class="col-8 reducePadding" v-if="hasIdentifiedBy">
-        {{ identifiedByData }}
       </div>
 
       <div class="col-4 reducePadding" v-if="hasIdentificationQualifier">
@@ -43,12 +50,15 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
+import moment from 'moment-timezone'
 
 const store = useStore()
 
+const additionalDeterminations = ref()
 const identifyDate = ref()
 const identifiedByData = ref()
 const identificationQualifierData = ref()
+
 const yearIdentified = ref()
 const originalName = ref()
 const typeStatusData = ref()
@@ -81,19 +91,34 @@ const hasTypeStatus = computed(() => {
   return record.collectionCode !== 'ev'
 })
 
+const hasAdditionalDetimenations = computed(() => {
+  const record = store.getters['selectedRecord']
+  const collectionCode = record.collectionCode
+  return collectionCode === 'MA' || collectionCode === 'AV'
+})
+
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
   const {
+    collectionCode,
     dateIdentified,
     identifiedBy,
     identificationQualifier,
     identifiedYear,
     originalNameUsage,
+    previousIdentifications,
     typeStatus
   } = record
 
-  identifyDate.value = dateIdentified
+  additionalDeterminations.value = previousIdentifications ? previousIdentifications.toString() : ''
+
+  if (dateIdentified) {
+    identifyDate.value = moment
+      .tz(dateIdentified, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
+      .format('YYYY-MM-DD')
+  }
+
   identifiedByData.value = identifiedBy
   identificationQualifierData.value = identificationQualifier
 

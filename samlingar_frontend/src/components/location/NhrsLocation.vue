@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.locality') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.locality') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.locality') }}</div>
       <div class="col-8 reducePadding">
@@ -163,8 +163,14 @@ onMounted(async () => {
   datum.value = geodeticDatum
   theIsland.value = island
   theIslandGroup.value = islandGroup
-  latitude.value = decimalLatitude
-  longigude.value = decimalLongitude
+
+  if (decimalLatitude) {
+    latitude.value = decimalLatitude.toFixed(5)
+  }
+  if (decimalLongitude) {
+    longigude.value = decimalLongitude.toFixed(5)
+  }
+
   localityName.value = locality
 
   georeferencedDateData.value = georeferencedDate

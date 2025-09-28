@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.dataResource') }}</div>
       <div class="col-8 reducePadding">

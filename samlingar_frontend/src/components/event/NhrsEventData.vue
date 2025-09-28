@@ -1,10 +1,15 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.event') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.event') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.eventDate') }}</div>
       <div class="col-8 reducePadding">
         {{ eventStartDate }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.collectors') }}</div>
+      <div class="col-8 reducePadding">
+        {{ collectors }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.fieldNumber') }}</div>
@@ -26,6 +31,7 @@ import moment from 'moment-timezone'
 
 const store = useStore()
 
+const collectors = ref()
 const eventStartDate = ref()
 const remarks = ref()
 
@@ -34,16 +40,19 @@ const eventFieldNumber = ref()
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
-  const { eventDate, eventRemarks, fieldNumber } = record
+  const { eventDate, eventRemarks, fieldNumber, recordedBy } = record
+
+  if (recordedBy) {
+    collectors.value = recordedBy.join('  |  ')
+  }
 
   if (eventDate) {
     eventStartDate.value = moment
       .tz(eventDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
       .format('YYYY-MM-DD')
   }
-
-  remarks.value = eventRemarks
   eventFieldNumber.value = fieldNumber
+  remarks.value = eventRemarks
 })
 </script>
 <style scoped>

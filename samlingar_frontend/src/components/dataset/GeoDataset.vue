@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.collectionName') }}</div>
       <div class="col-8 reducePadding">
@@ -37,11 +37,6 @@
         {{ recordType }}
       </div>
 
-      <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.minerals') }}</div>
-      <div class="col-8 reducePadding" v-if="isMineralCollection">
-        {{ minerals }}
-      </div>
-
       <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.serie') }}</div>
       <div class="col-8 reducePadding" v-if="isMineralCollection">
         {{ serieData }}
@@ -52,23 +47,9 @@
         {{ preparationString }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collectors }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.individualCount') }}</div>
-      <div class="col-8 reducePadding">
-        {{ count }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.license') }}</div>
       <div class="col-8 reducePadding">
         {{ specimenLicense }}
-      </div>
-      <div class="col-4 reducePadding">{{ $t('results.previousIdentifications') }}</div>
-      <div class="col-8 reducePadding">
-        {{ additionalDetermination }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
@@ -91,18 +72,14 @@ import moment from 'moment-timezone'
 
 const store = useStore()
 
-const additionalDetermination = ref()
-
 const catNumber = ref()
 const count = ref()
 const collection = ref()
-const collectors = ref()
 
 const dateCataloged = ref()
 
 const institution = ref()
 
-const minerals = ref()
 const modifiedDate = ref()
 
 const occurrenceAttRemarks = ref()
@@ -128,7 +105,6 @@ onMounted(async () => {
   const record = store.getters['selectedRecord']
 
   const {
-    associeradeMineral,
     basisOfRecord,
     catalogNumber,
     collectionName,
@@ -142,18 +118,11 @@ onMounted(async () => {
     occurrenceRemarks,
     otherCatalogNumbers,
     prepCount,
-    previousIdentifications,
-    recordedBy,
     serie
   } = record
 
-  additionalDetermination.value = previousIdentifications
-
-  minerals.value = associeradeMineral ? associeradeMineral.join(', ') : ''
-
   catNumber.value = catalogNumber
   collection.value = collectionName
-  collectors.value = recordedBy ? recordedBy.toString() : ''
   count.value = individualCount
 
   if (catalogedDate) {

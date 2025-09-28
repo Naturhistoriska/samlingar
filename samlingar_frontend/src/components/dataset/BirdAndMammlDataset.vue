@@ -1,6 +1,6 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1em">{{ $t('results.dataset') }}</p>
+    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.dataResource') }}</div>
       <div class="col-8 reducePadding">
@@ -47,11 +47,6 @@
         {{ sexData }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.recordNumber') }}</div>
-      <div class="col-8 reducePadding">
-        {{ recordNo }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
       <div class="col-8 reducePadding">
         {{ remarks }}
@@ -63,7 +58,6 @@
 import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
-import moment, { max } from 'moment-timezone'
 
 const { t } = useI18n()
 
@@ -78,7 +72,6 @@ const preparationString = ref()
 
 const preservationData = ref()
 
-const recordNo = ref()
 const recordType = ref()
 const remarks = ref()
 
@@ -98,7 +91,6 @@ onMounted(async () => {
     occurrenceRemarks,
     preparations,
     preservation,
-    recordNumber,
     sex
   } = record
 
@@ -117,7 +109,6 @@ onMounted(async () => {
 
   preservationData.value = preservation
 
-  recordNo.value = recordNumber
   recordType.value = basisOfRecord
   remarks.value = occurrenceRemarks
 
