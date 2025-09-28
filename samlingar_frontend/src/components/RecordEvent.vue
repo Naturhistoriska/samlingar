@@ -31,9 +31,11 @@ const isPalCollection = ref(false)
 onMounted(async () => {
   console.log('code...', props.code)
 
-  isZooCollection.value =
-    props.code === 'AV' || props.code === 'MA' || props.code === 'PI' || props.code === 'HE'
-  isEvCollection.value = props.code === 'ev' || props.code === 'et'
+  isZooCollection.value = props.code === 'AV' || props.code === 'MA'
+
+  isEvCollection.value =
+    props.code === 'ev' || props.code === 'et' || props.code === 'PI' || props.code === 'HE'
+
   isNhrsCollection.value =
     props.code === 'NHRS' ||
     props.code === 'SMTP_INV' ||

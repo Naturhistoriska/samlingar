@@ -317,7 +317,7 @@ public class JsonHelper {
                         if (isScientificNameSet) {
                             classificationList.add(taxon);
                         } else { 
-                            addAttValue(attBuilder, taxonRankKey, key);
+                            addAttValue(attBuilder, taxonRankKey, StringUtils.capitalize(key).trim()); 
                             isScientificNameSet = true;
                         }
                     } 
