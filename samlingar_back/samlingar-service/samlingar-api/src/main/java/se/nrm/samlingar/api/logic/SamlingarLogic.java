@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Map; 
 import javax.inject.Inject;  
 import javax.ws.rs.core.MultivaluedMap;
-import lombok.extern.slf4j.Slf4j;  
-import org.apache.commons.lang3.StringUtils;  
+import lombok.extern.slf4j.Slf4j;   
 import se.nrm.samlingar.api.solr.services.Solr; 
 import se.nrm.samlingar.api.utils.SolrSearchHelper;
 
@@ -16,51 +15,10 @@ import se.nrm.samlingar.api.utils.SolrSearchHelper;
  */
 @Slf4j
 public class SamlingarLogic {
-
-//    @Inject
-//    private SolrService service;
-    
+ 
     @Inject
     private Solr solr;
- 
- 
-    private final String facetsKey = "facets"; 
-
-//    private final String authorField = "author";
-//    private final String catalogNumberField = "catalogNumber";
-//    private final String collectionNameField = "collectionName";
-//    private final String continentField = "continent";
-//    private final String countryField = "country";
-//    private final String countyField = "county";
-//    private final String currentDeterminationField = "currentDetermination";
-//    private final String determinerField = "determiner";
-//    private final String districtField = "district";
-//    private final String familyField = "family";
-//    private final String genusField = "genus";
-//    private final String higherTxField = "higherTx";
-//    private final String latitudeField = "latitudeText";
-//    private final String localityField = "locality";
-//    private final String longitudeField = "longitudeText";
-//    private final String oceanOrSeaField = "oceanOrSea";
-//    private final String preservationField = "preservation";
-//    private final String remarksField = "remarks";
-//    private final String speciesField = "species";
-//    private final String stateField = "state";
-//    private final String stationFieldNumberField = "stationFieldNumber";
-//    private final String synonymAuthorField = "synonymAuthor";
-//    private final String txFullNameField = "txFullName";
-//    private final String typeStatusField = "typeStatus";
-//
-//    private final String catalogedDateField = "catalogedDate";
-//    
-//    private final String collectorField = "collector";
-//    private final String commonNameField = "commonName";
-//    private final String preprationField = "prepration";
-    
-    
-    
-     
-    
+   
     
     private final String endDateKey = "endDate"; 
     private final String numPerPageKey = "numPerPage"; 
@@ -69,23 +27,16 @@ public class SamlingarLogic {
     
     private final String startKey = "start";
     private final String startDateKey = "startDate"; 
-    private final String localityKey = "locality";
-    private final String eventDateKey = "eventDate:";
+    
     private final String synonymsKey = "synonyms";
      
-    
-    
+     
     private final String sortKey = "sort";
-      
-    private final String numRowsKey = "numRows";
+       
     private final String contains = "contains";
     
-    private final String wildCard = "*";
-    private final String leftBlacket = "[";
-    private final String rightBlacket = "]";
-    
-    private final String to = " TO ";
-    private final String toWithStar = " TO *]";
+    private final String wildCard = "*";  
+    private final String quote = "\"";
     
     private int start = 0;
     private int numPerPage = 20; 
@@ -103,38 +54,25 @@ public class SamlingarLogic {
     
     private final String catchallKey = "catchall";
     private final String copyScientificNameKey = "copy_scientificName";
-    
+    private final String copyCatalogNumberKey = "copy_catalogNumber";
+    private final String copyTypeStatusKey = "copy_typeStatus";
+    private final String copyLocalityKey = "copy_locality";
+    private final String catalogNumberKey = "catalogNumber";
+    private final String typeStatusKey = "typeStatus";
+    private final String locationKey = "location"; 
+    private final String localityKey = "locality";
+     
     private final String regex = "([+\\-!(){}\\[\\]^\"~*?:\\\\|&])"; 
     private final String regexReplecement = "\\\\$1";
-    
-    private StringBuilder dateRangeSb;
+     
     
     private Map<String, String> paramMap;
-    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
+ 
+    private final String startsWith = "startsWith";
     
     private final String searchModeKey = "searchMode";
     private final String modeKey = "mode";
+    
     
     private String mode;
      
@@ -155,16 +93,33 @@ public class SamlingarLogic {
     }
     
     public String autoCompleteSearch(String text, String field) {
-          
-        text =  SolrSearchHelper.getInstance()
-                    .buildAutoCompleteSearchText(text, field, 
-                            field.equals(copyScientificNameKey) );
-      
-        log.info("autoCompleteSearch text : {}", text);
-        return solr.autoCompleteSearch(text, field);
-//        return solr.autocompolete(text);
+
+        log.info("autoCompleteSearch : {}", field);
+
+        switch (field) {
+            case catalogNumberKey:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, copyCatalogNumberKey, false);
+                return solr.autoCompleteSearch(text, field); 
+            case scientificNameKey:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, copyScientificNameKey, false);
+                return solr.autoCompleteSearch(text, copyScientificNameKey);
+            case typeStatusKey:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, copyTypeStatusKey, false);
+                return solr.autoCompleteSearch(text, field);
+            case localityKey:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, copyLocalityKey, false);
+                return solr.autoCompleteSearch(text, field);
+            default:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, field, true);
+                return solr.autoCompleteSearch(text, field);
+        }
     }
-    
+
     public String simpleSearch(MultivaluedMap<String, String> queryParams ) {
         paramMap = new HashMap<>(); 
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
@@ -221,6 +176,15 @@ public class SamlingarLogic {
         return  solr.getHeatmap(paramMap, catchall, scientificName, locality, synonyms, dateRange );
     }
     
+           
+    public String export(MultivaluedMap<String, String> queryParams) {
+        
+        buildQueryParam(queryParams);
+
+        return solr.export(paramMap, catchall, scientificName, locality, dateRange, 
+                0, numPerPage, sort); 
+            
+    }
     
     private void buildQueryParam(MultivaluedMap<String, String> queryParams) {
         paramMap = new HashMap<>();
@@ -243,8 +207,8 @@ public class SamlingarLogic {
                 case synonymsKey: 
                     synonyms = queryParams.get(synonymsKey).get(0);
                     break;    
-                case localityKey: 
-                    locality = queryParams.get(localityKey).get(0); 
+                case locationKey: 
+                    locality = queryParams.get(locationKey).get(0); 
                     break; 
                 case startDateKey: 
                     startDate = queryParams.get(startDateKey).get(0); 
@@ -275,8 +239,11 @@ public class SamlingarLogic {
         }
         if(locality != null) {
             log.info("locality 1 : {}", locality);
-            locality = SolrSearchHelper.getInstance().buildSearchText(
-                locality, localityKey, contains, true);
+            if(!locality.contains(quote)) { 
+                locality = SolrSearchHelper.getInstance().buildSearchText(
+                        locality, copyLocalityKey, startsWith); 
+            }
+
             log.info("locality : {}", locality);
         }
         
@@ -294,616 +261,6 @@ public class SamlingarLogic {
          
         dateRange = SolrSearchHelper.getInstance().buildDateRange(startDate, endDate); 
     }
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
-    
-    
     
      
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
- 
- 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-//        
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
-    
-    
-    
- 
-    
-    
-    
-       
-    public String export(MultivaluedMap<String, String> queryParams) {
-        int numperOfRows = 0;
-
-        paramMap = new HashMap<>(); 
-        for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
-            
-            switch (entry.getKey()) {
-                case scientificNameKey: 
-                    scientificName = queryParams.get(scientificNameKey).get(0); 
-                    break;
-                case localityKey: 
-                    locality = queryParams.get(localityKey).get(0); 
-                    break; 
-                case catchallKey: 
-                    catchall = queryParams.get(catchallKey).get(0);  
-                    break;
-                case startDateKey: 
-                    startDate = queryParams.get(startDateKey).get(0); 
-                    break;
-                case endDateKey: 
-                    endDate = queryParams.get(endDateKey).get(0); 
-                    break; 
-                case startKey:
-                    start = Integer.parseInt(queryParams.get(startKey).get(0)); 
-                    break;
-                case numRowsKey:
-                    numperOfRows = Integer.parseInt(queryParams.get(numRowsKey).get(0));
-                    break;   
-                case searchModeKey: 
-                    searchMode = queryParams.get(searchModeKey).get(0); 
-                    break;
-                case sortKey:
-                    sort =  queryParams.get(sortKey).get(0);
-                    break; 
-                default:
-                    paramMap.put(entry.getKey(), entry.getValue().get(0));
-                    break;
-            }
-        }
-        
-              
-        
-       if(scientificName != null) {
-            scientificName = SolrSearchHelper.getInstance()
-                    .buildScientificName(scientificName, copyScientificNameKey, searchMode);
-             
-            log.info("scientificName : {}", scientificName);
-        }
-        catchall = catchall == null ? wildCard : catchall;
-        if(catchall != null && !catchall.equals(wildCard)) {
-            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
-        }  
-        
-        if(locality != null) {
-            log.info("locality 1 : {}", locality);
-            locality = SolrSearchHelper.getInstance().buildSearchText(
-                locality, localityKey, contains, true);
-            log.info("locality : {}", locality);
-        }
-        
-        dateRangeSb = new StringBuilder();
-        if(!StringUtils.isBlank(startDate)) {
-            dateRangeSb.append(eventDateKey);
-            dateRangeSb.append(leftBlacket);
-            dateRangeSb.append(startDate);
-            
-            if(!StringUtils.isBlank(endDate)) {
-                dateRangeSb.append(to);
-                dateRangeSb.append(endDate);
-                dateRangeSb.append(rightBlacket);
-            } else {
-                dateRangeSb.append(toWithStar);
-            }
-            dateRange = dateRangeSb.toString().trim();
-        } else {
-            dateRange = null;
-        } 
-        
-//        String exportResult = solr.export(paramMap, text, scientificName, dateRange, 0, numperOfRows, sort); 
-
-//        return buildZipButes(exportResult);
-
-
-        return solr.export(paramMap, catchall, scientificName, locality, dateRange, 
-                0, numperOfRows, sort); 
-            
-    }
-    
-//      private byte[] convertSolrDocsToCsvZip(SolrDocumentList docs) throws IOException {
-//        if (docs == null || docs.isEmpty()) {
-//            throw new IllegalArgumentException("SolrDocumentList is empty");
-//        }
-//
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);
-//             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(zipOut, "UTF-8"))) {
-//
-//            // Create a new entry for the CSV file inside the ZIP
-//            ZipEntry zipEntry = new ZipEntry(csvFileName);
-//            zipOut.putNextEntry(zipEntry);
-//
-//            // Extract header fields from the first document
-//            Set<String> headers = (Set<String>) docs.get(0).getFieldNames();
-//
-//            // Create CSVPrinter for writing CSV
-//            CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
-//
-//            // Write header row
-//            csvPrinter.printRecord(headers);
-//
-//            // Write document rows
-//            for (SolrDocument doc : docs) {
-//                for (String header : headers) {
-//                    Object value = doc.getFieldValue(header);
-//                    csvPrinter.print(value != null ? value.toString() : "");
-//                }
-//                csvPrinter.println();
-//            }
-//
-//            csvPrinter.flush();
-//            zipOut.closeEntry();
-//        }
-//
-//        return byteArrayOutputStream.toByteArray();
-//    }
-
-    
-
-
-    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
-
-
-
-
-     
-//    public String getChartData(String collection) {
-//        return service.getChartData(collection);
-//    } 
-//
-//    
-//    public String search(String text, String scientificName, boolean fuzzySearch,
-//            boolean hasImages, boolean hasCoordinates, boolean isType, 
-//            boolean isInSweden, String collections, String startDate, String endDate,
-//            int start, int numPerPage, String sort ) {
-//        log.info("search : {}", text);
-//         
-//        if(scientificName != null) {
-//            scientificName = SolrSearchHelper.getInstance().buildSearchText(
-//                scientificName, scientificNameKey, fuzzySearch);
-//        }
-//         
-//        return service.search(text, scientificName, hasImages, hasCoordinates, 
-//                isType, isInSweden, collections, startDate, endDate ,
-//                start, numPerPage, sort);
-//    }
-//    
-
-    
-        
-//    public String search(Map<String, String> paramMap, String text, String scientificName, 
-//            String startDate, String endDate, boolean fuzzySearch, int start, 
-//            int numPerPage, String sort ) {
-//        
-//        if(scientificName != null) {
-//            scientificName = SolrSearchHelper.getInstance().buildSearchText(
-//                scientificName, scientificNameFieldKey, fuzzySearch);
-//        }
-//        return service.search(paramMap, text, scientificName, startDate, endDate, null,
-//                start, numPerPage, sort);
-//        
-//    }
-    
-    
-    
-    
-   
-    
-    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
-    
-    
-    
-    
-    
-         
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//        
-//    public String getStatisticData() {
-//        return service.getStatisticData();
-//    }
-//    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
-//    public String filterSerch(int start, int numPerPage, String text,
-//            String collection, String collections, String typeStatus, 
-//            String family, String hasCoordinates, String hasImage, 
-//            String inSweden, String isType, String sort) {
-//        log.info("filterSerch : {} -- {}", collection, typeStatus);
-//
-//        return service.filterSearch(start, numPerPage, text, collection, collections, 
-//                typeStatus, family, hasCoordinates, hasImage, inSweden, isType, sort);
-//    }
-    
-//    public String mapDataSearch(String text, String collection, String collections,
-//            String typeStatus, String family, String hasCoordinates, 
-//            String hasImage, String inSweden, String isType) {
-//         
-//
-//        return service.mapDataSearch(text, collection, collections, 
-//                typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
- 
-//        JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
-//        JsonObject jsonObj = jsonReader.readObject();
-//
-//        JsonArray docs = jsonObj.getJsonArray(responseKey);
-//        JsonObject facetJson = jsonObj.getJsonObject(facetsKey);
-//
-//        JsonArray array = facetJson.getJsonObject(geohashKey)
-//                .getJsonArray(bucketsKey);
-//
-//        log.info("geo length : {}", array.size());
-//
-//        arrayBuilder = Json.createArrayBuilder();
-//        attBuilder = Json.createObjectBuilder();
-//        array.getValuesAs(JsonObject.class)
-//                .stream()
-//                .forEach(json -> {
-//                    String geohashString = json.getString(valKey);
-//                    int count = json.getInt(countKey);
-//                    
-//                    total += count;
-//                    geohash = GeoHash.fromGeohashString(
-//                            StringUtils.substringAfter(geohashString, prefix));
-//                    
-//            
-//
-//                    double originLat = geohash.getOriginatingPoint().getLatitude();
-//                    double originLong = geohash.getOriginatingPoint().getLongitude();
-//
-//                    attBuilder.add(geohashKey, geohashString);
-//                    attBuilder.add(latitudeKey, originLat);
-//                    attBuilder.add(longitudeKey, originLong);
-//                    attBuilder.add(countKey, count);
-//                    arrayBuilder.add(attBuilder);
-//                });
-//        JsonObjectBuilder jsonBuild = Json.createObjectBuilder();
-//        jsonBuild.add(geoDataKey, arrayBuilder.build());
-//        jsonBuild.add(countKey, total);
-//        jsonBuild.add(facetsKey, facetJson);
-//        jsonBuild.add(docsKey, docs);
-//        JsonObject json = jsonBuild.build();
-//
-//        log.info("total : {}", total);
-//        jsonReader.close();
-//        return json.toString();
-//    }
-
-//    public String mapDataSearch(String text, String collection, String collections,
-//            String typeStatus, String family, String hasCoordinates, 
-//            String hasImage, String inSweden, String isType) {
-//        
-//        total = 0;
-//
-//        String jsonString = service.mapDataSearch(text, collection, collections, 
-//                typeStatus, family, hasCoordinates, hasImage, inSweden, isType);
-// 
-//        JsonReader jsonReader = Json.createReader(new StringReader(jsonString));
-//        JsonObject jsonObj = jsonReader.readObject();
-//
-//        JsonArray docs = jsonObj.getJsonArray(responseKey);
-//        JsonObject facetJson = jsonObj.getJsonObject(facetsKey);
-//
-//        JsonArray array = facetJson.getJsonObject(geohashKey)
-//                .getJsonArray(bucketsKey);
-//
-//        log.info("geo length : {}", array.size());
-//
-//        arrayBuilder = Json.createArrayBuilder();
-//        attBuilder = Json.createObjectBuilder();
-//        array.getValuesAs(JsonObject.class)
-//                .stream()
-//                .forEach(json -> {
-//                    String geohashString = json.getString(valKey);
-//                    int count = json.getInt(countKey);
-//                    
-//                    total += count;
-//                    geohash = GeoHash.fromGeohashString(
-//                            StringUtils.substringAfter(geohashString, prefix));
-//                    
-//            
-//
-//                    double originLat = geohash.getOriginatingPoint().getLatitude();
-//                    double originLong = geohash.getOriginatingPoint().getLongitude();
-//
-//                    attBuilder.add(geohashKey, geohashString);
-//                    attBuilder.add(latitudeKey, originLat);
-//                    attBuilder.add(longitudeKey, originLong);
-//                    attBuilder.add(countKey, count);
-//                    arrayBuilder.add(attBuilder);
-//                });
-//        JsonObjectBuilder jsonBuild = Json.createObjectBuilder();
-//        jsonBuild.add(geoDataKey, arrayBuilder.build());
-//        jsonBuild.add(countKey, total);
-//        jsonBuild.add(facetsKey, facetJson);
-//        jsonBuild.add(docsKey, docs);
-//        JsonObject json = jsonBuild.build();
-//
-//        log.info("total : {}", total);
-//        jsonReader.close();
-//        return json.toString();
-//    }
-    
-//    public String getTypeStatus() {
-//        return service.getTypeStatus();
-//    }
-
-    
-
-//    public void download1(String text, String collection,
-//            String typeStatus, String family, int numRows) throws IOException {
-//
-//        StringWriter sw = new StringWriter();
-//
-//        CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
-//                .setHeader(CsvHeader.class)
-//                .build();
-//        JsonReader jsonReader = null;
-//        JsonObject jsonObj;
-//        JsonArrayBuilder builder = Json.createArrayBuilder();
-//
-//        try (final CSVPrinter printer = new CSVPrinter(sw, csvFormat)) {
-//
-//            int totalDownload = numRows <= maxDownload ? numRows : maxDownload;
-//            for (int i = 0; i < totalDownload; i += downloadSize) {
-//                arrayBuilder = Json.createArrayBuilder();
-//
-//                String results = service.download(text, collection, typeStatus, family, i, downloadSize);
-//
-//                jsonReader = Json.createReader(new StringReader(results));
-//
-//                jsonObj = jsonReader.readObject();
-//                JsonArray docs = jsonObj.getJsonArray(responseKey);
-//                log.info("docs... {}", docs);
-//
-//                JsonObject json;
-//                for (int j = 0; j < docs.size(); j++) {
-//                    json = docs.getJsonObject(j);
-//                    try {
-//                        printer.printRecord(
-//                                json.getString(catalogNumberField),
-//                                json.getString(collectionNameField),
-//                                json.getString(higherTxField),
-//                                json.getString(familyField),
-//                                json.getString(genusField),
-//                                json.getString(speciesField),
-//                                json.getString(authorField),
-//                                json.getString(collectorField),
-//                                json.getString(startDateKey),
-//                                json.getString(catalogedDateField),
-//                                json.getString(localityField),
-//                                json.getString(countyField),
-//                                json.getString(stateField),
-//                                json.getString(countryField),
-//                                json.getString(continentField),
-//                                json.getString(oceanOrSeaField),
-//                                json.getString(latitudeField),
-//                                json.getString(longitudeField),
-//                                json.getString(stationFieldNumberField),
-//                                json.getString(determinerField),
-//                                json.getString(preprationField),
-//                                json.getString(typeStatusField),
-//                                json.getString(remarksField));
-//
-//                    } catch (IOException ex) {
-//                        log.error(ex.getMessage());
-//                    }
-//
-//                }
-//            }
-//        }
-//            
-//            
-//            final OutputStream os = new FileOutputStream("/tmp/out");
-//final PrintStream printStream = new PrintStream(os);
-//printStream.print("String");
-//printStream.close();
-//            
-//            StreamingOutput stream = (OutputStream out) -> { 
-//      try(FileInputStream inp = new FileInputStream(sw)) {
-//        byte[] buff = new byte[1024];
-//        int len;
-//        while ((len = inp.read(buff)) >= 0) {
-//          out.write(buff, 0, len);
-//        }
-//        out.flush();
-//      } catch (Exception e) {
-//        log.error(e.getMessage());
-//      } finally {
-//   
-//      } 
-//    }
-//            
-//            
-//
-//            InputStream stream = new ByteArrayInputStream(sw.toString().getBytes());
-//
-//            File file = new DefaultStreamedContent(stream, mimetype, "downloadFile.csv");
-//            if (jsonReader != null) {
-//                jsonReader.close();
-//            }
-//
-//        }
-
-//         
-//        InputStream stream = new ByteArrayInputStream(sw.toString().getBytes());
-//     
-//        File file = new DefaultStreamedContent(stream, mimetype, "downloadFile.csv");  
-//    }
-    
-
 }

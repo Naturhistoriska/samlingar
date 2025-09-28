@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.time.Instant;
-import java.util.Arrays;
+import java.time.Instant; 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +17,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.commons.lang3.StringUtils; 
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -32,9 +25,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.SuggesterResponse;
-import org.apache.solr.common.params.ModifiableSolrParams;
+import org.apache.solr.client.solrj.response.QueryResponse;  
 import se.nrm.samlingar.api.logic.InitialProperties;
 import se.nrm.samlingar.api.utils.SolrSearchBuildChart;
 import se.nrm.samlingar.api.utils.SolrSearchBuildGeoJson;
@@ -105,7 +96,7 @@ public class Solr implements Serializable {
     private final String catchall = "catchall";
     private final String copyScientificNameKey = "copy_scientificName";
        
-    private final int maxExport = 50000;
+    private final int maxExport = 20000;
     private final int batchSize = 1000;
     
 
@@ -174,6 +165,8 @@ public class Solr implements Serializable {
     private final String inSwedenQuery = "country:Sweden*";
     private final String collectionNameQuery = "collectionName:*";
     private final String collectionCodeQuery = "collectionCode:*";
+    
+    private final String copyCatalogNumberKey = "copy_catalogNumber";
     
 //    
 //    private final String mapFacetQuery = "point-1: *";
@@ -287,12 +280,13 @@ public class Solr implements Serializable {
             }
         }
     }
+      
     
     public String autoCompleteSearch(String text, String field) {
         log.info("autoCompleteSearch: {} -- {}", text, field);
         
-        final TermsFacetMap facet = new TermsFacetMap(field).setLimit(50); 
-
+        TermsFacetMap facet = new TermsFacetMap(field).setLimit(50); 
+  
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)
                 .withFacet(facetKey, facet);
@@ -608,9 +602,7 @@ public class Solr implements Serializable {
             }
         }
     }
-    
      
-    
     public String searchWithId(String id) {
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(idFieldKey + id)    
@@ -774,6 +766,7 @@ public class Solr implements Serializable {
                 jsonRequest.withParam(cursorMarkKey, cursorMark);
 
                 response = jsonRequest.process(client);
+//                log.info("response.jsonStr() : {}", response.jsonStr());
                 buildDownloadJson(response.jsonStr(), builder);
 
                 String nextCursorMark = response.getNextCursorMark();
