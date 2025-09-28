@@ -244,7 +244,7 @@
   <field name="id" type="string" indexed="true" required="true" stored="true"/>
   <field name="guid" type="string" indexed="false" stored="true"/>
 
-  <field name="accessionNumber" type="string" indexed="true" stored="true"/>
+  <field name="accessionNumber" type="string" indexed="false" stored="true"/>
   <!-- <field name="accessionRemarks" type="string"  multiValued="true" indexed="false" stored="true"/> -->
   <field name="accessRights" type="string" indexed="false" stored="true"/>
   <field name="additionalDetermination" type="string" multiValued="true" indexed="false" stored="true"/>
@@ -264,7 +264,7 @@
   <field name="county" type="string" indexed="true" stored="true"/>
   <field name="collectionName" type="string" indexed="true" stored="true" docValues="true"  />
   <field name="collectionCode" type="string" indexed="true" stored="true" docValues="true" />
-  <field name="collector" type="string" indexed="true" multiValued="true"  stored="true"/>
+  <field name="collectors" type="string" indexed="true" multiValued="true"  stored="true"/>
   <field name="createdDate" type="tdate" indexed="true" stored="false"/>
   <field name="currentDetermination" type="string" indexed="true" stored="true"/>
   <field name="coordinateUncertaintyInMeters" type="string" indexed="false" stored="true"/>
@@ -273,10 +273,10 @@
   <field name="decimalLatitude" type="double" indexed="true" stored="true"/>
   <field name="decimalLongitude" type="double"  indexed="true" stored="true"/>
   <field name="dateIdentified" type="tdate" indexed="false" stored="true"/>
-  <field name="district" type="string" indexed="false" stored="true"/>
-  <field name="description" type="string" indexed="true" stored="true"/>
+  <field name="district" type="string" indexed="true" stored="true"/>
+  <field name="description" type="string" indexed="false" stored="true"/>
 
-  <field name="element" type="string" indexed="true" stored="true"/>
+  <field name="element" type="string" indexed="false" stored="true"/>
   <field name="endDayOfYear" type="string" indexed="false" stored="true"/>
   <field name="endday" type="string" indexed="false" stored="true"/>
   <field name="endmonth" type="string" indexed="false" stored="true"/>
@@ -284,9 +284,9 @@
   <field name="environment" type="string" indexed="false" stored="true"/>
   <field name="exsiccate" type="string" indexed="true" stored="true"/>
   <field name="exsiccateNumber" type="string" indexed="true" stored="true"/>
-  <field name="earliestAgeOrLowestStage" type="string" indexed="false" stored="true"/>
-  <field name="earliestEpochOrLowestSeries" type="string" indexed="false" stored="true"/>
-  <field name="earliestPeriodOrLowestSystem" type="string" indexed="false" stored="true"/>
+  <field name="earliestAgeOrLowestStage" type="string" indexed="true" stored="true"/>
+  <field name="earliestEpochOrLowestSeries" type="string" indexed="true" stored="true"/>
+  <field name="earliestPeriodOrLowestSystem" type="string" indexed="true" stored="true"/>
   <field name="expeditionName" type="string" indexed="true" stored="true"/>
 
   <field name="eventDate" type="tdate" indexed="true" stored="true"/>
@@ -330,7 +330,7 @@
   <field name="island" type="string" indexed="true" stored="true"/>
   <field name="islandGroup" type="string" indexed="true" stored="true"/>
 
-  <field name="kingdom" type="string" indexed="false" stored="true"/>
+  <field name="kingdom" type="string" indexed="true" stored="true"/>
 
 
   <field name="latestAgeOrHighestStage" type="string" indexed="true" stored="true"/>
@@ -347,15 +347,15 @@
   <field name="lat_long" type="string" indexed="true" stored="true" docValues="true" />
 
 
-  <field name="minimumDepthInMeters" type="string" indexed="false" stored="true"/>
-  <field name="maximumDepthInMeters" type="string" indexed="false" stored="true"/>
-  <field name="minimumElevationInMeters" type="string" indexed="false" stored="true"/>
-  <field name="maximumElevationInMeters" type="string" indexed="false" stored="true"/>
+  <field name="minimumDepthInMeters" type="string" indexed="true" stored="true"/>
+  <field name="maximumDepthInMeters" type="string" indexed="true" stored="true"/>
+  <field name="minimumElevationInMeters" type="string" indexed="true" stored="true"/>
+  <field name="maximumElevationInMeters" type="string" indexed="true" stored="true"/>
   <field name="modified" type="tdate" indexed="false" stored="true"/>
 
 
 
-  <field name="oceanOrSea" type="string" indexed="false" stored="true"/>
+  <field name="oceanOrSea" type="string" indexed="true" stored="true"/>
   <field name="originalnameBasionym" type="string" indexed="true" stored="true"/>
   <field name="occurrenceRemarks" type="string" indexed="false" stored="true"/>
   <field name="occurrenceAttributeRemarks" type="string" indexed="false" stored="true"/>
@@ -371,7 +371,7 @@
   <field name="prepCount" type="string" multiValued="true" indexed="false" stored="true"/>
   <field name="preservation" type="string" indexed="true" stored="true"/>
   <field name="preservedSpecimen" type="string" indexed="false" stored="true"/>
-  <field name="previousIdentifications" type="string"  multiValued="true" indexed="false" stored="true"/>
+  <field name="previousIdentifications" type="string"  multiValued="true" indexed="true" stored="true"/>
 
   <!-- <field name="point" type="string" multiValued="true" indexed="true" stored="true"/> -->
  <!--  <field name="point-1" type="string" indexed="true" stored="true" docValues="true"/>
@@ -382,11 +382,11 @@
 
   <field name="recordedBy" type="string" multiValued="true" indexed="true" stored="true"/>
   <field name="recordNumber" type="string" indexed="true" stored="true"/>
-  <field name="riverDrainage" type="string" indexed="false" stored="true"/>
+  <field name="riverDrainage" type="string" indexed="true" stored="true"/>
   <field name="reproductiveCondition" type="string" indexed="false" stored="true"/>
 
   <field name="scientificName" type="string" indexed="true" stored="true"/>
-  <field name="scientificNameAuthorship" type="string" indexed="false" stored="true"/>
+  <field name="scientificNameAuthorship" type="string" indexed="true" stored="true"/>
   <!-- <field name="se" type="string"  indexed="false" stored="true"/> -->
   <field name="serie" type="string" indexed="true" stored="true"/>
   <field name="sex" type="string" indexed="true" stored="true"/>
@@ -417,7 +417,7 @@
   <field name="verbatimLatitude" type="string" indexed="false" stored="true"/>
   <field name="verbatimLongitude" type="string" indexed="false" stored="true"/>
 
-  <field name="waterBody" type="string" indexed="false" stored="true"/>
+  <field name="waterBody" type="string" indexed="true" stored="true"/>
 
   <field name="catchall" type="text_general" stored="false" indexed="true" multiValued="true" />
   <!-- <field name="scientificNameCopy" type="text_general" stored="false" indexed="true" /> -->
