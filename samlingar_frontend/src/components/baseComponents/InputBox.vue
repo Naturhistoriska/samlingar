@@ -83,7 +83,6 @@ function onInputAction() {
     delete field.text
   }
 
-  console.log('field...', field)
   store.commit('setFields', fields)
 
   // search(props.field.key, value.value)
