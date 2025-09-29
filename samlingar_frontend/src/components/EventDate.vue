@@ -178,11 +178,14 @@ watch(
 )
 
 onMounted(async () => {
+  console.log('onMounted')
   dates.value = store.getters['dates']
 
   searchOptions.value = store.getters['dateFilter']
+
   startYear.value = store.getters['startYear']
   endYear.value = store.getters['endYear']
+  console.log('onMounted', startYear.value, endYear.value)
 })
 
 function search() {
@@ -195,19 +198,22 @@ function change() {
 
 function onStartYearSelected() {
   const date = new Date(startYear.value)
-  const year = date.getFullYear()
-  store.commit('setStartYear', year)
+  console.log('date', date, startYear.value)
+  // const year = date.getFullYear()
+  store.commit('setStartYear', date)
 }
 
 function onEndYearSelected() {
   const date = new Date(endYear.value)
-  const year = date.getFullYear()
-  store.commit('setEndYear', year)
+  // const year = date.getFullYear()
+  store.commit('setEndYear', date)
 }
 
 function onSelect() {
   const start = new Date(dates.value[0])
   const end = new Date(dates.value[1])
+
+  console.log('dates', dates.value)
 
   const utcStartDate = new Date(
     Date.UTC(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0)

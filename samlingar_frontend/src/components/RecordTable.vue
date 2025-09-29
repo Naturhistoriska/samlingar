@@ -570,8 +570,10 @@ function buildParams() {
       params.set('endDate', endDate)
     }
   } else {
-    const yearQuery = `[${startYear} TO ${endYear}]`
-    params.set('year', yearQuery)
+    if (startYear && endYear) {
+      const yearQuery = `[${startYear.getFullYear()} TO ${endYear.getFullYear()}]`
+      params.set('year', yearQuery)
+    }
   }
 
   const hasCollection = filterArray.value.some((obj) => obj.key === 'collectionName')

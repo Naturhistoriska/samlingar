@@ -171,30 +171,34 @@ function buildParams() {
 
   const scientificName = store.getters['scientificName']
   const searchMode = store.getters['searchMode']
-  const isFuzzy = store.getters['isFuzzySearch']
 
   const isType = store.getters['filterType']
   const isInSweden = store.getters['filterInSweden']
   const hasCoordinates = store.getters['filterCoordinates']
   const hasImages = store.getters['filterImage']
-  let searchText = store.getters['searchText']
 
+  let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
+  const fullTextSearchMode = store.getters['fullTextSearchMode']
 
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
 
+  const startYear = store.getters['startYear']
+  const endYear = store.getters['endYear']
+
+  const dateFilter = store.getters['dateFilter']
+
   const selectedCollection = store.getters['selectedCollection']
-  console.log(selectedCollection)
 
   const params = new URLSearchParams({
-    catchall: searchText
+    catchall: searchText,
+    mode: fullTextSearchMode
   })
 
   if (scientificName) {
     params.set('scientificName', scientificName)
     params.set('searchMode', searchMode)
-    params.set('fuzzySearch', isFuzzy)
   }
 
   if (isType) {
@@ -217,13 +221,20 @@ function buildParams() {
     params.set('collectionCode', selectedCollection)
   }
 
-  if (startDate) {
-    params.set('startDate', startDate)
+  if (dateFilter === 'date') {
+    if (startDate) {
+      params.set('startDate', startDate)
+    }
+    if (endDate) {
+      params.set('endDate', endDate)
+    }
+  } else {
+    if (startYear && endYear) {
+      const yearQuery = `[${startYear.getFullYear()} TO ${endYear.getFullYear()}]`
+      params.set('year', yearQuery)
+    }
   }
 
-  if (endDate) {
-    params.set('endDate', endDate)
-  }
   if (fields) {
     fields
       .filter((field) => field.text)

@@ -95,6 +95,10 @@ function handleFreeTextSearch() {
   store.commit('setFields', [])
   store.commit('setDates', null)
 
+  store.commit('setStartYear', null)
+  store.commit('setEndYear', null)
+  store.commit('setDateFilter', 'date')
+
   emits('freeTextSearch', searchText)
 }
 
@@ -133,6 +137,10 @@ function search(filtCoordinates, filtImages, filtInSweden, filtTypeStatus) {
   store.commit('setSelectedCollectionGroup', null)
   store.commit('setSelectedCollection', null)
   store.commit('setDates', null)
+
+  store.commit('setStartYear', null)
+  store.commit('setEndYear', null)
+  store.commit('setDateFilter', 'date')
 
   const params = new URLSearchParams({})
   if (filtCoordinates) {

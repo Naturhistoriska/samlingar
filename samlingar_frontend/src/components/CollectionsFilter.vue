@@ -81,6 +81,10 @@ function search(value, dataResource) {
   store.commit('setFields', [])
   store.commit('setDates', null)
 
+  store.commit('setStartYear', null)
+  store.commit('setEndYear', null)
+  store.commit('setDateFilter', 'date')
+
   const newValue = value.replace(/'/g, '"')
   const params = new URLSearchParams({
     catchall: searchText,

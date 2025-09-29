@@ -98,6 +98,10 @@ function handleFreeTextSearch(value) {
   store.commit('setDataResource', null)
   store.commit('setDates', null)
 
+  store.commit('setStartYear', null)
+  store.commit('setEndYear', null)
+  store.commit('setDateFilter', 'date')
+
   store.commit('setSearchParams', null)
 
   emits('freeTextSearch', searchText, searchOptions.value)
