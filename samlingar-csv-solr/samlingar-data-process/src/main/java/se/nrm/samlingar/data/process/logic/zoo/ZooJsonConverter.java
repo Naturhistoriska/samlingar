@@ -31,6 +31,7 @@ public class ZooJsonConverter implements Serializable {
 //    private final String eventDateKey = "eventDate";
 //    private final String eventEndDateKey = "eventEndDate";
 
+    private String collectionCode;
     private String catalogNumber;
     private String collectionPrefix;
     private String collectionName;
@@ -76,6 +77,7 @@ public class ZooJsonConverter implements Serializable {
         attBuilder = Json.createObjectBuilder();
 
         collectionName = JsonHelper.getInstance().getCollectionName(json);
+        collectionCode = JsonHelper.getInstance().getCollectionCode(json);
         
 //        log.info("mappingJosn : {}", mappingJson);
 
@@ -98,6 +100,7 @@ public class ZooJsonConverter implements Serializable {
          
         AtomicInteger counter = new AtomicInteger(0); 
 
+       
         records.stream()
                 .filter(isValid)
                 .forEach(record -> {
@@ -116,6 +119,7 @@ public class ZooJsonConverter implements Serializable {
 
                         JsonHelper.getInstance().addCollectionName(attBuilder, collectionName);
 ////                        log.info("add CollectionName : {}",  collectionName); 
+                        JsonHelper.getInstance().addCollectionCode(attBuilder, collectionCode);
 
 //                        JsonHelper.getInstance().addCatalogNumber(attBuilder, catalogNumber);
 //
@@ -153,7 +157,7 @@ public class ZooJsonConverter implements Serializable {
                             JsonHelper.getInstance().addTypeStatus(attBuilder,
                                     record.get(csvTypeStatusKey));
                         }
-//                        log.info("typestatus added...");
+                        log.info("typestatus added...");
 
                         if (hasSynonyms) {
                             JsonHelper.getInstance().addSynonyms(attBuilder,  

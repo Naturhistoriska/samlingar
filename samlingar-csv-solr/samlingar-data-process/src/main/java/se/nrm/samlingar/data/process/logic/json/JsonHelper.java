@@ -387,6 +387,10 @@ public class JsonHelper {
     public String getCollectionName(JsonObject json) {
         return json.getString(collectionNameKey);
     }
+    
+    public String getCollectionCode(JsonObject json) { 
+        return json.getString(collectionCodeKey);
+    }
 
     public void addId(JsonObjectBuilder attBuilder, String catalogNumber, String idPrefix) {
         sb = new StringBuilder();
@@ -464,6 +468,7 @@ public class JsonHelper {
         addImages(attBuilder, images);
     }
 
+    // used for pal
     public void addSynonymAndAuthor(JsonArrayBuilder synomysArrayBuilder,
             JsonArrayBuilder synomyAuthorsArrayBuilder,
             String synonym, String synonymAuthor) {
@@ -481,8 +486,10 @@ public class JsonHelper {
     // used by zoo
     public void addSynonyms(JsonObjectBuilder attBuilder,  String synonyms) {  
 //        synonyms = record.get(json.getString(synonymsKey));
-        
+        log.info("addSynonyms : {}", synonyms);
         if(!StringUtils.isBlank(synonyms)) {
+            synonymsList = new ArrayList();
+            
             synomysBuilder = Json.createArrayBuilder();
             synonymsList = Arrays.asList(synonyms.split(pipe));
             synonymsList.stream()
