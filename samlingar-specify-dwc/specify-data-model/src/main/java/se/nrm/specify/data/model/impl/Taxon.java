@@ -1,6 +1,8 @@
 package se.nrm.specify.data.model.impl;
  
 import java.util.Date; 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -98,7 +100,10 @@ public class Taxon extends BaseEntity {
     private StringBuilder sb;
     @Transient
     private final String slash = "/";
-
+    
+    @Transient
+    private Map<String, String> taxonMap;
+    
     public Taxon() {
     }
 
@@ -197,7 +202,22 @@ public class Taxon extends BaseEntity {
         this.taxonTreeDefItem = taxonTreeDefItem;
     }
     
-    
+    public String getVariety() {
+        if (rankID == 240) {
+            return fullName;
+        }
+        if (rankID > 240) {
+            Taxon newParent = parent;
+            while (newParent.getRankID() > 240) {
+                newParent = newParent.getParent();
+            }
+            if (newParent.getRankID() == 220) {
+                return newParent.getFullName();
+            }
+        }
+        return null;
+    }
+
 
     public String getSpecies() {
         if (rankID == 220) {
@@ -325,7 +345,65 @@ public class Taxon extends BaseEntity {
         }
         return sb.toString();
     }
-
+    
+    public Map<String, String> getTaxon() {
+        taxonMap = new HashMap();
+        
+        addTaxonInMap(rankID, fullName);
+        addParents();
+        return taxonMap;
+    }
+    
+    private void addTaxonInMap(int rank, String name) {
+        switch (rank) {
+            case 240:
+                taxonMap.put("variety", name);
+                break;
+            case 220:
+                taxonMap.put("species", name);
+                break;
+            case 190:
+                taxonMap.put("subgenus", name);
+                break;
+            case 180:
+                taxonMap.put("genus", name);
+                break;
+            case 140:
+                taxonMap.put("family", name);
+                break;
+            case 100:
+                taxonMap.put("order", name);
+                break;
+            case 60:
+                taxonMap.put("clazz", name);
+                break;
+            case 40:
+                taxonMap.put("subphylum", name);
+                break;
+            case 30:
+                taxonMap.put("phylum", name);
+                break;
+            case 10:
+                taxonMap.put("kingdom", name);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    
+    private void addParents() {
+        sb = new StringBuilder();
+        if (rankID > 0) {
+            Taxon newParent = parent;  
+            while (newParent != null && newParent.getRankID() > 0) { 
+                addTaxonInMap(newParent.getRankID(), newParent.getFullName()); 
+                newParent = newParent.getParent();
+            }
+        }
+    }
+    
+     
     @Override
     public int hashCode() {
         int hash = 0;

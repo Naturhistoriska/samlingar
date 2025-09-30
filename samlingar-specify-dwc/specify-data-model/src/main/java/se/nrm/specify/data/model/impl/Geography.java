@@ -14,12 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery; 
-import javax.persistence.OneToMany;
+import javax.persistence.NamedQuery;  
 import javax.persistence.Table;   
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size; 
-import javax.xml.bind.annotation.XmlTransient;
+import javax.validation.constraints.Size;  
 import se.nrm.specify.data.model.BaseEntity; 
 
 /**

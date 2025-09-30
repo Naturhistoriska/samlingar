@@ -28,8 +28,7 @@ public class JsonConverter implements Serializable {
     private final String collectionNameKey = "collectionName";
     private final String basisOfRecordKey = "basisOfRecord";
 
-    private final String licenseKey = "license";
-    private final String accessRightsKey = "accessRights";
+    private final String licenseKey = "license"; 
     private final String institutionNameKey = "institutionName";
     private final String institutionCodeKey = "institutionCode";
 

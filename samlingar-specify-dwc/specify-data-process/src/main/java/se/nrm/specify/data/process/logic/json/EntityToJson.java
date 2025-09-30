@@ -148,6 +148,9 @@ public class EntityToJson implements Serializable {
 //    private final String verbatimCoordinatesKey = "verbatimCoordinates";
     private final String vernacularNameKey = "vernacularName"; 
     
+    
+    private final String varietyKey = "Variety";
+    
     private final String waterBodyKey = "waterBody";
     
     private final String yearKey = "year";
@@ -203,9 +206,7 @@ public class EntityToJson implements Serializable {
 //    private String format;
     
 //    private String geoHash; 
-    private StringBuilder coordinatesSb; 
-//    private StringBuilder geoHashSb;
-//    private StringBuilder pointSb; 
+    private StringBuilder coordinatesSb;  
     private StringBuilder imageSb;
     private StringBuilder preparationsSb;
     private StringBuilder synonymAuthSb;
@@ -213,6 +214,18 @@ public class EntityToJson implements Serializable {
      
     private JsonArrayBuilder taxaArrayBuilder;
     private JsonArrayBuilder addtionalDetArrayBuilder;
+    
+    private JsonArrayBuilder collectorsArrayBuilder;
+    private JsonArrayBuilder commonNameArrayBuilder; 
+     
+    private JsonArrayBuilder imageViewArrayBuilder;
+    
+    private JsonArrayBuilder synomysArrayBuilder;
+    private JsonArrayBuilder synomyAuthorsArrayBuilder;
+    
+    private JsonArrayBuilder preparationArrayBuilder;
+    private JsonArrayBuilder prepCountArrayBuilder;
+    
 
     
     private String morphBankId;
@@ -251,20 +264,11 @@ public class EntityToJson implements Serializable {
     private String islandGroup;
     
     private final String locationRemarksKey = "locationRemarks";
+//    
+//    private final String possibleType = "possibletype";
+//    private final String possibleTypeConvert = "Possible type";
     
-    private final String possibleType = "possibletype";
-    private final String possibleTypeConvert = "Possible type";
-    
-    private JsonArrayBuilder collectorsArrayBuilder;
-    private JsonArrayBuilder commonNameArrayBuilder;
-//    private JsonArrayBuilder georHashArrayBuilder;
-//    private JsonArrayBuilder pointArrayBuilder;
-     
-    private JsonArrayBuilder imageViewArrayBuilder;
-    
-    private JsonArrayBuilder synomysArrayBuilder;
-    private JsonArrayBuilder synomyAuthorsArrayBuilder;
-    
+    private Map<String, String> taxonMap;
     
     public void addImages(JsonObjectBuilder attBuilder, Collectionobject collectionObject) {
         morphBankId = collectionObject.getReservedText();
@@ -360,10 +364,13 @@ public class EntityToJson implements Serializable {
         
         collectionObjectAttribute = bean.getCollectionObjectAttribute();
         if(collectionObjectAttribute != null) {
-            addAttValue(attBuilder,  occurrenceAttributeRemarksKey, collectionObjectAttribute.getRemarks());
-            addAttValue(attBuilder, sexKey, collectionObjectAttribute.getText1());
-            addAttValue(attBuilder, reproductiveConditionKey, collectionObjectAttribute.getText3());
-            addAttValue(attBuilder, lifeStageKey, collectionObjectAttribute.getText4());
+            addAttValue(attBuilder, occurrenceAttributeRemarksKey, collectionObjectAttribute.getRemarks());
+
+            if (!collectionCode.equals(mineralogyCollection)) {
+                addAttValue(attBuilder, sexKey, collectionObjectAttribute.getText1());
+                addAttValue(attBuilder, reproductiveConditionKey, collectionObjectAttribute.getText3());
+                addAttValue(attBuilder, lifeStageKey, collectionObjectAttribute.getText4()); 
+            }  
         }
           
         
@@ -521,15 +528,25 @@ public class EntityToJson implements Serializable {
     }
     
     
-    private void addClassification(JsonObjectBuilder attBuilder) { 
-        addAttValue(attBuilder, speciesKey, currentTaxon.getSpecies());
-        addAttValue(attBuilder, genusKey, currentTaxon.getGenus());
-        addAttValue(attBuilder, familyKey, currentTaxon.getFamily());
-        addAttValue(attBuilder, orderKey, currentTaxon.getOrder());
-        addAttValue(attBuilder, classKey, currentTaxon.getClazz());
-        addAttValue(attBuilder, phylumKey, currentTaxon.getPhylum());
-        addAttValue(attBuilder, kingdomKey, currentTaxon.getKingdom());
-        addAttValue(attBuilder, higherClassificationKey, currentTaxon.getHighClassification());
+    private void addClassification(JsonObjectBuilder attBuilder) {
+
+        taxonMap = currentTaxon.getTaxon(); 
+        taxonMap.entrySet().stream()
+                .forEach(entry -> { 
+                    addAttValue(attBuilder, entry.getKey(), entry.getValue());
+                } );
+
+        
+        
+
+//        addAttValue(attBuilder, speciesKey, currentTaxon.getSpecies());
+//        addAttValue(attBuilder, genusKey, currentTaxon.getGenus());
+//        addAttValue(attBuilder, familyKey, currentTaxon.getFamily());
+//        addAttValue(attBuilder, orderKey, currentTaxon.getOrder());
+//        addAttValue(attBuilder, classKey, currentTaxon.getClazz());
+//        addAttValue(attBuilder, phylumKey, currentTaxon.getPhylum());
+//        addAttValue(attBuilder, kingdomKey, currentTaxon.getKingdom());
+//        addAttValue(attBuilder, higherClassificationKey, currentTaxon.getHighClassification());
     }
 
 
@@ -555,18 +572,20 @@ public class EntityToJson implements Serializable {
     private void addPreparations(JsonObjectBuilder attBuilder, Set<Preparation> preparations) {
         log.info("addPreparation");
         if (preparations != null && !preparations.isEmpty()) {
+            preparationArrayBuilder = Json.createArrayBuilder();
+            prepCountArrayBuilder = Json.createArrayBuilder();
             preparations.stream()
                     .forEach(preparation -> { 
-                        storage = preparation.getStorage();
-                        if (storage != null) {
-                            addAttValue(attBuilder, storageKey, storage.getFullName());  
-                        }
+//                        storage = preparation.getStorage();
+//                        if (storage != null) {
+//                            addAttValue(attBuilder, storageKey, storage.getFullName());  
+//                        }
  
                         preptype = preparation.getPrepType();  
                         if(preptype != null) {
-                            preptypeName = preptype.getName(); 
-                            addAttValue(attBuilder, preparationsKey, preptypeName); 
-                            
+                            preptypeName = preptype.getName();  
+                            preparationArrayBuilder.add(preptypeName); 
+                             
                             preparationsSb = new StringBuilder();
                             preparationsSb.append(preptypeName);  
                             if(preparation.getCountAmt() != null) {
@@ -577,11 +596,11 @@ public class EntityToJson implements Serializable {
                                     preparationsSb.append(rightParentheses); 
                                 }
                             }  
-                            addAttValue(attBuilder, prepartionCountKey,
-                                        preparationsSb.toString().trim());
-                        } 
-                        
+                             prepCountArrayBuilder.add(preparationsSb.toString().trim()); 
+                        }  
                     });
+             attBuilder.add( preparationsKey, preparationArrayBuilder); 
+             attBuilder.add(prepartionCountKey, prepCountArrayBuilder); 
         }
     }
     
@@ -774,9 +793,9 @@ public class EntityToJson implements Serializable {
             country = geography.getCountry();
             if (country != null) {
                 attBuilder.add(countryKey, country);
-                if (country.equalsIgnoreCase(sweden)) { 
-                    attBuilder.add(seKey, sverige);
-                }
+//                if (country.equalsIgnoreCase(sweden)) { 
+//                    attBuilder.add(seKey, sverige);
+//                }
             }
             addAttValue(attBuilder, higherGeographyKey, geography.getFullName());
             addAttValue(attBuilder, stateProvinceKey, geography.getState());

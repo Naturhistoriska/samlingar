@@ -72,7 +72,7 @@ public class ZooDataProcessor implements Serializable {
                              
                             records = fileProcessor.read(filePath, fileName, delimiter, encoding);
                              
-                            collectionId = JsonHelper.getInstance().getIdPrefix(json);
+                            collectionId = JsonHelper.getInstance().getIdPrefix(json); 
              
                             if (records != null) {
                                 log.info("records size : {}", records.size());
