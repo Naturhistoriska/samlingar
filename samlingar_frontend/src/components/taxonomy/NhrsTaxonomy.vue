@@ -51,13 +51,9 @@
         {{ theSpecies }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.infraspecificEpithet') }}</div>
+      <div class="col-4 reducePadding">{{ $t('results.variety') }}</div>
       <div class="col-8 reducePadding">
-        {{ infraspecificEpithetData }}
-      </div>
-      <div class="col-4 reducePadding">{{ $t('results.specificEpithet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ specificEpithetData }}
+        {{ theVariety }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.vernacularName') }}</div>
@@ -94,32 +90,31 @@ const theGenus = ref()
 const theSubgenus = ref()
 const theSpecies = ref()
 const commonName = ref()
-const infraspecificEpithetData = ref()
-const specificEpithetData = ref()
 const scientificNameAuthorshipData = ref()
 const synonymsData = ref()
 const remarks = ref()
+const theVariety = ref()
+const isGeoData = ref(false)
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
-  console.log('record', record)
   const {
     clazz,
+    collectionCode,
     genus,
     family,
-    infraspecificEpithet,
     kingdom,
     order,
     phylum,
     scientificName,
     scientificNameAuthorship,
     species,
-    specificEpithet,
     subgenus,
     synonyms,
     taxonRank,
     taxonRemarks,
+    variety,
     vernacularName
   } = record
 
@@ -129,13 +124,9 @@ onMounted(async () => {
     commonName.value = vernacularName.join(' | ')
   }
 
-  infraspecificEpithetData.value = infraspecificEpithet
-
-  const str = taxonRank == 'clazz' ? 'class' : taxonRank
-  rank.value = str.replace(/\b\w/g, (char) => char.toUpperCase())
+  rank.value = taxonRank
   remarks.value = taxonRemarks
 
-  specificEpithetData.value = specificEpithet
   scientificNameAuthorshipData.value = scientificNameAuthorship
   if (synonyms) {
     synonymsData.value = synonyms.join(' | ')
@@ -150,6 +141,9 @@ onMounted(async () => {
   theGenus.value = genus
   theSpecies.value = species
   theSubgenus.value = subgenus
+  theVariety.value = variety
+
+  isGeoData.value = collectionCode === 'NRMMIN' || 'NRMLIG' || 'NRMNOD'
 })
 </script>
 <style scoped>
