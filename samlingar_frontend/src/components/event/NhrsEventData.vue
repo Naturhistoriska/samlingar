@@ -42,13 +42,9 @@ onMounted(async () => {
 
   const { collectors, eventDate, eventRemarks, fieldNumber, recordedBy } = record
 
-  let collector
   if (collectors) {
-    collector = collectors
-  } else if (recordedBy) {
-    collector = recordedBy
+    collectorList.value = collector.join(' | ')
   }
-  collectorList.value = collector.join(' | ')
 
   if (eventDate) {
     eventStartDate.value = moment

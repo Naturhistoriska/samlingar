@@ -1,20 +1,22 @@
 <template>
   <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1.1em" v-if="!isMineralCollection">
+    <p style="font-weight: bold; font-size: 1.1em">
       {{ $t('results.identification') }}
     </p>
     <div class="grid">
       <div class="col-4 reducePadding" v-if="!isMineralCollection">
         {{ $t('results.previousIdentifications') }}
       </div>
-      <div class="col-8 reducePadding">
+      <div class="col-8 reducePadding" v-if="!isMineralCollection">
         <span v-for="(item, index) in additionalDetermination" :key="index">
           {{ item }}<br />
         </span>
       </div>
 
       <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.minerals') }}</div>
-      <div class="col-8 reducePadding" v-if="isMineralCollection">{{ minerals }}</div>
+      <div class="col-8 reducePadding" v-if="isMineralCollection">
+        <span v-for="(item, index) in minerals" :key="index"> {{ item }}<br /> </span>
+      </div>
 
       <div class="col-4 reducePadding">{{ $t('results.identifiedBy') }}</div>
       <div class="col-8 reducePadding">
@@ -60,6 +62,7 @@ const additionalDetermination = ref()
 const isMineralCollection = ref(false)
 
 const remarks = ref()
+const varietyData = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -82,7 +85,7 @@ onMounted(async () => {
 
   additionalDetermination.value = previousIdentifications
 
-  minerals.value = associeradeMineral ? associeradeMineral.join(' | ') : ''
+  minerals.value = associeradeMineral
 
   if (dateIdentified) {
     identifyDate.value = moment

@@ -62,34 +62,19 @@
         {{ maxElevationInMeters }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.minimumDepthInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ minDepthInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.maximumDepthInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ maxDepthInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.waterBody') }}</div>
-      <div class="col-8 reducePadding">
+      <div class="col-4 reducePadding" v-if="!isGeoData">{{ $t('results.waterBody') }}</div>
+      <div class="col-8 reducePadding" v-if="!isGeoData">
         {{ water }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.island') }}</div>
-      <div class="col-8 reducePadding">
+      <div class="col-4 reducePadding" v-if="!isGeoData">{{ $t('results.island') }}</div>
+      <div class="col-8 reducePadding" v-if="!isGeoData">
         {{ theIsland }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.islandGroup') }}</div>
-      <div class="col-8 reducePadding">
+      <div class="col-4 reducePadding" v-if="!isGeoData">{{ $t('results.islandGroup') }}</div>
+      <div class="col-8 reducePadding" v-if="!isGeoData">
         {{ theIslandGroup }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.georeferencedDate') }}</div>
-      <div class="col-8 reducePadding">
-        {{ georeferencedDateData }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.locationRemarks') }}</div>
@@ -109,18 +94,12 @@ const theCountry = ref()
 const theCounty = ref()
 const theContinent = ref()
 const datum = ref()
-const georeferencedDateData = ref()
 const highGeo = ref()
 const latitude = ref()
 const longigude = ref()
 const localityName = ref()
 const minElevationInMeters = ref()
 const maxElevationInMeters = ref()
-
-const minDepthInMeters = ref()
-const maxDepthInMeters = ref()
-
-const municipalityData = ref()
 
 const remarks = ref()
 const state = ref()
@@ -129,10 +108,13 @@ const theIslandGroup = ref()
 const water = ref()
 const uncertaintyInMeters = ref()
 
+const isGeoData = ref(false)
+
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
   const {
+    collectionCode,
     continent,
     country,
     county,
@@ -140,7 +122,6 @@ onMounted(async () => {
     decimalLongitude,
     decimalLatitude,
     geodeticDatum,
-    georeferencedDate,
     higherGeography,
     island,
     islandGroup,
@@ -148,8 +129,6 @@ onMounted(async () => {
     locationRemarks,
     minimumElevationInMeters,
     maximumElevationInMeters,
-    minimumDepthInMeters,
-    maximumDepthInMeters,
     stateProvince,
     waterBody
   } = record
@@ -173,17 +152,14 @@ onMounted(async () => {
 
   localityName.value = locality
 
-  georeferencedDateData.value = georeferencedDate
-
   minElevationInMeters.value = minimumElevationInMeters
   maxElevationInMeters.value = maximumElevationInMeters
-
-  minDepthInMeters.value = minimumDepthInMeters
-  maxDepthInMeters.value = maximumDepthInMeters
 
   remarks.value = locationRemarks
   water.value = waterBody
   uncertaintyInMeters.value = coordinateUncertaintyInMeters
+
+  isGeoData.value = collectionCode === 'NRMLIG' || 'NRMMIN' || 'NRMNOD'
 })
 </script>
 <style scoped>

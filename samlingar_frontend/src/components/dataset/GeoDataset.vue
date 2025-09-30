@@ -44,7 +44,7 @@
 
       <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
       <div class="col-8 reducePadding">
-        {{ preparationString }}
+        <span v-for="(item, index) in preparationList" :key="index"> {{ item }}<br /> </span>
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.license') }}</div>
@@ -144,6 +144,8 @@ onMounted(async () => {
 
   preparationList.value = prepCount ? prepCount : ''
   preparationString.value = preparationList.value.join(', ')
+
+  preparationList.value = prepCount
 
   remarks.value = occurrenceRemarks
   recordType.value = basisOfRecord
