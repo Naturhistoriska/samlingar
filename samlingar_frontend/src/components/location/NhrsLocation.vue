@@ -62,18 +62,18 @@
         {{ maxElevationInMeters }}
       </div>
 
-      <div class="col-4 reducePadding" v-if="!isGeoData">{{ $t('results.waterBody') }}</div>
-      <div class="col-8 reducePadding" v-if="!isGeoData">
+      <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.waterBody') }}</div>
+      <div class="col-8 reducePadding" v-if="isMineralCollection">
         {{ water }}
       </div>
 
-      <div class="col-4 reducePadding" v-if="!isGeoData">{{ $t('results.island') }}</div>
-      <div class="col-8 reducePadding" v-if="!isGeoData">
+      <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.island') }}</div>
+      <div class="col-8 reducePadding" v-if="isMineralCollection"">
         {{ theIsland }}
       </div>
 
-      <div class="col-4 reducePadding" v-if="!isGeoData">{{ $t('results.islandGroup') }}</div>
-      <div class="col-8 reducePadding" v-if="!isGeoData">
+      <div class="col-4 reducePadding" v-if="!isMineralCollection">{{ $t('results.islandGroup') }}</div>
+      <div class="col-8 reducePadding" v-if="isMineralCollection">
         {{ theIslandGroup }}
       </div>
 
@@ -108,7 +108,7 @@ const theIslandGroup = ref()
 const water = ref()
 const uncertaintyInMeters = ref()
 
-const isGeoData = ref(false)
+const isMineralCollection = ref(false)
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -159,7 +159,7 @@ onMounted(async () => {
   water.value = waterBody
   uncertaintyInMeters.value = coordinateUncertaintyInMeters
 
-  isGeoData.value = collectionCode === 'NRMLIG' || 'NRMMIN' || 'NRMNOD'
+  isMineralCollection.value = collectionCode === 'NRMLIG' ||  collectionCode === 'NRMMIN' ||  collectionCode === 'NRMNOD'
 })
 </script>
 <style scoped>
