@@ -25,7 +25,6 @@ const verbatimEventDateData = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
-
   const { recordNumber, verbatimEventDate } = record
 
   fieldNumber.value = recordNumber

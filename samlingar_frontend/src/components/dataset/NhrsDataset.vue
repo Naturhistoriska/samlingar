@@ -73,12 +73,12 @@
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
-      <div class="col-8 reducePadding">
+      <div class="col-8 reducePadding multiline-text">
         {{ occurrenceAttRemarks }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
-      <div class="col-8 reducePadding">
+      <div class="col-8 reducePadding multiline-text">
         {{ remarks }}
       </div>
     </div>
@@ -184,7 +184,10 @@ onMounted(async () => {
     collectionCode == 'NHRS' ? (prepCount ? prepCount : '') : preparations ? preparations : ''
   preparationString.value = preparationList.value.join(', ')
 
-  remarks.value = occurrenceRemarks
+  if (occurrenceRemarks) {
+    remarks.value = occurrenceRemarks
+  }
+
   recordType.value = basisOfRecord
   reproductCondition.value = reproductiveCondition
 
@@ -197,5 +200,8 @@ onMounted(async () => {
 .reducePadding {
   padding-top: 0px;
   padding-bottom: 1px;
+}
+.multiline-text {
+  white-space: pre-line;
 }
 </style>

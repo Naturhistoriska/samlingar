@@ -8,7 +8,7 @@
       </div>
       <div class="col-4 reducePadding">{{ $t('results.collectors') }}</div>
       <div class="col-8 reducePadding">
-        {{ collectors }}
+        {{ collectorList }}
       </div>
     </div>
   </div>
@@ -19,15 +19,18 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const collectors = ref()
+const collectorList = ref()
 const verbatimEventDateData = ref()
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
-  const { recordedBy, verbatimEventDate } = record
+  const { collectors, verbatimEventDate } = record
 
-  collectors.value = recordedBy ? recordedBy.toString() : ''
+  if (collectors) {
+    collectorList.value = collectors.join(' | ')
+  }
+
   verbatimEventDateData.value = verbatimEventDate
 })
 </script>

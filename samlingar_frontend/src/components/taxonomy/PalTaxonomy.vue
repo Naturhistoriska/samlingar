@@ -47,7 +47,6 @@
 
       <div class="col-4 reducePadding">{{ $t('results.synonyms') }}</div>
       <div class="col-8 reducePadding">
-        <!-- {{ synonymsData }} -->
         <span v-for="(item, index) in synonymsData" :key="index"> {{ item }}<br /> </span>
       </div>
     </div>
@@ -82,7 +81,6 @@ onMounted(async () => {
     scientificName,
     scientificNameAuthorship,
     species,
-    synonyms,
     synonymAuthor,
     taxonRank
   } = record

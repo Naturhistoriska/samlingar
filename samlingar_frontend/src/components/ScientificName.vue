@@ -90,6 +90,13 @@ watch(
   }
 )
 
+watch(
+  () => store.getters['searchMode'],
+  (newValue, oldValue) => {
+    setSearchOption()
+  }
+)
+
 const checkboxDisabled = computed(() => {
   return !scientificName.value
 })

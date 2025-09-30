@@ -32,11 +32,6 @@
         {{ preservedSpecimenData }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collectors }}
-      </div>
-
       <div class="col-4 reducePadding" v-if="isPbCollection">{{ $t('results.element') }}</div>
       <div class="col-8 reducePadding" v-if="isPbCollection">
         {{ elementData }}
@@ -64,7 +59,6 @@ const dateCataloged = ref()
 const catNumber = ref()
 const code = ref()
 const collection = ref()
-const collectors = ref()
 
 const descriptionData = ref()
 const elementData = ref()
@@ -87,8 +81,7 @@ onMounted(async () => {
     element,
     description,
     preservation,
-    preservedSpecimen,
-    recordedBy
+    preservedSpecimen
   } = record
 
   if (catalogedDate) {
@@ -101,7 +94,6 @@ onMounted(async () => {
 
   code.value = collectionCode
   collection.value = collectionName
-  collectors.value = recordedBy ? recordedBy.toString() : ''
 
   elementData.value = element
 

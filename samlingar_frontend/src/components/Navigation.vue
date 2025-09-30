@@ -17,7 +17,7 @@
               {{ $t('nav.about') }}
             </Tab>
             <Tab value="4" to="/contact" as="router-link" class="navbg">
-              {{ $t('nav.contactUs') }}
+              {{ $t('common.contactus') }}
             </Tab>
           </TabList>
         </Tabs>
@@ -43,7 +43,6 @@ watch(
   () => router.currentRoute.value.name,
   () => {
     const currentRouteName = router.currentRoute.value.name
-
     switch (currentRouteName) {
       case 'Home':
         value.value = '0'
@@ -70,14 +69,28 @@ watch(
 )
 
 function onClick() {
-  store.commit('setSearchText', '*')
+  store.commit('setSearchText', null)
+  store.commit('setFullTextSearchMode', 'contains')
   store.commit('setScientificName', null)
+  store.commit('setSearchMode', 'contains')
+
   store.commit('setCollectionGroup', null)
+  store.commit('setSelectedCollection', null)
 
   store.commit('setFilterCoordinates', false)
   store.commit('setFilterInSweden', false)
-  // store.commit('setFilterImage', false)
+  store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
+
+  store.commit('setStartDate', null)
+  store.commit('setEndDate', null)
+  store.commit('setDates', null)
+
+  store.commit('setStartYear', null)
+  store.commit('setEndYear', null)
+  store.commit('setDateFilter', 'date')
+
+  store.commit('setSearchParams', null)
 
   store.commit('setFields', [])
   store.commit('setDataResource', null)
@@ -93,6 +106,7 @@ a {
 
 a:hover {
   color: rgb(166, 158, 158) !important;
+  background: #0b583d !important;
 }
 
 .navbg {
@@ -114,10 +128,6 @@ a:hover {
   border-style: none !important;
 }
 
-.p-tab:hover {
-  background: #0b583d !important;
-}
-
 .p-tabmenu .p-tabmenu-tablist {
   border-style: none !important;
   border: 0px;
@@ -137,9 +147,5 @@ a:hover {
 
 .pi:hover {
   background: #0b583d !important;
-}
-
-:deep(.p-link) {
-  color: #007bff !important;
 }
 </style>

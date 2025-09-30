@@ -22,10 +22,12 @@
     "DECEMBER": "DECEMBER"
   },
   "common": {
+    "contactus": "Contact us",
+
     "cancel": "Cancel",
     "clearAll": "Clear all",
     "close": "Close",
-    "contactus": "Contact us",
+
     "delete": "Delete",
     "edit": "Edit",
     "en": "English",
@@ -70,11 +72,11 @@
       "code": "HE"
     },
     "AV": {
-      "name": "Bird",
+      "name": "Bird Collection",
       "code": "AV"
     },
     "PI": {
-      "name": "Fish",
+      "name": "Fish Collection",
       "code": "PI"
     },
     "ev": {
@@ -355,6 +357,14 @@
     "vernacularName": "Common name"
   },
   "search": {
+    "contains": "Contains",
+    "exact": "Exact",
+    "filterScientificname": "Filter Scientific name",
+    "freeTextSearch": "Free text search",
+    "searchAll": "Search collections (species, genus, family, collectors, location, etc.)",
+    "searchSpecies": "Search species/taxon",
+    "startsWith": "Starts with",
+
     "addFilters": "Add filters",
     "advanceSearch": "Advance search",
     "backToResultsList": "Back to results list",
@@ -368,7 +378,7 @@
     "collectionCode": "Search collection code",
     "collectionName": "Search collection name",
     "collector": "Search collector",
-    "contains": "Contains",
+
     "country": "Search country",
     "county": "Search county",
 
@@ -377,14 +387,14 @@
     "endDate": "End date [YYYY-MM-DD]",
     "endDateLabel": "End date",
     "endYear": "End year",
-    "exact": "Exact",
+
     "family": "Search family",
     "filterByCollectingDate": "Filter by collecting date",
     "filterByCollectingYear": "Filter by collecting year",
     "filterCollections": "Filter collections",
-    "filterScientificname": "Filter Scientific name",
+
     "fieldNumber": "Search fieldNumber",
-    "freeTextSearch": "Free text search",
+
     "genus": "Search genus",
     "haveCoordinates": "Have coordinates",
     "haveImages": "Have images",
@@ -399,13 +409,13 @@
     "providScientificName": "Provided scientific name",
     "scientificName": "Scientific name",
     "search": "Search",
-    "searchAll": "Search collections (species, genus, family, collectors, location, etc.)",
+
     "searchAllFields": "Search all fields",
     "searchFilter": "Search Filter",
     "searchByCollection": "Search by collection",
     "searchCatalogNumber": "Search catalogue number",
     "searchCollections": "Species group",
-    "searchSpecies": "Search species/taxon",
+
     "selectDatasetName": "Select dataset name",
     "selectSpeciesGroup": "Select a species group",
     "searchScientificName": "Search scientific name",
@@ -416,7 +426,7 @@
     "state": "Search state/province",
     "start": "Start",
     "startYear": "Start year",
-    "startsWith": "Starts with",
+
     "subgenus": "Search subgenus",
     "synonyms": "Search synonyms",
     "taxonRank": "Search taxon rank",

@@ -164,10 +164,12 @@
     "nrmnod": "Noduler samling"
   },
   "common": {
+    "contactus": "Kontakta oss",
+
     "cancel": "Avbryt",
     "clearAll": "Rensa allt",
     "close": "Stäng",
-    "contactus": "Kontakta oss",
+
     "delete": "Radera",
     "edit": "Redigera",
     "en": "English",
@@ -353,6 +355,14 @@
     "view": "View"
   },
   "search": {
+    "contains": "Innehåller",
+    "exact": "Exakt",
+    "filterScientificname": "Filter Scientific name",
+    "freeTextSearch": "Free text search",
+    "searchAll": "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)",
+    "searchSpecies": "Sök art/taxon",
+    "startsWith": "Börja med",
+
     "addFilters": "Add filters",
     "advanceSearch": "Avancerad sökning",
     "backToResultsList": "Tillbaka till resultatlistan",
@@ -366,7 +376,7 @@
     "collectionCode": "Sök samlingskod",
     "collectionName": "Search collection name",
     "collector": "Search collector",
-    "contains": "Innehåller",
+
     "country": "Search country",
     "county": "Search county",
     "datasetName": "Namn på dataset",
@@ -374,14 +384,14 @@
     "endDate": "Slutdatum [YYYY-MM-DD]",
     "endDateLabel": "Slutdatum",
     "endYear": "Slutdaår",
-    "exact": "Exakt",
+
     "family": "Search family",
     "filterByCollectingDate": "Filter by collecting date",
     "filterByCollectingYear": "Filter by collecting year",
     "filterCollections": "Filter collections",
-    "filterScientificname": "Filter Scientific name",
+
     "fieldNumber": "Search fieldNumber",
-    "freeTextSearch": "Free text search",
+
     "genus": "Search genus",
     "haveCoordinates": "Have coordinates",
     "haveImages": "Have images",
@@ -397,14 +407,14 @@
 
     "scientificName": "Scientific name",
     "search": "Sök",
-    "searchAll": "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)",
+
     "searchAllFields": "Search all fields",
     "searchFilter": "Search Filter",
     "searchCatalogNumber": "Katalognummer",
     "searchByCollection": "Search by collection",
     "searchCollections": "Species group",
     "selectDatasetName": "Select dataset name",
-    "searchSpecies": "Sök art/taxon",
+
     "selectSpeciesGroup": "Select a species group",
     "searchScientificName": "Search scientific name",
     "searchTypeStatus": "Search typestatus",
@@ -414,7 +424,7 @@
     "state": "Search state/province",
     "start": "Start",
     "startYear": "Start year",
-    "startsWith": "Börja med",
+
     "subgenus": "Search subgenus",
     "synonyms": "Search synonyms",
     "taxonRank": "Search taxon rank",

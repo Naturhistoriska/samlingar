@@ -5,25 +5,18 @@
         id="inputWithIcon"
         v-model="value"
         @keydown.enter="onClick"
-        :placeholder="$t(placehold)"
+        :placeholder="placehold"
         :size="size"
         class="w-full"
       />
-      <Button
-        :icon="icon"
-        @click="onClick"
-        :loading="loading"
-        style="background-color: #144836 !important"
-      />
+      <Button :icon="icon" @click="onClick" class="btnStyle" />
     </InputGroup>
   </div>
 </template>
 <script setup>
 import { ref } from 'vue'
 const emits = defineEmits(['doAction'])
-
-const props = defineProps(['icon', 'loading', 'placehold', 'size'])
-
+const props = defineProps(['icon', 'placehold', 'size'])
 const value = ref()
 
 function onClick() {
@@ -31,8 +24,7 @@ function onClick() {
 }
 </script>
 <style scoped>
-/* .btnStyle {
-  max-width: 32px;
-  min-height: 30px;
-} */
+.btnStyle {
+  background: #144836 !important;
+}
 </style>

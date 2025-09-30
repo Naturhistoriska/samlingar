@@ -8,9 +8,9 @@
       <div class="flex-col gap-2 searchInput">
         <input-with-icon
           @doAction="handleFreeTextSearch"
-          v-bind:placehold="label"
-          v-bind:size="size"
-          v-bind:icon="icon"
+          v-bind:placehold="$t('search.searchAll')"
+          v-bind:size="'small'"
+          v-bind:icon="'pi pi-search'"
         />
       </div>
     </div>
@@ -71,14 +71,10 @@ const emits = defineEmits(['freeTextSearch'])
 
 const store = useStore()
 
-const icon = ref('pi pi-search')
-const size = ref('small')
-
-const label = ref('search.searchAll')
 let searchOptions = ref('contains')
 
 function change() {
-  console.log('change', searchOptions.value)
+  // console.log('change', searchOptions.value)
 }
 
 function handleFreeTextSearch(value) {
@@ -112,8 +108,5 @@ function handleFreeTextSearch(value) {
   min-width: 90%;
   text-align: left;
   float: left;
-}
-.advanceLink {
-  float: right;
 }
 </style>

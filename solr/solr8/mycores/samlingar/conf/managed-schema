@@ -402,6 +402,7 @@
   <field name="year" type="string" indexed="true" stored="true"/>
   <field name="stateProvince" type="string" indexed="true" stored="true"/>
   <field name="subgenus" type="string" indexed="true" stored="true"/>
+  <field name="subphylum" type="string" indexed="true" stored="true"/>
   <field name="synonyms" type="string" multiValued="true" indexed="true" stored="true"/>
   <field name="synonymAuthor" type="string" multiValued="true" indexed="false" stored="true"/>
 
@@ -409,6 +410,9 @@
   <field name="taxonRank" type="string" indexed="true" stored="true"/>
   <field name="taxonRemarks" type="string" indexed="false" stored="true"/>
   <field name="typeStatus" type="string" indexed="true" stored="true" docValues="true"/>
+
+
+  <field name="variety" type="string" indexed="true" stored="true"/>
 
   <field name="verbatimCoordinates" type="string" indexed="false" stored="true"/>
   <field name="vernacularName" type="string" indexed="true" multiValued="true" stored="true"/>
@@ -445,15 +449,20 @@
   <copyField source="locality" dest="copy_locality"/>
 
   <copyField source="scientificName" dest="copy_scientificName"/>
-  <copyField source="clazz" dest="copy_scientificName"/>
-  <copyField source="order" dest="copy_scientificName"/>
 
-  <copyField source="phylum" dest="copy_scientificName"/>
 
+
+
+
+  <copyField source="variety" dest="copy_scientificName"/>
   <copyField source="species" dest="copy_scientificName"/>
   <copyField source="genus" dest="copy_scientificName"/>
   <copyField source="subgenus" dest="copy_scientificName"/>
   <copyField source="family" dest="copy_scientificName"/>
+  <copyField source="order" dest="copy_scientificName"/>
+  <copyField source="clazz" dest="copy_scientificName"/>
+  <copyField source="subphylum" dest="copy_scientificName"/>
+  <copyField source="phylum" dest="copy_scientificName"/>
   <copyField source="kingdom" dest="copy_scientificName"/>
 
   <!-- <copyField source="catalogNumber" dest="text"/>

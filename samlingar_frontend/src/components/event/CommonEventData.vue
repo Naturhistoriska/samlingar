@@ -14,7 +14,7 @@
 
       <div class="col-4 reducePadding">{{ $t('results.collectors') }}</div>
       <div class="col-8 reducePadding">
-        {{ collectors }}
+        {{ collectorList }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.fieldNumber') }}</div>
@@ -41,16 +41,12 @@ import moment from 'moment-timezone'
 
 const store = useStore()
 
-const collectors = ref()
+const collectorList = ref()
 const eventStartDate = ref()
-const eventEndDayOfYear = ref()
-const eventStartTime = ref()
 const eventFieldNumber = ref()
 const eventEndDay = ref()
 const eventEndMonth = ref()
 const eventEndYear = ref()
-
-const dayOfYear = ref()
 
 const habitatData = ref()
 const remarks = ref()
@@ -60,6 +56,7 @@ onMounted(async () => {
   const record = store.getters['selectedRecord']
 
   const {
+    collectors,
     endday,
     endmonth,
     endyear,
@@ -86,7 +83,15 @@ onMounted(async () => {
 
   habitatData.value = habitat
 
-  collectors.value = recordedBy ? recordedBy.toString() : ''
+  let collector
+  if (collectors) {
+    collector = collectors
+  } else if (recordedBy) {
+    collector = recordedBy
+  }
+  if (collector) {
+    collectorList.value = collector.join(' | ')
+  }
 
   verbatimEventDateData.value = verbatimEventDate
 })

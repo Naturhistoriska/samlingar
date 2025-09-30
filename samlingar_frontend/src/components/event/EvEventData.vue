@@ -4,12 +4,12 @@
     <div class="grid">
       <div class="col-4 reducePadding">{{ $t('results.eventDate') }}</div>
       <div class="col-8 reducePadding">
-        {{ verbatimEventDateData }}
+        {{ collectingDate }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.collectors') }}</div>
       <div class="col-8 reducePadding">
-        {{ collectors }}
+        {{ collectorList }}
       </div>
 
       <div class="col-4 reducePadding" v-if="isEvCollection">{{ $t('results.stationNumber') }}</div>
@@ -22,7 +22,7 @@
         {{ fieldNumber }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.habitat') }}</div>
+      <div class="col-4 reducePadding" v-if="isEvCollection">{{ $t('results.habitat') }}</div>
       <div class="col-8 reducePadding">
         {{ habitatData }}
       </div>
@@ -35,7 +35,8 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const collectors = ref()
+const collectingDate = ref()
+const collectorList = ref()
 const eventStationNumber = ref()
 const fieldNumber = ref()
 const habitatData = ref()
@@ -46,13 +47,22 @@ const isEvCollection = ref(false)
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
-  const { collectionCode, habitat, recordedBy, recordNumber, stationNumber, verbatimEventDate } =
-    record
+  const {
+    collectionCode,
+    collectors,
+    day,
+    habitat,
+    month,
+    recordNumber,
+    stationNumber,
+    verbatimEventDate,
+    year
+  } = record
 
   isEvCollection.value = collectionCode === 'ev' || collectionCode === 'et'
 
-  if (recordedBy) {
-    collectors.value = recordedBy.join(' | ')
+  if (collectors) {
+    collectorList.value = collectors.join(' | ')
   }
 
   eventStationNumber.value = stationNumber
@@ -61,8 +71,25 @@ onMounted(async () => {
 
   fieldNumber.value = recordNumber
 
+  collectingDate.value = formatDate(year, month, day)
+  console.log('collectingDate', collectingDate)
   verbatimEventDateData.value = verbatimEventDate
 })
+
+function formatDate(year, month, day) {
+  let mm
+  if (month) {
+    mm = String(month).padStart(2, '0')
+  }
+  let dd
+  if (day) {
+    dd = String(day).padStart(2, '0')
+  }
+  const date = new Array(year, mm, dd)
+  return date.filter((str) => str !== undefined).join('-')
+
+  // return `${year}-${mm}-${dd}`
+}
 </script>
 <style scoped>
 .reducePadding {

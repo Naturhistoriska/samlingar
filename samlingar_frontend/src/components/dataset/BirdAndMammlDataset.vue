@@ -17,6 +17,11 @@
         {{ catNumber }}
       </div>
 
+      <div class="col-4 reducePadding">{{ $t('results.catalogedDate') }}</div>
+      <div class="col-8 reducePadding">
+        {{ dateCataloged }}
+      </div>
+
       <div class="col-4 reducePadding">{{ $t('results.recordType') }}</div>
       <div class="col-8 reducePadding">
         {{ recordType }}
@@ -59,10 +64,13 @@ import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
 
+import moment from 'moment-timezone'
+
 const { t } = useI18n()
 
 const store = useStore()
 
+const dateCataloged = ref()
 const catNumber = ref()
 const collection = ref()
 const expeditionNameData = ref()
@@ -83,6 +91,7 @@ onMounted(async () => {
 
   const {
     basisOfRecord,
+    catalogedDate,
     catalogNumber,
     collectionName,
     expeditionName,
@@ -93,6 +102,12 @@ onMounted(async () => {
     preservation,
     sex
   } = record
+
+  if (catalogedDate) {
+    dateCataloged.value = moment
+      .tz(catalogedDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
+      .format('YYYY-MM-DD')
+  }
 
   catNumber.value = catalogNumber
   collection.value = collectionName

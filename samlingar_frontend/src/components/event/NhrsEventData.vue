@@ -9,7 +9,7 @@
 
       <div class="col-4 reducePadding">{{ $t('results.collectors') }}</div>
       <div class="col-8 reducePadding">
-        {{ collectors }}
+        {{ collectorList }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.fieldNumber') }}</div>
@@ -31,7 +31,7 @@ import moment from 'moment-timezone'
 
 const store = useStore()
 
-const collectors = ref()
+const collectorList = ref()
 const eventStartDate = ref()
 const remarks = ref()
 
@@ -40,11 +40,15 @@ const eventFieldNumber = ref()
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
-  const { eventDate, eventRemarks, fieldNumber, recordedBy } = record
+  const { collectors, eventDate, eventRemarks, fieldNumber, recordedBy } = record
 
-  if (recordedBy) {
-    collectors.value = recordedBy.join('  |  ')
+  let collector
+  if (collectors) {
+    collector = collectors
+  } else if (recordedBy) {
+    collector = recordedBy
   }
+  collectorList.value = collector.join(' | ')
 
   if (eventDate) {
     eventStartDate.value = moment

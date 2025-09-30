@@ -1,7 +1,7 @@
 <template>
   <Card>
     <template #title>
-      <h2>{{ $t('contact.contactUs') }}</h2>
+      <h2>{{ $t('common.contactus') }}</h2>
     </template>
     <template #content>
       <div>{{ $t('contact.text') }}</div>

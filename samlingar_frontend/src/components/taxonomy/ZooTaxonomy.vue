@@ -163,6 +163,7 @@ onMounted(async () => {
   specificEpithetData.value = specificEpithet
 
   theClass.value = clazz
+
   theKingdom.value = kingdom
   thePhylum.value = phylum
   theOrder.value = order
@@ -171,9 +172,7 @@ onMounted(async () => {
   theSpecies.value = species
   theSubgenus.value = subgenus
 
-  const str = taxonRank == 'clazz' ? 'class' : taxonRank
-
-  rank.value = str.replace(/\b\w/g, (char) => char.toUpperCase())
+  rank.value = taxonRank == 'Clazz' ? 'Class' : taxonRank
 
   taxonName.value = scientificName
 })

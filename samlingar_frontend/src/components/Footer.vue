@@ -6,7 +6,7 @@
       </span>
       <Button
         icon="pi pi-envelope"
-        :label="$t('contact.contactUs')"
+        :label="$t('common.contactus')"
         @click="onContackLinkclick()"
         class="contactlink"
         link
@@ -30,6 +30,13 @@ export default {
   text-decoration: none;
   color: #4a4949b6;
 }
+
+.footer .footer-content {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 6rem;
+}
 /* a {
   cursor: pointer;
 }
@@ -52,17 +59,6 @@ export default {
   background-color: rgba(255, 255, 255, 0.1);
   z-index: -1;
 } */
-
-.footer .footer-content {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  padding: 0 6rem;
-  /* align-items: center;
-
-  max-width: 1448px;
-  margin: 0 auto; */
-}
 
 /* .footer .footer-content .license,
 .socials {

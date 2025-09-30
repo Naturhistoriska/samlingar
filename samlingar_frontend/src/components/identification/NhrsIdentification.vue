@@ -4,21 +4,26 @@
       {{ $t('results.identification') }}
     </p>
     <div class="grid">
-      <div class="col-3 reducePadding" v-if="!isMineralCollection">
+      <div class="col-4 reducePadding" v-if="!isMineralCollection">
         {{ $t('results.previousIdentifications') }}
       </div>
-      <div class="col-9 reducePadding">
-        {{ additionalDetermination }}
+      <div class="col-8 reducePadding">
+        <span v-for="(item, index) in additionalDetermination" :key="index">
+          {{ item }}<br />
+        </span>
       </div>
 
       <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.minerals') }}</div>
-      <div class="col-8 reducePadding" v-if="isMineralCollection">
-        {{ minerals }}
-      </div>
+      <div class="col-8 reducePadding" v-if="isMineralCollection">{{ minerals }}</div>
 
       <div class="col-4 reducePadding">{{ $t('results.identifiedBy') }}</div>
       <div class="col-8 reducePadding">
         {{ identifiedByData }}
+      </div>
+
+      <div class="col-4 reducePadding">{{ $t('results.dateIdentified') }}</div>
+      <div class="col-8 reducePadding">
+        {{ identifyDate }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.identificationQualifier') }}</div>
@@ -41,6 +46,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
+import moment from 'moment-timezone'
 
 const store = useStore()
 
@@ -70,11 +76,20 @@ onMounted(async () => {
   } = record
 
   isMineralCollection.value = collectionCode === 'NRMMIN'
-  if (previousIdentifications) {
-    additionalDetermination.value = previousIdentifications.join(', ')
+  // if (previousIdentifications) {
+  //   additionalDetermination.value = previousIdentifications.join(' | ')
+  // }
+
+  additionalDetermination.value = previousIdentifications
+
+  minerals.value = associeradeMineral ? associeradeMineral.join(' | ') : ''
+
+  if (dateIdentified) {
+    identifyDate.value = moment
+      .tz(dateIdentified, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
+      .format('YYYY-MM-DD')
   }
-  minerals.value = associeradeMineral ? associeradeMineral.join(', ') : ''
-  identifyDate.value = dateIdentified
+
   identifiedByData.value = identifiedBy
   identificationQualifierData.value = identificationQualifier
 

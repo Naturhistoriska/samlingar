@@ -49,8 +49,6 @@ const search = ref()
 
 onMounted(() => {
   acwidth.value = { width: '300px' }
-
-  console.log('currentUrl', currentUrl)
 })
 
 function onChange() {
@@ -62,9 +60,7 @@ function onItemSelect() {
 }
 
 function apiAutoComplete(event) {
-  console.log('apiAutoComplete', event.query)
   let searchText = event.query
-
   service
     .apiAutoCompleteSearch(searchText, 'scientificName')
     .then((response) => {
@@ -82,6 +78,8 @@ function apiAutoComplete(event) {
 }
 
 function apiSearch() {
+  loading.value = true
+
   let searchText = search.value
   const fuzzySearch = !itemSelected.value
   const searchMode = fuzzySearch ? 'contains' : 'equals'
@@ -120,6 +118,7 @@ function apiSearch() {
       console.log('error', error)
     })
     .finally(() => {
+      loading.value = false
       search.value = undefined
       store.commit('setResetMapData', true)
 

@@ -57,11 +57,6 @@
         {{ sexData }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.recordedBy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ recored }}
-      </div>
-
       <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
       <div class="col-8 reducePadding">
         {{ remarks }}
