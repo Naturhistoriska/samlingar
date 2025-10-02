@@ -41,7 +41,7 @@ public class CsvToJsonConverter implements Serializable  {
     private final String minuteKey = "minute";
     private final String secondKey = "second";
     private final String directionKey = "direction"; 
-    private final String imageKey = "image";
+    private final String imageKey = "hasImage";
     private final String associatedMediaKey = "associatedMedia";
 
     private String csvCatalogIdKey;
@@ -103,24 +103,24 @@ public class CsvToJsonConverter implements Serializable  {
         attBuilder = Json.createObjectBuilder();
         
         mappingJson = JsonHelper.getInstance().getMappingJson(json);
-        log.info("mappingJosn : {}", mappingJson);
+//        log.info("mappingJosn : {}", mappingJson);
 
         
         csvCatalogIdKey = json.getJsonObject(synonymKey).getString(catalogIdKey);
-        log.info("csvCatalogIdKey : {}", csvCatalogIdKey);
+//        log.info("csvCatalogIdKey : {}", csvCatalogIdKey);
  
         classificationJson = json.getJsonObject(classificationKey);
-        log.info("classificationJson : {}", classificationJson);
+//        log.info("classificationJson : {}", classificationJson);
          
         
         coordinatesJson = json.getJsonObject(coordinateKey);
-        log.info("coordinatesJson : {}", coordinatesJson);
+//        log.info("coordinatesJson : {}", coordinatesJson);
 
         latitudeJson = coordinatesJson.getJsonObject(latitudeKey);
-         log.info("latitudeJson : {}", latitudeJson);
+//         log.info("latitudeJson : {}", latitudeJson);
          
         longitudeJson = coordinatesJson.getJsonObject(longtitudeKey);
-         log.info("longitudeJson : {}", longitudeJson);
+//         log.info("longitudeJson : {}", longitudeJson);
 
         csvLatDegreeKey = latitudeJson.getString(degreeKey);
         csvLatMinuteKey = latitudeJson.getString(minuteKey);
@@ -131,7 +131,7 @@ public class CsvToJsonConverter implements Serializable  {
         csvLngMinuteKey = longitudeJson.getString(minuteKey);
         csvLngSecondKey = longitudeJson.getString(secondKey);
         csvLngDirectionKey = longitudeJson.getString(directionKey);
-
+ 
         csvCatalogedDateKey = json.getString(catalogedDateKey);
         csvTypeStatusKey = json.getString(typeStatusKey);
         csvCatalogNumberKey =  json.getString(catalogNumberKey);
@@ -148,8 +148,7 @@ public class CsvToJsonConverter implements Serializable  {
                         counter.getAndIncrement();
                         catalogNumber = record.get(csvCatalogNumberKey);
                         log.info("catalogueId : {}", catalogNumber);
-
-//                        if (!StringUtils.isBlank(catalogNumber)) {
+ 
                         JsonHelper.getInstance().addId(attBuilder, catalogNumber, idPrefix);
                         JsonHelper.getInstance().addCollectionName(attBuilder, collectionName);
                         JsonHelper.getInstance().addCollectionCode(attBuilder, idPrefix);
@@ -170,7 +169,7 @@ public class CsvToJsonConverter implements Serializable  {
                                                     
                         JsonHelper.getInstance().addModifedDate(attBuilder, 
                                 record.get(JsonHelper.getInstance().getModifiedDateCsvKey(json)));
-                        log.info("modified data added...");
+//                        log.info("modified data added...");
  
                         imageList = imageMap.get(catalogNumber);
                         if(imageList != null && !imageList.isEmpty()) {
@@ -182,6 +181,7 @@ public class CsvToJsonConverter implements Serializable  {
                             attBuilder.add(imageKey, true);
                             attBuilder.add(associatedMediaKey, imageArrayBuilder);   
                         }
+                        log.info("images added");
                         
                         
                         convert.convertVascularPlantsCoordination(attBuilder,

@@ -43,6 +43,7 @@ public class BotJsonConverter implements Serializable {
     private String csvExsiccatKey;
     private String csvCatalogIdKey;
     
+    private final String registerNumKey = "registreringsnummer_text";
     private NameSynonyms nameSynonyms;
     
     @Inject
@@ -77,7 +78,7 @@ public class BotJsonConverter implements Serializable {
                     attBuilder = Json.createObjectBuilder();
                     try {
                         counter.getAndIncrement();
-                        catalogNumber = record.get(0);
+                        catalogNumber = record.get(registerNumKey);
                         log.info("catalogueId : {}", catalogNumber); 
                         JsonHelper.getInstance().addId(attBuilder, catalogNumber, idPrefix);
                         JsonHelper.getInstance().addCollectionName(attBuilder, collectionName);

@@ -27,6 +27,17 @@ public class BotCoordinatesConvert implements Serializable {
     private final String regex6 = "\\d{1,3}º \\d{1,2}' \\d{1,2},\\d+'' [NSEW]"; // 56º 07' 53,4'' N
         
     
+//    private final String latRex1 = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$"; 
+//    private final String lonRex3 = "^-?((1[0-7]\\d)|(\\d{1,2}))(\\,\\d+)?$|^-?180(\\.0+)?$";
+    
+//    private final String latRegex = "[-+]?([1-8]?\\d(\\,\\d+)?|90(\\.0+)?)";
+//    private final String lonRegex = "[-+]?((1[0-7]\\d|\\d{1,2})(\\,\\d+)?|180(\\.0+)?)";
+    private final String latRegex = "^[-+]?((([1-8]?\\d)\\,\\d+)|90\\.0+)$"; 
+    private final String lonRegex = "^[-+]?((1[0-7]\\d|\\d{1,2})\\,\\d+|180\\.0+)$";
+            
+            
+            
+            
     private DMSCoordinate dmsCoord;
     private boolean isNorthEast;
     
@@ -55,6 +66,9 @@ public class BotCoordinatesConvert implements Serializable {
     private int minute;
     private double latLngDouble;
     
+    private double dblLat;
+    private double dblLong;
+    
     private final double double200 = 200.0;
     
     private final String north = "N";
@@ -65,7 +79,10 @@ public class BotCoordinatesConvert implements Serializable {
     }
     
     public double  convertVascularPlantsLatLng(String strDegree, String strMinut,
-            String strSecond, String direction ) { 
+            String strSecond, String direction, boolean isLatitude) { 
+        
+        log.info("convertVascularPlantsLatLng.. {} -- {}", strDegree + " " + strMinut, strSecond + " " + direction);
+        log.info("is lat... {}", isLatitude);
 //        
 //        strDegree = record.get(degreeKey).trim();
 //        strMinute = record.get(minuteKey).trim();
@@ -73,17 +90,48 @@ public class BotCoordinatesConvert implements Serializable {
 //        strSeconds = StringUtils.replace(strSeconds, comma, dot);
 //        direction = record.get(directionKey).trim();
         
-        if(StringUtils.isAnyEmpty(strDegree, strMinut, strSecond)) {
-            return double200;
-        }
+//        if(StringUtils.isAnyEmpty(strDegree, strMinut, strSecond)) {
+//            return double200;
+//        }
+//        if(StringUtils.isAllBlank(strDegree)) {
+//            return double200;
+//        } 
+
         try {
+            if(isLatitude) { 
+                if(strDegree.matches(latRegex)) { 
+                    strDegree = strDegree.replace(comma, dot);   
+                    dblLat = Util.getInstance().stringToDouble(strDegree);  
+                    return direction.equals(north) ? dblLat : (-1) * dblLat;   
+                }
+            } else  {
+                if(strDegree.matches(lonRegex)) {
+                    strDegree = strDegree.replace(comma, dot);  
+                    dblLong = Util.getInstance().stringToDouble(strDegree); 
+                    return direction.equals(east)  ? dblLong : (-1) * dblLong;   
+                }
+            }
+            
+            if(StringUtils.isAnyEmpty(strDegree, strMinut, strSecond)) {
+                return double200;
+            } 
+              
+             
+            
+            log.info("here.....");
             degree = Util.getInstance().stringToInt(strDegree);
             minute = Util.getInstance().stringToInt(strMinut);
             seconds = Util.getInstance().stringToDouble(strSecond); 
-           
-            latLngDouble = convert(degree, minute, seconds); 
-            return direction.equals(north) || direction.equals(east)
-                                ? latLngDouble : (-1) * latLngDouble; 
+            
+            if(isLatitude && degree >= -90 && degree <= 90  ) { 
+                dblLatOrLong = convert(degree, minute, seconds);  
+                return direction.equals(north) 
+                                ? dblLatOrLong : (-1) * dblLatOrLong; 
+            } else if( degree >= -180 && degree <= 180  ) {
+                dblLong = convert(degree, minute, seconds);  
+                return direction.equals(east) ? dblLong : (-1) * dblLong; 
+            }
+             
         } catch (Exception e) {
             log.error(e.getMessage()); 
         }

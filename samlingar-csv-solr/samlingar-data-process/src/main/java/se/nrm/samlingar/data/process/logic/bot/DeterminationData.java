@@ -18,18 +18,21 @@ import se.nrm.samlingar.data.process.vo.Determination;
 @Slf4j
 public class DeterminationData implements Serializable {
     private final String determinationKey = "currentDetermination"; 
-    private final String identifiedByKey = "identifiedBy"; 
-    private final String dateIdentifiedKey = "dateIdentified"; 
+    private final String identifiedByKey = "identifiedBy";  
+    private final String identifiedYearKey = "identifiedYear";
     
     private Map<String, List<Determination>> determinationMap;
     private String currentDetermination;
     private String regNumber;
-    private String identifiedBy; 
-    private String dateIdentified;
+    private String identifiedBy;  
+    private String yearIdentified;
     
     private String csvDeterminationKey;
-    private String csvIdentifiedByKey; 
-    private String csvDateIdentifiedKey; 
+    private String csvIdentifiedByKey;  
+    private String csvYearIdentifiedKey;
+    
+    private final String registerKey = "registreringsnummer";
+  
     
     private  List<Determination> determinationList;
     private Determination determination; 
@@ -47,25 +50,28 @@ public class DeterminationData implements Serializable {
         
         csvDeterminationKey = json.getString(determinationKey);
         csvIdentifiedByKey = json.getString(identifiedByKey); 
-          
-        if(json.containsKey(dateIdentifiedKey)) {
-            csvDateIdentifiedKey = json.getString(dateIdentifiedKey);
-        }  
         
-     
+        if(json.containsKey(identifiedYearKey)) {
+             csvYearIdentifiedKey = json.getString(identifiedYearKey);
+        }
+       
+        
+         
         determinationRecords.stream()
                 .forEach(detRecord -> {
                     currentDetermination = detRecord.get(csvDeterminationKey);
                     if (!StringUtils.isBlank(currentDetermination)) {
-                        regNumber = detRecord.get(0);
+                        regNumber = detRecord.get(0); 
+                        
                         identifiedBy = detRecord.get(csvIdentifiedByKey);
-                          
-                        if(csvDateIdentifiedKey != null) {
-                            dateIdentified =  detRecord.get(csvDateIdentifiedKey);
+                        
+                        if(csvYearIdentifiedKey != null) {
+                            yearIdentified =  detRecord.get(csvYearIdentifiedKey);
                         }
                         
+                        
                         determination = new Determination(currentDetermination, 
-                                identifiedBy,  dateIdentified);
+                                identifiedBy,  yearIdentified);
                         
                         if (determinationMap.containsKey(regNumber)) {
                             determinationList = determinationMap.get(regNumber); 

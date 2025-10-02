@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javax.inject.Inject; 
 import javax.json.JsonObjectBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.CSVRecord; 
 import org.apache.commons.lang3.StringUtils;
 import se.nrm.samlingar.data.process.logic.exception.SamlingarException;
 import se.nrm.samlingar.data.process.logic.json.JsonHelper;
@@ -59,6 +59,7 @@ public class JsonCoordinatesConverter implements Serializable {
             String latDegreeKey, String latMinuteKey, String latSecondKey,
             String latDirectionKey, String lngDegreeKey, String lngMinuteKey,
             String lngSecondKey, String lngDirectionKey, CSVRecord record) {
+        log.info("convertVascularPlantsCoordination");
         
         latDegree = record.get(latDegreeKey).trim();
         latMinute = record.get(latMinuteKey).trim();
@@ -69,22 +70,31 @@ public class JsonCoordinatesConverter implements Serializable {
         lonMinute = record.get(lngMinuteKey).trim();
         lonSecond = record.get(lngSecondKey).trim(); 
         lonDirection = record.get(lngDirectionKey).trim();
+        
+        log.info("what... {} -- {}", latDegree + " " + latMinute + " " + latSecond, latDirection);
+        log.info("what 1... {} -- {}", lonDegree + " " + lonMinute + " " + lonSecond, lonDirection);
+        
+        if (!StringUtils.isAnyEmpty(latDegree, lonDegree)) {
+            doubleLat = botConvert.convertVascularPlantsLatLng(latDegree,
+                    latMinute, latSecond, latDirection, true);
+            doubleLng = botConvert.convertVascularPlantsLatLng(lonDegree,
+                    lonMinute, lonSecond, lonDirection, false);
 
-        doubleLat = botConvert.convertVascularPlantsLatLng(latDegree,
-                latMinute, latSecond, latDirection );
-        doubleLng = botConvert.convertVascularPlantsLatLng(lonDegree,
-                lonMinute, lonSecond, lonDirection);
-
-        if (doubleLat != double200 && doubleLng != double200) {
-            log.info("coordinates : {} -- {}", doubleLat, doubleLng);
-            try {
-                addGeoData(attBuilder, doubleLat, doubleLng);
-            } catch (SamlingarException ex) {
+            log.info("what 2 ... {} -- {}", doubleLat, doubleLng);
+            if (doubleLat != double200 && doubleLng != double200) {
+                log.info("coordinates : {} -- {}", doubleLat, doubleLng);
+                
+                
+                 
+                try {
+                    addGeoData(attBuilder, doubleLat, doubleLng);
+                } catch (SamlingarException ex) {
 //            log.error("SamlingarException: builderCoordinates : {}", ex.getErrorMessage());
-            } catch (Exception ex) {
-                log.error("builderCoordinates : {}", ex.getMessage());
-            } 
-            addVerbatimCoordinates(attBuilder);
+                } catch (Exception ex) {
+                    log.error("builderCoordinates : {}", ex.getMessage());
+                }
+                addVerbatimCoordinates(attBuilder);
+            }
         } 
     }
     
@@ -124,6 +134,7 @@ public class JsonCoordinatesConverter implements Serializable {
     private void addGeoData(JsonObjectBuilder attBuilder, double latitude,
             double longitude) throws Exception {
 
+        log.info("why,... {} -- {}", latitude, longitude);
         JsonHelper.getInstance().addCoordinates(attBuilder, latitude, longitude);
 //        JsonHelper.getInstance().addPoint(attBuilder, latitude, longitude);
  

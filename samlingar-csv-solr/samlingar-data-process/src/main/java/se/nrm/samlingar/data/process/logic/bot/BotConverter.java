@@ -22,6 +22,7 @@ public class BotConverter implements Serializable {
     
     private final String identificationKey = "previousIdentifications";
     private final String identifiedByKey = "identifiedBy";
+    private final String identifiedYearKey = "identifiedYear";
     private final String hasImagesKey = "hasImage";
     private final String associatedMediaKey = "associatedMedia";
     private final String emptySpace = " ";
@@ -92,7 +93,7 @@ public class BotConverter implements Serializable {
     private void addSynomys(JsonObjectBuilder builder, List<Synonyms> synomys) { 
          
         if (synomys != null && !synomys.isEmpty()) {
-            log.info("addSynomys : {}", synomys.size());
+//            log.info("addSynomys : {}", synomys.size());
             synomysArrayBuilder = Json.createArrayBuilder();
             synomyAuthorsArrayBuilder = Json.createArrayBuilder(); 
             synomys.stream()
@@ -104,6 +105,7 @@ public class BotConverter implements Serializable {
             builder.add(synonymAuthorKey, synomyAuthorsArrayBuilder);
         }
     }
+    
 
     public void convertDetermination(JsonObjectBuilder builder,
             Map<String, List<Determination>> determinationMap, String catalogNumber) {
@@ -113,8 +115,10 @@ public class BotConverter implements Serializable {
         dateIdentified = null;
         try {
             list = determinationMap.get(catalogNumber);
+            
             if (list != null && !list.isEmpty()) {
 //                log.info("has determination : {}", regNumber);
+              
                 determinationArrayBuilder = Json.createArrayBuilder();
                 list.stream()
                         .forEach(vo -> {
@@ -123,27 +127,30 @@ public class BotConverter implements Serializable {
                             taxonWithAuthor = vo.getCurrentDetermination();
                             identifiedBy = vo.getIdentifiedBy(); 
                             dateIdentified = vo.getDateIdentified();
-                            JsonHelper.getInstance().addAttValue(builder, identifiedByKey, identifiedBy );
+                           
  
+                            
+
+            
                             if (taxonWithAuthor != null) {
                                 determinationSb.append(taxonWithAuthor);
                                 if (identifiedBy != null) {
-                                    builder.add(identificationKey, determinationArrayBuilder);
+//                                    builder.add(identificationKey, determinationArrayBuilder);
+//                                    JsonHelper.getInstance().addAttValue(builder, identifiedByKey, identifiedBy );
                                     determinationSb.append(emptySpace);
-                                    determinationSb.append(identifiedBy);
-                                    
+                                    determinationSb.append(identifiedBy); 
                                 }
                                 if (!StringUtils.isBlank(dateIdentified)) {
+//                                    JsonHelper.getInstance().addAttValue(builder, identifiedYearKey, dateIdentified );
                                     determinationSb.append(emptySpace);
                                     determinationSb.append(startBracket);
                                     determinationSb.append(dateIdentified);
                                     determinationSb.append(endBracket);
                                 }
-                            }
-
+                            } 
                             determinationArrayBuilder.add(determinationSb.toString().trim());
                         });
-                builder.add(identificationKey, determinationArrayBuilder);
+                builder.add(identificationKey, determinationArrayBuilder); 
             }
 
         } catch (Exception ex) {

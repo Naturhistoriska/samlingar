@@ -152,6 +152,7 @@ public class VascularPlantsDataProcess implements Serializable {
                                             synonymsMap, determinationMap, imageMap,
                                             idPrefix, collectionName, json);
 
+                                    log.info("file post : {} - {}", file.getName(), records.size());
                                     list.stream()
                                             .forEach(l -> {
                                                 int status = solr.postToSolr(l.toString().trim());

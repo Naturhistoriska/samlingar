@@ -23,11 +23,9 @@ public class CsvDataExtraction implements Serializable {
 
     private final String emptySpace = " ";
     private final String familyKey = "familj";
-    private final String nameIdKey = "namnID";
-    private final String nameKey = "namn";
-    private final String authorKey = "auktor";
-    private final String genusKey = "slaekte";
-    private final String catalogIdKey = "katalogID";
+
+
+
     private final String catalogNameIdKey = "katalognamnsID";
     private final String scientificNameKey = "scientificName";
     private final String kindomKey = "kindom";
@@ -55,10 +53,22 @@ public class CsvDataExtraction implements Serializable {
 
     private StringBuilder synonymSb;
 
-    private Map<String, List<Name>> nameMap;
+ 
     private Map<String, NameSynonyms> map;
     private List<Name> nameList;
     private List<Synonyms> synonymsList;
+    
+    
+    // name record
+    private String authorship;
+    private final String authorKey = "auktor"; 
+    private final String genusKey = "slaekte";
+    private final String catalogIdKey = "katalogID";
+    private final String nameIdKey = "namnID";
+    private final String nameKey = "namn";
+    private Map<String, List<Name>> nameMap;
+
+
 
     public CsvDataExtraction() {
 
@@ -126,18 +136,19 @@ public class CsvDataExtraction implements Serializable {
                                     synonymSb = new StringBuilder();
 
                                     log.info("nameId : {}", nameId);
-                                    if (!nameId.equals(catalogNameId)) {
+                                    if (!nameId.equals(catalogNameId)) { 
                                         synonymSb.append(name);
                                         synonymSb.append(emptySpace);
                                         synonymSb.append(author);
                                         synonymsVo = new Synonyms(name, synonymSb.toString().trim());
                                         synonymsList.add(synonymsVo);
                                     } else {
+                                        authorship = author;
                                         scientificName = name;
                                     }
                                 });
-                        map.put(catalogId, new NameSynonyms(scientificName, genus, author, family, synonymsList));
-
+                        map.put(catalogId, new NameSynonyms(scientificName, 
+                                genus, authorship, family, synonymsList)); 
                     } 
                 });
         return map;
@@ -161,6 +172,7 @@ public class CsvDataExtraction implements Serializable {
                     catalogId = nameRecord.get(catalogIdKey);
                     name = nameRecord.get(nameKey);
                     author = nameRecord.get(authorKey);
+                    
                     genus = nameRecord.get(genusKey);
                     nameVo = new Name(nameId, name, author, genus);
 

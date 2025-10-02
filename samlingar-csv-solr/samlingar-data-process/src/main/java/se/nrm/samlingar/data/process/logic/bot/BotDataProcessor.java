@@ -120,7 +120,7 @@ public class BotDataProcessor implements Serializable {
                             }
 
                             mappingJson = JsonHelper.getInstance().getMappingJson(json);
-                            log.info("mappingJosn : {}", mappingJson);
+//                            log.info("mappingJosn : {}", mappingJson);
 
                             nameRecords = fileProcessor.read(nameCsvFilePath, delimiter, encoding);
                             determinationRecords = fileProcessor.read(determinationCsvFilePath, delimiter, encoding);
@@ -129,10 +129,11 @@ public class BotDataProcessor implements Serializable {
                             determinationMap = datermination.extractData(
                                     determinationRecords, json.getJsonObject(determinationkey));
                             log.info("determinationMap : {}", determinationMap.size());
+                             
 
                             imageRecords = getImageCsvRecord(imageArray,
                                     properties.getImageKboCsvPath(), kboDateset);
-                            log.info("image records : {}", imageRecords.size());
+//                            log.info("image records : {}", imageRecords.size());
 
                             imageMap = imageData.kboExtract(imageRecords,
                                     JsonHelper.getInstance().getMappingJson(imageJson));
@@ -156,6 +157,13 @@ public class BotDataProcessor implements Serializable {
                                         status = solr.postToSolr(l.toString().trim());
                                         log.info("status : {}", status);
                                     });
+                            
+                            
+                            
+                             
+                            
+                            
+                            
 //                            if (fileName.equals(vascularPlants)) {
 //                                imageMap = imageData.fboExtract(imageRecords,
 //                                        JsonHelper.getInstance().getMappingJson(imageJson));
