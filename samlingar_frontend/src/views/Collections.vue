@@ -49,16 +49,16 @@ const paleoCollections = computed(() => {
 })
 
 const zooDataGroup = computed(() => {
-  return 'startPage.zooCollection'
+  return 'dataResource.zooCollection'
 })
 const botanyDataGroup = computed(() => {
-  return 'startPage.botanicalCollection'
+  return 'dataResource.botCollection'
 })
 const paleoDataGroup = computed(() => {
-  return 'startPage.palaeCollection'
+  return 'dataResource.palCollection'
 })
 const geoDataGroup = computed(() => {
-  return 'startPage.geoCollection'
+  return 'dataResource.geoCollection'
 })
 
 const zooResource = computed(() => {
