@@ -111,44 +111,6 @@
       "code": "NRMNOD"
     }
   },
-  "dataResource": {
-    "botCollection": "Botanical and mycological collections",
-    "geoCollection": "Geological collections",
-    "palCollection": "Paleontological collections",
-    "zooCollection": "Zoological collections"
-  },
-  "startPage": {
-    "allSpecimens": "All specimens",
-    "commonSearch": "Common searches",
-    "specimensWithCoordinates": "Specimens with coordinates",
-    "specimensFromSweden": "Specimens collected in Sweden",
-    "specimensWithImages": "Specimens with images",
-    "specimensWithType": "Specimens with type status",
-    "text": "The Swedish Museum of Natural History contains 11 million specimens collected over the span of 300 years. Nearly 4 million objects from our collections are currently available online, 136000 with photos, showcasing biodiversity from around the world."
-  },
-  "statisticData": {
-    "statisticData": "Statistic Data"
-  },
-
-  "common": {
-    "contactus": "Contact us",
-    "cancel": "Cancel",
-    "clearAll": "Clear all",
-    "close": "Close",
-    "delete": "Delete",
-    "edit": "Edit",
-    "en": "English",
-
-    "institution": "Swedish Museum of Natural History",
-    "languageSetting": "Language setting",
-    "no": "NO",
-    "ok": "Ok",
-
-    "save": "Save",
-    "selectLanguage": "Select language",
-    "sv": "Svenska",
-    "yes": "YES"
-  },
   "contact": {
     "contactInfo": "Post address and contact information",
     "contactUs": "Contact us",
@@ -159,6 +121,20 @@
     "pobox": "Box 50007",
     "text": "Feel free to contact us with questions, tips and comments. We always try to help as best we can."
   },
+
+  "common": {
+    "contactus": "Contact us",
+    "cancel": "Cancel",
+    "clearAll": "Clear all",
+    "close": "Close",
+    "institution": "Swedish Museum of Natural History"
+  },
+  "dataResource": {
+    "botCollection": "Botanical and mycological collections",
+    "geoCollection": "Geological collections",
+    "palCollection": "Paleontological collections",
+    "zooCollection": "Zoological collections"
+  },
   "exportData": {
     "download": "Download",
     "downloading": "Downloading...",
@@ -168,11 +144,15 @@
     "prepareData": "Processing data...."
   },
   "footer": {
-    "nrm": "Swedish Museum of Natural History",
-    "currentLanguage": "ENGLISH"
+    "nrm": "Swedish Museum of Natural History"
   },
-  "home": {
-    "header": "Welcome to the search portal for natural history collections inThe Swedish Museum of Natural History"
+  "help": {
+    "basicSearch": "🟢 Basic Search",
+    "basicSearchText": "The search all box allows you to find records by searching all searchable fields in the database, such as taxon, collections, locality, and other relevant content.",
+    "filterSearch": "Filter Search",
+    "howToSearch": "🔍 How to Use Samlingar Search Portal",
+    "howToSearchText": "Our portal allows you to search through the museum’s registered collections and specimens, including fossils, plants, animals, minerals, and more.",
+    "searchHelp": "Search Help"
   },
   "labels": {
     "catalogNumber": "Catalogue number",
@@ -200,8 +180,6 @@
   },
   "results": {
     "accession": "Accession number",
-    "backToResultListView": "Back to result list view",
-    "backToReslutView": "Back to result view",
     "basionym": "Original name basionym",
     "catalogedDate": "Created date",
     "catalogNumber": "Catalog number",
@@ -320,6 +298,15 @@
     "verbatimCoordinates": "Verbatim coordinates",
     "vernacularName": "Common name"
   },
+  "startPage": {
+    "allSpecimens": "All specimens",
+    "commonSearch": "Common searches",
+    "specimensWithCoordinates": "Specimens with coordinates",
+    "specimensFromSweden": "Specimens collected in Sweden",
+    "specimensWithImages": "Specimens with images",
+    "specimensWithType": "Specimens with type status",
+    "text": "The Swedish Museum of Natural History contains 11 million specimens collected over the span of 300 years. Nearly 4 million objects from our collections are currently available online, 136000 with photos, showcasing biodiversity from around the world."
+  },
   "search": {
     "contains": "Contains",
     "exact": "Exact",
@@ -328,7 +315,6 @@
     "searchAll": "Search collections (species, genus, family, collectors, location, etc.)",
     "searchSpecies": "Search species/taxon",
     "startsWith": "Starts with",
-
     "addFilters": "Add filters",
     "advanceSearch": "Advance search",
     "backToResultsList": "Back to results list",
@@ -342,23 +328,18 @@
     "collectionCode": "Search collection code",
     "collectionName": "Search collection name",
     "collector": "Search collector",
-
     "country": "Search country",
     "county": "Search county",
-
     "datasetName": "Dataset name",
     "end": "End",
     "endDate": "End date [YYYY-MM-DD]",
     "endDateLabel": "End date",
     "endYear": "End year",
-
     "family": "Search family",
     "filterByCollectingDate": "Filter by collecting date",
     "filterByCollectingYear": "Filter by collecting year",
     "filterCollections": "Filter collections",
-
     "fieldNumber": "Search fieldNumber",
-
     "genus": "Search genus",
     "haveCoordinates": "Have coordinates",
     "haveImages": "Have images",
@@ -373,13 +354,11 @@
     "providScientificName": "Provided scientific name",
     "scientificName": "Scientific name",
     "search": "Search",
-
     "searchAllFields": "Search all fields",
     "searchFilter": "Search Filter",
     "searchByCollection": "Search by collection",
     "searchCatalogNumber": "Search catalogue number",
     "searchCollections": "Species group",
-
     "selectDatasetName": "Select dataset name",
     "selectSpeciesGroup": "Select a species group",
     "searchScientificName": "Search scientific name",
@@ -390,7 +369,6 @@
     "state": "Search state/province",
     "start": "Start",
     "startYear": "Start year",
-
     "subgenus": "Search subgenus",
     "synonyms": "Search synonyms",
     "taxonRank": "Search taxon rank",
@@ -399,6 +377,13 @@
     "waterBody": "Search water body",
     "year": "Year"
   },
-
+  "statisticData": {
+    "statisticData": "Statistic Data"
+  },
+  "tip": {
+    "quickSrarch": "Search for all the specimens are registered in our collections",
+    "quickSrarchInput": "This is an autocomplete searh for species/taxon. Type at least 3 letters to see suggestions...",
+    "searchAll": "This is full text search, you can search by taxon name, locality, collections etc... "
+  },
   "title": "The Swedish Museum of Natural History Collections"
 }

@@ -5,9 +5,9 @@
   },
   "btnLabel": {
     "columns": "Columns",
-    "help": "Help",
-    "removeDates": "Remove dates",
-    "reset": "Reset"
+    "help": "Hjälp",
+    "removeDates": "Ta bort datum",
+    "reset": "Återställa"
   },
   "chart": {
     "monthChartLabel": "Registrerade föremål senaste 12 månaderna",
@@ -83,7 +83,7 @@
       "code": "PAL"
     },
     "algae": {
-      "name": "Alger samling ",
+      "name": "Alger samling",
       "code": "algae"
     },
     "mosses": {
@@ -111,45 +111,12 @@
       "code": "NRMNOD"
     }
   },
-  "dataResource": {
-    "botCollection": "Botaniska och mykologiska samlingar",
-    "geoCollection": "Geological collections",
-    "palCollection": "Paleontologiska samlingar",
-    "zooCollection": "Geologiska samlingar"
-  },
-  "startPage": {
-    "allSpecimens": "Alla föremål",
-    "commonSearch": "Vanliga sökningar",
-    "specimensWithCoordinates": "Föremål med koordinater",
-    "specimensFromSweden": "Föremål insamlade i Sverige",
-    "specimensWithImages": "Föremål med bilder",
-    "specimensWithType": "Typföremål",
-    "text": "The Swedish Museum of Natural History contains 11 million specimens collected over the span of 300 years. Nearly 4 million objects from our collections are currently available online, 136000 with photos, showcasing biodiversity from around the world."
-  },
-  "statisticData": {
-    "statisticData": "Statistikdata"
-  },
-
   "common": {
     "contactus": "Kontakta oss",
-
     "cancel": "Avbryt",
     "clearAll": "Rensa allt",
     "close": "Stäng",
-
-    "delete": "Radera",
-    "edit": "Redigera",
-    "en": "English",
-
-    "institution": "Naturhistoriska riksmuseet",
-    "languageSetting": "Språkinställning",
-    "no": "NEJ",
-    "ok": "Ok",
-
-    "save": "Spara",
-    "selectLanguage": "Välj språk",
-    "sv": "Svenska",
-    "yes": "JA"
+    "institution": "Naturhistoriska riksmuseet"
   },
   "contact": {
     "contactInfo": "Postadress och kontaktuppgifter",
@@ -161,6 +128,12 @@
     "pobox": "Box 50007",
     "text": "Hör gärna av dig till oss med frågor, tips och kommentarer. Vi försöker alltid hjälpa till så gott vi kan."
   },
+  "dataResource": {
+    "botCollection": "Botaniska och mykologiska samlingar",
+    "geoCollection": "Geological collections",
+    "palCollection": "Paleontologiska samlingar",
+    "zooCollection": "Geologiska samlingar"
+  },
   "exportData": {
     "download": "Ladda ner data",
     "downloading": "Downloading...",
@@ -170,16 +143,20 @@
     "prepareData": "Processing data...."
   },
   "footer": {
-    "nrm": "Naturhistoriska riksmuseet",
-    "currentLanguage": "SVENSKA"
+    "nrm": "Naturhistoriska riksmuseet"
   },
-  "home": {
-    "header": "Välkommen till Naturhistoriska riksmuseets sökportal för naturhistoriska samlingar"
+  "help": {
+    "basicSearch": "🟢 Basic Search",
+    "basicSearchText": "The search all box allows you to find records by searching all searchable fields in the database, such as taxon, collections, locality, and other relevant content.",
+    "filterSearch": "Filter Search",
+    "howToSearch": "🔍 How to Use Samlingar Search Portal",
+    "howToSearchText": "Our portal allows you to search through the museum’s registered collections and specimens, including fossils, plants, animals, minerals, and more.",
+    "searchHelp": "Search Help"
   },
   "labels": {
     "catalogNumber": "Katalognummer",
-    "collections": "Collections",
-    "collectingDate": "Date collected [Date range: start - end start year - end year]",
+    "collections": "Samlingar",
+    "collectingDate": "Date collected [Date range: start - end or start year - end year]",
     "scientificName": "Scientific Name"
   },
   "locale": {
@@ -192,6 +169,13 @@
     "contactUs": "Kontakta oss",
     "home": "Hem",
     "search": "Sök"
+  },
+  "records": {
+    "labels": "Etiketter",
+    "list": "Lista",
+    "media": "Media",
+    "recordTitle": "Specimen Record",
+    "view": "View"
   },
   "results": {
     "accession": "Accession number",
@@ -313,15 +297,18 @@
     "variety": "Variety",
     "verbatimEventDate": "Verbatim event date",
     "verbatimCoordinates": "Verbatim coordinates",
-    "vernacularName": "Svenskt namn"
+    "vernacularName": "Common name"
   },
-  "records": {
-    "labels": "Labels",
-    "list": "List",
-    "media": "Media",
-    "recordTitle": "Specimen Record",
-    "view": "View"
+  "startPage": {
+    "allSpecimens": "Alla föremål",
+    "commonSearch": "Vanliga sökningar",
+    "specimensWithCoordinates": "Föremål med koordinater",
+    "specimensFromSweden": "Föremål insamlade i Sverige",
+    "specimensWithImages": "Föremål med bilder",
+    "specimensWithType": "Typföremål",
+    "text": "The Swedish Museum of Natural History contains 11 million specimens collected over the span of 300 years. Nearly 4 million objects from our collections are currently available online, 136000 with photos, showcasing biodiversity from around the world."
   },
+
   "search": {
     "contains": "Innehåller",
     "exact": "Exakt",
@@ -330,7 +317,6 @@
     "searchAll": "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)",
     "searchSpecies": "Sök art/taxon",
     "startsWith": "Börja med",
-
     "addFilters": "Add filters",
     "advanceSearch": "Avancerad sökning",
     "backToResultsList": "Tillbaka till resultatlistan",
@@ -344,7 +330,6 @@
     "collectionCode": "Sök samlingskod",
     "collectionName": "Search collection name",
     "collector": "Search collector",
-
     "country": "Search country",
     "county": "Search county",
     "datasetName": "Namn på dataset",
@@ -352,14 +337,11 @@
     "endDate": "Slutdatum [YYYY-MM-DD]",
     "endDateLabel": "Slutdatum",
     "endYear": "Slutdaår",
-
     "family": "Search family",
     "filterByCollectingDate": "Filter by collecting date",
     "filterByCollectingYear": "Filter by collecting year",
     "filterCollections": "Filter collections",
-
     "fieldNumber": "Search fieldNumber",
-
     "genus": "Search genus",
     "haveCoordinates": "Have coordinates",
     "haveImages": "Have images",
@@ -372,17 +354,14 @@
     "order": "Search order",
     "phylum": "Search phylum",
     "providScientificName": "Provided scientific name",
-
     "scientificName": "Scientific name",
     "search": "Sök",
-
     "searchAllFields": "Search all fields",
     "searchFilter": "Search Filter",
     "searchCatalogNumber": "Katalognummer",
     "searchByCollection": "Search by collection",
     "searchCollections": "Species group",
     "selectDatasetName": "Select dataset name",
-
     "selectSpeciesGroup": "Select a species group",
     "searchScientificName": "Search scientific name",
     "searchTypeStatus": "Search typestatus",
@@ -392,7 +371,6 @@
     "state": "Search state/province",
     "start": "Start",
     "startYear": "Start year",
-
     "subgenus": "Search subgenus",
     "synonyms": "Search synonyms",
     "taxonRank": "Search taxon rank",
@@ -401,6 +379,13 @@
     "waterBody": "Search water body",
     "year": "År"
   },
-
+  "statisticData": {
+    "statisticData": "Statistikdata"
+  },
+  "tip": {
+    "quickSrarch": "Search for all the specimens are registered in our collections",
+    "quickSrarchInput": "This is an autocomplete searh. Type at least 3 letters to see suggestions...",
+    "searchAll": "This is full text search, you can search by taxon name, locality, collections etc... "
+  },
   "title": "Naturhistoriska riksmuseets samlingar"
 }
