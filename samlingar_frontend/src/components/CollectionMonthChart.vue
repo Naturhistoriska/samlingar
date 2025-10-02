@@ -9,9 +9,11 @@ import Chart from 'primevue/chart'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const props = defineProps(['chart'])
+
+const currentLocale = computed(() => locale.value)
 
 const chartData = computed(() => {
   const documentStyle = getComputedStyle(document.documentElement)
@@ -22,13 +24,18 @@ const chartData = computed(() => {
   if (chart) {
     labels = Object.keys(chart)
     values = Object.values(chart)
+
+    if (currentLocale.value === 'sv') {
+      labels = buildSwedishMonthLabel(labels)
+      console.log('nes labels...', labels)
+    }
   }
 
   return {
     labels: labels,
     datasets: [
       {
-        label: t('startPage.monthChartLabel'),
+        label: t('chart.monthChartLabel'),
         data: values,
         color: 'white',
         backgroundColor: '#1d634a',
@@ -71,4 +78,16 @@ const chartOptions = computed(() => {
     }
   }
 })
+
+function buildSwedishMonthLabel(keys) {
+  const locale = 'sv-SV'
+  const formatter = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' })
+
+  const localizedMonths = keys.map((str) => {
+    const date = new Date(str) // Parses e.g. 'Nov
+    const newDate = formatter.format(date)
+    return newDate // e.g. "nov. 2024" in French
+  })
+  return localizedMonths
+}
 </script>

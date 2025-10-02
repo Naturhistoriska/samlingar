@@ -31,6 +31,10 @@ import AccordionContent from 'primevue/accordioncontent'
 import CollectionMonthChart from '../components/CollectionMonthChart.vue'
 import CollectionYearChart from '../components/CollectionYearChart.vue'
 
+import { useI18n } from 'vue-i18n'
+
+const { locale } = useI18n()
+
 // const AsyncMonthChart = defineAsyncComponent({
 //   loader: () => import('../components/CollectionMonthChart.vue')
 // })
@@ -93,8 +97,6 @@ const props = defineProps(['dataset', 'dataGroup', 'dataResource'])
 
 const tabs = computed(() => {
   return props.dataset.split(':')
-  // const data = props.dataset.split(':')
-  // return data
 })
 
 function getMonthData(tab) {
