@@ -43,7 +43,7 @@ onMounted(async () => {
   const { collectors, eventDate, eventRemarks, fieldNumber, recordedBy } = record
 
   if (collectors) {
-    collectorList.value = collector.join(' | ')
+    collectorList.value = collectors.join(' | ')
   }
 
   if (eventDate) {
