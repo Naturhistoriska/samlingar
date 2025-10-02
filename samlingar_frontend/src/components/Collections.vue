@@ -45,7 +45,7 @@ const multiSelectRef = ref(null)
 
 const groupedSelections = ref([
   {
-    label: t('collectionLabel.botCollection'),
+    label: t('dataResource.botCollection'),
     code: 'bot',
     items: [
       {
@@ -75,7 +75,7 @@ const groupedSelections = ref([
     ]
   },
   {
-    label: t('collectionLabel.zooCollection'),
+    label: t('dataResource.zooCollection'),
     code: 'zoo',
     items: [
       {
@@ -141,7 +141,7 @@ const groupedSelections = ref([
     ]
   },
   {
-    label: t('collectionLabel.palCollection'),
+    label: t('dataResource.palCollection'),
     code: 'pal',
     items: [
       {
@@ -159,7 +159,7 @@ const groupedSelections = ref([
     ]
   },
   {
-    label: t('collectionLabel.geoCollection'),
+    label: t('dataResource.geoCollection'),
     code: 'geo',
     items: [
       {

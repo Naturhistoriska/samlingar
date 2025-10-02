@@ -31,7 +31,7 @@ const chartData = computed(() => {
     labels: labels,
     datasets: [
       {
-        label: t('startPage.yearChartLabel'),
+        label: t('chart.yearChartLabel'),
         data: values,
         color: 'white',
         backgroundColor: '#1d634a',

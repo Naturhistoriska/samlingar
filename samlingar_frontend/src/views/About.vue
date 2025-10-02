@@ -6,7 +6,7 @@
 
     <br />
     <template v-for="(collection, index) in collections" :key="index">
-      {{ $t('collectionName.' + collection) }}<br />
+      {{ $t('collectionLabel.' + collection) }}<br />
     </template>
   </div>
 </template>

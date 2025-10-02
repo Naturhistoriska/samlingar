@@ -5,25 +5,37 @@
   },
   "btnLabel": {
     "columns": "Columns",
-    "removeDates": "Remove dates"
+    "help": "Help",
+    "removeDates": "Remove dates",
+    "reset": "Reset"
   },
   "chart": {
-    "JANUARY": "jan",
-    "FEBRUARY": "feb",
-    "MARCH": "mar",
-    "APRIL": "apr",
-    "MAY": "maj",
-    "JUNE": "jun",
-    "JULY": "jul",
-    "AUGUST": "aug",
-    "SEPTEMBER": "sep",
-    "OCTOBER": "okt",
-    "NOVEMBER": "nov",
-    "DECEMBER": "dec"
+    "monthChartLabel": "Registrerade föremål senaste 12 månaderna",
+    "yearChartLabel": "Ackumulerat antal registrerade föremål"
+  },
+  "collectionLabel": {
+    "algae": "Alger samling",
+    "fungi": "Svampar samling",
+    "mosses": "Mossa samling",
+    "phanerogamic": "Kärlväxter samling",
+    "ent": "Entomologisk samling",
+    "smtpObj": "Swedish Malaise Trap Project (SMTP) Collection Obj",
+    "smtpList": "Swedish Malaise Trap Project (SMTP) Species Lists",
+    "ev": "Evertebrater samling",
+    "et": "Evertebrater typ samling",
+    "fish": "Fisk samling",
+    "bird": "Fågel samling",
+    "herp": "Grod och kräldjur samlingar",
+    "mammal": "Däggdjur samling",
+    "pb": "Paleobotanisk samling",
+    "pz": "Paleozoologisk samling",
+    "nrmlig": "Isotopgeologi samling",
+    "nrmmin": "Mineralogisk samling",
+    "nrmnod": "Noduler samling"
   },
   "collectionName": {
     "HE": {
-      "name": "Grod och kräldjur",
+      "name": "Grod och kräldjur samlingar",
       "code": "HE"
     },
     "AV": {
@@ -31,23 +43,23 @@
       "code": "AV"
     },
     "PI": {
-      "name": "Fisk",
+      "name": "Fisk samling",
       "code": "PI"
     },
     "ev": {
-      "name": "Evertebrater",
+      "name": "Evertebrater samling",
       "code": "ev"
     },
     "et": {
-      "name": "Evertebrater typsamling",
+      "name": "Evertebrater typ samling",
       "code": "et"
     },
     "MA": {
-      "name": "Däggdjur",
+      "name": "Däggdjur samling",
       "code": "MA"
     },
     "NHRS": {
-      "name": "Entomologisk",
+      "name": "Entomologisk samling",
       "code": "NHRS"
     },
     "SMTP_INV": {
@@ -59,11 +71,11 @@
       "code": "SMTP_SPPLST"
     },
     "pb": {
-      "name": "Paleobotanisk",
+      "name": "Paleobotanisk samling",
       "code": "pb"
     },
     "pz": {
-      "name": "Paleozoologisk",
+      "name": "Paleozoologisk samling",
       "code": "pz"
     },
     "PAL": {
@@ -71,98 +83,53 @@
       "code": "PAL"
     },
     "algae": {
-      "name": "Alger",
+      "name": "Alger samling ",
       "code": "algae"
     },
     "mosses": {
-      "name": "Mosses",
+      "name": "Mossa samling",
       "code": "mosses"
     },
     "vp": {
-      "name": "Kärlväxter",
+      "name": "Kärlväxter samling",
       "code": "vp"
     },
     "fungi": {
-      "name": "Svampar/Lavar",
+      "name": "Svampar samling",
       "code": "fungi"
     },
     "NRMMIN": {
-      "name": "Mineralogisk",
+      "name": "Mineralogisk samling",
       "code": "NRMMIN"
     },
     "NRMLIG": {
-      "name": "Isotopgeologi",
+      "name": "Isotopgeologi samling",
       "code": "NRMLIG"
     },
     "NRMNOD": {
-      "name": "Noduler",
+      "name": "Noduler samling",
       "code": "NRMNOD"
-    },
-    "Amphibians and reptiles": "Grod- och kräldjur",
-    "Bird": "Fågel",
-    "Fish": "Fisk",
-    "Invertebrate main collection": "Evertebrater",
-    "Invertebrate type collection": "Evertebrater typsamling",
-    "NRM Entomology Collection Objects": "Entomologisk",
-    "Swedish Malaise Trap Project (SMTP) Collection Obj": "Swedish Malaise Trap Project (SMTP) Collection Obj",
-    "Swedish Malaise Trap Project (SMTP) Species Lists": "Swedish Malaise Trap Project (SMTP) Species Lists",
-    "Paleozoology": "Paleozoologisk",
-    "Paleobotany": "Paleobotanisk",
-    "Fungi/Lichens": "Svampar/Lavar",
-    "Mosses": "Mossor",
-    "Vascular Plants": "Kärlväxter",
-    "NRM Isotope Geology": "Isotopgeologi",
-    "NRM Mineralogy": "Mineralogisk",
-    "NRM Nodules": "Noduler",
-
-    "Algae Collection": "Alger",
-    "Entomological Collections (NRM)": "Entomologiska",
-    "Fish Collection NRM": "Fiskar",
-    "Fishbase Database": "Fishbase",
-    "Fungi Collection": "Svampar/Lavar",
-    "Herpetology Collection NRM": "Herpetology Collection NRM",
-    "Invertebrates Collection NRM": "Evertebrater",
-    "Invertebrates Type Specimen Collection NRM": "Evertebrater typsamling",
-    "Lepidoptera Collection NRM": "Lepidoptera Collections",
-    "Lepidoptera Observations": "Lepidoptera observationer",
-    "Moss Collection": "Mossor",
-    "Phanerogamic Botanical Collections": "Kärlväxter",
-    "Palaeozoological Collection": "Paleozoologiska",
-    "Porpoise Observation Database": "Observationer av tumlare",
-    "Swedish Bird Ringing Centre": "Ringmärkningscentralen",
-    "Swedish Malaise Trap Project - Collection Inventory": "Svenska Malaisefälleprojektet (Inventering)",
-    "amphibians": "Grod- och kräldjur",
-    "bird": "Fåglar",
-    "mammals": "Däggdjur",
-    "paleobotany": "Paleobotanisk",
-    "isotope": "Isotopgeologi",
-    "nodules": "Noduler",
-    "mineralogy": "Mineralogisk"
+    }
   },
-  "collectionLabel": {
+  "dataResource": {
     "botCollection": "Botaniska och mykologiska samlingar",
-    "geoCollection": "Geologiska samlingar",
+    "geoCollection": "Geological collections",
     "palCollection": "Paleontologiska samlingar",
-    "zooCollection": "Zoologiska samlingar",
-    "algae": "Alger samling",
-    "fungi": "Svampar/Lavar samling",
-    "mosses": "Mossor samling",
-    "phanerogamic": "Kärlväxter samling",
-    "ent": "Entomologisk samling",
-    "smtpObj": "Swedish Malaise Trap Project (SMTP) Collection Obj",
-    "smtpList": "Swedish Malaise Trap Project (SMTP) Species Lists",
-    "ev": "Evertebrater samling",
-    "et": "Evertebrater typsamling",
-    "fish": "Fisk samling",
-    "bird": "Fågel samling",
-    "herp": "Grod och kräldjur samlingar",
-    "mammal": "Däggdjur samling",
-    "pb": "Paleobotanisk samling",
-    "pz": "Paleozoologisk samling",
-    "nrmlig": "Isotopgeologi samling",
-    "nrmmin": "Mineralogisk samling",
-    "nrmnod": "Noduler samling"
+    "zooCollection": "Geologiska samlingar"
   },
+  "startPage": {
+    "allSpecimens": "Alla föremål",
+    "commonSearch": "Vanliga sökningar",
+    "specimensWithCoordinates": "Föremål med koordinater",
+    "specimensFromSweden": "Föremål insamlade i Sverige",
+    "specimensWithImages": "Föremål med bilder",
+    "specimensWithType": "Typföremål",
+    "text": "The Swedish Museum of Natural History contains 11 million specimens collected over the span of 300 years. Nearly 4 million objects from our collections are currently available online, 136000 with photos, showcasing biodiversity from around the world."
+  },
+  "statisticData": {
+    "statisticData": "Statistikdata"
+  },
+
   "common": {
     "contactus": "Kontakta oss",
 
@@ -173,12 +140,12 @@
     "delete": "Radera",
     "edit": "Redigera",
     "en": "English",
-    "help": "Help",
+
     "institution": "Naturhistoriska riksmuseet",
     "languageSetting": "Språkinställning",
     "no": "NEJ",
     "ok": "Ok",
-    "reset": "Reset",
+
     "save": "Spara",
     "selectLanguage": "Välj språk",
     "sv": "Svenska",
@@ -434,23 +401,6 @@
     "waterBody": "Search water body",
     "year": "År"
   },
-  "statisticData": {
-    "statisticData": "Statistic Data"
-  },
-  "startPage": {
-    "allSpecimens": "All specimens",
-    "botanicalCollection": "Botaniska och mykologiska samlingar",
-    "commonSearch": "Common searches",
-    "geoCollection": "Geologiska samlingar",
-    "monthChartLabel": "Registrerade föremål senaste 12 månaderna",
-    "palaeCollection": "Paleontologiska samlingar",
-    "specimensWithCoordinates": "Specimens with coordinates",
-    "specimensFromSweden": "Specimens collected in Sweden",
-    "specimensWithImages": "Specimens with images",
-    "specimensWithType": "Specimens with type status",
-    "text": "The Swedish Museum of Natural History contains 11 million specimens collected over the span of 300 years. Nearly 4 million objects from our collections are currently available online, 136000 with photos, showcasing biodiversity from around the world.",
-    "yearChartLabel": "Ackumulerat antal registrerade föremål",
-    "zooCollection": "Zoologiska samlingar"
-  },
+
   "title": "Naturhistoriska riksmuseets samlingar"
 }

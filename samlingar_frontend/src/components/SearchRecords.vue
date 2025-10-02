@@ -8,12 +8,12 @@
 
         <div class="col-2" no-gutters>
           <Button variant="text" @click="dialogVisible = !dialogVisible">
-            <small>{{ $t('common.help') }}</small>
+            <small>{{ $t('btnLabel.help') }}</small>
           </Button>
         </div>
         <div class="col-2" no-gutters>
           <Button variant="text" @click="reset">
-            <small>{{ $t('common.reset') }}</small>
+            <small>{{ $t('btnLabel.reset') }}</small>
           </Button>
         </div>
       </div>

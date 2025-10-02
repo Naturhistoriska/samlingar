@@ -28,16 +28,16 @@ import { ref } from 'vue'
 import { useStore } from 'vuex'
 const store = useStore()
 
-const botanicalCollection = ref('startPage.botanicalCollection')
+const botanicalCollection = ref('dataResource.botCollection')
 const botImageSource = ref('/paucidentatus.jpg')
 
-const zooCollection = ref('startPage.zooCollection')
+const zooCollection = ref('dataResource.zooCollection')
 const zooImageSource = ref('/Zoologiska.jpg')
 
-const paleoCollection = ref('startPage.palaeCollection')
+const paleoCollection = ref('dataResource.palCollection')
 const paleoImageSource = ref('/Angelinoceras.jpg')
 
-const geoCollection = ref('startPage.geoCollection')
+const geoCollection = ref('dataResource.geoCollection')
 const geoImageSource = ref('/Bergkristall.jpg')
 
 const emits = defineEmits(['searchCollections'])

@@ -5,52 +5,19 @@
   },
   "btnLabel": {
     "columns": "Columns",
-    "removeDates": "Remove dates"
+    "help": "Help",
+    "removeDates": "Remove dates",
+    "reset": "Reset"
   },
   "chart": {
-    "JANUARY": "JANUARY",
-    "FEBRUARY": "FEBRUARY",
-    "MARCH": "MARCH",
-    "APRIL": "APRIL",
-    "MAY": "MAY",
-    "JUNE": "JUNE",
-    "JULY": "JULY",
-    "AUGUST": "AUGUST",
-    "SEPTEMBER": "SEPTEMBER",
-    "OCTOBER": "OCTOBER",
-    "NOVEMBER": "NOVEMBER",
-    "DECEMBER": "DECEMBER"
-  },
-  "common": {
-    "contactus": "Contact us",
-
-    "cancel": "Cancel",
-    "clearAll": "Clear all",
-    "close": "Close",
-
-    "delete": "Delete",
-    "edit": "Edit",
-    "en": "English",
-    "help": "Help",
-    "institution": "Swedish Museum of Natural History",
-    "languageSetting": "Language setting",
-    "no": "NO",
-    "ok": "Ok",
-    "reset": "Reset",
-    "save": "Save",
-    "selectLanguage": "Select language",
-    "sv": "Svenska",
-    "yes": "YES"
+    "monthChartLabel": "Registered specimens last 12 months",
+    "yearChartLabel": "Cumulative number of registered specimens"
   },
   "collectionLabel": {
-    "botCollection": "Botanical and mycological collections",
-    "geoCollection": "Geological collections",
-    "palCollection": "Paleontological collections",
-    "zooCollection": "Zoological collections",
     "algae": "Algae Collection",
     "fungi": "Fungi Collection",
     "mosses": "Moss Collection",
-    "phanerogamic": "Phanerogamic Botanical Collections",
+    "phanerogamic": "Vascular Plants Collection",
     "ent": "Entomological Collections",
     "smtpObj": "Swedish Malaise Trap Project (SMTP) Collection Obj",
     "smtpList": "Swedish Malaise Trap Project (SMTP) Species Lists",
@@ -58,7 +25,7 @@
     "et": "Invertebrate Type Specimen Collection",
     "fish": "Fish Collection",
     "bird": "Bird Collection",
-    "herp": "Herpetology Collection",
+    "herp": "Amphibians and Reptiles Collection",
     "mammal": "Mammal Collection",
     "pb": "Palaeobotanical Collections",
     "pz": "Palaeozoological Collections",
@@ -68,7 +35,7 @@
   },
   "collectionName": {
     "HE": {
-      "name": "Amphibians and reptiles",
+      "name": "Amphibians and Reptiles Collection",
       "code": "HE"
     },
     "AV": {
@@ -84,15 +51,15 @@
       "code": "ev"
     },
     "et": {
-      "name": "Invertebrate type collection",
+      "name": "Invertebrate Type Specimen Collection",
       "code": "et"
     },
     "MA": {
-      "name": "Mammals",
+      "name": "Mammal Collection",
       "code": "MA"
     },
     "NHRS": {
-      "name": "NRM Entomology Collection Objects",
+      "name": "Entomological Collections",
       "code": "NHRS"
     },
     "SMTP_INV": {
@@ -104,11 +71,11 @@
       "code": "SMTP_SPPLST"
     },
     "pb": {
-      "name": "Paleobotany",
+      "name": "Paleobotany Collection",
       "code": "pb"
     },
     "pz": {
-      "name": "Paleozoology",
+      "name": "Paleozoology Collection",
       "code": "pz"
     },
     "PAL": {
@@ -116,75 +83,71 @@
       "code": "PAL"
     },
     "algae": {
-      "name": "Algae",
+      "name": "Algae Collection",
       "code": "algae"
     },
     "mosses": {
-      "name": "Mosses",
+      "name": "Moss Collection",
       "code": "mosses"
     },
     "vp": {
-      "name": "Vascular plants",
+      "name": "Vascular plant Collection",
       "code": "vp"
     },
     "fungi": {
-      "name": "Fungi/Lichens",
+      "name": "Fungi Collection",
       "code": "fungi"
     },
     "NRMMIN": {
-      "name": "NRM Mineralogy",
+      "name": "Mineralogy Collection",
       "code": "NRMMIN"
     },
     "NRMLIG": {
-      "name": "NRM Isotope Geology",
+      "name": "Isotope Geology Collection",
       "code": "NRMLIG"
     },
     "NRMNOD": {
-      "name": "NRM Nodules",
+      "name": "Nodules Collection",
       "code": "NRMNOD"
-    },
-    "Amphibians and reptiles": "Amphibians and reptiles",
-    "Bird": "Bird",
-    "Fish": "Fish",
-    "Invertebrate main collection": "Invertebrate main collection",
-    "Invertebrate type collection": "Invertebrate type collection",
+    }
+  },
+  "dataResource": {
+    "botCollection": "Botanical and mycological collections",
+    "geoCollection": "Geological collections",
+    "palCollection": "Paleontological collections",
+    "zooCollection": "Zoological collections"
+  },
+  "startPage": {
+    "allSpecimens": "All specimens",
+    "commonSearch": "Common searches",
+    "specimensWithCoordinates": "Specimens with coordinates",
+    "specimensFromSweden": "Specimens collected in Sweden",
+    "specimensWithImages": "Specimens with images",
+    "specimensWithType": "Specimens with type status",
+    "text": "The Swedish Museum of Natural History contains 11 million specimens collected over the span of 300 years. Nearly 4 million objects from our collections are currently available online, 136000 with photos, showcasing biodiversity from around the world."
+  },
+  "statisticData": {
+    "statisticData": "Statistic Data"
+  },
 
-    "NRM Entomology Collection Objects": "NRM Entomology Collection Objects",
-    "Swedish Malaise Trap Project (SMTP) Collection Obj": "Swedish Malaise Trap Project (SMTP) Collection Obj",
-    "Swedish Malaise Trap Project (SMTP) Species Lists": "Swedish Malaise Trap Project (SMTP) Species Lists",
-    "Paleozoology": "Paleozoology",
-    "Paleobotany": "Paleobotany",
-    "Fungi/Lichens": "Fungi/Lichens",
-    "Mosses": "Mosses",
-    "Vascular Plants": "Vascular Plants",
-    "NRM Isotope Geology": "NRM Isotope Geology",
-    "NRM Mineralogy": "NRM Mineralogy",
-    "NRM Nodules": "NRM Nodules",
+  "common": {
+    "contactus": "Contact us",
+    "cancel": "Cancel",
+    "clearAll": "Clear all",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "en": "English",
 
-    "Algae Collection": "Algae Collection",
-    "Entomological Collections (NRM)": "Entomological Collections",
-    "Fish Collection NRM": "Fish",
-    "Fishbase Database": "Fishbase Database",
-    "Fungi Collection": "Fungi and Lichens",
-    "Herpetology Collection NRM": "Herpetology Collection NRM",
-    "Invertebrates Collection NRM": "Invertebrate Main Collections",
-    "Invertebrates Type Specimen Collection NRM": "Invertebrate Type Collections",
-    "Lepidoptera Collection NRM": "Lepidoptera Collections",
-    "Lepidoptera Observations": "Lepidoptera Observations",
-    "NRM-Mammals": "NRM-Mammals",
-    "Moss Collection": "Mosses",
-    "Phanerogamic Botanical Collections": "Vascular Plants",
-    "Palaeozoological Collection": "Paleozoology",
-    "paleobotany": "Paleobotany",
-    "Porpoise Observation Database": "Porpoise Observation Database",
-    "Swedish Bird Ringing Centre": "Swedish Bird Ringing Centre",
-    "Swedish Malaise Trap Project - Collection Inventory": "Swedish Malaise Trap (Inventory)",
-    "bird": "Bird",
-    "mammals": "Mammals",
-    "amphibians": "Amphibians and reptiles",
-    "isotope": "Isotope Geology",
-    "nodules": "Nodules",
-    "mineralogy": "Mineralogy"
+    "institution": "Swedish Museum of Natural History",
+    "languageSetting": "Language setting",
+    "no": "NO",
+    "ok": "Ok",
+
+    "save": "Save",
+    "selectLanguage": "Select language",
+    "sv": "Svenska",
+    "yes": "YES"
   },
   "contact": {
     "contactInfo": "Post address and contact information",
@@ -436,23 +399,6 @@
     "waterBody": "Search water body",
     "year": "Year"
   },
-  "statisticData": {
-    "statisticData": "Statistic Data"
-  },
-  "startPage": {
-    "allSpecimens": "All specimens",
-    "botanicalCollection": "Botanical and mycological collections",
-    "commonSearch": "Common searches",
-    "geoCollection": "Geological collection",
-    "monthChartLabel": "Registered specimens last 12 months",
-    "palaeCollection": "Paleontological collection",
-    "specimensWithCoordinates": "Specimens with coordinates",
-    "specimensFromSweden": "Specimens collected in Sweden",
-    "specimensWithImages": "Specimens with images",
-    "specimensWithType": "Specimens with type status",
-    "text": "The Swedish Museum of Natural History contains 11 million specimens collected over the span of 300 years. Nearly 4 million objects from our collections are currently available online, 136000 with photos, showcasing biodiversity from around the world.",
-    "yearChartLabel": "Cumulative number of registered specimens",
-    "zooCollection": "Zoological Collection"
-  },
+
   "title": "The Swedish Museum of Natural History Collections"
 }
