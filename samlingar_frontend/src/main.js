@@ -49,8 +49,6 @@ import DataTable from 'primevue/datatable'
 
 import DataView from 'primevue/dataview'
 
-// import DataView from 'primevue/dataview'
-
 import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
 import IconField from 'primevue/iconfield'
@@ -83,6 +81,7 @@ import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import TieredMenu from 'primevue/tieredmenu'
 import Toolbar from 'primevue/toolbar'
+import Tooltip from 'primevue/tooltip'
 
 
 
@@ -185,6 +184,8 @@ app.component('Toolbar', Toolbar)
 // app.component('downloadExcel', JsonExcel)
 
 app.directive('ripple', Ripple)
+app.directive('tooltip', Tooltip)
+
 
 
 app.mount('#app')

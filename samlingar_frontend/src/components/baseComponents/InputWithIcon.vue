@@ -8,6 +8,7 @@
         :placeholder="placehold"
         :size="size"
         class="w-full"
+        v-tooltip.bottom="$t(tip)"
       />
       <Button :icon="icon" @click="onClick" class="btnStyle" />
     </InputGroup>
@@ -16,7 +17,7 @@
 <script setup>
 import { ref } from 'vue'
 const emits = defineEmits(['doAction'])
-const props = defineProps(['icon', 'placehold', 'size'])
+const props = defineProps(['icon', 'placehold', 'tip', 'size'])
 const value = ref()
 
 function onClick() {

@@ -13,12 +13,15 @@
           @itemSelect="onItemSelect"
           inputId="ac"
           :inputStyle="acwidth"
+          v-tooltip.bottom="$t('tip.quickSrarchInput')"
         />
         <Button
           icon="pi pi-search"
           :loading="loading"
           @click="apiSearch"
+          v-tooltip.bottom="$t('tip.quickSrarch')"
           text
+          :disabled="disableBtn"
           style="background-color: #144836 !important; border-color: #1d634a !important"
         />
         <label for="ac">{{ $t('search.searchSpecies') }} </label>
@@ -46,6 +49,7 @@ const loading = ref(false)
 const items = ref([])
 const itemSelected = ref(false)
 const search = ref()
+const disableBtn = ref(true)
 
 onMounted(() => {
   acwidth.value = { width: '300px' }
@@ -53,14 +57,19 @@ onMounted(() => {
 
 function onChange() {
   itemSelected.value = false
+  if (itemSelected.value) {
+    disableBtn.value = false
+  }
 }
 
 function onItemSelect() {
   itemSelected.value = true
+  disableBtn.value = false
 }
 
 function apiAutoComplete(event) {
   let searchText = event.query
+  disableBtn.value = false
   service
     .apiAutoCompleteSearch(searchText, 'scientificName')
     .then((response) => {
@@ -120,6 +129,7 @@ function apiSearch() {
     .finally(() => {
       loading.value = false
       search.value = undefined
+      disableBtn.value = true
       store.commit('setResetMapData', true)
 
       if (currentUrl.value !== '/search') {

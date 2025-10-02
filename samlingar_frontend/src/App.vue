@@ -16,6 +16,16 @@ import Navigation from './components/Navigation.vue'
 </script>
 
 <style>
+.p-tooltip {
+  max-width: 300px !important;
+  white-space: normal !important;
+  background-color: #144836 !important; /* Dark background */
+  color: #fff !important; /* White text */
+  border-radius: 6px !important;
+  padding: 12px !important;
+  font-size: 14px !important;
+}
+
 .p-fieldset-legend {
   background: none !important;
 }
