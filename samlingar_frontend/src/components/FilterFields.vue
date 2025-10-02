@@ -49,7 +49,7 @@ const groupedSelections = ref([
       { label: 'Subgenus', value: 'subgenus', key: 'subgenus:', code: 'tx', multiple: false },
       { label: 'Species', value: 'species', key: 'species:', code: 'tx', multiple: false },
       {
-        label: 'Vernacular name',
+        label: 'Common name',
         value: 'vernacularName',
         key: 'vernacularName:',
         code: 'tx',
