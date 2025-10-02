@@ -2,7 +2,7 @@
   <div class="grid">
     <div class="col-12" no-gutters>
       {{ $t('search.freeTextSearch') }}
-      <small style="font-size: 11px">[{{ $t('search.searchAll') }}]</small>
+      <small class="p-text-secondary">[{{ $t('search.searchAll') }}]</small>
     </div>
     <div class="flex flex-col gap-2" style="width: 100%">
       <div class="flex-col gap-2 searchInput">
@@ -11,6 +11,7 @@
           v-bind:placehold="$t('search.searchAll')"
           v-bind:size="'small'"
           v-bind:icon="'pi pi-search'"
+          v-bind:tip="'tip.searchAll'"
         />
       </div>
     </div>

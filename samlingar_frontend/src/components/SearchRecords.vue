@@ -21,13 +21,18 @@
     <template #content>
       <Dialog
         id="helpDialog"
+        :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
         v-model:visible="dialogVisible"
-        header="Flex Scroll"
-        :style="{ width: '75vw' }"
+        :style="{ width: '70rem' }"
         maximizable
         modal
-        :contentStyle="{ height: '300px' }"
+        :contentStyle="{ height: '500px' }"
+        class="centered-dialog"
       >
+        <template #header>
+          <div class="custom-dialog-header">{{ $t('help.searchHelp') }}</div>
+        </template>
+        <Divider class="custom-divider" />
         <Help />
       </Dialog>
       <div class="grid">
@@ -86,6 +91,7 @@
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import Collections from './Collections.vue'
+
 import EventDate from './EventDate.vue'
 import FilterCheckbox from './FilterCheckbox.vue'
 import FilterFields from './FilterFields.vue'
@@ -97,7 +103,6 @@ const store = useStore()
 const emits = defineEmits(['search'])
 
 const dialogVisible = ref(false)
-
 const scientificNamePanelNotVisible = computed(() => {
   return store.getters['scientificName'] === null
 })
@@ -185,5 +190,11 @@ function search() {
 
 .custom-divider.p-divider-horizontal::before {
   border-top: 1px solid #144836; /* Change color here */
+}
+.custom-dialog-header {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 2rem;
 }
 </style>
