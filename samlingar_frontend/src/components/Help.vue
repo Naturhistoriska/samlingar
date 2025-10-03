@@ -36,6 +36,10 @@
     <Panel :header="$t('help.filterSearch')" toggleable>
       <p style="padding-left: 1rem">{{ $t('help.advanceSearchSubtitle') }}:</p>
       <ul>
+        <li>
+          {{ $t('help.checkbox') }} (e.g.
+          <em>Has images, Have coordinates, Is typestatus etc...</em>)
+        </li>
         <li>{{ $t('help.scientificName') }} (e.g. <em>Pica pica</em>)</li>
         <li>{{ $t('help.collectionName') }} (e.g. Bird Collection, Fungi Collection ect...)</li>
         <li>{{ $t('help.collectedDate') }} (e.g. 1990-01-01, 1920-12-31 or 1900, 1920)</li>
@@ -45,6 +49,17 @@
       <p style="padding-left: 1rem">{{ $t('help.advanceSearchFeatures') }}:</p>
       <ul>
         <li>
+          {{ $t('help.checkbox') }}
+          <p>{{ $t('help.checkboxSearchText') }}</p>
+          <ul>
+            <li>{{ $t('help.checkboxHasImages') }}</li>
+            <li>{{ $t('help.checkboxHaveCoordinates') }}</li>
+            <li>{{ $t('help.checkboxIsType') }}</li>
+            <li>{{ $t('help.checkboxInSweden') }}</li>
+            <li>{{ $t('help.checkboxNordic') }}</li>
+          </ul>
+        </li>
+        <li style="padding-top: 2em">
           {{ $t('help.scientificNameSearch') }}:
           <p>{{ $t('help.scientificNameSearchText') }}:</p>
           <ul>
@@ -85,10 +100,10 @@
     <Divider />
     <Panel header="Still Need Help?" toggleable>
       <p style="padding-left: 1rem">
-        If you're unsure how to search or can't find what you're looking for, contact us:
+        {{ t('help.text') }}
       </p>
       <p style="padding-left: 1rem">
-        <strong>Email: </strong>
+        <strong>{{ t('help.email') }}:</strong>
         <a :href="`mailto:${email}`">{{ email }}</a>
       </p>
     </Panel>
@@ -96,93 +111,96 @@
 </template>
 <script setup>
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const searchExamples = ref([
   {
-    fieldName: 'Phylum',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.phylum'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Class',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.class'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Order',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.order'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Family',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.family'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Genus',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.genus'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Subgenus',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.subgenus'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Species',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.species'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Common name',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.commonName'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Synonyms',
-    searchMode: 'Start with text search',
-    description: 'Search records where a field begins with the specified text.'
+    fieldName: t('help.synonyms'),
+    searchMode: t('help.synonymsSearchMode'),
+    description: t('help.synonymsSearchDesc')
   },
   {
-    fieldName: 'Taxon rank',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.taxonRank'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Catalog number',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.catalogNumber'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Type status',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.typeStatus'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Collected by',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.collectedBy'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Country',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.country'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'State/Province',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.state'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
 
   {
-    fieldName: 'County/Parish',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.county'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   },
   {
-    fieldName: 'Locality',
-    searchMode: 'Autocomplet',
-    description: 'Type at least 3 letters to see suggestions'
+    fieldName: t('help.locality'),
+    searchMode: t('help.autocomplete'),
+    description: t('help.autocompleteDesc')
   }
 ])
 
