@@ -62,23 +62,27 @@
         {{ maxElevationInMeters }}
       </div>
 
-      <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.waterBody') }}</div>
+      <div class="col-4 reducePadding" v-if="isMineralCollection">
+        {{ $t('results.waterBody') }}
+      </div>
       <div class="col-8 reducePadding" v-if="isMineralCollection">
         {{ water }}
       </div>
 
       <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.island') }}</div>
-      <div class="col-8 reducePadding" v-if="isMineralCollection"">
+      <div class="col-8 reducePadding" v-if="isMineralCollection">
         {{ theIsland }}
       </div>
 
-      <div class="col-4 reducePadding" v-if="!isMineralCollection">{{ $t('results.islandGroup') }}</div>
-      <div class="col-8 reducePadding" v-if="isMineralCollection">
+      <div class="col-4 reducePadding" v-if="!isMineralCollection">
+        {{ $t('results.islandGroup') }}
+      </div>
+      <div class="col-8 reducePadding" v-if="!isMineralCollection">
         {{ theIslandGroup }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.locationRemarks') }}</div>
-      <div class="col-8 reducePadding">
+      <div class="col-8 reducePadding multiline-text">
         {{ remarks }}
       </div>
     </div>
@@ -159,12 +163,18 @@ onMounted(async () => {
   water.value = waterBody
   uncertaintyInMeters.value = coordinateUncertaintyInMeters
 
-  isMineralCollection.value = collectionCode === 'NRMLIG' ||  collectionCode === 'NRMMIN' ||  collectionCode === 'NRMNOD'
+  console.log('collectionCode', collectionCode)
+  isMineralCollection.value =
+    collectionCode === 'NRMLIG' || collectionCode === 'NRMMIN' || collectionCode === 'NRMNOD'
+  console.log('collectionCode', collectionCode, isMineralCollection)
 })
 </script>
 <style scoped>
 .reducePadding {
   padding-top: 0px;
   padding-bottom: 1px;
+}
+.multiline-text {
+  white-space: pre-line;
 }
 </style>

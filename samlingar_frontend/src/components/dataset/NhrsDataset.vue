@@ -180,9 +180,11 @@ onMounted(async () => {
 
   otherCatNumbers.value = otherCatalogNumbers
 
-  preparationList.value =
-    collectionCode == 'NHRS' ? (prepCount ? prepCount : '') : preparations ? preparations : ''
-  preparationString.value = preparationList.value.join(', ')
+  if (collectionCode === 'NHRS' && prepCount) {
+    preparationList.value = prepCount.join(' | ')
+  } else if (preparations) {
+    preparationString.value = preparations.join(' |')
+  }
 
   if (occurrenceRemarks) {
     remarks.value = occurrenceRemarks

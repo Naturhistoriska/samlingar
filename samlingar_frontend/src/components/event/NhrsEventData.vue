@@ -18,7 +18,7 @@
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.eventRemarks') }}</div>
-      <div class="col-8 reducePadding">
+      <div class="col-8 reducePadding multiline-text">
         {{ remarks }}
       </div>
     </div>
@@ -59,5 +59,8 @@ onMounted(async () => {
 .reducePadding {
   padding-top: 0px;
   padding-bottom: 1px;
+}
+.multiline-text {
+  white-space: pre-line;
 }
 </style>
