@@ -16,6 +16,22 @@ import Navigation from './components/Navigation.vue'
 </script>
 
 <style>
+/* GLOBAL STYLES — DO NOT USE scoped */
+body .p-galleria-mask {
+  background-color: black !important; /* or any color you want */
+}
+
+/* Optional: Remove or customize the modal shadow */
+body .p-galleria {
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+/* Dialog/Sidebar/Generic overlay mask */
+body .p-overlay-mask,
+body .p-overlay-mask-enter {
+  background-color: black !important;
+}
 .p-tooltip {
   max-width: 300px !important;
   white-space: normal !important;
