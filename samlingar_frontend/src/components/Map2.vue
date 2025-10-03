@@ -1,17 +1,7 @@
 <template>
   <div class="map-wrapper">
-    <div id="map" style="height: 50vh" class="custom-popup"></div>
-    <!-- <keep-alive>
-      <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 60vh" @ready="onMapReady">
-        <l-tile-layer :url="tileUrl" />
-      </l-map>
-    </keep-alive> -->
+    <div id="map" style="height: 500px; width: 100%" class="custom-popup"></div>
 
-    <!-- <l-map ref="mapRef" :zoom="zoo" :center="center" style="height: 60vh">
-      <l-tile-layer :url="tileUrl" />
-    </l-map> -->
-
-    <!-- Loader Overlay -->
     <div v-if="loading" class="loading-overlay">
       <span>{{ mapLoadingText }}</span>
     </div>
@@ -41,7 +31,7 @@ const store = useStore()
 const router = useRouter()
 
 let center = ref([59.0, 15.0])
-const zoo = 4
+const zoom = ref(4)
 
 const mapRef = ref(null)
 
@@ -64,10 +54,10 @@ onMounted(async () => {
     zoomAnimation: false
   })
     .setView(center.value, 6)
-    .setZoom(zoo)
+    .setZoom(4)
 
   L.tileLayer(tileUrl, {
-    minZoom: 0,
+    minZoom: 1,
     maxZoom: 12,
     attribution
   }).addTo(mapRef.value)
@@ -96,45 +86,6 @@ onMounted(async () => {
   } else {
     onMapReady()
   }
-
-  // let reloadMap = false
-  // if (total < 50000) {
-  //   if (from === 'first-visit' || from === 'reload') {
-  //     reloadMap = true
-  //   } else {
-  //     if (resetMapData) {
-  //       reloadMap = true
-  //     }
-  //   }
-  //   if (resetMapData) {
-  //     let params = store.getters['searchParams']
-  //     if (params === null) {
-  //       params = new URLSearchParams({
-  //         catchall: '*'
-  //       })
-  //     }
-  //     await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
-  //     addClustringPopup()
-  //   }
-  // }
-  //   if (entryType === 'first-visit' || entryType === 'reload') {
-  //     console.log('entryType 1', entryType)
-  //     let params = new URLSearchParams({
-  //       text: '*'
-  //     })
-  //     await fetchAndRender(params, { lat: center.value[0], lng: center.value[1] })
-  //   } else {
-  //     console.log('entryType 2', entryType)
-  //     const isUrlPush = store.getters['isUrlPush']
-  //     if (isUrlPush) {
-  //       // const params = buildParams()
-  //       const params = store.getters['searchParams']
-  //       await fetchAndRender(params, { lat: 59.0, lng: 15.0 })
-  //     }
-  //     store.commit('setIsUrlPush', false)
-  //   }
-  //   addClustringPopup()
-  // }
 })
 
 watch(
@@ -281,12 +232,6 @@ function getTaxon(data) {
   } else {
     return scientificName
   }
-
-  // return collectionCode === 'pz' || collectionCode === 'pb' || collectionCode === 'vp'
-  //   ? taxonRank === 'species'
-  //     ? genus + ' ' + species
-  //     : scientificName
-  //   : scientificName
 }
 
 function displayDetail(data) {
