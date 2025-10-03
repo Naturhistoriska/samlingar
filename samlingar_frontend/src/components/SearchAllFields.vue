@@ -79,7 +79,7 @@ function change() {
 }
 
 function handleFreeTextSearch(value) {
-  const searchText = value ? value : '*'
+  const searchText = value ? value.trim() : '*'
   store.commit('setSearchText', searchText)
   store.commit('setFullTextSearchMode', searchOptions.value)
 
