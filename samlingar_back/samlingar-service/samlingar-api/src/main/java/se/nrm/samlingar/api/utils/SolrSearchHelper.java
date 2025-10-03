@@ -8,8 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList; 
 import java.util.List; 
 import lombok.extern.slf4j.Slf4j; 
-import org.apache.commons.lang3.StringUtils; 
-import org.apache.solr.client.solrj.util.ClientUtils;
+import org.apache.commons.lang3.StringUtils;  
 
 /**
  *
@@ -68,6 +67,9 @@ public class SolrSearchHelper {
     private final String maximumDepthInMetersKey = "maximumDepthInMeters";
     private final String waterBodyKey = "waterBody";
     private final String eventDateKey = "eventDate";
+    private final String yearKey = "year";
+    private final String monthKey = "month";
+    private final String dayKey = "day";
     private final String fieldNumberKey = "fieldNumber";
     private final String habitatKey = "habitat";
     private final String typeStatusKey = "typeStatus";
@@ -676,6 +678,9 @@ public class SolrSearchHelper {
 
         fields.add(waterBodyKey);
         fields.add(eventDateKey);
+        fields.add(yearKey);
+        fields.add(monthKey);
+        fields.add(dayKey);
         fields.add(fieldNumberKey);
         fields.add(habitatKey);
         fields.add(typeStatusKey);
