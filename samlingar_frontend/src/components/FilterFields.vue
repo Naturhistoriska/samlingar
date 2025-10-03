@@ -82,13 +82,6 @@ const groupedSelections = ref([
         key: 'typeStatus:',
         code: 'specimen',
         multiple: false
-      },
-      {
-        label: 'Collection name',
-        value: 'collectionName',
-        key: 'collectionName:',
-        code: 'specimen',
-        multiple: false
       }
     ]
   },
@@ -98,18 +91,18 @@ const groupedSelections = ref([
     items: [
       {
         label: 'Collected by',
-        value: 'collector',
-        key: 'collector:',
-        code: 'event',
-        multiple: false
-      },
-      {
-        label: 'Field number',
-        value: 'fieldNumber',
-        key: 'fieldNumber:',
+        value: 'collectors',
+        key: 'collectors:',
         code: 'event',
         multiple: false
       }
+      // {
+      // label: 'Field number',
+      // value: 'fieldNumber',
+      // key: 'fieldNumber:',
+      // code: 'event',
+      // multiple: false
+      // }
     ]
   },
   {
