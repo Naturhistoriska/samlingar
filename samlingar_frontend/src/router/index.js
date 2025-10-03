@@ -5,7 +5,6 @@ import Collections from '../views/Collections.vue'
 import Contact from '../views/Contact.vue'
 import Home from '../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
-import Results from '../views/Results.vue'
 import SearchView from '../views/SearchView.vue'
 import RecordView from '../views/Record.vue'
 
