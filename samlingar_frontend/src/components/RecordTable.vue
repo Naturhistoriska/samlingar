@@ -15,7 +15,6 @@
       stripedRows
       tableStyle="min-width: 50rem"
       v-model:selection="selectedRecord"
-      v-model:expandedRows="expandedRows"
       v-model:filters="filters"
       :first="firstPage"
       :rows="20"
@@ -25,8 +24,6 @@
       :value="records"
       @filter="onFilter"
       @page="onPage($event)"
-      @rowExpand="onRowExpand"
-      @rowCollapse="onRowCollapse"
       @row-select="onRowSelect"
       @sort="onSort"
     >
@@ -63,7 +60,6 @@
           </div>
         </template>
       </Column> -->
-      <Column expander style="width: 2rem" />
       <Column
         field="collectionName"
         header="Collection name"
@@ -132,7 +128,7 @@
         header="CatalogNumber"
         :showFilterMenu="false"
         sortable
-        style="min-width: 6 rem; max-width: 8rem"
+        style="min-width: 6 rem; max-width: 6rem"
       >
         <template #body="{ data }">
           {{ data.catalogNumber }}
@@ -682,19 +678,6 @@ const onPage = async (event) => {
   const params = store.getters['searchParams']
 
   loadRecordsLazy(params, first, rows)
-}
-
-const onRowExpand = (event) => {
-  toast.add({ severity: 'info', summary: 'Record Expanded', detail: event.data.name, life: 3000 })
-}
-
-const onRowCollapse = (event) => {
-  toast.add({
-    severity: 'success',
-    summary: 'Product Collapsed',
-    detail: event.data.name,
-    life: 3000
-  })
 }
 </script>
 <style scoped>
