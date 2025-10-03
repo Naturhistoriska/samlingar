@@ -8,13 +8,14 @@ export default createStore({
 
     dataResource: null, // group: zoo, pal, bot, geo
     dates: null,
-    dateFilter: "date",
+    dateFilter: 'date',
 
     endDate: null,
     endYear: null,
     filterCoordinates: false,
     filterImage: false,
     filterInSweden: false,
+    filterNordicCountry: false,
     filterType: false,
 
     fullTextSearchMode: 'contains',
@@ -149,6 +150,9 @@ export default createStore({
     },
     fullTextSearchMode(state) {
       return state.fullTextSearchMode
+    },
+    filterNordicCountry(state) {
+      return state.filterNordicCountry
     },
 
     geoJson(state) {
@@ -447,6 +451,11 @@ export default createStore({
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
     setDateFilter: (state, payload) => (state.dateFilter = payload),
     setEndYear: (state, payload) => (state.endYear = payload),
+    setFilterCoordinates: (state, payload) => (state.filterCoordinates = payload),
+    setFilterImage: (state, payload) => (state.filterImage = payload),
+    setFilterInSweden: (state, payload) => (state.filterInSweden = payload),
+    setFilterType: (state, payload) => (state.filterType = payload),
+    setFilterNordicCountry: (state, payload) => (state.filterNordicCountry = payload),
     setFullTextSearchMode: (state, payload) => (state.fullTextSearchMode = payload),
     setGeoJson: (state, payload) => (state.geoJson = payload),
     setResetMapData: (state, payload) => (state.resetMapData = payload),
@@ -469,10 +478,7 @@ export default createStore({
     setDataResource: (state, payload) => (state.dataResource = payload),
     setEndDate: (state, payload) => (state.endDate = payload),
     setFields: (state, payload) => (state.fields = payload),
-    setFilterCoordinates: (state, payload) => (state.filterCoordinates = payload),
-    setFilterImage: (state, payload) => (state.filterImage = payload),
-    setFilterInSweden: (state, payload) => (state.filterInSweden = payload),
-    setFilterType: (state, payload) => (state.filterType = payload),
+
     setIsFuzzySearch: (state, payload) => (state.isFuzzySearch = payload),
     // setIsUrlPush: (state, payload) => (state.isUrlPush = payload),
     setResults: (state, payload) => (state.results = payload),

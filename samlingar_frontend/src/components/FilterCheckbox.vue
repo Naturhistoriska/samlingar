@@ -1,6 +1,6 @@
 <template>
-  <div class="card flex flex-wrap justify-center gap-4">
-    <div class="flex items-center gap-2">
+  <div class="card flex flex-wrap justify-center gap-2">
+    <div class="flex items-center gap-1">
       <Checkbox
         v-model="image"
         inputId="image"
@@ -11,7 +11,7 @@
       />
       <label for="image" class="text-sm">{{ $t('search.haveImages') }}</label>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1">
       <Checkbox
         v-model="coordinates"
         inputId="coordinates"
@@ -22,7 +22,7 @@
       />
       <label for="coordinates" class="text-sm">{{ $t('search.haveCoordinates') }}</label>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1">
       <Checkbox
         v-model="type"
         inputId="types"
@@ -33,7 +33,7 @@
       />
       <label for="types" class="text-sm">{{ $t('search.isType') }}</label>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1">
       <Checkbox
         v-model="sweden"
         inputId="sweden"
@@ -43,6 +43,17 @@
         @click="swedenClicked"
       />
       <label for="sweden" class="text-sm">{{ $t('search.inSweden') }}</label>
+    </div>
+    <div class="flex items-center gap-2">
+      <Checkbox
+        v-model="nordicCountries"
+        inputId="nordic"
+        name="Nordic countries"
+        binary
+        size="small"
+        @click="nordicClicked"
+      />
+      <label for="nordic" class="text-sm">{{ $t('search.nordic') }}</label>
     </div>
   </div>
 </template>
@@ -58,6 +69,7 @@ let image = ref(false)
 let coordinates = ref(false)
 let type = ref(false)
 let sweden = ref(false)
+let nordicCountries = ref(false)
 
 // watch(
 //   () => store.getters['filterImage'],
@@ -132,6 +144,12 @@ function coordinatesClicked() {
 function imageClicked() {
   const searchImage = !image.value
   store.commit('setFilterImage', searchImage)
+  search()
+}
+
+function nordicClicked() {
+  const nodicSearch = !nordicCountries.value
+  store.commit('setFilterNordicCountry', nodicSearch)
   search()
 }
 

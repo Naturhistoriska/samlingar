@@ -168,6 +168,7 @@ function buildParams() {
   const isInSweden = store.getters['filterInSweden']
   const hasCoordinates = store.getters['filterCoordinates']
   const hasImages = store.getters['filterImage']
+  const nordicCountry = store.getters['filterNordicCountry']
 
   let searchText = store.getters['searchText']
   searchText = searchText ? searchText : '*'
@@ -207,6 +208,10 @@ function buildParams() {
 
   if (hasCoordinates) {
     params.set('geo', '*')
+  }
+
+  if (nordicCountry && !isInSweden) {
+    params.set('country', '(Sweden Denmark Finland Norway Iceland)')
   }
 
   if (dateFilter === 'date') {
