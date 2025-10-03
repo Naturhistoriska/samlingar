@@ -7,7 +7,7 @@
           v-model="value"
           @blur="valueChange"
           @keydown.enter="handleEnter"
-          :placeholder="$t('search.searchAllFields')"
+          :placeholder="$t('search.freeTextSearch')"
           size="small"
           class="w-full"
         />
@@ -122,7 +122,7 @@ function handleEnter() {
 }
 
 function valueChange() {
-  const searchText = value.value ? value.value : '*'
+  const searchText = value.value ? value.value.trim() : '*'
   store.commit('setSearchText', searchText)
 }
 
