@@ -147,10 +147,11 @@
   },
   "help": {
     "basicSearch": "🟢 Basic Search",
-    "basicSearchText": "The search all box allows you to find records by searching all searchable fields in the database, such as taxon, collections, locality, and other relevant content.",
-    "filterSearch": "Filter Search",
-    "howToSearch": "🔍 How to Use Samlingar Search Portal",
-    "howToSearchText": "Our portal allows you to search through the museum’s registered collections and specimens, including fossils, plants, animals, minerals, and more.",
+    "basicSearchText": "Use the “Search All” field to search through every available field, such as scientific names (taxon), collection names, locality information, and related content.",
+    "example": "Example:",
+    "filterSearch": "Advance Search",
+    "howToSearch": "🔍 How to Use the Search",
+    "howToSearchText": "Use the search tool to explore the museum’s online collections. You can search for a wide variety of specimens, including fossils, plants, animals, minerals, and more.",
     "searchHelp": "Search Help"
   },
   "labels": {
@@ -313,7 +314,7 @@
     "contains": "Innehåller",
     "exact": "Exakt",
     "filterScientificname": "Filter Scientific name",
-    "freeTextSearch": "Free text search",
+    "freeTextSearch": "Full-text search",
     "searchAll": "Sök i samlingar (art, släkte, familj, insamlare, plats etc.)",
     "searchSpecies": "Sök art/taxon",
     "startsWith": "Börja med",
