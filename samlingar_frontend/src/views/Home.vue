@@ -122,6 +122,8 @@ async function filterSearch(params) {
         store.commit('setTotalGeoData', 0)
       }
 
+      store.commit('setChartCode', null)
+
       // if (total > 0) {
       //   const collectionfacet = response.facets.collectionName.buckets
       //   store.commit('setSelectedCollectionGroup', collectionfacet)
@@ -164,6 +166,8 @@ async function freeTextSearch(value, mode) {
       store.commit('setFilterCoordinates', false)
       store.commit('setFilterInSweden', false)
       store.commit('setFilterType', false)
+
+      store.commit('setChartCode', null)
 
       if (total > 0) {
         const facets = response.facets
