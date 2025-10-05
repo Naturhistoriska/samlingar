@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import Chart from 'primevue/chart'
+// import Chart from 'primevue/chart'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
