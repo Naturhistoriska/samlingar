@@ -2,6 +2,7 @@
   <Card>
     <template #title>
       <h2>{{ $t('statisticData.statisticData') }}</h2>
+      <statistic-chart />
     </template>
     <template #content>
       <CollectionStatisticChart
@@ -34,6 +35,7 @@
 <script setup>
 import { computed } from 'vue'
 import CollectionStatisticChart from '../components/CollectionStatisticChart.vue'
+import StatisticChart from '../components/CollectionsChart.vue'
 
 const zooCollections = computed(() => {
   return import.meta.env.VITE_SUPPORTED_ZOO_DATASET

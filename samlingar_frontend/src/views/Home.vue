@@ -75,6 +75,9 @@ function fetchInitdata() {
       const totalSpeciemensHasImages = facets.associatedMedia.count
       const totalSpeciemensHasCoordinates = facets.coordinates.count
 
+      const collectionFacet = facets.collectionName.buckets
+      store.commit('setCollections', collectionFacet)
+
       store.commit('setHasCoordinatesCount', totalSpeciemensHasCoordinates)
       store.commit('setInSwedenCount', totalInSweden)
       store.commit('setIsTypeCount', totalTypeStatus)

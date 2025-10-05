@@ -210,23 +210,34 @@ const currentLocale = computed(() => locale.value)
 
 onMounted(() => {
   const dataSet = store.getters['dataResource']
-  console.log('dataset', dataSet)
 
-  selectedItems.value = groupedSelections.value
-    .filter((group) => group.code === dataSet)
-    .map((item) => item.items)[0]
-
-  if (selectedItems.value && selectedItems.value.length > 0) {
-    const value = selectedItems.value.map((obj) => `'${obj.code}'`).join(' ')
-    const codes = `(${value})`
-    store.commit('setSelectedCollection', codes)
+  if (dataSet) {
+    selectedItems.value = groupedSelections.value
+      .filter((group) => group.code === dataSet)
+      .map((item) => item.items)[0]
+    if (selectedItems.value && selectedItems.value.length > 0) {
+      const value = selectedItems.value.map((obj) => `'${obj.code}'`).join(' ')
+      const codes = `(${value})`
+      store.commit('setSelectedCollection', codes)
+    }
+  } else if (store.getters['chartCode'] !== null) {
+    const code = store.getters['chartCode']
+    let parentGroup
+    for (const group of groupedSelections.value) {
+      const match = group.items.find((item) => item.code === code)
+      if (match) {
+        parentGroup = group
+        selectedItems.value.push(match)
+        break
+      }
+    }
+    store.commit('setSelectedCollection', `('${code}')`)
   } else {
     store.commit('setSelectedCollection', null)
   }
 })
 
 function onSelect(event) {
-  console.log('onSelect...')
   if (multiSelectRef.value) {
     multiSelectRef.value.hide() // This closes the panel
   }
@@ -235,7 +246,6 @@ function onSelect(event) {
   if (selectedItems.value && selectedItems.value.length > 0) {
     const value = selectedItems.value.map((obj) => `'${obj.code}'`).join(' ')
     const codes = `(${value})`
-    console.log('names...', codes)
     store.commit('setSelectedCollection', codes)
   } else {
     store.commit('setSelectedCollection', null)

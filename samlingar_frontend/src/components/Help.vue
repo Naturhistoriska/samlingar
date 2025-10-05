@@ -7,8 +7,7 @@
     <Panel :header="$t('help.basicSearch')" toggleable>
       <p style="padding-left: 1rem">{{ $t('help.basicSearchText') }}</p>
       <p style="padding-left: 1rem">
-        <b>{{ $t('help.example') }}</b> {{ $t('help.bySearching') }}
-        <i>"aves västergötland"</i> &nbsp;{{ $t('help.returnMatchingTerms') }}
+        <b>{{ $t('help.example') }}</b> {{ $t('helplp.returnMatchingTerms') }}
       </p>
       <p style="padding-left: 1rem">{{ $t('help.fullTextSearchOptions') }}:</p>
       <ul>
@@ -89,7 +88,13 @@
           {{ $t('help.predefinedFilterSearch') }}:
           <p>{{ $t('help.predefinedFiltersText') }}</p>
 
-          <DataTable :value="searchExamples" class="p-datatable-sm" responsiveLayout="scroll">
+          <DataTable
+            :value="searchExamples"
+            :size="size"
+            stripedRows
+            class="p-datatable-sm"
+            responsiveLayout="scroll"
+          >
             <Column field="fieldName" header="Field name" />
             <Column field="searchMode" header="Search mode" />
             <Column field="description" header="Description" />
@@ -114,6 +119,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const size = ref('small')
 
 const searchExamples = ref([
   {

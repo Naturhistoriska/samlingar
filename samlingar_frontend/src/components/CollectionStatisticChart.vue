@@ -1,5 +1,27 @@
 <template>
-  <card>
+  <Panel toggleable collapsed>
+    <template #header>
+      <span style="font-size: 1.3em">{{ $t(dataGroup) }}</span>
+    </template>
+    <Accordion multiple class="p-accordion-header-variant-a" v-model:value="active">
+      <AccordionPanel v-for="tab in tabs" :key="tab" :value="tab" style="font-size: 12px">
+        <AccordionHeader style="background: transparent" @click="onTabClick(tab)">
+          {{ $t('collectionName.' + tab + '.name') }}
+        </AccordionHeader>
+        <AccordionContent style="background: transparent" :unstyled="true">
+          <div class="grid">
+            <div class="col-6" no-gutters>
+              <CollectionMonthChart v-bind:chart="getMonthData(tab)" />
+            </div>
+            <div class="col-6" no-gutters>
+              <CollectionYearChart v-bind:chart="getYearData(tab)" />
+            </div>
+          </div>
+        </AccordionContent>
+      </AccordionPanel>
+    </Accordion>
+  </Panel>
+  <!-- <card>
     <template #title>{{ $t(dataGroup) }} </template>
     <template #content>
       <Accordion multiple class="p-accordion-header-variant-a" v-model:value="active">
@@ -20,7 +42,7 @@
         </AccordionPanel>
       </Accordion>
     </template>
-  </card>
+  </card> -->
 </template>
 <script setup>
 import { computed, defineAsyncComponent, ref } from 'vue'
@@ -380,5 +402,8 @@ function setMonthData(tab, month) {
   background: var(--p-accordion-header-active-background);
   color: #838282;
   font-size: 1rem;
+}
+.p-panel .p-panel-header {
+  font-size: 3rem; /* Adjust as needed */
 }
 </style>

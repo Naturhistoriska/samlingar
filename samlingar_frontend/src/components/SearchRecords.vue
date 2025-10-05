@@ -141,6 +141,7 @@ function reset() {
   store.commit('setScientificName', null)
   store.commit('setSearchMode', 'contains')
 
+  store.commit('setChartCode', null)
   store.commit('setCollectionGroup', null)
   store.commit('setSelectedCollection', null)
 

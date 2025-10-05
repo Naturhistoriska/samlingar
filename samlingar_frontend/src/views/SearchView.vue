@@ -93,6 +93,13 @@ onMounted(async () => {
       // do nothing
     } else {
       // do something
+
+      let params = store.getters['searchParams']
+
+      if (params === null) {
+        params = buildParams()
+        search(params, 0, 20, true)
+      }
     }
   }
   // else if (entryType.value === 'internal') {
@@ -175,6 +182,7 @@ function buildParams() {
   const fullTextSearchMode = store.getters['fullTextSearchMode']
 
   const selectedCollection = store.getters['selectedCollection']
+  console.log('selectedCollection', selectedCollection)
 
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']

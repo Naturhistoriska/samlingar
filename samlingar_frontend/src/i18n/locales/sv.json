@@ -25,7 +25,7 @@
     "et": "Evertebrater, typsamling",
     "fish": "Fisksamling",
     "bird": "Fågelsamling",
-    "herp": "Amfibie- och reptilsamling",
+    "herp": "Amfibie och reptilsamling",
     "mammal": "Däggdjurssamling",
     "pb": "Paleobotaniska samlingar",
     "pz": "Paleozoologiska samlingar",
@@ -35,7 +35,7 @@
   },
   "collectionName": {
     "HE": {
-      "name": "Amfibie- och reptilsamling",
+      "name": "Amfibie och reptilsamling",
       "code": "HE"
     },
     "AV": {

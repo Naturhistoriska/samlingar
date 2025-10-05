@@ -2,9 +2,10 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
+    chartCode: null,
     clearSearch: false,
     collectionGroup: null, // group collection code
-    collectons: [],
+    collections: null,
 
     dataResource: null, // group: zoo, pal, bot, geo
     dates: null,
@@ -29,7 +30,7 @@ export default createStore({
     resetMapData: false,
 
     scientificName: null,
-    selectedCollection: null, // selectedCollections Code
+    selectedCollection: null, // selectedCollection Code
     selectedCollectionGroup: null, // selectedCollections name
 
     searchMode: 'contains',
@@ -52,7 +53,7 @@ export default createStore({
     //
     //
     //
-    collections: null,
+
     clusterGroup: null,
 
     fields: [],
@@ -136,11 +137,17 @@ export default createStore({
   },
 
   getters: {
+    chartCode(state) {
+      return state.chartCode
+    },
     clearSearch(state) {
       return state.clearSearch
     },
     collectionGroup(state) {
       return state.collectionGroup
+    },
+    collections(state) {
+      return state.collections
     },
     dateFilter(state) {
       return state.dateFilter
@@ -188,9 +195,6 @@ export default createStore({
     //
     //
 
-    collections(state) {
-      return state.collections
-    },
     clusterGroup(state) {
       return state.clusterGroup
     },
@@ -276,10 +280,6 @@ export default createStore({
     classs(state) {
       return state.classs
     },
-    collectons(state) {
-      return state.collectons
-    },
-
     chartDataAlgae(state) {
       return state.chartDataAlgae
     },
@@ -447,7 +447,9 @@ export default createStore({
   },
 
   mutations: {
+    setChartCode: (state, payload) => (state.chartCode = payload),
     setClearSearch: (state, payload) => (state.clearSearch = payload),
+    setCollections: (state, payload) => (state.collections = payload),
     setCollectionGroup: (state, payload) => (state.collectionGroup = payload),
     setDateFilter: (state, payload) => (state.dateFilter = payload),
     setEndYear: (state, payload) => (state.endYear = payload),
@@ -472,7 +474,6 @@ export default createStore({
     //
     //
 
-    setCollections: (state, payload) => (state.collections = payload),
     setClusterGroup: (state, payload) => (state.clusterGroup = payload),
     setDates: (state, payload) => (state.dates = payload),
     setDataResource: (state, payload) => (state.dataResource = payload),
@@ -500,7 +501,6 @@ export default createStore({
     setBotanyCollectionTotal: (state, payload) => (state.botanyCollectionTotal = payload),
     setCatalogNumber: (state, payload) => (state.catalogNumber = payload),
     setClasss: (state, payload) => (state.classs = payload),
-    // setCollections: (state, payload) => (state.collectons = payload),
 
     setChartDataAlgae: (state, payload) => (state.chartDataAlgae = payload),
     setChartDataEntomology: (state, payload) => (state.chartDataEntomology = payload),
