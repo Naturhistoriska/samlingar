@@ -229,6 +229,7 @@ public class Solr implements Serializable {
                 .withFacet(associatedMediaKey, facetImages)
                 .withFacet(typeStatusKey, facetTypeStatus)
                 .withFacet(inSwedenKey, facetInSweden)
+                .withFacet(collectionNameKey, collectionFacet.setLimit(30))
                 .setLimit(1);
          
         jsonRequest.setBasicAuthCredentials(username, password); 
@@ -316,8 +317,8 @@ public class Solr implements Serializable {
                 .setLimit(defaultRows)
                 .setSort(defaultSort)
                 .withFacet(coordinatesKey, facetCoordinates) 
-                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
-                .withFacet(collectionNameKey, collectionFacet.setLimit(20));
+                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(30))
+                .withFacet(collectionNameKey, collectionFacet.setLimit(30));
  
         paramMap.forEach((key, value) -> {
             sb = new StringBuilder();
@@ -353,8 +354,8 @@ public class Solr implements Serializable {
                 .withParam(qf, catchall)
                 .withParam(mmKey, mmValue)  
                 .withFacet(coordinatesKey, facetCoordinates)
-                .withFacet(collectionNameKey, collectionFacet.setLimit(20))
-                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
+                .withFacet(collectionNameKey, collectionFacet.setLimit(30))
+                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(30))
                 .setOffset(defaultStart)
                 .setLimit(defaultRows)
                 .setSort(defaultSort); 
@@ -387,8 +388,8 @@ public class Solr implements Serializable {
                 .setLimit(numPerPage)
                 .setSort(sort)
                 .withFacet(coordinatesKey, facetCoordinates)
-                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
-                .withFacet(collectionNameKey, collectionFacet.setLimit(20));
+                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(30))
+                .withFacet(collectionNameKey, collectionFacet.setLimit(30));
  
         if (!StringUtils.isBlank(scientificName)) {
             jsonRequest.withFilter(scientificName);
@@ -581,8 +582,8 @@ public class Solr implements Serializable {
                 .withParam(qf, copyScientificNameKey)
                 .withParam(mmKey, mmValue) 
                 .withFacet(coordinatesKey, facetCoordinates)
-                .withFacet(collectionNameKey, collectionFacet.setLimit(20))
-                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(20))
+                .withFacet(collectionNameKey, collectionFacet.setLimit(30))
+                .withFacet(collectionCodeKey, collectionCodeFacet.setLimit(30))
                 .setOffset(defaultStart)
                 .setLimit(defaultRows)
                 .setSort(defaultSort);   
