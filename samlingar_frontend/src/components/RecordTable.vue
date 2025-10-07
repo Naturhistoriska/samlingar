@@ -27,7 +27,7 @@
       @row-select="onRowSelect"
       @sort="onSort"
     >
-      <template #header>
+      <!-- <template #header>
         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
           <span class="text-xl text-900 font-bold"> </span>
 
@@ -40,7 +40,7 @@
             />
           </div>
         </div>
-      </template>
+      </template> -->
       <template #empty>{{ $t('search.noResultsFound') }}</template>
       <template #loading>{{ $t('search.loadingData') }}</template>
 
@@ -128,7 +128,7 @@
         header="CatalogNumber"
         :showFilterMenu="false"
         sortable
-        style="min-width: 6 rem; max-width: 6rem"
+        style="min-width: 5rem; max-width: 5rem"
       >
         <template #body="{ data }">
           {{ data.catalogNumber }}
@@ -169,7 +169,7 @@
         </template>
       </Column>
 
-      <Column class="w-24 !text-end">
+      <Column style="min-width: 1.2rem; max-width: 1.2rem">
         <template #body="{ data }">
           <Button
             text
@@ -179,7 +179,7 @@
           ></Button>
         </template>
       </Column>
-      <template #expansion="slotProps">
+      <!-- <template #expansion="slotProps">
         <div class="p-2">
           <b>
             {{ slotProps.data.scientificName }}
@@ -193,7 +193,7 @@
           {{ buildHighGeographigher(slotProps.data) }}<br />
           {{ slotProps.data.decimalLatitude }}, {{ slotProps.data.decimalLongitude }}<br />
         </div>
-      </template>
+      </template> -->
     </DataTable>
   </div>
 </template>
@@ -233,7 +233,7 @@ const nameFilterMatchModes = [
 ]
 
 const selectedRecord = ref()
-const expandedRows = ref({})
+// const expandedRows = ref({})
 const records = ref()
 const collectionOptions = ref()
 let filterArray = ref([])
@@ -320,51 +320,6 @@ function getTaxon(data) {
   }
 }
 
-function exportCSV() {
-  console.log('exportCSV')
-  // dt.value.exportCSV()
-
-  const exportFields = [
-    'scientificName',
-    'catalogNumber',
-    'locality',
-    'decimalLatitude',
-    'decimalLongitude',
-    'stateProvince',
-    'country'
-  ]
-  const exportHeaders = [
-    'Scientific Name',
-    'Catalog Number',
-    'Locality',
-    'DecimalLatitude',
-    'DecimalLongitude',
-    'Province',
-    'Country'
-  ]
-
-  const csvRows = [exportHeaders.join(',')]
-
-  records.value.forEach((record) => {
-    const row = exportFields.map((field) => {
-      let value = record[field] ?? ''
-      // Escape quotes and wrap in double quotes
-      return `"${String(value).replace(/"/g, '""')}"`
-    })
-    csvRows.push(row.join(','))
-  })
-
-  const csvContent = csvRows.join('\n')
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-
-  const link = document.createElement('a')
-  link.href = URL.createObjectURL(blob)
-  link.download = 'records.csv'
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-}
-
 function clearFilters() {
   for (const key in filters.value) {
     filters.value[key].value = null
@@ -404,35 +359,49 @@ function buildHighGeographigher(data) {
 }
 
 function onLocalityFilterInput(event, filterModel, filterCallback) {
+  console.log('onLocalityFilterInput')
   const value = event.target.value
 
-  if (value.length >= 3 || value.length === 0) {
-    filters.value.locality.value = value
+  if (value.length >= 2 || value.length === 0) {
     dt.value.filter(filters.value.locality.value, 'locality', 'contains')
+    filters.value.locality.value = value
   }
+  // else {
+  //   if (value.length === 0) {
+  //     dt.value.filter(filters.value.locality.value, 'locality', 'contains')
+  //     filters.value.locality.value = value
+  //   }
+  // }
 }
 
 function onCatalogNumberFilterInput(event, filterModel) {
   const value = event.target.value
 
-  if (value.length >= 3 || value.length === 0) {
-    filters.value.catalogNumber.value = value
+  if (value.length >= 2 || value.length === 0) {
     dt.value.filter(filters.value.catalogNumber.value, 'catalogNumber', 'startsWith')
+    filters.value.catalogNumber.value = value
   }
+  // else {
+  //   if (value.length === 0) {
+  //     dt.value.filter(filters.value.catalogNumber.value, 'catalogNumber', 'startsWith')
+  //     filters.value.catalogNumber.value = value
+  //   }
+  // }
 }
 
 function onScientificNameFilterInput(event, filterModel) {
   const value = event.target.value
-  if (value.length >= 3 || value.length === 0) {
+  if (value.length >= 2 || value.length === 0) {
+    dt.value.filter(filters.value.scientificName.value, 'scientificName', 'equals')
     filters.value.scientificName.value = value
-    dt.value.filter(filters.value.scientificName.value, 'catalogNumber', 'equals')
   }
+  // else {
+  //   if () {
+  //     dt.value.filter(filters.value.scientificName.value, 'catalogNumber', 'equals')
+  //     filters.value.scientificName.value = value
+  //   }
+  // }
 }
-
-// function onFilterChange(filterModel, filterCallback) {
-//   filterModel.value = null
-//   filterCallback()
-// }
 
 function onFilter(event) {
   console.log('event', event)
@@ -679,6 +648,56 @@ const onPage = async (event) => {
 
   loadRecordsLazy(params, first, rows)
 }
+
+// function onFilterChange(filterModel, filterCallback) {
+//   filterModel.value = null
+//   filterCallback()
+// }
+
+// function exportCSV() {
+//   console.log('exportCSV')
+//   // dt.value.exportCSV()
+
+//   const exportFields = [
+//     'scientificName',
+//     'catalogNumber',
+//     'locality',
+//     'decimalLatitude',
+//     'decimalLongitude',
+//     'stateProvince',
+//     'country'
+//   ]
+//   const exportHeaders = [
+//     'Scientific Name',
+//     'Catalog Number',
+//     'Locality',
+//     'DecimalLatitude',
+//     'DecimalLongitude',
+//     'Province',
+//     'Country'
+//   ]
+
+//   const csvRows = [exportHeaders.join(',')]
+
+//   records.value.forEach((record) => {
+//     const row = exportFields.map((field) => {
+//       let value = record[field] ?? ''
+//       // Escape quotes and wrap in double quotes
+//       return `"${String(value).replace(/"/g, '""')}"`
+//     })
+//     csvRows.push(row.join(','))
+//   })
+
+//   const csvContent = csvRows.join('\n')
+//   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+
+//   const link = document.createElement('a')
+//   link.href = URL.createObjectURL(blob)
+//   link.download = 'records.csv'
+//   document.body.appendChild(link)
+//   link.click()
+//   document.body.removeChild(link)
+// }
 </script>
 <style scoped>
 .small-placeholder::placeholder {
