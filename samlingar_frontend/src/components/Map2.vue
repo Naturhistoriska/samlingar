@@ -159,6 +159,7 @@ const fetchAndRender = async (params, { lat, lng }) => {
 async function fetchRecord(id, marker) {
   popupContent.value = 'Loading...'
   marker.bindPopup(popupContent.value).openPopup()
+
   // if (response) {
   await service
     .apiIdSearch(id)
@@ -200,9 +201,14 @@ async function fetchRecord(id, marker) {
           const button = document.createElement('button')
           button.innerHTML = 'More details'
 
-          button.onclick = function () {
+          // button.onclick = function () {
+          //   displayDetail(data)
+          // }
+          // This handles both click and Enter/Space
+          button.addEventListener('click', () => {
             displayDetail(data)
-          }
+          })
+
           div.style.cssText = ' overflow-wrap: break-word;   '
           div.appendChild(button)
 
@@ -259,6 +265,7 @@ async function buildMarkers(docs) {
     marker.on('click', async () => {
       await fetchRecord(doc.id, marker)
     })
+
     markers.addLayers(marker)
   })
 
