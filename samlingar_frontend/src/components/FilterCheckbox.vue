@@ -1,6 +1,10 @@
 <template>
-  <div class="card flex flex-wrap justify-center gap-2">
-    <div class="flex items-center gap-1">
+  <div
+    class="card flex flex-wrap justify-center gap-2"
+    role="searchOptionGroup"
+    aria-label="Search options"
+  >
+    <div class="flex items-center gap-1" @keydown.enter="toggleImageCheck">
       <Checkbox
         v-model="image"
         inputId="image"
@@ -11,7 +15,7 @@
       />
       <label for="image" class="text-sm">{{ $t('search.haveImages') }}</label>
     </div>
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1" @keydown.enter="toggleCoordinatesCheck">
       <Checkbox
         v-model="coordinates"
         inputId="coordinates"
@@ -22,7 +26,7 @@
       />
       <label for="coordinates" class="text-sm">{{ $t('search.haveCoordinates') }}</label>
     </div>
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1" @keydown.enter="toggleTypeCheck">
       <Checkbox
         v-model="type"
         inputId="types"
@@ -30,10 +34,11 @@
         :binary="true"
         size="small"
         @click="typeClicked"
+        @keydown.enter="checked = !checked"
       />
       <label for="types" class="text-sm">{{ $t('search.isType') }}</label>
     </div>
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1" @keydown.enter="toggleSwedenCheck">
       <Checkbox
         v-model="sweden"
         inputId="sweden"
@@ -44,7 +49,7 @@
       />
       <label for="sweden" class="text-sm">{{ $t('search.inSweden') }}</label>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2" @keydown.enter="toggleNordicCountriesCheck">
       <Checkbox
         v-model="nordicCountries"
         inputId="nordic"
@@ -116,13 +121,41 @@ watch(
 )
 
 onMounted(() => {
-  console.log('onMounted')
-
   image.value = store.getters['filterImage']
   coordinates.value = store.getters['filterCoordinates']
   type.value = store.getters['filterType']
   sweden.value = store.getters['filterInSweden']
 })
+
+function toggleCoordinatesCheck() {
+  coordinates.value = !coordinates.value
+  store.commit('setFilterCoordinates', coordinates.value)
+  search()
+}
+
+function toggleImageCheck() {
+  image.value = !image.value
+  store.commit('setFilterImage', image.value)
+  search()
+}
+
+function toggleNordicCountriesCheck() {
+  nordicCountries.value = !nordicCountries.value
+  store.commit('setFilterNordicCountry', nordicCountries.value)
+  search()
+}
+
+function toggleSwedenCheck() {
+  sweden.value = !sweden.value
+  store.commit('setFilterInSweden', sweden.value)
+  search()
+}
+
+function toggleTypeCheck() {
+  type.value = !type.value
+  store.commit('setFilterType', type.value)
+  search()
+}
 
 function swedenClicked() {
   const searchInSweden = !sweden.value

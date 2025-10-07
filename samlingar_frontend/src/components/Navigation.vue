@@ -4,19 +4,50 @@
       <div class="col-8" style="margin-left: 1em">
         <Tabs v-model:value="value">
           <TabList>
-            <Tab value="0" to="/" as="router-link" @click="onClick" class="navbg">
+            <Tab
+              value="0"
+              to="/"
+              as="router-link"
+              @click="onClick"
+              @keydown.enter="onTabEnter(0)"
+              class="navbg"
+            >
               <i class="pi pi-home navbg"></i> {{ $t('nav.home') }}
             </Tab>
-            <Tab value="1" to="/search" as="router-link" class="navbg">
+            <Tab
+              value="1"
+              to="/search"
+              as="router-link"
+              @keydown.enter="onTabEnter(1)"
+              class="navbg"
+            >
               {{ $t('nav.search') }}
             </Tab>
-            <Tab value="2" to="/collections" as="router-link" class="navbg">
+            <Tab
+              value="2"
+              to="/collections"
+              as="router-link"
+              @keydown.enter="onTabEnter(2)"
+              class="navbg"
+            >
               {{ $t('nav.collections') }}
             </Tab>
-            <Tab value="3" to="/about" as="router-link" class="navbg">
+            <Tab
+              value="3"
+              to="/about"
+              as="router-link"
+              @keydown.enter="onTabEnter(3)"
+              class="navbg"
+            >
               {{ $t('nav.about') }}
             </Tab>
-            <Tab value="4" to="/contact" as="router-link" class="navbg">
+            <Tab
+              value="4"
+              to="/contact"
+              as="router-link"
+              @keydown.enter="onTabEnter(4)"
+              class="navbg"
+            >
               {{ $t('common.contactus') }}
             </Tab>
           </TabList>
@@ -67,6 +98,12 @@ watch(
     }
   }
 )
+
+function onTabEnter(tabIndex) {
+  const routes = ['/', '/search', '/collections', '/about', '/contact']
+  const target = routes[tabIndex]
+  if (target) router.push(target)
+}
 
 function onClick() {
   store.commit('setSearchText', null)

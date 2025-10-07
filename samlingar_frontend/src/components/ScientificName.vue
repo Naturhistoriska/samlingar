@@ -7,6 +7,7 @@
           v-model="scientificName"
           @input="onInputScientificName"
           @keydown.enter="handleEnter"
+          @blur="handleBlur"
           :placeholder="$t('search.filterScientificname')"
           size="small"
           class="w-full"
@@ -21,12 +22,17 @@
     </div>
 
     <div class="col-12">
-      <div class="flex flex flex-wrap gap-3" style="margin-top: -9px">
+      <div
+        class="flex flex flex-wrap gap-3"
+        style="margin-top: -9px"
+        role="radiogroup"
+        aria-label="Search Options"
+      >
         <div class="flex items-center">
           <RadioButton
             v-model="searchOptions"
             inputId="searchOption1"
-            name="option1"
+            name="searchScientificOptions"
             value="equals"
             size="small"
             class="mt-1"
@@ -41,7 +47,7 @@
           <RadioButton
             v-model="searchOptions"
             inputId="searchOptions2"
-            name="option2"
+            name="searchScientificOptions"
             value="contains"
             class="mt-1"
             size="small"
@@ -56,7 +62,7 @@
           <RadioButton
             v-model="searchOptions"
             inputId="searchOptions3"
-            name="option3"
+            name="searchScientificOptions"
             value="startsWith"
             size="small"
             class="mt-1"
@@ -115,40 +121,32 @@ function setSearchOption() {
 }
 
 function change() {
-  console.log('change', searchOptions.value)
-  const option = searchOptions.value
-  store.commit('setSearchMode', option)
+  handleEnter()
+}
+
+function handleBlur() {
+  store.commit('setScientificName', scientificName.value)
+  store.commit('setSearchMode', searchOptions.value)
 }
 
 function onInputScientificName() {
-  console.log('onInputScientificName')
   showClearScentificName = scientificName.value
-
-  let isFuzzy = false
-  if (scientificName !== undefined && scientificName.value) {
-    searchOptions.value = 'contains'
-    isFuzzy = true
-  }
-  search(scientificName.value, searchOptions.value, isFuzzy)
 }
 
 function clearScientificName() {
   scientificName.value = ''
-  showClearScentificName = false
   searchOptions.value = null
-
-  search(null, false)
+  search(null, null)
 }
 
 function handleEnter() {
-  console.log('handleEnter')
   search(scientificName.value, searchOptions.value)
-  emits('scientificNameSearch')
 }
 
 function search(scientificName, searchMode) {
   store.commit('setScientificName', scientificName)
   store.commit('setSearchMode', searchMode)
+  emits('scientificNameSearch')
 }
 </script>
 <style scoped>

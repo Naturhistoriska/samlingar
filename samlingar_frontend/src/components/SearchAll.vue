@@ -10,6 +10,7 @@
           :placeholder="$t('search.freeTextSearch')"
           size="small"
           class="w-full"
+          v-tooltip.bottom="$t('tip.searchAll')"
         />
         <Button
           icon="pi pi-times"
@@ -20,12 +21,12 @@
       </InputGroup>
     </div>
     <div class="col-12" no-gutters>
-      <div class="flex flex flex-wrap gap-3">
+      <div class="flex flex flex-wrap gap-3" role="radiogroup" aria-label="Search Options">
         <div class="flex items-center">
           <RadioButton
             v-model="searchOptions"
             inputId="optionEquals"
-            name="option1"
+            name="searchOption"
             value="equals"
             size="small"
             class="mt-1"
@@ -40,7 +41,7 @@
           <RadioButton
             v-model="searchOptions"
             inputId="optionContains"
-            name="option2"
+            name="searchOption"
             value="contains"
             class="mt-1"
             size="small"
@@ -55,7 +56,7 @@
           <RadioButton
             v-model="searchOptions"
             inputId="optionStartWith"
-            name="option3"
+            name="searchOption"
             value="startsWith"
             size="small"
             class="mt-1"
@@ -111,8 +112,8 @@ function setSearchOption() {
 }
 
 function change() {
-  console.log('change', searchOptions.value)
   store.commit('setFullTextSearchMode', searchOptions.value)
+  handleEnter()
 }
 
 function handleEnter() {
@@ -127,7 +128,6 @@ function valueChange() {
 }
 
 function clearInputValue() {
-  console.log('clearInputValue')
   value.value = ''
   store.commit('setSearchText', null)
   // store.commit('setFullTextSearchMode', 'contains')

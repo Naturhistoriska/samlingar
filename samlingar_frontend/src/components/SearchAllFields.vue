@@ -17,7 +17,7 @@
     </div>
     <div class="col-12" no-gutters>
       <div class="flex flex flex-wrap gap-3">
-        <div class="flex items-center">
+        <div class="flex items-center" @keydown.enter="toggleSearchOption('equals')">
           <RadioButton
             v-model="searchOptions"
             inputId="optionEquals"
@@ -31,7 +31,7 @@
             <small>{{ $t('search.exact') }}</small>
           </label>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center" @keydown.enter="toggleSearchOption('contains')">
           <RadioButton
             v-model="searchOptions"
             inputId="optionContains"
@@ -45,7 +45,7 @@
             <small>{{ $t('search.contains') }}</small>
           </label>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center" @keydown.enter="toggleSearchOption('startsWith')">
           <RadioButton
             v-model="searchOptions"
             inputId="optionStartWith"
@@ -73,6 +73,10 @@ const emits = defineEmits(['freeTextSearch'])
 const store = useStore()
 
 let searchOptions = ref('contains')
+
+function toggleSearchOption(value) {
+  searchOptions.value = value
+}
 
 function change() {
   // console.log('change', searchOptions.value)
