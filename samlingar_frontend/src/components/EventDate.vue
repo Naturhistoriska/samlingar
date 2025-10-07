@@ -6,7 +6,7 @@
           <RadioButton
             v-model="searchOptions"
             inputId="option1"
-            name="option1"
+            name="dateOption"
             value="date"
             size="small"
             class="mt-1"
@@ -20,7 +20,7 @@
           <RadioButton
             v-model="searchOptions"
             inputId="option2"
-            name="option2"
+            name="dateOption"
             value="year"
             class="mt-1"
             size="small"
@@ -32,29 +32,43 @@
         </div>
       </div>
 
-      <div class="card flex justify-center" v-if="isFilterByDate">
-        <DatePicker
-          v-model="dates"
-          size="small"
-          ref="datepickerRef"
-          selectionMode="range"
-          showIcon
-          @date-select="onSelect"
-          dateFormat="yy-mm-dd"
-          :manualInput="false"
-          class="w-full sm:w-[30rem]"
-        >
-          <template #footer>
-            <div class="p-d-flex p-jc-end p-w-full" style="float: right">
-              <button type="button" class="p-button p-component p-button-text" @click="removeDates">
-                {{ $t('btnLabel.removeDates') }}
-              </button>
-            </div>
-          </template>
-        </DatePicker>
+      <div class="w-full" v-if="isFilterByDate">
+        <div class="block">
+          <DatePicker
+            v-model="dates"
+            size="small"
+            ref="datepickerRef"
+            inputId="dateRange"
+            aria-label="Select a date"
+            aria-required="true"
+            aria-describedby="dateHelp"
+            selectionMode="range"
+            showIcon
+            @date-select="onSelect"
+            dateFormat="yy-mm-dd"
+            :manualInput="true"
+            class="w-full sm:w-[30rem]"
+          >
+            <template #footer>
+              <div class="p-d-flex p-jc-end p-w-full" style="float: right">
+                <button
+                  type="button"
+                  class="p-button p-component p-button-text"
+                  @click="removeDates"
+                >
+                  {{ $t('btnLabel.removeDates') }}
+                </button>
+              </div>
+            </template>
+          </DatePicker>
+        </div>
+
+        <p id="dateHelp" class="mt-2 text-sm text-gray-500">
+          {{ $t('tip.dateRangeHelp') }}
+        </p>
       </div>
 
-      <div class="card flex justify-center" v-else>
+      <div class="grid" v-else>
         <div class="col-6">
           <DatePicker
             size="small"
@@ -66,6 +80,7 @@
             @date-select="onStartYearSelected"
             :placeholder="$t('search.startYear')"
             :showIcon="true"
+            :manualInput="true"
           >
             <template #footer>
               <div class="p-d-flex p-jc-end p-w-full" style="float: right">
@@ -106,9 +121,14 @@
             </template>
           </DatePicker>
         </div>
+        <div class="col-12">
+          <p id="yearHelp" class="mt-2 text-sm text-gray-500">
+            {{ $t('tip.dateRangeHelp') }}
+          </p>
+        </div>
       </div>
 
-      <div class="flex gap-3 mt-1 grid justify-end" style="float: inline-end">
+      <div class="flex grid justify-end" style="float: inline-end">
         <Button
           :label="$t('search.search')"
           @click="search"
