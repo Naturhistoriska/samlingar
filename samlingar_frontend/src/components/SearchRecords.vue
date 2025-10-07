@@ -58,7 +58,7 @@
           toggleable
           :collapsed="collectionGroupPanelNotVisible"
         >
-          <Collections />
+          <Collections @collectionsSearch="search" />
         </Panel>
 
         <Panel
