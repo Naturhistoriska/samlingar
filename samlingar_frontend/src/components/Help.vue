@@ -7,12 +7,15 @@
     <Panel :header="$t('help.basicSearch')" toggleable>
       <p style="padding-left: 1rem">{{ $t('help.basicSearchText') }}</p>
       <p style="padding-left: 1rem">
-        <b>{{ $t('help.example') }}</b> {{ $t('helplp.returnMatchingTerms') }}
+        <b>{{ $t('help.example') }}</b>
+        &nbsp; {{ $t('help.bySearching') }} <i>aves västergötland</i>
+        {{ $t('help.returnMatchingTerms') }}
       </p>
       <p style="padding-left: 1rem">{{ $t('help.fullTextSearchOptions') }}:</p>
       <ul>
         <li>
           {{ $t('help.exact') }}
+
           <p>{{ $t('help.example') }}</p>
           <ul>
             <li>{{ $t('help.exactExampleSecifitcName') }}</li>
