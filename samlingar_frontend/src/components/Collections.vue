@@ -37,6 +37,8 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from 'vuex'
 
+const emits = defineEmits(['collectionsSearch'])
+
 const store = useStore()
 const { t, locale } = useI18n()
 
@@ -250,6 +252,7 @@ function onSelect(event) {
   } else {
     store.commit('setSelectedCollection', null)
   }
+  emits('collectionsSearch')
 }
 </script>
 <style scoped>
