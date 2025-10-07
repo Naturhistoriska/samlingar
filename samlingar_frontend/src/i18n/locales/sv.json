@@ -349,7 +349,10 @@
     "specimensFromSweden": "Exemplar insamlade i Sverige",
     "specimensWithImages": "Exemplar med bilder",
     "specimensWithType": "Exemplar med typstatus",
-    "text": "Naturhistoriska riksmuseet innehåller 11 miljoner exemplar insamlade under 300 år. Nästan 4 miljoner objekt från våra samlingar finns nu tillgängliga online, 136,000 med bilder, som visar på biodiversitet från hela världen."
+    "text1": "The Swedish Museum of Natural History hosts more than 11 million specimens, collected over a period of more than 300 years. Here, you can search for all items that are currently registered in the museum’s collection management systems. ",
+    "text2": "Over 4 million objects are already registered, including around 170,000 type specimens and approximately 130,000 objects with photographs, representing biodiversity from across the world.",
+    "text3": "The digitalization of our collections is an ongoing process, and new records are added and updated every day.",
+    "text4": "Please note that some information may be incomplete or inconsistent. These variations reflect historical data entry practice, many records were created decades or even centuries ago, long before modern digital standards existed. The collection interface presents the information as it was originally recorded, ensuring transparency and respect for the historical documentation."
   },
 
   "search": {
@@ -428,6 +431,7 @@
     "statisticData": "Statistikdata"
   },
   "tip": {
+    "dateRangeHelp": "Please select a date range: From date and To date.",
     "quickSrarch": "Search for all the specimens are registered in our collections",
     "quickSrarchInput": "This is an autocomplete searh. Type at least 3 letters to see suggestions...",
     "searchAll": "This is full text search, you can search by taxon name, locality, collections etc... "
