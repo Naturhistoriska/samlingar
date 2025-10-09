@@ -1,15 +1,6 @@
 <template>
   <div class="card">
-    <DataView
-      :value="records"
-      layout="grid"
-      paginator
-      :rows="30"
-      :paginator="true"
-      :lazy="true"
-      @page="onPage($event)"
-      :totalRecords="totalCount"
-    >
+    <DataView :value="records" :lazy="true" :loading="loading" layout="grid">
       <template #grid="slotProps">
         <div class="grid grid-cols-12">
           <div
@@ -17,17 +8,14 @@
             :key="index"
             class="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-6 p-2"
           >
-            <div
-              class="flex flex-row justify-between items-start gap-3"
-              style="max-width: 350px; min-width: 350px"
-            >
-              <card style="height: 150px; width: 350px" v-if="item != undefined">
+            <div class="flex flex-row justify-between items-start gap-3">
+              <card style="height: 150px; width: 250px" v-if="item != undefined">
                 <template #title>
                   <div class="grid">
-                    <div class="col-10" no-gutters>
-                      <media-image v-bind:mediaUrl="item" v-bind:dataset="dataset" />
+                    <div class="col-9" no-gutters>
+                      <small>{{ item.record.catalogNumber }}</small>
                     </div>
-                    <div class="col-2" no-gutters>
+                    <div class="col-3" no-gutters>
                       <Button variant="link" @click="view(item)">
                         <small>{{ $t('records.view') }}</small>
                       </Button>
@@ -35,17 +23,11 @@
                   </div>
                 </template>
                 <template #subtitle>
-                  <small>{{ item.collectionName }}</small>
+                  <small>{{ item.record.scientificName }}</small>
                 </template>
                 <template #content>
-                  <div style="font-size: 0.7em">
-                    {{ item.catalogNumber }}
-                  </div>
-                  <div style="font-size: 0.7em">
-                    {{ item.locality }} {{ item.country }} {{ item.continent }}
-                  </div>
-                  <div v-if="item.decimalLatitude != null" style="font-size: 0.7em">
-                    Lat: {{ item.decimalLatitude }} Lon: {{ item.decimalLongitude }}
+                  <div style="min-width: 100px; max-width: 100px">
+                    <Thumbnail v-bind:record="item" v-bind:src="item.src" />
                   </div>
                 </template>
               </card>
@@ -54,116 +36,159 @@
         </div>
       </template>
     </DataView>
+
+    <!-- Sentinel for Intersection Observer -->
+    <div ref="sentinel" class="sentinel"></div>
+
+    <div v-if="loading" class="loading-indicator">Loading...</div>
+    <div v-if="!hasMoreData" class="end-of-data">No more products</div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import Thumbnail from './Thumbnail.vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import Service from '../Service'
-import MediaImage from './baseComponents/MediaImage.vue'
 
 const store = useStore()
 const router = useRouter()
 
 const service = new Service()
 
-let records = ref(Array.from({ length: 50 }))
-let images = ref([])
-let dataset = ref()
+const records = ref([])
+const loading = ref(false)
+const page = ref(0)
+const rows = 10
+const totalRecords = ref(null)
+const hasMoreData = ref(true)
 
-onMounted(async () => {
-  console.log('media onMounted')
+// const imageUrl = ref(
+//   'https://media-service.nrm.se/images?id=/kryptos/kbo/kryptobase/201609/max/321789.jpg&dataset=kbo'
+// )
 
-  await new Promise((res) => setTimeout(res, 500))
+const sentinel = ref(null)
+let observer = null
 
-  let params = store.getters['searchParams']
-  fetchData(params, 0, 30)
+onMounted(() => {
+  fetchData(0, 50) // Initial load
+  setupObserver()
 })
 
-function buildImages() {
-  console.log('records', records.value)
-  records.value.forEach((record) => {
-    const { associatedMedia, catalogNumber, collectionCode, scientificName } = record
+onBeforeUnmount(() => {
+  disconnectObserver()
+})
 
-    const botnayColection = 'vp, fungi, mosses, algae'
-    const kbo = 'algae, fungi, mosses'
-    const paleo = 'pz, pa'
-    const zoo = 'ev, et, pi, he'
-    const entCode = 'NHRS'
+function fetchData() {
+  if (loading.value || !hasMoreData.value) return
 
-    let medias
+  loading.value = true
 
-    let smallImage = 'tumme'
-    if (associatedMedia) {
-      if (collectionCode === entCode) {
-        associatedMedia.forEach((m) => {
-          const imageId = m.split(' ')[0] + '&imgType=thumbs'
-
-          images.value.push(imageId)
-        })
-      } else {
-        if (botnayColection.includes(collectionCode)) {
-          if (kbo.includes(collectionCode)) {
-            dataset.value = '&dataset=kbo'
-          } else {
-            smallImage = 'mini'
-            dataset.value = '&dataset=fbo'
-          }
-          medias = associatedMedia
-            .filter((media) => !media.includes(smallImage))
-            .map((a) => (a = a.match(/(?<=\[).+?(?=\])/g).toString()))
-        } else {
-          smallImage = 'thumb'
-          if (paleo.includes(collectionCode)) {
-            dataset.value = '&dataset=pal'
-          } else if (zoo.includes(collectionCode)) {
-            dataset.value = '&dataset=' + collectionCode
-          }
-          medias = associatedMedia.filter((media) => !media.includes(smallImage))
-        }
-        images.value.push(medias)
-      }
-    }
-  })
-}
-
-function fetchData(params, start, end) {
+  let params = store.getters['searchParams']
   params.set('hasImage', '*')
-
+  const start = page.value
+  const end = 100
   service
     .apiSearch(params, start, end)
     .then((response) => {
       const total = response.facets.count
-      records.value = response.response
+      const data = response.response.filter(
+        (item) => item.collectionCode !== 'pz' && !item.catalogNumber.startsWith('P')
+      )
 
-      console.log('recordes...', records.value)
+      const allImages = data.flatMap((item) =>
+        item.associatedMedia
+          .filter((img) => img.includes('thumb') || img.includes('mini') || img.includes('tumme'))
+          .map((img) => {
+            return {
+              src: img,
+              record: item // add any metadata from item here
+            }
+          })
+      )
 
-      if (total > 0) {
-        buildImages()
+      records.value.push(...allImages)
+      totalRecords.value = total
+
+      page.value += 1
+
+      if (records.value.length >= total) {
+        hasMoreData.value = false
+        disconnectObserver()
       }
     })
-    .catch()
-    .finally(() => {})
+    .catch((error) => {
+      console.log('error', error)
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
-const onPage = async (event) => {
-  console.log('event')
-  const { first, rows } = event
-  await new Promise((res) => setTimeout(res, 500))
+const setupObserver = () => {
+  if (!sentinel.value) return
 
-  fetchData(first, rows)
+  observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && hasMoreData.value) {
+      fetchData()
+    }
+  })
+
+  observer.observe(sentinel.value)
 }
 
-const totalCount = computed(() => {
-  return store.getters['totalRecords']
-})
-
+const disconnectObserver = () => {
+  if (observer) {
+    observer.disconnect()
+    observer = null
+  }
+}
 function view(data) {
-  console.log('view', data, data.id)
-  store.commit('setSelectedRecord', data)
-  router.push(`/record/${data.id}`)
+  store.commit('setSelectedRecord', data.record)
+  router.push(`/record/${data.record.id}`)
 }
 </script>
-<style scoped></style>
+<style scoped>
+/* .p-dataview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+} */
+
+/* Each record's card */
+/* .item-card {
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+} */
+
+/* Grid for images inside each item */
+/* .image-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+} */
+
+/* Individual image */
+/* .thumb {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+} */
+
+.loading-indicator,
+.end-of-data {
+  text-align: center;
+  padding: 1rem;
+  color: #888;
+}
+
+.sentinel {
+  height: 1px;
+}
+</style>

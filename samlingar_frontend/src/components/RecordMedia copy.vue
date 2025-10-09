@@ -1,0 +1,169 @@
+<template>
+  <div class="card">
+    <DataView
+      :value="records"
+      layout="grid"
+      paginator
+      :rows="30"
+      :paginator="true"
+      :lazy="true"
+      @page="onPage($event)"
+      :totalRecords="totalCount"
+    >
+      <template #grid="slotProps">
+        <div class="grid grid-cols-12">
+          <div
+            v-for="(item, index) in slotProps.items"
+            :key="index"
+            class="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-6 p-2"
+          >
+            <div
+              class="flex flex-row justify-between items-start gap-3"
+              style="max-width: 350px; min-width: 350px"
+            >
+              <card style="height: 150px; width: 350px" v-if="item != undefined">
+                <template #title>
+                  <div class="grid">
+                    <div class="col-10" no-gutters>
+                      <media-image v-bind:mediaUrl="item" v-bind:dataset="dataset" />
+                    </div>
+                    <div class="col-2" no-gutters>
+                      <Button variant="link" @click="view(item)">
+                        <small>{{ $t('records.view') }}</small>
+                      </Button>
+                    </div>
+                  </div>
+                </template>
+                <template #subtitle>
+                  <small>{{ item.collectionName }}</small>
+                </template>
+                <template #content>
+                  <div style="font-size: 0.7em">
+                    {{ item.catalogNumber }}
+                  </div>
+                  <div style="font-size: 0.7em">
+                    {{ item.locality }} {{ item.country }} {{ item.continent }}
+                  </div>
+                  <div v-if="item.decimalLatitude != null" style="font-size: 0.7em">
+                    Lat: {{ item.decimalLatitude }} Lon: {{ item.decimalLongitude }}
+                  </div>
+                </template>
+              </card>
+            </div>
+          </div>
+        </div>
+      </template>
+    </DataView>
+  </div>
+</template>
+
+<script setup>
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import Service from '../Service'
+import MediaImage from './baseComponents/MediaImage.vue'
+
+const store = useStore()
+const router = useRouter()
+
+const service = new Service()
+
+let records = ref(Array.from({ length: 50 }))
+let images = ref([])
+let dataset = ref()
+
+onMounted(async () => {
+  console.log('media onMounted')
+
+  await new Promise((res) => setTimeout(res, 500))
+
+  let params = store.getters['searchParams']
+  fetchData(params, 0, 30)
+})
+
+function buildImages() {
+  console.log('records', records.value)
+  records.value.forEach((record) => {
+    const { associatedMedia, catalogNumber, collectionCode, scientificName } = record
+
+    const botnayColection = 'vp, fungi, mosses, algae'
+    const kbo = 'algae, fungi, mosses'
+    const paleo = 'pz, pa'
+    const zoo = 'ev, et, pi, he'
+    const entCode = 'NHRS'
+
+    let medias
+
+    let smallImage = 'tumme'
+    if (associatedMedia) {
+      if (collectionCode === entCode) {
+        associatedMedia.forEach((m) => {
+          const imageId = m.split(' ')[0] + '&imgType=thumbs'
+
+          images.value.push(imageId)
+        })
+      } else {
+        if (botnayColection.includes(collectionCode)) {
+          if (kbo.includes(collectionCode)) {
+            dataset.value = '&dataset=kbo'
+          } else {
+            smallImage = 'mini'
+            dataset.value = '&dataset=fbo'
+          }
+          medias = associatedMedia
+            .filter((media) => !media.includes(smallImage))
+            .map((a) => (a = a.match(/(?<=\[).+?(?=\])/g).toString()))
+        } else {
+          smallImage = 'thumb'
+          if (paleo.includes(collectionCode)) {
+            dataset.value = '&dataset=pal'
+          } else if (zoo.includes(collectionCode)) {
+            dataset.value = '&dataset=' + collectionCode
+          }
+          medias = associatedMedia.filter((media) => !media.includes(smallImage))
+        }
+        images.value.push(medias)
+      }
+    }
+  })
+}
+
+function fetchData(params, start, end) {
+  params.set('hasImage', '*')
+
+  service
+    .apiSearch(params, start, end)
+    .then((response) => {
+      const total = response.facets.count
+      records.value = response.response
+
+      console.log('recordes...', records.value)
+
+      if (total > 0) {
+        buildImages()
+      }
+    })
+    .catch()
+    .finally(() => {})
+}
+
+const onPage = async (event) => {
+  console.log('event')
+  const { first, rows } = event
+  await new Promise((res) => setTimeout(res, 500))
+
+  fetchData(first, rows)
+}
+
+const totalCount = computed(() => {
+  return store.getters['totalRecords']
+})
+
+function view(data) {
+  console.log('view', data, data.id)
+  store.commit('setSelectedRecord', data)
+  router.push(`/record/${data.id}`)
+}
+</script>
+<style scoped></style>
