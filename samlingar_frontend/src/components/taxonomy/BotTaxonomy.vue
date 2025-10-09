@@ -25,8 +25,38 @@
         {{ theSpecies }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.synonyms') }}</div>
-      <div class="col-8 reducePadding">
+      <div class="col-1 reducePadding">{{ $t('results.synonyms') }}</div>
+      <div
+        class="col-3 reducePadding"
+        style="padding-left: 1rem; cursor: pointer"
+        @click="displaySynonyms"
+        v-if="hideSynonyms"
+      >
+        [<small>
+          <i>{{ $t('results.displayAll') }}</i>
+        </small>
+        <small style="padding-left: 0.5em"
+          ><i class="pi pi-caret-right" style="vertical-align: sub"></i></small
+        >]
+      </div>
+
+      <div
+        v-else
+        class="col-3 reducePadding"
+        style="padding-left: 1rem; cursor: pointer"
+        @click="displaySynonyms"
+      >
+        [<small>
+          <i>{{ $t('results.hideSynonyms') }}</i>
+        </small>
+        <small style="padding-left: 0.5em"
+          ><i class="pi pi-caret-down" style="vertical-align: sub"></i></small
+        >]
+      </div>
+      <div class="col-8 reducePadding" v-if="hideSynonyms">
+        {{ synonymAuthorData }}
+      </div>
+      <div class="col-8 reducePadding" v-else>
         <span v-for="(item, index) in synonymsData" :key="index"> {{ item }}<br /> </span>
       </div>
     </div>
@@ -38,6 +68,7 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
+const hideSynonyms = ref(true)
 const taxonName = ref()
 const theFamily = ref()
 const theGenus = ref()
@@ -61,7 +92,7 @@ onMounted(async () => {
 
   synonymsData.value = synonymAuthor
 
-  synonymAuthorData.value = synonymAuthor
+  synonymAuthorData.value = synonymAuthor ? synonymAuthor[0] : null
   scientificNameAuthorshipData.value = scientificNameAuthorship
 
   theFamily.value = family
@@ -74,6 +105,11 @@ onMounted(async () => {
     taxonName.value = scientificName
   }
 })
+
+function displaySynonyms() {
+  console.log('displaySynonyms')
+  hideSynonyms.value = !hideSynonyms.value
+}
 </script>
 <style scoped>
 .reducePadding {

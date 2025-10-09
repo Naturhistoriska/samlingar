@@ -10,7 +10,9 @@
         {{ rank }}
       </div>
 
-      <div class="col-4 reducePadding" v-if="hasKindomAndSynonyms">{{ $t('results.kingdom') }}</div>
+      <div class="col-4 reducePadding" v-if="hasKindomAndSynonyms">
+        {{ $t('results.kingdom') }}
+      </div>
       <div class="col-8 reducePadding" v-if="hasKindomAndSynonyms">
         {{ theKingdom }}
       </div>
@@ -67,16 +69,47 @@
         {{ specificEpithetData }}
       </div>
 
-      <div class="col-4 reducePadding" v-if="hasCommonName">{{ $t('results.vernacularName') }}</div>
+      <div class="col-4 reducePadding" v-if="hasCommonName">
+        {{ $t('results.vernacularName') }}
+      </div>
       <div class="col-8 reducePadding" v-if="hasCommonName">
         {{ commonName }}
       </div>
-
-      <div class="col-4 reducePadding" v-if="hasKindomAndSynonyms">
-        {{ $t('results.synonyms') }}
+    </div>
+    <div class="grid" style="margin-top: 1px" v-if="hasKindomAndSynonyms">
+      <div class="col-1 reducePadding">{{ $t('results.synonyms') }}</div>
+      <div
+        class="col-3 reducePadding"
+        style="padding-left: 1rem; cursor: pointer"
+        @click="displaySynonyms"
+        v-if="hideSynonyms"
+      >
+        [<small>
+          <i>{{ $t('results.displayAll') }}</i>
+        </small>
+        <small style="padding-left: 0.5em"
+          ><i class="pi pi-caret-right" style="vertical-align: sub"></i></small
+        >]
       </div>
-      <div class="col-8 reducePadding" v-if="hasKindomAndSynonyms">
-        {{ synonymsData }}
+
+      <div
+        v-else
+        class="col-3 reducePadding"
+        style="padding-left: 1rem; cursor: pointer"
+        @click="displaySynonyms"
+      >
+        [<small>
+          <i>{{ $t('results.hideSynonyms') }}</i>
+        </small>
+        <small style="padding-left: 0.5em"
+          ><i class="pi pi-caret-down" style="vertical-align: sub"></i></small
+        >]
+      </div>
+      <div class="col-8 reducePadding" v-if="hideSynonyms">
+        {{ synonymAuthorData }}
+      </div>
+      <div class="col-8 reducePadding" v-else>
+        <span v-for="(item, index) in synonymsData" :key="index"> {{ item }}<br /> </span>
       </div>
     </div>
   </div>
@@ -87,6 +120,9 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
+const hideSynonyms = ref(true)
+
+const commonName = ref()
 const theClass = ref()
 const theGenus = ref()
 const theFamily = ref()
@@ -101,8 +137,8 @@ const infragenericEpithetData = ref()
 
 const specificEpithetData = ref()
 const synonymsData = ref()
+const synonymAuthorData = ref()
 const rank = ref()
-const commonName = ref()
 
 const isEvCollection = computed(() => {
   const record = store.getters['selectedRecord']
@@ -156,9 +192,12 @@ onMounted(async () => {
   infragenericEpithetData.value = infragenericEpithet
   infraspecificEpithetData.value = infraspecificEpithet
 
-  if (synonyms) {
-    synonymsData.value = synonyms.join(' | ')
-  }
+  // if (synonyms) {
+  //   synonymsData.value = synonyms.join(' | ')
+  // }
+
+  synonymsData.value = synonyms
+  synonymAuthorData.value = synonyms ? synonyms[0] : null
 
   specificEpithetData.value = specificEpithet
 
@@ -176,6 +215,11 @@ onMounted(async () => {
 
   taxonName.value = scientificName
 })
+
+function displaySynonyms() {
+  console.log('displaySynonyms')
+  hideSynonyms.value = !hideSynonyms.value
+}
 </script>
 <style scoped>
 .reducePadding {
