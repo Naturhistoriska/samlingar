@@ -26,7 +26,7 @@
                   <small>{{ item.record.scientificName }}</small>
                 </template>
                 <template #content>
-                  <div style="min-width: 100px; max-width: 100px">
+                  <div style="min-width: 100px; max-width: 100px; height: 100px">
                     <Thumbnail v-bind:record="item" v-bind:src="item.src" />
                   </div>
                 </template>
@@ -87,8 +87,9 @@ function fetchData() {
 
   let params = store.getters['searchParams']
   params.set('hasImage', '*')
+  params.set('-collectionCode', 'pz')
   const start = page.value
-  const end = 100
+  const end = 20
   service
     .apiSearch(params, start, end)
     .then((response) => {
