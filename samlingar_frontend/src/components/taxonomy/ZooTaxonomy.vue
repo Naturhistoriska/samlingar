@@ -168,6 +168,7 @@ onMounted(async () => {
 
   const {
     clazz,
+    collectionCode,
     genus,
     family,
     infraspecificEpithet,
@@ -192,10 +193,6 @@ onMounted(async () => {
   infragenericEpithetData.value = infragenericEpithet
   infraspecificEpithetData.value = infraspecificEpithet
 
-  // if (synonyms) {
-  //   synonymsData.value = synonyms.join(' | ')
-  // }
-
   synonymsData.value = synonyms
   synonymAuthorData.value = synonyms ? synonyms[0] : null
 
@@ -213,7 +210,11 @@ onMounted(async () => {
 
   rank.value = taxonRank == 'Clazz' ? 'Class' : taxonRank
 
-  taxonName.value = scientificName
+  if (collectionCode === 'PI' || collectionCode === 'HE') {
+    taxonName.value = taxonRank === 'Species' ? genus + ' ' + species : scientificName
+  } else {
+    taxonName.value = scientificName
+  }
 })
 
 function displaySynonyms() {

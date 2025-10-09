@@ -112,13 +112,10 @@ function addSamlingarSinglemMarker(record) {
 function getTaxon(data) {
   const { collectionCode, genus, scientificName, species, taxonRank } = data
 
-  // return collectionCode === 'pz' || collectionCode === 'pb'
-  //   ? taxonRank === 'species'
-  //     ? genus + ' ' + species
-  //     : scientificName
-  //   : scientificName
   if (collectionCode === 'pz' || collectionCode === 'pb') {
     return taxonRank === 'species' ? genus + ' ' + species : scientificName
+  } else if (collectionCode === 'PI' || collectionCode === 'HE') {
+    return taxonRank === 'Species' ? genus + ' ' + species : scientificName
   } else if (collectionCode === 'vp') {
     if (species) {
       return genus ? genus + ' ' + species : species

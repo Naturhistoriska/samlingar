@@ -132,8 +132,14 @@ function buildRecordData(record) {
   // }
   if (collectionCode === 'pz' || collectionCode === 'pb') {
     name.value = taxonRank === 'species' ? genus + ' ' + species : scientificName
+  } else if (collectionCode === 'PI' || collectionCode === 'HE') {
+    name.value = taxonRank === 'Species' ? genus + ' ' + species : scientificName
   } else if (collectionCode === 'vp') {
-    name.value = genus + ' ' + species
+    if (species) {
+      name.value = genus ? genus + ' ' + species : species
+    }
+  } else if (collectionCode === 'PI') {
+    name.value = taxonRank === 'Species' ? genus + ' ' + species : scientificName
   } else {
     name.value = scientificName
   }

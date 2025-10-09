@@ -125,25 +125,10 @@ const onPage = async (event) => {
 function getTaxon(data) {
   const { collectionCode, genus, scientificName, species, taxonRank } = data
 
-  // if (
-  //   collectionCode === 'NHRS' ||
-  //   collectionCode === 'ev' ||
-  //   collectionCode === 'et' ||
-  //   collectionCode === 'AV' ||
-  //   collectionCode === 'MA' ||
-  //   collectionCode === 'PI' ||
-  //   collectionCode === 'HE' ||
-  //   collectionCode === 'SMTP_INV' ||
-  //   collectionCode === 'SMTP_SPPLST' ||
-  //   collectionCode === 'mosses' ||
-  //   collectionCode === 'fungi' ||
-  //   collectionCode === 'algae'
-  // ) {
-  //   return data.scientificName
-  // }
-
   if (collectionCode === 'pz' || collectionCode === 'pb') {
     return taxonRank === 'species' ? genus + ' ' + species : scientificName
+  } else if (collectionCode === 'PI' || collectionCode === 'HE') {
+    return taxonRank === 'Species' ? genus + ' ' + species : scientificName
   } else if (collectionCode === 'vp') {
     if (species) {
       return genus ? genus + ' ' + species : species
