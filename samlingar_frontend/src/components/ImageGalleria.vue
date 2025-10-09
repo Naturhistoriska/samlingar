@@ -83,8 +83,8 @@ onMounted(() => {
 
     const botnayColection = 'vp, fungi, mosses, algae'
     const kbo = 'algae, fungi, mosses'
-    const paleo = 'pz, pa'
-    const zoo = 'ev, et, fish, herps'
+    const paleo = 'pz, pb'
+    const zoo = 'ev, et, PI, HE, AV, MA'
 
     let smallImage = 'tumme'
     if (associatedMedia) {
@@ -98,8 +98,6 @@ onMounted(() => {
         images.value = associatedMedia
           .filter((media) => !media.includes(smallImage))
           .map((a) => (a = a.match(/(?<=\[).+?(?=\])/g).toString()))
-
-        console.log('images', images.value)
       } else {
         smallImage = 'thumb'
         if (paleo.includes(collectionId)) {
