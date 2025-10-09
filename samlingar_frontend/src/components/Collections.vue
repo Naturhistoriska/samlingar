@@ -2,14 +2,14 @@
   <MultiSelect
     v-model="selectedItems"
     ref="multiSelectRef"
-    :options="groupedSelections"
-    optionLabel="label"
+    :options="localizedGroups"
+    optionLabel="localizedName"
+    optionGroupLabel="label"
+    optionGroupChildren="items"
     :maxSelectedLabels="3"
     filter
     showClear
     size="small"
-    optionGroupLabel="label"
-    optionGroupChildren="items"
     display="chip"
     :placeholder="$t('search.filterCollections')"
     class="w-full md:w-80"
@@ -47,29 +47,32 @@ const multiSelectRef = ref(null)
 
 const groupedSelections = ref([
   {
-    label: t('dataResource.botCollection'),
+    label: {
+      en: 'Botanical and mycological collections',
+      sv: 'Botaniska och mykologiska samlingar'
+    },
     code: 'bot',
     items: [
       {
-        label: t('collectionLabel.algae'),
+        label: { en: 'Algae Collection', sv: 'Alger samling' },
         locale: { en: 'Algae Collection', sv: 'Alger samling' },
         value: 'Algae',
         code: 'algae'
       },
       {
-        label: t('collectionLabel.fungi'),
+        label: { en: 'Fungi Collection', sv: 'Svampar/Lavar samling' },
         locale: { en: 'Fungi Collection', sv: 'Svampar/Lavar samling' },
         value: 'Fungi/Lichens',
         code: 'fungi'
       },
       {
-        label: t('collectionLabel.mosses'),
+        label: { en: 'Moss Collection', sv: 'Mossor samling' },
         locale: { en: 'Moss Collection', sv: 'Mossor samling' },
         value: 'Mosses',
         code: 'mosses'
       },
       {
-        label: t('collectionLabel.phanerogamic'),
+        label: { en: 'Vascular plant Collections', sv: 'Kärlväxter samling' },
         locale: { en: 'Vascular plant Collections', sv: 'Kärlväxter samling' },
         value: 'Vascular Plants',
         code: 'vp'
@@ -77,17 +80,23 @@ const groupedSelections = ref([
     ]
   },
   {
-    label: t('dataResource.zooCollection'),
+    label: {
+      en: 'Zoological collections',
+      sv: 'Zoologiska samlingar'
+    },
     code: 'zoo',
     items: [
       {
-        label: t('collectionLabel.ent'),
+        label: { en: 'Entomological Collections', sv: 'Entomologisk samling' },
         locale: { en: 'Entomological Collections', sv: 'Entomologisk samling' },
         value: 'NRM Entomology Collection Objects',
         code: 'NHRS'
       },
       {
-        label: t('collectionLabel.smtpObj'),
+        label: {
+          en: 'Swedish Malaise Trap Project (SMTP) Collection Obj',
+          sv: 'Swedish Malaise Trap Project (SMTP) Collection Obj'
+        },
         locale: {
           en: 'Swedish Malaise Trap Project (SMTP) Collection Obj',
           sv: 'Swedish Malaise Trap Project (SMTP) Collection Obj'
@@ -96,7 +105,10 @@ const groupedSelections = ref([
         code: 'SMTP_INV'
       },
       {
-        label: t('collectionLabel.smtpList'),
+        label: {
+          en: 'Swedish Malaise Trap Project (SMTP) Species Lists',
+          sv: 'Swedish Malaise Trap Project (SMTP) Species Lists'
+        },
         locale: {
           en: 'Swedish Malaise Trap Project (SMTP) Species Lists',
           sv: 'Swedish Malaise Trap Project (SMTP) Species Lists'
@@ -105,37 +117,37 @@ const groupedSelections = ref([
         code: 'SMTP_SPPLST'
       },
       {
-        label: t('collectionLabel.ev'),
+        label: { en: 'Invertebrate Main Collection', sv: 'Evertebrater samling' },
         locale: { en: 'Invertebrate Main Collection', sv: 'Evertebrater samling' },
         value: 'Invertebrate main collection',
         code: 'ev'
       },
       {
-        label: t('collectionLabel.et'),
+        label: { en: 'Invertebrate Type Specimen Collection"', sv: 'Evertebrater typsamling' },
         locale: { en: 'Invertebrate Type Specimen Collection"', sv: 'Evertebrater typsamling' },
         value: 'Invertebrate type collection',
         code: 'et'
       },
       {
-        label: t('collectionLabel.fish'),
+        label: { en: 'Fish Collection', sv: 'Fisk samling' },
         locale: { en: 'Fish Collection', sv: 'Fisk samling' },
         value: 'Fish',
         code: 'PI'
       },
       {
-        label: t('collectionLabel.bird'),
+        label: { en: 'Bird Collection', sv: 'Fågel samling' },
         locale: { en: 'Bird Collection', sv: 'Fågel samling' },
         value: 'Bird',
         code: 'AV'
       },
       {
-        label: t('collectionLabel.mammal'),
+        label: { en: 'Mammal Collection', sv: 'Däggdjur samling' },
         locale: { en: 'Mammal Collection', sv: 'Däggdjur samling' },
         value: 'Mammals',
         code: 'MA'
       },
       {
-        label: t('collectionLabel.herp'),
+        label: { en: 'Amphibians and reptiles Collections', sv: 'Grod och kräldjur samlingar' },
         locale: { en: 'Amphibians and reptiles Collections', sv: 'Grod och kräldjur samlingar' },
         value: 'Amphibians and reptiles',
         code: 'HE'
@@ -143,17 +155,20 @@ const groupedSelections = ref([
     ]
   },
   {
-    label: t('dataResource.palCollection'),
+    label: {
+      en: 'Paleontological collections',
+      sv: 'Paleontologiska samlingar'
+    },
     code: 'pal',
     items: [
       {
-        label: t('collectionLabel.pz'),
+        label: { en: 'Palaeozoological Collections', sv: 'Paleozoologisk samling' },
         locale: { en: 'Palaeozoological Collections', sv: 'Paleozoologisk samling' },
         value: 'Paleozoology',
         code: 'pz'
       },
       {
-        label: t('collectionLabel.pb'),
+        label: { en: 'Palaeobotanical Collections', sv: 'Paleobotanisk samling' },
         locale: { en: 'Palaeobotanical Collections', sv: 'Paleobotanisk samling' },
         value: 'Paleobotany',
         code: 'pb'
@@ -161,23 +176,26 @@ const groupedSelections = ref([
     ]
   },
   {
-    label: t('dataResource.geoCollection'),
+    label: {
+      en: 'Geological collections',
+      sv: 'Geologiska samlingar'
+    },
     code: 'geo',
     items: [
       {
-        label: t('collectionLabel.nrmlig'),
+        label: { en: 'Isotope Geology Collection', sv: 'Isotopgeologi samling' },
         locale: { en: 'Isotope Geology Collection', sv: 'Isotopgeologi samling' },
         value: 'NRM Isotope Geology',
         code: 'NRMLIG'
       },
       {
-        label: t('collectionLabel.nrmmin'),
+        label: { en: 'Mineralogy Collection', sv: 'Mineralogisk samling' },
         locale: { en: 'Mineralogy Collection', sv: 'Mineralogisk samling' },
         value: 'NRM Mineralogy',
         code: 'NRMMIN'
       },
       {
-        label: t('collectionLabel.nrmnod'),
+        label: { en: 'Nodules Collection', sv: 'Noduler samling' },
         locale: { en: 'Nodules Collection', sv: 'Noduler samling' },
         value: 'NRM Nodules',
         code: 'NRMNOD'
@@ -193,6 +211,17 @@ watch(
       selectedItems.value = null
     }
   }
+)
+
+const localizedGroups = computed(() =>
+  groupedSelections.value.map((group) => ({
+    label: group.label[locale.value] || group.label['en'],
+    code: group.code,
+    items: group.items.map((item) => ({
+      ...item,
+      localizedName: item.label[locale.value] || item.label.en
+    }))
+  }))
 )
 
 // watch(

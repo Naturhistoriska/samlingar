@@ -25,6 +25,9 @@ import markerShadowUrl from '/node_modules/leaflet/dist/images/marker-shadow.png
 import Service from '../Service'
 import moment from 'moment-timezone'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const service = new Service()
 
 const store = useStore()
@@ -185,21 +188,21 @@ async function fetchRecord(id, marker) {
             ? moment.tz(eventDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET').format('YYYY-MM-DD')
             : ''
 
-          div.innerHTML = `<strong> Catalogue number: ${catalogNumber}  </strong>
-          <br> <strong>Collection</strong>: ${collectionName}
-          <br><strong>Scientific Name</strong>: ${taxon}
+          div.innerHTML = `<strong>${t('labels.catalogNumber')}: ${catalogNumber}  </strong>
+          <br> <strong>${t('labels.collectionName')}</strong>: ${collectionName}
+          <br><strong>${t('labels.scientificName')}</strong>: ${taxon}
           <br>
-          <br><strong>Locality</strong>:<br> ${locality}, ${stateProvince}, ${country}
+          <br><strong>${t('labels.locality')}</strong>:<br> ${locality}, ${stateProvince}, ${country}
           <br>
-          <br><strong>GPS-coordinate</strong>: <br>
+          <br><strong>${t('labels.gpsCoordinates')}</strong>: <br>
           ${decimalLatitude.toFixed(5)} -- ${decimalLongitude.toFixed(5)}
           <br>
-          <br><strong>Event date</strong>: ${collectingDate}
+          <br><strong>${t('labels.eventDate')}</strong>: ${collectingDate}
           <br>
           <br>`
 
           const button = document.createElement('button')
-          button.innerHTML = 'More details'
+          button.innerHTML = `${t('labels.showDetail')}`
 
           // button.onclick = function () {
           //   displayDetail(data)
@@ -214,7 +217,7 @@ async function fetchRecord(id, marker) {
 
           marker.bindPopup(div).openPopup()
         } else {
-          div.innerHTML = `<strong> No data </strong>`
+          div.innerHTML = `<strong>${t('labels.noData')}</strong>`
           marker.bindPopup(div).openPopup()
         }
       }
@@ -381,45 +384,45 @@ function buildParams() {
   return params
 }
 
-function addClustringPopup() {
-  console.log('addClustringPopup')
+// function addClustringPopup() {
+//   console.log('addClustringPopup')
 
-  const SPIDERFY_THRESHOLD = 3
+//   const SPIDERFY_THRESHOLD = 3
 
-  mapRef.value.eachLayer((layer) => {
-    if (layer instanceof L.MarkerClusterGroup) {
-      layer.on('clusterclick', (e) => {
-        // Get the actual cluster clicked
-        const cluster = e.propagatedFrom || e.target
-        const children = cluster.getAllChildMarkers()
+//   mapRef.value.eachLayer((layer) => {
+//     if (layer instanceof L.MarkerClusterGroup) {
+//       layer.on('clusterclick', (e) => {
+//         // Get the actual cluster clicked
+//         const cluster = e.propagatedFrom || e.target
+//         const children = cluster.getAllChildMarkers()
 
-        const maxZoom = mapRef.value.getMaxZoom()
-        const childCount = children.length
+//         const maxZoom = mapRef.value.getMaxZoom()
+//         const childCount = children.length
 
-        if (childCount <= SPIDERFY_THRESHOLD) {
-          cluster.spiderfy()
-        } else {
-          mapRef.value.fitBounds(cluster.getBounds())
+//         if (childCount <= SPIDERFY_THRESHOLD) {
+//           cluster.spiderfy()
+//         } else {
+//           mapRef.value.fitBounds(cluster.getBounds())
 
-          if (mapRef.value.getZoom() === maxZoom) {
-            const data = children[0]
-            const locality = data.myData.locality
+//           if (mapRef.value.getZoom() === maxZoom) {
+//             const data = children[0]
+//             const locality = data.myData.locality
 
-            const content =
-              `<b>Total: ${children.length} </b> <br> Locality: ${locality} [ ${data._latlng.lat}, ${data._latlng.lng} ]<br><br>` +
-              children.map((m, i) => `Scientific name:  ${m.myData.scientificName} `).join('<br>')
+//             const content =
+//               `<b>Total: ${children.length} </b> <br> Locality: ${locality} [ ${data._latlng.lat}, ${data._latlng.lng} ]<br><br>` +
+//               children.map((m, i) => `Scientific name:  ${m.myData.scientificName} `).join('<br>')
 
-            // Open popup at cluster position
-            L.popup().setLatLng(cluster.getLatLng()).setContent(content).openOn(mapRef.value)
+//             // Open popup at cluster position
+//             L.popup().setLatLng(cluster.getLatLng()).setContent(content).openOn(mapRef.value)
 
-            e.originalEvent.preventDefault()
-            e.originalEvent.stopPropagation()
-          }
-        }
-      })
-    }
-  })
-}
+//             e.originalEvent.preventDefault()
+//             e.originalEvent.stopPropagation()
+//           }
+//         }
+//       })
+//     }
+//   })
+// }
 </script>
 <style scoped>
 .loading-overlay {

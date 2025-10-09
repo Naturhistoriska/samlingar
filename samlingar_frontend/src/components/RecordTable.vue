@@ -62,7 +62,7 @@
       </Column> -->
       <Column
         field="collectionName"
-        header="Collection name"
+        :header="$t('labels.collectionName')"
         :showFilterMenu="false"
         style="min-width: 8rem; max-width: 8rem"
       >
@@ -74,7 +74,7 @@
             v-model="filterModel.value"
             @change="filterCallback()"
             :options="collectionOptions"
-            placeholder="Select collections"
+            :placeholder="$t('search.filterCollections')"
             style="min-width: 14rem; max-width: 14rem; max-height: 1.9rem"
             size="small"
             :maxSelectedLabels="1"
@@ -98,7 +98,7 @@
 
       <Column
         field="scientificName"
-        header="Scientific Name"
+        :header="$t('labels.scientificName')"
         style="min-width: 10rem; max-width: 10rem"
         filterField="scientificName"
         sortable
@@ -118,14 +118,14 @@
             size="small"
             class="small-placeholder w-full"
             @input="onScientificNameFilterInput($event, filterModel)"
-            placeholder="Filter by scientificName"
+            :placeholder="$t('search.filterScientificname')"
           />
         </template>
       </Column>
 
       <Column
         field="catalogNumber"
-        header="CatalogNumber"
+        :header="$t('labels.catalogNumber')"
         :showFilterMenu="false"
         sortable
         style="min-width: 5rem; max-width: 5rem"
@@ -140,7 +140,7 @@
             size="small"
             class="small-placeholder w-full"
             @input="onCatalogNumberFilterInput($event, filterModel)"
-            placeholder="Filter by catalogNumber"
+            :placeholder="$t('search.filterCatalogNumber')"
             style="font-size: 0.8rem"
           />
         </template>
@@ -148,7 +148,7 @@
 
       <Column
         field="locality"
-        header="Locality"
+        :header="$t('labels.locality')"
         sortable
         :showFilterMenu="false"
         style="min-width: 12rem; max-width: 12rem"
@@ -164,7 +164,7 @@
             class="small-placeholder w-full"
             v-model="filterModel.value"
             @input="onLocalityFilterInput($event, filterModel, filterCallback)"
-            placeholder="Search..."
+            :placeholder="$t('search.filterLocality')"
           />
         </template>
       </Column>

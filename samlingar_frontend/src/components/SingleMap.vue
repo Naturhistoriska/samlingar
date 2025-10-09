@@ -17,6 +17,9 @@ import markerShadowUrl from '/node_modules/leaflet/dist/images/marker-shadow.png
 
 import moment from 'moment-timezone'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const emits = defineEmits(['searchDetial', 'resetView', 'search'])
 
 const store = useStore()
@@ -78,17 +81,17 @@ function addSamlingarSinglemMarker(record) {
       ? moment.tz(eventDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET').format('YYYY-MM-DD')
       : ''
 
-    div.innerHTML = `<strong>Catalogue number: ${catalogNumber}  </strong>
-      <br> <strong>Collection</strong>: ${collectionName}
-      <br><strong>Scientific Name</strong>: ${taxon}
+    div.innerHTML = `<strong>${t('labels.catalogNumber')}: ${catalogNumber}  </strong>
+      <br> <strong>${t('labels.collectionName')}</strong>: ${collectionName}
+      <br><strong>${t('labels.scientificName')}</strong>: ${taxon}
       <br>
-      <br><strong>Locality</strong>:<br> ${locality}, ${stateProvince}, ${country}, ${continent}
+      <br><strong>${t('labels.locality')}</strong>:<br> ${locality}, ${stateProvince}, ${country}, ${continent}
       <br>
-      <br><strong>GPS-coordinate</strong>:
+      <br><strong>${t('labels.gpsCoordinates')}</strong>:
       <br>Latitude: ${decimalLatitude.toFixed(5)}
       <br>Longitude: ${decimalLongitude.toFixed(5)}
       <br>
-      <br><strong>Event date</strong>: ${collectingDate}
+      <br><strong>${t('labels.eventDate')}</strong>: ${collectingDate}
       <br>
       <br>`
 
