@@ -16,47 +16,53 @@
     </Menu>
   </div>
 </template>
-
-<script setup>
-import { ref, watch } from 'vue'
+<script>
 import { useI18n } from 'vue-i18n'
 import Tr from '@/i18n/translation'
 
-// i18n and locale state
-const { t, locale } = useI18n()
-
-// current selected locale
-const selectedLocale = ref('en')
-
-// PrimeVue Menu ref
-const menu = ref(null)
-
-// function to open/close the Menu
-const toggle = (event) => {
-  menu.value.toggle(event)
-}
-
-// update locale
-const select = (clocale) => {
-  selectedLocale.value = clocale
-}
-
-// watch locale change and update translation
-watch(selectedLocale, (newLocale) => {
-  Tr.switchLanguage(newLocale)
-})
-
-// menu items
-const items = [
-  {
-    label: 'English',
-    command: () => select('en')
+export default {
+  data() {
+    return {
+      selectedLocale: 'en',
+      items: [
+        {
+          label: 'English',
+          command: () => {
+            this.select('en')
+          }
+        },
+        {
+          label: 'Svenska',
+          command: () => {
+            this.select('sv')
+          }
+        }
+      ]
+    }
   },
-  {
-    label: 'Svenska',
-    command: () => select('sv')
+  setup() {
+    const { t, locale } = useI18n()
+    const supportedLocales = Tr.supportedLocales
+    const switchLanguage = async (event) => {
+      const newLocale = event.target.value
+      await Tr.switchLanguage(newLocale)
+    }
+    return { t, locale, supportedLocales, switchLanguage }
+  },
+  watch: {
+    selectedLocale: function () {
+      Tr.switchLanguage(this.selectedLocale)
+    }
+  },
+  methods: {
+    toggle(event) {
+      this.$refs.menu.toggle(event)
+    },
+    select(clocale) {
+      this.selectedLocale = clocale
+    }
   }
-]
+}
 </script>
 <style scoped>
 ::v-deep(.p-menu.p-component) {
