@@ -1,12 +1,12 @@
 all: build
 
 build:
-	docker build -t dina/smalingar-ui:v0.7.2 .
+	docker build -t dina/smalingar-ui:v0.7.4 .
 
 # docker login
 
 release:
-	docker push dina/smalingar-ui:v0.7.2
+	docker push dina/smalingar-ui:v0.7.4
 
 
 
