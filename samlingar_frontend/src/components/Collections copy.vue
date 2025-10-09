@@ -3,10 +3,10 @@
     v-model="selectedItems"
     ref="multiSelectRef"
     :options="localizedGroups"
-    optionLabel="label"
+    optionLabel="localizedName"
     optionGroupLabel="label"
     optionGroupChildren="items"
-    :maxSelectedLabels="3"
+    :maxSelectedLabels="1"
     filter
     showClear
     size="small"
@@ -54,27 +54,26 @@ const groupedSelections = ref([
     code: 'bot',
     items: [
       {
-        // label: { en: 'Algae Collection', sv: 'Alger samling' },
-        label: t('collectionLabel.algae'),
-        locale: { en: 'Algae Collection', sv: 'Algsamling' },
+        label: { en: 'Algae Collection', sv: 'Alger samling' },
+        locale: { en: 'Algae Collection', sv: 'Alger samling' },
         value: { en: 'Algae Collection', sv: 'Alger samling' },
         code: 'algae'
       },
       {
-        label: t('collectionLabel.fungi'),
-        locale: { en: 'Fungi Collection', sv: 'Svampsamling' },
+        label: { en: 'Fungi Collection', sv: 'Svampar/Lavar samling' },
+        locale: { en: 'Fungi Collection', sv: 'Svampar/Lavar samling' },
         value: 'Fungi Collection',
         code: 'fungi'
       },
       {
-        label: t('collectionLabel.mosses'),
-        locale: { en: 'Moss Collection', sv: 'Mossamling' },
+        label: { en: 'Moss Collection', sv: 'Mossor samling' },
+        locale: { en: 'Moss Collection', sv: 'Mossor samling' },
         value: 'Mosses',
         code: 'mosses'
       },
       {
-        label: t('collectionLabel.phanerogamic'),
-        locale: { en: 'Vascular plant Collections', sv: 'Kärlväxtsamling' },
+        label: { en: 'Vascular plant Collections', sv: 'Kärlväxter samling' },
+        locale: { en: 'Vascular plant Collections', sv: 'Kärlväxter samling' },
         value: 'Vascular Plants',
         code: 'vp'
       }
@@ -88,62 +87,68 @@ const groupedSelections = ref([
     code: 'zoo',
     items: [
       {
-        label: t('collectionLabel.ent'),
-        locale: { en: 'Entomological Collections', sv: 'Entomologiska samlingar' },
+        label: { en: 'Entomological Collections', sv: 'Entomologisk samling' },
+        locale: { en: 'Entomological Collections', sv: 'Entomologisk samling' },
         value: 'NRM Entomology Collection Objects',
         code: 'NHRS'
       },
       {
-        label: t('collectionLabel.smtpObj'),
+        label: {
+          en: 'Swedish Malaise Trap Project (SMTP) Collection Obj',
+          sv: 'Swedish Malaise Trap Project (SMTP) Collection Obj'
+        },
         locale: {
           en: 'Swedish Malaise Trap Project (SMTP) Collection Obj',
-          sv: 'Svenska Malaisefälleprojektet (SMTP) Samlingsobjekt'
+          sv: 'Swedish Malaise Trap Project (SMTP) Collection Obj'
         },
         value: 'Swedish Malaise Trap Project (SMTP) Collection Obj',
         code: 'SMTP_INV'
       },
       {
-        label: t('collectionLabel.smtpList'),
+        label: {
+          en: 'Swedish Malaise Trap Project (SMTP) Species Lists',
+          sv: 'Swedish Malaise Trap Project (SMTP) Species Lists'
+        },
         locale: {
           en: 'Swedish Malaise Trap Project (SMTP) Species Lists',
-          sv: 'Svenska Malaisefälleprojektet (SMTP) Artlistor'
+          sv: 'Swedish Malaise Trap Project (SMTP) Species Lists'
         },
         value: 'Swedish Malaise Trap Project (SMTP) Species Lists',
         code: 'SMTP_SPPLST'
       },
       {
-        label: t('collectionLabel.ev'),
+        label: { en: 'Invertebrate Main Collection', sv: 'Evertebrater samling' },
         locale: { en: 'Invertebrate Main Collection', sv: 'Evertebrater samling' },
         value: 'Invertebrate main collection',
         code: 'ev'
       },
       {
-        label: t('collectionLabel.et'),
+        label: { en: 'Invertebrate Type Specimen Collection"', sv: 'Evertebrater typsamling' },
         locale: { en: 'Invertebrate Type Specimen Collection"', sv: 'Evertebrater typsamling' },
         value: 'Invertebrate type collection',
         code: 'et'
       },
       {
-        label: t('collectionLabel.fish'),
-        locale: { en: 'Fish Collection', sv: 'Fisksamling' },
+        label: { en: 'Fish Collection', sv: 'Fisk samling' },
+        locale: { en: 'Fish Collection', sv: 'Fisk samling' },
         value: 'Fish',
         code: 'PI'
       },
       {
-        label: t('collectionLabel.bird'),
-        locale: { en: 'Bird Collection', sv: 'Fågelsamling' },
+        label: { en: 'Bird Collection', sv: 'Fågel samling' },
+        locale: { en: 'Bird Collection', sv: 'Fågel samling' },
         value: 'Bird',
         code: 'AV'
       },
       {
-        label: t('collectionLabel.mammal'),
-        locale: { en: 'Mammal Collection', sv: 'Däggdjurssamling' },
+        label: { en: 'Mammal Collection', sv: 'Däggdjur samling' },
+        locale: { en: 'Mammal Collection', sv: 'Däggdjur samling' },
         value: 'Mammals',
         code: 'MA'
       },
       {
-        label: t('collectionLabel.herp'),
-        locale: { en: 'Amphibians and reptiles Collections', sv: 'Amfibie och reptilsamling' },
+        label: { en: 'Amphibians and reptiles Collections', sv: 'Grod och kräldjur samlingar' },
+        locale: { en: 'Amphibians and reptiles Collections', sv: 'Grod och kräldjur samlingar' },
         value: 'Amphibians and reptiles',
         code: 'HE'
       }
@@ -157,14 +162,14 @@ const groupedSelections = ref([
     code: 'pal',
     items: [
       {
-        label: t('collectionLabel.pz'),
-        locale: { en: 'Palaeozoological Collections', sv: 'Paleozoologiska samlingar' },
+        label: { en: 'Palaeozoological Collections', sv: 'Paleozoologisk samling' },
+        locale: { en: 'Palaeozoological Collections', sv: 'Paleozoologisk samling' },
         value: 'Paleozoology',
         code: 'pz'
       },
       {
-        label: t('collectionLabel.pb'),
-        locale: { en: 'Palaeobotanical Collections', sv: 'Paleobotaniska samlingar' },
+        label: { en: 'Palaeobotanical Collections', sv: 'Paleobotanisk samling' },
+        locale: { en: 'Palaeobotanical Collections', sv: 'Paleobotanisk samling' },
         value: 'Paleobotany',
         code: 'pb'
       }
@@ -178,20 +183,20 @@ const groupedSelections = ref([
     code: 'geo',
     items: [
       {
-        label: t('collectionLabel.nrmlig'),
-        locale: { en: 'Isotope Geology Collection', sv: 'Isotopgeologisk samling' },
+        label: { en: 'Isotope Geology Collection', sv: 'Isotopgeologi samling' },
+        locale: { en: 'Isotope Geology Collection', sv: 'Isotopgeologi samling' },
         value: 'NRM Isotope Geology',
         code: 'NRMLIG'
       },
       {
-        label: t('collectionLabel.nrmmin'),
-        locale: { en: 'Mineralogy Collection', sv: 'Mineralsamling' },
+        label: { en: 'Mineralogy Collection', sv: 'Mineralogisk samling' },
+        locale: { en: 'Mineralogy Collection', sv: 'Mineralogisk samling' },
         value: 'NRM Mineralogy',
         code: 'NRMMIN'
       },
       {
-        label: t('collectionLabel.nrmnod'),
-        locale: { en: 'Nodules Collection', sv: 'Nodulsamling' },
+        label: { en: 'Nodules Collection', sv: 'Noduler samling' },
+        locale: { en: 'Nodules Collection', sv: 'Noduler samling' },
         value: 'NRM Nodules',
         code: 'NRMNOD'
       }
@@ -208,23 +213,31 @@ watch(
   }
 )
 
-watch(locale, (newValue) => {
-  selectedItems.value = selectedItems.value.map((item) => ({
-    ...item,
-    label: item.locale[locale.value] || item.locale.en
-  }))
-})
-
 const localizedGroups = computed(() =>
   groupedSelections.value.map((group) => ({
     label: group.label[locale.value] || group.label['en'],
+    locale: group.locale,
     code: group.code,
+    value: group.value,
     items: group.items.map((item) => ({
       ...item,
-      label: item.locale[locale.value] || item.locale.en
+      localizedName: item.label[locale.value] || item.label.en
     }))
   }))
 )
+
+// watch(
+//   () => store.getters['locale'],
+//   (newValue, oldValue) => {
+//     console.log('locale changed... ', newValue)
+//     const dataSet = store.getters['dataResource']
+//     console.log('dataset', dataSet)
+
+//     selectedItems.value = groupedSelections.value
+//       .filter((group) => group.code === dataSet)
+//       .map((item) => item.items)[0]
+//   }
+// )
 
 const currentLocale = computed(() => locale.value)
 
@@ -232,7 +245,7 @@ onMounted(() => {
   const dataSet = store.getters['dataResource']
 
   if (dataSet) {
-    selectedItems.value = localizedGroups.value
+    selectedItems.value = groupedSelections.value
       .filter((group) => group.code === dataSet)
       .map((item) => item.items)[0]
     if (selectedItems.value && selectedItems.value.length > 0) {
@@ -243,7 +256,7 @@ onMounted(() => {
   } else if (store.getters['chartCode'] !== null) {
     const code = store.getters['chartCode']
     let parentGroup
-    for (const group of localizedGroups.value) {
+    for (const group of groupedSelections.value) {
       const match = group.items.find((item) => item.code === code)
       if (match) {
         parentGroup = group
