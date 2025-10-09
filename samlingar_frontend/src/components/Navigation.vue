@@ -146,6 +146,27 @@ a:hover {
   background: #0b583d !important;
 }
 
+:deep(.p-tablist) {
+  display: flex;
+}
+
+:deep(.p-tablist .p-tab) {
+  flex: 1 1 0;
+  text-align: center;
+  max-width: 95px;
+  min-width: 95px;
+}
+
+/* .p-tabview-nav {
+  display: flex !important;
+}
+
+.p-tabview-nav li {
+  flex: 1 1 0;
+  max-width: 200px;
+  min-width: 200px;
+} */
+
 .navbg {
   background-color: #052b1e;
   /* background-color: #1d634a; */
