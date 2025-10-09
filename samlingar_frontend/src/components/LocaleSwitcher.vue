@@ -11,13 +11,7 @@
     />
     <Menu id="overlay_tmenu" ref="menu" :model="items" :popup="true" class="w-min flex">
       <template #item="{ item }" class="w-full">
-        <Button
-          class="btn"
-          @click="handleClick"
-          :label="item.label"
-          text
-          style="color: #000 !important"
-        />
+        <Button class="btn" :label="item.label" text style="color: #000 !important" />
       </template>
     </Menu>
   </div>
@@ -32,16 +26,16 @@ export default {
       selectedLocale: 'en',
       items: [
         {
-          label: 'English'
-          // command: () => {
-          //   this.select('en')
-          // }
+          label: 'English',
+          command: () => {
+            this.select('en')
+          }
         },
         {
-          label: 'Svenska'
-          // command: () => {
-          //   this.select('sv')
-          // }
+          label: 'Svenska',
+          command: () => {
+            this.select('sv')
+          }
         }
       ]
     }
@@ -66,9 +60,6 @@ export default {
     },
     select(clocale) {
       this.selectedLocale = clocale
-    },
-    handleClick() {
-      console.log('handleClick')
     }
   }
 }
