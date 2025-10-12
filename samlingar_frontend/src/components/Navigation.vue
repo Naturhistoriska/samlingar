@@ -32,7 +32,7 @@
             >
               {{ $t('nav.collections') }}
             </Tab>
-            <Tab
+            <!-- <Tab
               value="3"
               to="/about"
               as="router-link"
@@ -40,9 +40,9 @@
               class="navbg"
             >
               {{ $t('nav.about') }}
-            </Tab>
+            </Tab> -->
             <Tab
-              value="4"
+              value="3"
               to="/contact"
               as="router-link"
               @keydown.enter="onTabEnter(4)"
@@ -87,11 +87,11 @@ watch(
       case 'Collections':
         value.value = '2'
         break
-      case 'About':
-        value.value = '3'
-        break
+      // case 'About':
+      // value.value = '3'
+      // break
       case 'Contact':
-        value.value = '4'
+        value.value = '3'
         break
       default:
         value.value = '0'
