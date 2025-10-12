@@ -98,15 +98,15 @@
             class="p-datatable-sm"
             responsiveLayout="scroll"
           >
-            <Column field="fieldName" header="Field name" />
-            <Column field="searchMode" header="Search mode" />
-            <Column field="description" header="Description" />
+            <Column field="fieldName" :header="$t('help.fieldName')" />
+            <Column field="searchMode" :header="$t('help.searchMode')" />
+            <Column field="description" :header="$t('help.description')" />
           </DataTable>
         </li>
       </ul>
     </Panel>
     <Divider />
-    <Panel header="Still Need Help?" toggleable>
+    <Panel :header="$t('help.moreHelp')" toggleable>
       <p style="padding-left: 1rem">
         {{ t('help.text') }}
       </p>
