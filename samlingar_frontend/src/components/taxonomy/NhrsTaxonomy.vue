@@ -111,7 +111,7 @@ onMounted(async () => {
     scientificNameAuthorship,
     species,
     subgenus,
-    synonyms,
+    synonymAuthor,
     taxonRank,
     taxonRemarks,
     variety,
@@ -128,8 +128,8 @@ onMounted(async () => {
   remarks.value = taxonRemarks
 
   scientificNameAuthorshipData.value = scientificNameAuthorship
-  if (synonyms) {
-    synonymsData.value = synonyms.join(' | ')
+  if (synonymAuthor) {
+    synonymsData.value = synonymAuthor.join(' | ')
   }
 
   taxonName.value = scientificName
