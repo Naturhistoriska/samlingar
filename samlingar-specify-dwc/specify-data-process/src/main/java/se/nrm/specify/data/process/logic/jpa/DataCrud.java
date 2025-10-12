@@ -1,7 +1,7 @@
 package se.nrm.specify.data.process.logic.jpa;
 
-import java.io.Serializable;
-import java.util.Date;
+import java.io.Serializable;  
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,11 +26,39 @@ public class DataCrud implements Serializable {
     public DataCrud() {
         
     }
-     
+    
     public Institution getInstitutionByCode(String code) {
         return dao.getInstitutionDataByCode(code);
     }
     
+ 
+    public List<Integer> findUpdateIdsByCollectionCode(String collectionCode,
+            String jpql, Date fromDate, Date toDate) {
+        return dao.findUpdateIdsByCollectionCode(collectionCode, jpql, fromDate, toDate);
+    }
+  
+    public List<Collectionobject> fetchDataByIds(String collectionCode, 
+            List<Integer> ids, String jpql) { 
+        return ((Stream<Collectionobject>) dao
+            .findCollectionObjectByCollectionCode(collectionCode, ids, jpql))
+            .collect(Collectors.toList());
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     
+
     public Collection getCollectionByCode(String code) {
         return dao.getCollectionByCode(code);
        
@@ -39,12 +67,7 @@ public class DataCrud implements Serializable {
     public List<Integer> findIdsByCollectionCode(String collectionCode) {
         return dao.findAllIdsByCollectionCode(collectionCode);
     }
-     
-    public List<Collectionobject> fetchDataByIds(String collectionCode, List<Integer> ids, String jpql) { 
-        return ((Stream<Collectionobject>) dao
-            .findCollectionObjectByCollectionCode(collectionCode, ids, jpql))
-            .collect(Collectors.toList());
-    }
+
     
     
     
@@ -56,10 +79,7 @@ public class DataCrud implements Serializable {
     
     
 
-    public List<Integer> findUpdateIdsByCollectionCode(String collectionCode, 
-            String jpql, Date fromDate, Date toDate) {
-        return dao.findUpdateIdsByCollectionCode(collectionCode, jpql, fromDate, toDate);
-    }
+
     
 
     public List<EntityBean> fetchData(String collectionCode, List<Integer> ids, 

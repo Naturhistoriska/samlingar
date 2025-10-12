@@ -1,24 +1,16 @@
 package se.nrm.specify.data.model.impl;
- 
-import java.util.Collection;
+  
 import java.util.Date;
-import javax.persistence.Basic; 
-import javax.persistence.CascadeType;
+import javax.persistence.Basic;  
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id; 
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob; 
-import javax.persistence.ManyToOne;
+import javax.persistence.Id;  
+import javax.persistence.Lob;  
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery; 
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Table; 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size; 
-import javax.xml.bind.annotation.XmlTransient;
+import javax.validation.constraints.Size;  
 import se.nrm.specify.data.model.BaseEntity; 
 
 /**
@@ -32,9 +24,15 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Institution.findByUserGroupScopeId", query = "SELECT i FROM Institution i WHERE i.userGroupScopeId = :userGroupScopeId"),
     @NamedQuery(name = "Institution.findByCode", query = "SELECT i FROM Institution i WHERE i.code = :code")})
 public class Institution extends BaseEntity {
+     
+    private static final long serialVersionUID = 1L;
 
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "UserGroupScopeId")
+    private Integer userGroupScopeId;
  
-
     @Size(max = 128)
     @Column(name = "AltName")
     private String altName;
@@ -62,44 +60,7 @@ public class Institution extends BaseEntity {
     @Size(max = 255)
     @Column(name = "Name")
     private String name;
-    
-    @Size(max = 24)
-    @Column(name = "RegNumber")
-    private String regNumber;
-    
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "Remarks")
-    private String remarks;
-    
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "TermsOfUse")
-    private String termsOfUse;
-    
-    @Size(max = 255)
-    @Column(name = "Uri")
-    private String uri;
-     
-    @Size(max = 128)
-    @Column(name = "GUID")
-    private String guid;
          
-    
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "UserGroupScopeId")
-    private Integer userGroupScopeId;
-
-    @Column(name = "institutionId")
-    private Integer institutionId;
-
-//  @JoinColumn(name = "StorageTreeDefID", referencedColumnName = "StorageTreeDefID")
-//  @ManyToOne(fetch = FetchType.LAZY)
-//  private Storagetreedef storageTreeDef;
     public Institution() {
     }
 
@@ -119,7 +80,7 @@ public class Institution extends BaseEntity {
 
     @Override
     public int getEntityId() {
-        return institutionId;
+        return userGroupScopeId;
     }
 
     public Integer getUserGroupScopeId() {
@@ -129,15 +90,7 @@ public class Institution extends BaseEntity {
     public void setUserGroupScopeId(Integer userGroupScopeId) {
         this.userGroupScopeId = userGroupScopeId;
     }
-
-    public Integer getInstitutionId() {
-        return institutionId;
-    }
-
-    public void setInstitutionId(Integer institutionId) {
-        this.institutionId = institutionId;
-    }
-
+ 
     @Override
     public int hashCode() {
         int hash = 0;
@@ -153,7 +106,8 @@ public class Institution extends BaseEntity {
         }
         Institution other = (Institution) object;
         return !((this.userGroupScopeId == null && other.userGroupScopeId != null)
-                || (this.userGroupScopeId != null && !this.userGroupScopeId.equals(other.userGroupScopeId)));
+                || (this.userGroupScopeId != null && 
+                !this.userGroupScopeId.equals(other.userGroupScopeId)));
     }
 
     @Override
@@ -193,7 +147,6 @@ public class Institution extends BaseEntity {
     public void setDescription(String description) {
         this.description = description;
     }
-
  
     public String getLicense() {
         return license;
@@ -209,50 +162,5 @@ public class Institution extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getRegNumber() {
-        return regNumber;
-    }
-
-    public void setRegNumber(String regNumber) {
-        this.regNumber = regNumber;
-    }
-
-    public String getRemarks() { 
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    public String getTermsOfUse() {
-        return termsOfUse;
-    }
-
-    public void setTermsOfUse(String termsOfUse) {
-        this.termsOfUse = termsOfUse;
-    }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
- 
- 
-  
-    public String getGuid() {
-        return guid;
-    }
-
-    public void setGuid(String guid) {
-        this.guid = guid;
-    }
-
-  
-    
+    } 
 }

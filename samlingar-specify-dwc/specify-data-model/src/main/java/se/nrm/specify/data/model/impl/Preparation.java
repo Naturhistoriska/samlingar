@@ -60,19 +60,11 @@ public class Preparation extends BaseEntity {
     @Size(max = 65535)
     @Column(name = "Remarks")
     private String remarks;
-    
-    @Size(max = 32)
-    @Column(name = "SampleNumber")
-    private String sampleNumber;
-    
+     
     @Size(max = 32)
     @Column(name = "Status")
     private String status;
-    
-    @Size(max = 50)
-    @Column(name = "StorageLocation")
-    private String storageLocation;
-           
+     
     @JoinColumn(name = "PrepTypeID", referencedColumnName = "PrepTypeID")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Preptype prepType;
@@ -80,15 +72,7 @@ public class Preparation extends BaseEntity {
     @JoinColumn(name = "CollectionObjectID", referencedColumnName = "CollectionObjectID")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Collectionobject collectionObject;
-     
-    @JoinColumn(name = "StorageID", referencedColumnName = "StorageID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Storage storage;
-     
-//    @JoinColumn(name = "PreparedByID", referencedColumnName = "AgentID")
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Agent preparedBy;
-     
+       
     public Preparation() {
     }
 
@@ -117,7 +101,7 @@ public class Preparation extends BaseEntity {
      
     @Override
     public int getEntityId() {
-        return preparationID == null ? 0 : preparationID;
+        return  preparationID;
     }
 
     public int getCollectionMemberID() {
@@ -167,29 +151,13 @@ public class Preparation extends BaseEntity {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
-
-    public String getSampleNumber() {
-        return sampleNumber;
-    }
-
-    public void setSampleNumber(String sampleNumber) {
-        this.sampleNumber = sampleNumber;
-    }
-
+ 
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getStorageLocation() {
-        return storageLocation;
-    }
-
-    public void setStorageLocation(String storageLocation) {
-        this.storageLocation = storageLocation;
     }
  
     public Preptype getPrepType() {
@@ -207,22 +175,6 @@ public class Preparation extends BaseEntity {
     public void setCollectionObject(Collectionobject collectionObject) {
         this.collectionObject = collectionObject;
     }
- 
-    public Storage getStorage() {
-        return storage;
-    }
-
-    public void setStorage(Storage storage) {
-        this.storage = storage;
-    }
-// 
-//    public Agent getPreparedBy() {
-//        return preparedBy;
-//    }
-//
-//    public void setPreparedBy(Agent preparedBy) {
-//        this.preparedBy = preparedBy;
-//    }
  
     @Override
     public int hashCode() {

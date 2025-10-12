@@ -1,7 +1,7 @@
 package se.nrm.specify.data.jpa.impl;
 
-import java.io.Serializable; 
-import java.util.Date;
+import java.io.Serializable;  
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Stream;
 import javax.ejb.Stateless;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import se.nrm.specify.data.jpa.SpecifyDao;
 import se.nrm.specify.data.model.EntityBean; 
 import se.nrm.specify.data.model.impl.Collection;
-import se.nrm.specify.data.model.impl.Geography;
+import se.nrm.specify.data.model.impl.Geography; 
 import se.nrm.specify.data.model.impl.Institution;
 
 /**
@@ -41,54 +41,72 @@ public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Seri
     
     private final String institutionFindByCodeNamedQuery = "Institution.findByCode";
     private final String collectionObjectIdsFindByCollectionCodeNamedQuery = "Collectionobject.findAllIdsByCollectionCode";
-     private final String collectionFindByCodeNamedQuery = "Collection.findByCollectionCode";
+    private final String collectionFindByCodeNamedQuery = "Collection.findByCollectionCode";
     
-    
-    
-    
-    private final String collectionObjectFindAllIdNamedQuery = "Collectionobject.findAllIds";
+     
     private final String jpql = "SELECT g FROM Geography g LEFT JOIN FETCH g.parent WHERE g.geographyID = :geographyID";
 //    private final String collectionObjectFindByCollectionCodeAndIds = "Collectionobject.findByCollectionMemberIDAndIds"; 
     private Query query;
     
+    private List<Integer> idList;
+    private Stream<T> results;
+    private Institution institution;
+    
     @PersistenceContext(unitName = "jpaNrmPU")
     private EntityManager entityManager;
     
-    
     @Override
     public Institution getInstitutionDataByCode(String code) {
-        return (Institution) entityManager
+        institution = (Institution) entityManager
                 .createNamedQuery(institutionFindByCodeNamedQuery)
                 .setParameter(paramCode, code)
                 .getSingleResult(); 
+        entityManager.clear();
+        return institution;
     }
+     
     
- 
+    @Override
+    public List<Integer> findUpdateIdsByCollectionCode(String collectionCode,
+            String jpql, Date fromDate, Date toDate) {
+        query = entityManager.createQuery(jpql)
+                .setHint("eclipselink.read-only", "true")
+                .setParameter(paramCollectionMemberId, collectionCode)
+                .setParameter(fromDateKey, fromDate)
+                .setParameter(toDateKey, toDate);
+        idList = query.getResultList();
+        
+        entityManager.clear();
+        return idList;
+    }
+
+    @Override
+    public Stream<T> findCollectionObjectByCollectionCode(String collectionCode, 
+            List<Integer> ids, String jpql) { 
+        log.info("findCollectionObjectByCollectionCode : {} -- {}", 
+                collectionCode, ids.size());
+          
+        query = entityManager.createQuery(jpql);  
+        query.setHint("eclipselink.read-only", "true");
+        query.setParameter(paramCollectionMemberId, collectionCode); 
+        query.setParameter(paramIds, ids);
+       
+        results = query.getResultStream(); 
+        
+        entityManager.clear();
+        return results;
+    } 
+
     @Override
     public Collection getCollectionByCode(String code) { 
         return (Collection) entityManager
                 .createNamedQuery(collectionFindByCodeNamedQuery)
                 .setParameter(paramCode, code).getSingleResult();
     }
- 
-    @Override
-    public List<Integer> findAllIdsByCollectionCode(String collectionCode) {
-        return entityManager.createNamedQuery(collectionObjectIdsFindByCollectionCodeNamedQuery)
-            .setParameter(paramCode, collectionCode).getResultList();
-    }
     
-        
-    @Override
-    public Stream<T> findCollectionObjectByCollectionCode(String collectionCode, 
-            List<Integer> ids, String jpql) { 
-        log.info("findCollectionObjectByCollectionCode : {} -- {}", collectionCode, ids.size());
-          
-        query = entityManager.createQuery(jpql);
-//            .setParameter(paramCollectionMemberId, collectionCode); 
-        query.setParameter(paramIds, ids);
-       
-        return query.getResultStream(); 
-    } 
+    
+    
+    
     
     
     
@@ -99,15 +117,26 @@ public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Seri
     
     
 
+ 
+
+ 
     @Override
-    public List<Integer> findUpdateIdsByCollectionCode(String collectionCode, 
-            String jpql, Date fromDate, Date toDate) {
-        query = entityManager.createQuery(jpql)
-            .setParameter(paramCollectionMemberId, collectionCode)
-            .setParameter(fromDateKey, fromDate)
-            .setParameter(toDateKey, toDate); 
-        return query.getResultList(); 
+    public List<Integer> findAllIdsByCollectionCode(String collectionCode) {
+        return entityManager.createNamedQuery(collectionObjectIdsFindByCollectionCodeNamedQuery)
+            .setParameter(paramCode, collectionCode).getResultList();
     }
+    
+        
+  
+    
+    
+ 
+    
+    
+    
+    
+
+
 
      
     @Override

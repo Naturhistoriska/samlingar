@@ -1,13 +1,9 @@
 package se.nrm.specify.data.process.logic.util;
-
-import java.math.BigDecimal;
+ 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+import java.text.SimpleDateFormat; 
 import java.util.Date;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import se.nrm.specify.data.model.impl.Agent;
+import lombok.extern.slf4j.Slf4j; 
 
 /**
  *
@@ -16,16 +12,8 @@ import se.nrm.specify.data.model.impl.Agent;
 @Slf4j
 public class Util {
 
-    private static Util instance = null;
-    private StringBuilder mappingFilePathSB;
-    private final String underScore = "_";  
-    private final String emptySpace = " ";
-    
-    
-    private final String defaultKey = "default";
-    private final String nrmIndex = "nrm_index";
-    private final String gnmIndex = "gnm_index";
-    private final String nrm = "nrm";
+    private static Util instance = null; 
+      
 
     private final String success = "Solr index run success";
     private final String badRequest = "Bad Request";
@@ -34,8 +22,7 @@ public class Util {
     private final String internalServerError = "Internal Server Error";
 
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    
-    private StringBuilder agentSb;
+     
 
     public static Util getInstance() {
         synchronized (Util.class) {
@@ -46,35 +33,35 @@ public class Util {
         return instance;
     }
 
-    public String getIndexCore(String institution) {
-        return isNrm(institution) ? nrmIndex : gnmIndex;
-    }
+//    public String getIndexCore(String institution) {
+//        return isNrm(institution) ? nrmIndex : gnmIndex;
+//    }
 
-    public boolean isNrm(String institution) {
-        return institution.equals(nrm);
-    }
+//    public boolean isNrm(String institution) {
+//        return institution.equals(nrm);
+//    }
 
-    public String getMappingKey(String institution, int collectionCode) {
-        if (collectionCode == 0) {
-            return defaultKey;
-        }
-        mappingFilePathSB = new StringBuilder();
-        mappingFilePathSB.append(institution);
-        mappingFilePathSB.append(underScore);
-        mappingFilePathSB.append(collectionCode);
-        return mappingFilePathSB.toString().trim();
-    }
+//    public String getMappingKey(String institution, int collectionCode) {
+//        if (collectionCode == 0) {
+//            return defaultKey;
+//        }
+//        mappingFilePathSB = new StringBuilder();
+//        mappingFilePathSB.append(institution);
+//        mappingFilePathSB.append(underScore);
+//        mappingFilePathSB.append(collectionCode);
+//        return mappingFilePathSB.toString().trim();
+//    }
 
-    public Date stringToDate(String strDate) {
-        if (strDate == null) {
-            return null;
-        }
-        try {
-            return dateFormat.parse(strDate);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
+//    public Date stringToDate(String strDate) {
+//        if (strDate == null) {
+//            return null;
+//        }
+//        try {
+//            return dateFormat.parse(strDate);
+//        } catch (ParseException e) {
+//            return null;
+//        }
+//    }
 
     /**
      * Convert java.util.Date to String
@@ -86,24 +73,24 @@ public class Util {
         return date == null ? null : dateFormat.format(date);
     }
 
-    public String convertDataValueToString(Object value) {
-
-        if (value instanceof Integer) {
-            return (String.valueOf(value)).trim();
-        } else if (value instanceof Date) {
-            return dateToString((Date) value).trim();
-        } else if (value instanceof java.util.Date) {
-            return dateToString((Date) value).trim();
-        } else if (value instanceof Boolean) {
-            return (String.valueOf(value)).trim();
-        } else if (value instanceof BigDecimal) {
-            return (String.valueOf(value)).trim();
-        } else if (value instanceof Short) {
-            return (String.valueOf(value)).trim();
-        } else {
-            return ((String) value).trim();
-        }
-    }
+//    private String convertDataValueToString(Object value) {
+//
+//        if (value instanceof Integer) {
+//            return (String.valueOf(value)).trim();
+//        } else if (value instanceof Date) {
+//            return dateToString((Date) value).trim();
+//        } else if (value instanceof java.util.Date) {
+//            return dateToString((Date) value).trim();
+//        } else if (value instanceof Boolean) {
+//            return (String.valueOf(value)).trim();
+//        } else if (value instanceof BigDecimal) {
+//            return (String.valueOf(value)).trim();
+//        } else if (value instanceof Short) {
+//            return (String.valueOf(value)).trim();
+//        } else {
+//            return ((String) value).trim();
+//        }
+//    }
     
         
 //    public String buildAgentName(Agent agent) {
