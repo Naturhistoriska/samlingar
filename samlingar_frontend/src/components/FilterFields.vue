@@ -212,6 +212,64 @@ const groupedSelections = ref([
         multiple: false
       }
     ]
+  },
+  {
+    label: {
+      en: 'Paleontological collection',
+      sv: 'Paleontologisk samling'
+    },
+    code: 'pal',
+    items: [
+      {
+        label: 'Minimum age',
+        locale: { en: 'Minimum age', sv: 'Minsta ålder' },
+        value: 'earliestAgeOrLowestStage',
+        key: 'earliestAgeOrLowestStage:',
+        code: 'pal',
+        multiple: false
+      },
+      {
+        label: 'Maximum age',
+        locale: { en: 'Maximum age', sv: 'Högsta ålder' },
+        value: 'latestAgeOrHighestStage',
+        key: 'latestAgeOrHighestStage:',
+        code: 'pal',
+        multiple: false
+      },
+      {
+        label: 'Minimum period',
+        locale: { en: 'Minimum period', sv: 'Minsta period' },
+        value: 'earliestPeriodOrLowestSystem',
+        key: 'earliestPeriodOrLowestSystem:',
+        code: 'pal',
+        multiple: false
+      },
+      {
+        label: 'Maximum period',
+        locale: { en: 'Maximum period', sv: 'Högsta period' },
+        value: 'latestPeriodOrHighestSystem',
+        key: 'latestPeriodOrHighestSystem:',
+        code: 'pal',
+        multiple: false
+      },
+
+      {
+        label: 'Minimum epoch',
+        locale: { en: 'Minimum epoch', sv: 'Minsta epok' },
+        value: 'earliestEpochOrLowestSeries',
+        key: 'earliestEpochOrLowestSeries:',
+        code: 'pal',
+        multiple: false
+      },
+      {
+        label: 'Maximum epoch',
+        locale: { en: 'Maximum epoch', sv: 'Högsta epok' },
+        value: 'latestEpochOrHighestSeries',
+        key: 'latestEpochOrHighestSeries:',
+        code: 'pal',
+        multiple: false
+      }
+    ]
   }
 ])
 
