@@ -126,7 +126,7 @@ public class PaleoJsonConverter implements Serializable {
                     JsonHelper.getInstance().addTypeStatus(attBuilder, 
                             record.get(JsonHelper.getInstance().getTypeStatusCsvKey(collectionJson)));
 
-                    JsonHelper.getInstance().addCountry(attBuilder, collectionJson, record);
+//                    JsonHelper.getInstance().addCountry(attBuilder, collectionJson, record);
 
                     JsonHelper.getInstance().addMappingValue(attBuilder, mappingJson, record);
 
