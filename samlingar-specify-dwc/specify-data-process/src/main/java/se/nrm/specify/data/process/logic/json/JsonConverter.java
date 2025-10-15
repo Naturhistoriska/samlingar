@@ -66,22 +66,14 @@ public class JsonConverter implements Serializable {
 
         arrayBuilder = Json.createArrayBuilder();
         AtomicInteger counter = new AtomicInteger(0);
-
-        collectionName = collection.getCollectionName();
-        collectionCode = collection.getCode();
-        collectionType = collection.getCollectionType();
-
-        copyright = institution.getCopyright();
-        altName = institution.getAltName();
-        code = institution.getCode();
-
+ 
         beans.stream()
                 .forEach(bean -> {
                     counter.getAndIncrement();
                     attBuilder = Json.createObjectBuilder();
 
-                    addCollection();
-                    addInstitution();
+                    addCollection(collection);
+                    addInstitution(institution);
 
                     attBuilder.add(idKey, addId(bean.getCollectionObjectID()));
                     entityToJson.convertEntityToJson1(attBuilder, bean, collectionCode);
@@ -91,7 +83,11 @@ public class JsonConverter implements Serializable {
         return arrayBuilder.build();
     }
     
-    private void addCollection() {
+    private void addCollection(Collection collection) {
+        collectionName = collection.getCollectionName();
+        collectionCode = collection.getCode();
+        collectionType = collection.getCollectionType();
+        
         attBuilder.add(collectionCodeKey, collectionCode);
         attBuilder.add(collectionNameKey, collectionName);
 
@@ -100,7 +96,11 @@ public class JsonConverter implements Serializable {
         } 
     }
     
-    private void addInstitution() {
+    private void addInstitution(Institution institution) { 
+        copyright = institution.getCopyright();
+        altName = institution.getAltName();
+        code = institution.getCode();
+        
         attBuilder.add(licenseKey, copyright);
         attBuilder.add(institutionNameKey, altName);
         attBuilder.add(institutionCodeKey, code);

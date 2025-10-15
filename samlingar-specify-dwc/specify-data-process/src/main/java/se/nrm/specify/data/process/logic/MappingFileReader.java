@@ -31,30 +31,30 @@ public class MappingFileReader {
         this.properties = properties;
     }
 
-    public JsonObject read(String mappingKey) {
-        log.info("read: {}", mappingKey);
-
-        InputStream fis = null;
-        try {
-            fis = new FileInputStream(properties.getMappingFilesPath());
-            JsonArray array = Json.createReader(fis).readArray();
-            JsonObject json = array.stream()
-                    .filter(a -> a.asJsonObject().containsKey(mappingKey))
-                    .findAny().orElse(array.getJsonObject(0)).asJsonObject();
-            return json.keySet().contains(mappingKey) ? 
-                    json.getJsonObject(mappingKey) : json.getJsonObject(strDefault);
-        } catch (FileNotFoundException ex) {
-            log.error(ex.getMessage());
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
-                }
-            } catch (IOException ex) {
-                log.error(ex.getMessage());
-            }
-        }
-        return null;
-    }
+//    private JsonObject read(String mappingKey) {
+//        log.info("read: {}", mappingKey);
+//
+//        InputStream fis = null;
+//        try {
+//            fis = new FileInputStream(properties.getMappingFilesPath());
+//            JsonArray array = Json.createReader(fis).readArray();
+//            JsonObject json = array.stream()
+//                    .filter(a -> a.asJsonObject().containsKey(mappingKey))
+//                    .findAny().orElse(array.getJsonObject(0)).asJsonObject();
+//            return json.keySet().contains(mappingKey) ? 
+//                    json.getJsonObject(mappingKey) : json.getJsonObject(strDefault);
+//        } catch (FileNotFoundException ex) {
+//            log.error(ex.getMessage());
+//        } finally {
+//            try {
+//                if (fis != null) {
+//                    fis.close();
+//                }
+//            } catch (IOException ex) {
+//                log.error(ex.getMessage());
+//            }
+//        }
+//        return null;
+//    }
 
 }

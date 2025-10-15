@@ -33,8 +33,8 @@ public class DataCrud implements Serializable {
     
  
     public List<Integer> findUpdateIdsByCollectionCode(String collectionCode,
-            String jpql, Date fromDate, Date toDate) {
-        return dao.findUpdateIdsByCollectionCode(collectionCode, jpql, fromDate, toDate);
+          Date fromDate, Date toDate) {
+        return dao.findUpdateIdsByCollectionCode(collectionCode, fromDate, toDate);
     }
   
     public List<Collectionobject> fetchDataByIds(String collectionCode, 
@@ -45,7 +45,11 @@ public class DataCrud implements Serializable {
     }
 
     
-    
+        
+    public List<Integer> findIdsByCollectionCode(String collectionCode) {
+        return dao.findAllIdsByCollectionCode(collectionCode);
+    }
+
     
     
     
@@ -62,10 +66,6 @@ public class DataCrud implements Serializable {
     public Collection getCollectionByCode(String code) {
         return dao.getCollectionByCode(code);
        
-    }
-    
-    public List<Integer> findIdsByCollectionCode(String collectionCode) {
-        return dao.findAllIdsByCollectionCode(collectionCode);
     }
 
     

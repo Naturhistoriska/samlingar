@@ -18,7 +18,7 @@ public interface SpecifyDao <T extends EntityBean> {
     public Institution getInstitutionDataByCode(String code);
     
     public List<Integer> findUpdateIdsByCollectionCode(String collectionCode, 
-            String jpql, Date fromDate, Date toDate);
+            Date fromDate, Date toDate);
      
     public Stream<T> findCollectionObjectByCollectionCode(String collectionCode, 
             List<Integer> ids, String jpql); 

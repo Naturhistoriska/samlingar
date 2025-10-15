@@ -250,8 +250,7 @@ public class EntityToJson implements Serializable {
            
         addAdditionalDetermination(attBuilder, bean.getDeterminationList(),  
                 collectionCode.equals(mineralogyCollection)); 
-        
-        
+         
 //        if (collectionCode.equals(entomologyCollectionCode)) {
 //            addImages(attBuilder, bean);
 //        }

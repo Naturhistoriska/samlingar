@@ -4,13 +4,11 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Arrays;  
-import java.util.List;
-import java.util.Map;
+import java.util.List; 
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.json.JsonArray; 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import lombok.extern.slf4j.Slf4j; 
 import org.wildfly.swarm.Swarm; 
 import se.nrm.specify.data.model.impl.Collection;
 import se.nrm.specify.data.model.impl.Collectionobject;
@@ -58,7 +56,7 @@ public class DataProcessor implements Serializable {
     
     private StringBuilder sb;
     private String jpql;
-    private String updateJpql;
+//    private String updateJpql;
  
     private LocalDate today;
     private Date fromDate;
@@ -86,15 +84,14 @@ public class DataProcessor implements Serializable {
      
         isUpdate = propeties.isUpdate();
         if (isUpdate) {
-            updateJpql = buildGetUpdateIdsQuery(); 
+//            updateJpql = buildGetUpdateIdsQuery(); 
             
             today = LocalDate.now();
-            fromDate = Date.valueOf(today.minusDays(2));
+            fromDate = Date.valueOf(today.minusDays(10));
             toDate = Date.valueOf(today.plusDays(1));
               
             log.info("dates : {} -- {}", fromDate, toDate);
         }
- 
         jpql = buildJpql();  
         try {
             collections.stream()
@@ -104,7 +101,7 @@ public class DataProcessor implements Serializable {
                             
                             if (isUpdate) {
                                 ids = crud.findUpdateIdsByCollectionCode(collectionCode,
-                                        updateJpql, fromDate, toDate);
+                                      fromDate, toDate);
                             } else { 
                                 solr.deleteCollection(collectionCode);
                                 ids = crud.findIdsByCollectionCode(collectionCode); 
@@ -142,7 +139,7 @@ public class DataProcessor implements Serializable {
                 .append("LEFT JOIN FETCH c.accession ") 
                 .append("LEFT JOIN FETCH c.collectionObjectAttribute ")
                 .append("LEFT JOIN FETCH c.determinationList d ")
-                .append("LEFT JOIN FETCH c.collection ct ")
+//                .append("LEFT JOIN FETCH c.collection ct ")
                 .append("LEFT JOIN FETCH c.collectingEvent ce ")
                 .append("LEFT JOIN FETCH c.preparationList p ")
                 .append("LEFT JOIN FETCH c.collectionobjectattachmentList ca ")
@@ -159,8 +156,7 @@ public class DataProcessor implements Serializable {
                 .append("LEFT JOIN FETCH t.taxonTreeDefItem ")
                 .append("LEFT JOIN FETCH t.synomys ")
                 .append("LEFT JOIN FETCH t.commonnametxList cn ")
-                .append("LEFT JOIN FETCH d.determiner ")
-                .append("LEFT JOIN FETCH p.storage ")
+                .append("LEFT JOIN FETCH d.determiner ") 
                 .append("LEFT JOIN FETCH p.prepType ")
                 .append("LEFT JOIN FETCH ca.attachment a ")
                 .append("LEFT JOIN FETCH a.attachmentImageAttribute ai ")

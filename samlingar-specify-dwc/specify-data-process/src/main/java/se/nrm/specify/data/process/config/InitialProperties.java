@@ -25,7 +25,7 @@ public class InitialProperties implements Serializable {
     
     private String institutionCode;
     
-    private String mappingFilesPath;
+//    private String mappingFilesPath;
      
     public InitialProperties() {
     }
@@ -36,15 +36,14 @@ public class InitialProperties implements Serializable {
             @ConfigurationValue("swarm.update") boolean isUpdate,
             @ConfigurationValue("swarm.solr.username") String username,
             @ConfigurationValue("swarm.solr.password") String password, 
-            @ConfigurationValue("swarm.institution") String institutionCode,  
-            @ConfigurationValue("swarm.mapping-files.path") String mappingFilesPath) {
+            @ConfigurationValue("swarm.institution") String institutionCode) {
         this.solrPath = solrPath; 
         this.collections = collections;
         this.isUpdate = isUpdate;
         this.username = username;
         this.password = password;
         this.institutionCode = institutionCode;
-        this.mappingFilesPath = mappingFilesPath;
+//        this.mappingFilesPath = mappingFilesPath;
         log.info("InitialProperties : {} }", solrPath);
     } 
 
@@ -84,12 +83,12 @@ public class InitialProperties implements Serializable {
     } 
     
     
-    public String getMappingFilesPath() {
-        if (mappingFilesPath == null) {
-            throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
-        }
-        return mappingFilesPath;
-    } 
+//    private String getMappingFilesPath() {
+//        if (mappingFilesPath == null) {
+//            throw new RuntimeException(CONFIG_INITIALLISING_ERROR);
+//        }
+//        return mappingFilesPath;
+//    } 
     
     public boolean isUpdate() { 
         return isUpdate;

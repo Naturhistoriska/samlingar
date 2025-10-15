@@ -35,13 +35,18 @@ public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Seri
     private final String paramGeographyId = "geographyID";
     private final String paramCode = "code";
     
+    private final String paramFrom = "fromDate";
+    private final String paramTo = "toDate";
     
     private final String fromDateKey = "fromDate";
     private final String toDateKey = "toDate";
     
     private final String institutionFindByCodeNamedQuery = "Institution.findByCode";
     private final String collectionObjectIdsFindByCollectionCodeNamedQuery = "Collectionobject.findAllIdsByCollectionCode";
+    private final String updateIdsFindByCollectionCodeNamedQuery = "Collectionobject.findUpdatedIdsByCollectionCode";
+    
     private final String collectionFindByCodeNamedQuery = "Collection.findByCollectionCode";
+    
     
      
     private final String jpql = "SELECT g FROM Geography g LEFT JOIN FETCH g.parent WHERE g.geographyID = :geographyID";
@@ -68,14 +73,22 @@ public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Seri
     
     @Override
     public List<Integer> findUpdateIdsByCollectionCode(String collectionCode,
-            String jpql, Date fromDate, Date toDate) {
-        query = entityManager.createQuery(jpql)
-                .setHint("eclipselink.read-only", "true")
-                .setParameter(paramCollectionMemberId, collectionCode)
-                .setParameter(fromDateKey, fromDate)
-                .setParameter(toDateKey, toDate);
-        idList = query.getResultList();
+        Date fromDate, Date toDate) {
         
+        idList = entityManager.createNamedQuery(updateIdsFindByCollectionCodeNamedQuery)
+            .setParameter(paramCode, collectionCode)
+            .setParameter(paramFrom, fromDate)
+             .setParameter(paramTo, toDate)
+            .getResultList(); 
+        
+        entityManager.clear();
+        return idList;
+    }
+     
+    @Override
+    public List<Integer> findAllIdsByCollectionCode(String collectionCode) {
+        idList = entityManager.createNamedQuery(collectionObjectIdsFindByCollectionCodeNamedQuery)
+            .setParameter(paramCode, collectionCode).getResultList();
         entityManager.clear();
         return idList;
     }
@@ -86,9 +99,7 @@ public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Seri
         log.info("findCollectionObjectByCollectionCode : {} -- {}", 
                 collectionCode, ids.size());
           
-        query = entityManager.createQuery(jpql);  
-        query.setHint("eclipselink.read-only", "true");
-        query.setParameter(paramCollectionMemberId, collectionCode); 
+        query = entityManager.createQuery(jpql);    
         query.setParameter(paramIds, ids);
        
         results = query.getResultStream(); 
@@ -96,6 +107,7 @@ public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Seri
         entityManager.clear();
         return results;
     } 
+ 
 
     @Override
     public Collection getCollectionByCode(String code) { 
@@ -119,12 +131,7 @@ public class SpecifyDaoImpl<T extends EntityBean> implements SpecifyDao<T>, Seri
 
  
 
- 
-    @Override
-    public List<Integer> findAllIdsByCollectionCode(String collectionCode) {
-        return entityManager.createNamedQuery(collectionObjectIdsFindByCollectionCodeNamedQuery)
-            .setParameter(paramCode, collectionCode).getResultList();
-    }
+
     
         
   

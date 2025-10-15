@@ -37,6 +37,8 @@ import se.nrm.specify.data.model.BaseEntity;
     @NamedQuery(name = "Collectionobject.findByCollectionMemberID", query = "SELECT c FROM Collectionobject c WHERE c.collectionMemberID = :collectionMemberID"),
     @NamedQuery(name = "Collectionobject.findAllIdsByCollectionCode",
             query = "SELECT c.collectionObjectID FROM Collectionobject c where c.collection.code = :code ORDER BY c.collectionObjectID"),
+    @NamedQuery(name = "Collectionobject.findUpdatedIdsByCollectionCode",
+            query = "SELECT c.collectionObjectID FROM Collectionobject c where c.collection.code = :code AND c.timestampModified BETWEEN :fromDate AND :toDate ORDER BY c.collectionObjectID"),
     @NamedQuery(name = "Collectionobject.findByCollectionMemberIDAndIds", 
             query = "SELECT c FROM Collectionobject c WHERE c.collectionMemberID = :collectionMemberID AND c.collectionObjectID in :ids ORDER BY c.collectionObjectID")})
 public class Collectionobject extends BaseEntity {
@@ -153,7 +155,7 @@ public class Collectionobject extends BaseEntity {
     
      
     @JoinColumn(name = "AccessionID", referencedColumnName = "AccessionID")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Accession accession;
      
       
@@ -166,7 +168,7 @@ public class Collectionobject extends BaseEntity {
     private Collectingevent collectingEvent;
 
     @JoinColumn(name = "CollectionObjectAttributeID", referencedColumnName = "CollectionObjectAttributeID")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Collectionobjectattribute collectionObjectAttribute;
      
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "collectionObject", fetch = FetchType.LAZY) 
