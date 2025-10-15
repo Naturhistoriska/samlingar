@@ -200,7 +200,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { useToast } from 'primevue/usetoast'
+// import { useToast } from 'primevue/usetoast'
 import { FilterMatchMode } from '@primevue/core/api'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -210,13 +210,13 @@ const store = useStore()
 const router = useRouter()
 
 const service = new Service()
-const toast = useToast()
+// const toast = useToast()
 
 // const emits = defineEmits(['search'])
 
 let columns = ref([])
 const dt = ref()
-const showColumn = ref(false)
+// const showColumn = ref(false)
 // const params = ref()
 
 const defaultColumns = ref([
@@ -253,9 +253,11 @@ const totalCount = computed(() => {
 })
 
 watch(
-  () => filterArray.value,
+  () => store.getters['pageNum'],
   (newValue, oldValue) => {
-    console.log('filters', newValue, oldValue)
+    if (newValue === 0) {
+      firstPage.value = 0
+    }
   }
 )
 
@@ -269,7 +271,6 @@ watch(
 watch(
   () => store.getters['selectedCollectionGroup'],
   (newValue, oldValue) => {
-    console.log('why...', newValue)
     const data = newValue
     if (data) {
       collectionOptions.value = data.map((item) => item.val)
@@ -287,6 +288,13 @@ onMounted(async () => {
 
   collectionOptions.value = collections ? collections.map((item) => item.val) : []
   columns.value = defaultColumns.value
+
+  const currentPage = store.getters['pageNum']
+  console.log('currentPage', currentPage)
+  if (currentPage > 0) {
+    const rowsPerPage = store.getters['rowsPerPage']
+    firstPage.value = currentPage * rowsPerPage
+  }
 })
 
 function getTaxon(data) {
@@ -336,12 +344,12 @@ function buildClassification(data) {
   return higherClassification.filter((str) => str !== undefined).join(' > ')
 }
 
-function buildHighGeographigher(data) {
-  const { continent, country, county, municipality, stateProvince } = data
+// function buildHighGeographigher(data) {
+//   const { continent, country, county, municipality, stateProvince } = data
 
-  const highGeographigher = new Array(continent, country, stateProvince, municipality, county)
-  return highGeographigher.filter((str) => str !== undefined).join(', ')
-}
+//   const highGeographigher = new Array(continent, country, stateProvince, municipality, county)
+//   return highGeographigher.filter((str) => str !== undefined).join(', ')
+// }
 
 function onLocalityFilterInput(event, filterModel, filterCallback) {
   console.log('onLocalityFilterInput')
@@ -443,7 +451,6 @@ function buildFilter(data, filterKey, isArray) {
 async function loadRecordsLazy(params, first, rows) {
   loading.value = true
 
-  console.log('params', params.toString())
   await service
     .apiSearch(params, first, rows)
     .then((response) => {
@@ -621,7 +628,7 @@ function selectRow(data) {
   // store.commit('setSelectedRecord', selectedRecord)
 
   // router.push(`/record/${data.id}`)
-  const user = event.data
+
   const url = `/record/${data.id}` // Example URL
   window.open(url, '_blank')
 }
@@ -629,8 +636,11 @@ function selectRow(data) {
 const onPage = async (event) => {
   const { first, rows } = event
   firstPage.value = event.first
-  const params = store.getters['searchParams']
 
+  store.commit('setPageNum', event.page)
+  store.commit('setRowsPerPage', event.rows)
+
+  const params = store.getters['searchParams']
   loadRecordsLazy(params, first, rows)
 }
 

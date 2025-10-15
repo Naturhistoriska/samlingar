@@ -124,6 +124,9 @@ async function filterSearch(params) {
 
       store.commit('setChartCode', null)
 
+      store.commit('setPageNum', 0)
+      store.commit('setRowsPerPage', 20)
+
       // if (total > 0) {
       //   const collectionfacet = response.facets.collectionName.buckets
       //   store.commit('setSelectedCollectionGroup', collectionfacet)
@@ -187,6 +190,9 @@ async function freeTextSearch(value, mode) {
       store.commit('setResetMapData', true)
       store.commit('setSearchParams', params)
       loading.value = false
+
+      store.commit('setPageNum', 0)
+      store.commit('setRowsPerPage', 20)
       router.push('/search')
     })
 }

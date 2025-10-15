@@ -27,6 +27,9 @@ export default createStore({
     inSwedenCount: 0,
     isTypeCount: 0,
 
+    pageNum: 0,
+    rowsPerPage: 20,
+
     resetMapData: false,
 
     scientificName: null,
@@ -164,6 +167,14 @@ export default createStore({
 
     geoJson(state) {
       return state.geoJson
+    },
+
+    pageNum(state) {
+      return state.pageNum
+    },
+
+    rowsPerPage(state) {
+      return state.rowsPerPage
     },
 
     resetMapData(state) {
@@ -460,6 +471,8 @@ export default createStore({
     setFilterNordicCountry: (state, payload) => (state.filterNordicCountry = payload),
     setFullTextSearchMode: (state, payload) => (state.fullTextSearchMode = payload),
     setGeoJson: (state, payload) => (state.geoJson = payload),
+    setPageNum: (state, payload) => (state.pageNum = payload),
+    setRowsPerPage: (state, payload) => (state.rowsPerPage = payload),
     setResetMapData: (state, payload) => (state.resetMapData = payload),
     setSelectedCollectionGroup: (state, payload) => (state.selectedCollectionGroup = payload),
     setStartYear: (state, payload) => (state.startYear = payload),

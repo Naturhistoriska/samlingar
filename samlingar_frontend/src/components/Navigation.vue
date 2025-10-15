@@ -131,6 +131,9 @@ function onClick() {
 
   store.commit('setFields', [])
   store.commit('setDataResource', null)
+
+  store.commit('setPageNum', 0)
+  store.commit('setRowsPerPage', 20)
 }
 </script>
 

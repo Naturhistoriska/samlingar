@@ -161,6 +161,9 @@ async function search(params, start, numPerPage, saveData) {
     .finally(() => {
       store.commit('setSearchParams', params)
       store.commit('setResetMapData', true)
+
+      store.commit('setPageNum', 0)
+      store.commit('setRowsPerPage', 20)
       loading.value = false
     })
 }
