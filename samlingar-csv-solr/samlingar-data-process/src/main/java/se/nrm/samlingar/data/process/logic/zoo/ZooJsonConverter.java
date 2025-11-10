@@ -131,8 +131,8 @@ public class ZooJsonConverter implements Serializable {
                                     imageMap.get(catalogNumber));
                         }
 
-                        if (classificationJson != null) {
-                            JsonHelper.getInstance().addClassification(attBuilder, classificationJson, record);
+                        if (classificationJson != null) { 
+                            JsonHelper.getInstance().addZooClassification(attBuilder, classificationJson, record);
                         }
 
                         latitude = record.get(JsonHelper.getInstance()

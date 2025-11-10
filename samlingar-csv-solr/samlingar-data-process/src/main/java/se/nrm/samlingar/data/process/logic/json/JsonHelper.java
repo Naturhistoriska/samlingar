@@ -317,20 +317,31 @@ public class JsonHelper {
                             addAttValue(attBuilder, scientificNameKey, taxon);
                             addAttValue(attBuilder, taxonRankKey, StringUtils.capitalize(key).trim()); 
                             isScientificNameSet = true; 
-                        }
-//                        if (isScientificNameSet) {
-//                            classificationList.add(taxon);
-//                        } else { 
-//                            addAttValue(attBuilder, taxonRankKey, StringUtils.capitalize(key).trim()); 
-//                            isScientificNameSet = true;
-//                        }
+                        } 
                     } 
-                });
-//        Collections.reverse(classificationList);
-//        addAttValue(attBuilder, higherClassificationKey,
-//                classificationList.stream().collect(Collectors.joining(slash)));
+                }); 
     }
 
+    public void addZooClassification(JsonObjectBuilder attBuilder,
+            JsonObject classificationJson, CSVRecord record) { 
+//        log.info("addClassification " );
+        
+        isScientificNameSet = false;
+//        classificationList = new ArrayList();
+        classificationJson.keySet()
+                .stream()
+                .forEach(key -> {
+                    taxon = record.get(classificationJson.getString(key)).trim(); 
+                    if (!StringUtils.isBlank(taxon)) {           
+                        attBuilder.add(key, taxon);
+                        if (!isScientificNameSet) { 
+                            addAttValue(attBuilder, taxonRankKey, StringUtils.capitalize(key).trim()); 
+                            isScientificNameSet = true; 
+                        } 
+                    } 
+                }); 
+    }
+        
     public void addClassificationForPaleoCollection(JsonObjectBuilder attBuilder,
             JsonObject classificationJson, CSVRecord record) {
         log.info("addClassificationForPaleoCollection : {}", classificationJson);
@@ -357,33 +368,33 @@ public class JsonHelper {
                 classificationList.stream().collect(Collectors.joining(slash)));
     }
 
-    public void addClassification(JsonObjectBuilder attBuilder,
-            List<String> classificationKeys, CSVRecord record) {
-
-        isScientificNameSet = false;
-        classificationList = new ArrayList();
-        classificationKeys.stream()
-                .forEach(key -> {
-                    taxon = record.get(key).trim();
-                    if (!StringUtils.isBlank(taxon)) {
-                        if (isScientificNameSet) {
-                            classificationList.add(taxon);
-                            addAttValue(attBuilder, key, taxon);
-                        } else {
-                            addAttValue(attBuilder, scientificNameKey, taxon);
-                            if (key.equals(scientificNameKey) || key.equals(currentDetermination)) {
-                                addAttValue(attBuilder, taxonRankKey, speciesRank);
-                            } else {
-                                addAttValue(attBuilder, taxonRankKey, key);
-                            }
-                            isScientificNameSet = true;
-                        }
-                    }
-                });
-        Collections.reverse(classificationList);
-        addAttValue(attBuilder, higherClassificationKey,
-                classificationList.stream().collect(Collectors.joining(slash)));
-    }
+//    public void addClassification1(JsonObjectBuilder attBuilder,
+//            List<String> classificationKeys, CSVRecord record) {
+//
+//        isScientificNameSet = false;
+//        classificationList = new ArrayList();
+//        classificationKeys.stream()
+//                .forEach(key -> {
+//                    taxon = record.get(key).trim();
+//                    if (!StringUtils.isBlank(taxon)) {
+//                        if (isScientificNameSet) {
+//                            classificationList.add(taxon);
+//                            addAttValue(attBuilder, key, taxon);
+//                        } else {
+//                            addAttValue(attBuilder, scientificNameKey, taxon);
+//                            if (key.equals(scientificNameKey) || key.equals(currentDetermination)) {
+//                                addAttValue(attBuilder, taxonRankKey, speciesRank);
+//                            } else {
+//                                addAttValue(attBuilder, taxonRankKey, key);
+//                            }
+//                            isScientificNameSet = true;
+//                        }
+//                    }
+//                });
+//        Collections.reverse(classificationList);
+//        addAttValue(attBuilder, higherClassificationKey,
+//                classificationList.stream().collect(Collectors.joining(slash)));
+//    }
     
     public void addVerbatimCoordinates(JsonObjectBuilder attBuilder, String verbatimCoordinates) {
          addAttValue(attBuilder, verbatimCoordinatesKey,verbatimCoordinates); 
