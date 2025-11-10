@@ -1,6 +1,6 @@
 <template>
   <div class="grid">
-    <div class="col-12" no-gutters>
+    <div class="col-12 search-all-label" no-gutters>
       {{ $t('search.freeTextSearch') }}
       <small class="p-text-secondary">[{{ $t('search.searchAll') }}]</small>
     </div>
@@ -16,8 +16,8 @@
       </div>
     </div>
     <div class="col-12" no-gutters>
-      <div class="flex flex flex-wrap gap-3">
-        <div class="flex items-center" @keydown.enter="toggleSearchOption('equals')">
+      <div class="flex flex flex-wrap gap-3 radio-group">
+        <div class="flex items-center radio-item" @keydown.enter="toggleSearchOption('equals')">
           <RadioButton
             v-model="searchOptions"
             inputId="optionEquals"
@@ -31,7 +31,7 @@
             <small>{{ $t('search.exact') }}</small>
           </label>
         </div>
-        <div class="flex items-center" @keydown.enter="toggleSearchOption('contains')">
+        <div class="flex items-center radio-item" @keydown.enter="toggleSearchOption('contains')">
           <RadioButton
             v-model="searchOptions"
             inputId="optionContains"
@@ -45,7 +45,7 @@
             <small>{{ $t('search.contains') }}</small>
           </label>
         </div>
-        <div class="flex items-center" @keydown.enter="toggleSearchOption('startsWith')">
+        <div class="flex items-center radio-item" @keydown.enter="toggleSearchOption('startsWith')">
           <RadioButton
             v-model="searchOptions"
             inputId="optionStartWith"
@@ -113,5 +113,59 @@ function handleFreeTextSearch(value) {
   min-width: 90%;
   text-align: left;
   float: left;
+}
+
+.search-all-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color, #333);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* allows wrapping on small screens */
+  gap: 0.25rem; /* adds small space between text and [searchAll] */
+}
+
+.search-all-label small {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary, #6c757d);
+}
+
+/* Small label text */
+.radio-item small {
+  font-size: 0.85rem;
+}
+
+/* 📱 Mobile: slightly larger and with better spacing */
+@media (max-width: 768px) {
+  .search-all-label {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    flex-direction: column; /* stack main text and small text */
+    align-items: flex-start;
+    gap: 0.1rem;
+  }
+
+  .search-all-label small {
+    font-size: 0.6rem;
+  }
+
+  .searchInput {
+    min-width: 100%;
+    text-align: left;
+    float: left;
+  }
+
+  .radio-group {
+    gap: 0.5rem; /* slightly smaller spacing */
+  }
+
+  .radio-item {
+    min-width: 100%; /* stack vertically on small screens */
+    justify-content: flex-start;
+  }
+
+  .radio-item small {
+    font-size: 0.6rem; /* slightly larger for readability */
+  }
 }
 </style>

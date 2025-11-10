@@ -1,5 +1,5 @@
 <template>
-  <div class="grid" style="padding-left: 10em">
+  <div class="grid record-container">
     <div class="col-12" no-gutters>
       <p class="m-0 titleStyle">{{ $t('records.recordTitle') }}</p>
     </div>
@@ -9,47 +9,58 @@
     <div class="col-12 scientificNameText" no-gutters>
       <i>{{ name }}</i>
     </div>
-    <div class="grid" v-if="hasData">
-      <div class="col-7" no-gutters>
-        <div class="col-12" no-gutters>
+    <div v-if="showImages" class="col-12">
+      <div class="grid" v-if="hasData">
+        <div class="col-12">
+          <image-view />
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="grid" v-if="hasData">
+      <div class="col-12 md:col-7">
+        <div class="col-12">
           <record-dataset v-bind:code="code" />
         </div>
-        <div class="col-12" no-gutters>
+        <div class="col-12">
           <record-event v-bind:code="code" />
         </div>
-        <div class="col-12" no-gutters>
+        <div class="col-12">
           <Location v-bind:code="code" />
         </div>
-        <div class="col-12" no-gutters>
-          <geological-context v-if="isPalCollection" />
+        <div class="col-12" v-if="isPalCollection">
+          <geological-context />
         </div>
 
-        <div class="col-12" no-gutters>
+        <div class="col-12">
           <record-identification v-bind:code="code" />
         </div>
-        <div class="col-12" no-gutters>
+        <div class="col-12">
           <Taxonomy v-bind:code="code" />
         </div>
       </div>
-      <div class="col-5" no-gutters>
-        <div class="col-12" no-gutters>
+      <div class="col-12 md:col-5">
+        <div class="col-12">
           <single-map />
         </div>
-        <div class="col-12" no-gutters>
-          <Images />
+        <div class="col-12">
+          <image-thumbnails />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Service from '../Service'
 
 import GeologicalContext from '../components/GeologicalContext.vue'
-import Images from '../components/Images.vue'
+// import Images from '../components/Images.vue'
+// import ImageView from '../components/IiifViewer.vue'
+import ImageView from '../components/ImageView.vue'
+import ImageThumbnails from '../components/ImageThumbnails.vue'
 import Location from '../components/Location.vue'
 import SingleMap from '../components/SingleMap.vue'
 import RecordDataset from '../components/RecordDataset.vue'
@@ -64,16 +75,18 @@ const service = new Service()
 const classification = ref()
 const name = ref()
 const hasData = ref(false)
-const clazz = ref()
+// const clazz = ref()
 
 const code = ref()
 const isPalCollection = ref(false)
+const showImages = ref(false)
 
-// const isPalCollection = computed(() => {
-//   const record = store.getters['selectedRecord']
-//   const collectionCode = record.collectionCode
-//   return collectionCode === 'pz' || collectionCode == 'pb'
-// })
+watch(
+  () => store.getters['showImageView'],
+  (newValue, oldValue) => {
+    showImages.value = newValue
+  }
+)
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -145,10 +158,16 @@ function buildRecordData(record) {
   }
 
   store.commit('setSelectedRecord', record)
+  store.commit('setShowImageView', false)
   hasData.value = true
 }
 </script>
 <style scoped>
+.record-container {
+  padding-left: 2rem; /* smaller default padding */
+  padding-right: 2rem;
+}
+
 .titleStyle {
   font-weight: bold;
   font-size: 2em;
@@ -162,5 +181,22 @@ function buildRecordData(record) {
   font-size: 1.5em;
   font-weight: bold;
   color: #6fade6;
+}
+
+@media (max-width: 768px) {
+  .record-container {
+    padding-left: 1rem; /* remove big left padding */
+    padding-right: 1rem;
+  }
+
+  .titleStyle {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .classificationText,
+  .scientificNameText {
+    text-align: center;
+  }
 }
 </style>

@@ -1,19 +1,20 @@
 <template>
   <Panel toggleable collapsed>
     <template #header>
-      <span style="font-size: 1.3em">{{ $t(dataGroup) }}</span>
+      <span class="panel-title">{{ $t(dataGroup) }}</span>
     </template>
+
     <Accordion multiple class="p-accordion-header-variant-a" v-model:value="active">
-      <AccordionPanel v-for="tab in tabs" :key="tab" :value="tab" style="font-size: 12px">
+      <AccordionPanel v-for="tab in tabs" :key="tab" :value="tab" class="accordion-panel">
         <AccordionHeader style="background: transparent" @click="onTabClick(tab)">
           {{ $t('collectionName.' + tab + '.name') }}
         </AccordionHeader>
-        <AccordionContent style="background: transparent" :unstyled="true">
-          <div class="grid">
-            <div class="col-6" no-gutters>
+        <AccordionContent>
+          <div class="grid chart-grid">
+            <div class="chart-wrapper">
               <CollectionMonthChart v-bind:chart="getMonthData(tab)" />
             </div>
-            <div class="col-6" no-gutters>
+            <div class="chart-wrapper">
               <CollectionYearChart v-bind:chart="getYearData(tab)" />
             </div>
           </div>
@@ -21,28 +22,6 @@
       </AccordionPanel>
     </Accordion>
   </Panel>
-  <!-- <card>
-    <template #title>{{ $t(dataGroup) }} </template>
-    <template #content>
-      <Accordion multiple class="p-accordion-header-variant-a" v-model:value="active">
-        <AccordionPanel v-for="tab in tabs" :key="tab" :value="tab" style="font-size: 12px">
-          <AccordionHeader style="background: transparent" @click="onTabClick(tab)">
-            {{ $t('collectionName.' + tab + '.name') }}
-          </AccordionHeader>
-          <AccordionContent style="background: transparent" :unstyled="true">
-            <div class="grid">
-              <div class="col-6" no-gutters>
-                <CollectionMonthChart v-bind:chart="getMonthData(tab)" />
-              </div>
-              <div class="col-6" no-gutters>
-                <CollectionYearChart v-bind:chart="getYearData(tab)" />
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionPanel>
-      </Accordion>
-    </template>
-  </card> -->
 </template>
 <script setup>
 import { computed, defineAsyncComponent, ref } from 'vue'
@@ -398,12 +377,37 @@ function setMonthData(tab, month) {
 }
 </script>
 <style scoped>
-.p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
+/* .p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
   background: var(--p-accordion-header-active-background);
   color: #838282;
   font-size: 1rem;
 }
 .p-panel .p-panel-header {
-  font-size: 3rem; /* Adjust as needed */
+  font-size: 3rem;
+} */
+
+.panel-title {
+  font-size: 1.3em;
+}
+
+/* Make charts stack vertically on mobile */
+.chart-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem; /* space between charts */
+  margin-top: 1rem;
+}
+
+.chart-wrapper {
+  flex: 1 1 48%; /* roughly 50% width on desktop */
+  min-width: 300px; /* avoid too narrow charts */
+  height: 300px; /* default height for desktop */
+}
+
+@media (max-width: 768px) {
+  .chart-wrapper {
+    flex: 1 1 100%; /* full width on mobile */
+    height: 200px; /* smaller height for mobile */
+  }
 }
 </style>

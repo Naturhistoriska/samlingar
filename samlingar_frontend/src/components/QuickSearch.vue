@@ -1,19 +1,22 @@
 <template>
-  <div class="justify-right" style="float: right">
+  <div style="float: right">
     <FloatLabel>
       <InputGroup>
         <AutoComplete
           id="autosearch"
+          inputClass="mobile-autocomplete"
+          panelClass="mobile-panel"
+          inputId="ac"
           v-model="search"
-          :suggestions="items"
+          v-tooltip.bottom="$t('tip.quickSrarchInput')"
+          :appendTo="'body'"
+          :inputStyle="acwidth"
           :minLength="3"
+          :suggestions="items"
+          @change="onChange"
           @complete="apiAutoComplete"
           @keydown.enter="apiSearch"
-          @change="onChange"
           @itemSelect="onItemSelect"
-          inputId="ac"
-          :inputStyle="acwidth"
-          v-tooltip.bottom="$t('tip.quickSrarchInput')"
         />
         <Button
           icon="pi pi-search"
@@ -24,7 +27,9 @@
           :disabled="disableBtn"
           style="background-color: #144836 !important; border-color: #1d634a !important"
         />
-        <label for="ac">{{ $t('search.searchSpecies') }} </label>
+        <label for="ac" style="font-size: 1.2em; font-weight: bold !important">
+          <b>{{ $t('search.searchSpecies') }} </b>
+        </label>
       </InputGroup>
     </FloatLabel>
   </div>
@@ -52,7 +57,7 @@ const search = ref()
 const disableBtn = ref(true)
 
 onMounted(() => {
-  acwidth.value = { width: '300px' }
+  acwidth.value = { width: '22em' }
 })
 
 function onChange() {
@@ -185,5 +190,21 @@ function reset() {
   border-start-end-radius: var(--p-inputgroup-addon-border-radius);
   border-end-end-radius: var(--p-inputgroup-addon-border-radius);
   border: 1px solid var(--p-button-primary-border-color);
+}
+.mobile-autocomplete {
+  font-size: 1.2rem;
+  padding: 0.75rem;
+}
+@media (max-width: 768px) {
+  .mobile-panel {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow-y: auto;
+    background: white;
+    z-index: 9999;
+  }
 }
 </style>

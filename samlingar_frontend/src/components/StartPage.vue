@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
     <div class="col-12" no-gutters>
-      <Search @freeTextSearch="freeTextSearch" style="max-width: 800px" />
+      <Search @freeTextSearch="freeTextSearch" style="max-width: 80%" />
     </div>
     <Divider class="custom-divider" />
     <div class="grid">
@@ -44,11 +44,15 @@ function freeTextSearch(value, mode) {
 <style scoped>
 .textStyle {
   padding-top: 3em;
-  padding-right: 2em;
-  font-size: 15px;
 }
 
 .custom-divider.p-divider-horizontal::before {
   border-top: 1px solid #ccc; /* Change color here */
+}
+
+@media (max-width: 768px) {
+  .textStyle {
+    padding-top: 2em;
+  }
 }
 </style>

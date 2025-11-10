@@ -1,8 +1,8 @@
 <template>
   <div class="grid">
     <div class="grid" style="min-width: 100%">
-      <div class="col-12 w-full" no-gutters style="padding-top: 50px">
-        <p class="m-0" style="font-weight: bold; font-size: 18px">
+      <div class="col-12 w-full" no-gutters style="padding-top: 3em">
+        <p class="m-0" style="font-weight: bold; font-size: 1.3em">
           {{ $t('startPage.commonSearch') }}
         </p>
       </div>

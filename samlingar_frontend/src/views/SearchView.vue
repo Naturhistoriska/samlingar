@@ -1,13 +1,14 @@
 <template>
-  <div>
+  <div class="page-container">
     <div v-if="loading" class="spinner-overlay">
       <div class="spinner"></div>
     </div>
-    <div class="grid">
-      <div class="col-5" no-gutters>
+
+    <div class="grid responsive-grid">
+      <div class="col-12 md:col-5" no-gutters>
         <search-records @search="handleSearch" />
       </div>
-      <div class="col-7" no-gutters v-if="isLargeMap">
+      <div class="col-12 md:col-7" no-gutters v-if="isLargeMap">
         <Suspense>
           <template #default>
             <keep-alive>
@@ -19,7 +20,7 @@
           </template>
         </Suspense>
       </div>
-      <div class="col-7" no-gutters v-else>
+      <div class="col-12 md:col-7" no-gutters v-else>
         <Suspense>
           <template #default>
             <keep-alive>
@@ -300,6 +301,12 @@ function buildParams() {
 // }
 </script>
 <style scoped>
+.page-container {
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
 .spinner-overlay {
   position: fixed;
   top: 0;
@@ -323,8 +330,48 @@ function buildParams() {
 }
 
 @keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+} */
+
+/* Responsive layout grid */
+.responsive-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.responsive-grid > div {
+  flex: 1;
+}
+
+/* 📱 Mobile layout */
+@media (max-width: 768px) {
+  .responsive-grid {
+    flex-direction: column;
+  }
+
+  .responsive-grid > div {
+    width: 100%;
+  }
+
+  .page-container {
+    padding: 0.5rem;
+  }
+
+  .spinner {
+    width: 30px;
+    height: 30px;
   }
 }
 </style>

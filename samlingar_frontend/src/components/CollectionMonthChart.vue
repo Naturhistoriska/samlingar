@@ -1,6 +1,6 @@
 <template>
-  <div class="card" style="margin-left: 2dvb; max-width: 800px; max-height: 600px">
-    <Chart type="bar" :data="chartData" :options="chartOptions" class="h-[30rem]" />
+  <div class="chart-card card">
+    <Chart type="bar" :data="chartData" :options="chartOptions" class="chart-wrapper" />
   </div>
 </template>
 
@@ -91,3 +91,25 @@ function buildSwedishMonthLabel(keys) {
   return localizedMonths
 }
 </script>
+<style scoped>
+.chart-card {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 100%; /* let it fill mobile screens */
+  padding: 0 1rem; /* padding for mobile */
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 300px; /* default desktop height */
+}
+
+/* 📱 Mobile adjustments */
+@media (max-width: 768px) {
+  .chart-wrapper {
+    height: 200px; /* smaller height for mobile */
+  }
+}
+</style>

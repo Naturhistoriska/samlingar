@@ -12,4 +12,15 @@
   </div>
 </template>
 <script setup></script>
-<style scoped></style>
+<style scoped>
+.textStyle {
+  padding-right: 1em;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .textStyle {
+    font-size: 0.6rem; /* 14px for mobile */
+  }
+}
+</style>

@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="card flex justify-center"
-    style="min-width: 1200px; text-align: center; margin-left: 25%"
-  >
+  <div class="chart-card card">
     <Chart type="doughnut" :data="chartData" :options="chartOptions" class="chart-wrapper" />
   </div>
 </template>
@@ -225,18 +222,27 @@ const setChartOptions = () => {
 }
 </script>
 <style scoped>
-.chart-wrapper {
+.chart-card {
   display: flex;
   justify-content: center;
-  align-items: center;
-  vertical-align: top;
-  width: 570px; /* Adjust as needed */
-  height: 430px;
-  margin-top: 0px !important; /* remove top margin */
-  padding-top: 0px !important; /* remove top padding */
+  width: 100%;
+  max-width: 500px; /* limits chart width on larger screens */
+  margin: 0 auto; /* center horizontally */
 }
-.chart-container {
-  margin-top: 0px !important; /* remove top margin */
-  padding-top: 0px !important; /* remove top padding */
+
+.chart-wrapper {
+  width: 100%;
+  height: 300px; /* default desktop height */
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .chart-wrapper {
+    height: 200px; /* smaller height for mobile */
+  }
+
+  .chart-card {
+    padding: 0 1rem; /* small padding on mobile */
+  }
 }
 </style>

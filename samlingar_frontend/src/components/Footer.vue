@@ -1,9 +1,7 @@
 <template>
   <div class="footer">
     <div class="footer-content">
-      <span class="grey--text text--darken-3">
-        {{ $t('footer.nrm') }} - {{ new Date().getFullYear() }}
-      </span>
+      <span class="footer-text"> {{ $t('footer.nrm') }} - {{ new Date().getFullYear() }} </span>
       <Button
         icon="pi pi-envelope"
         :label="$t('common.contactus')"
@@ -25,93 +23,54 @@ export default {
 }
 </script>
 <style scoped>
+.footer {
+  /* background-color: #f5f5f5;    */
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* allow wrapping on mobile */
+  gap: 0.5rem;
+}
+
+.footer-text {
+  font-size: 0.9rem;
+  color: #4a4949b6;
+}
+
 .contactlink {
   cursor: pointer;
+  font-size: 0.9rem;
   text-decoration: none;
   color: #4a4949b6;
 }
 
-.footer .footer-content {
+/* .footer .footer-content {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  padding: 0 6rem;
+  padding: 0 3em;
+} */
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column; /* stack items */
+    align-items: flex-start;
+  }
+
+  .footer-text {
+    margin-bottom: 0.5rem; /* spacing between text and button */
+    font-size: 0.8em;
+  }
+
+  .contactlink {
+    font-size: 0.8rem;
+    color: #4a4949b6;
+  }
 }
-/* a {
-  cursor: pointer;
-}
-
-.footer {
-  max-height: 50px;
-  margin-top: 6.9rem;
-  width: 100%;
-  position: relative;
-  margin-bottom: 2.85rem;
-} */
-
-/* .footer::before {
-  content: '';
-  display: block;
-  position: absolute;
-  height: 1px;
-  width: 100%;
-  top: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
-  z-index: -1;
-} */
-
-/* .footer .footer-content .license,
-.socials {
-  display: flex;
-  padding: 7.5px;
-  align-items: center;
-  gap: 0.857rem;
-  border-radius: 48px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: #1e2226;
-  text-decoration: none;
-  color: #fff;
-  transition: color 0.3s;
-} */
-/*
-.footer .footer-content .license:hover {
-  color: #41b883df;
-} */
-/*
-.footer .footer-content .socials a {
-  display: flex;
-  color: #fff;
-  text-decoration: none;
-}
-
-.footer .footer-content .socials a i {
-  transition: color 0.3s;
-}
-
-.footer .footer-content .socials a:hover i {
-  color: #41b883df;
-} */
-/*
-.footer .footer-content .footer-logo {
-  display: flex;
-  width: 44px;
-  height: 44px;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  border-radius: 48px;
-  background-color: #1e2226;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s;
-}
-
-.footer .footer-content .footer-logo img {
-  width: 17.711px;
-  height: 20px;
-} */
-
-/* .footer .footer-content .footer-logo:hover {
-  background-color: #2b3035;
-} */
 </style>

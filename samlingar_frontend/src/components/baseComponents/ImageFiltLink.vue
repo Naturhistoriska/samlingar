@@ -1,19 +1,22 @@
 <template>
-  <div class="grid collectionDivLink" @click="searchCollection">
-    <div class="col-4">
-      <Image :src="imageSource" alt="Image" width="180" />
+  <div
+    class="grid collectionDivLink p-2 align-items-center cursor-pointer"
+    @click="searchCollection"
+  >
+    <!-- Image section -->
+    <div class="col-12 md:col-4 text-center mb-3 md:mb-0">
+      <Image :src="imageSource" alt="Image" width="100%" class="collection-image" />
     </div>
-    <div class="col-8 collectionTextLink">
-      <div class="grid">
-        <Button text>
-          <small>{{ $t(text) }}</small>
-        </Button>
-      </div>
+
+    <!-- Text/Button section -->
+    <div class="col-12 md:col-8 collectionTextLink text-center md:text-left">
+      <Button text class="p-button-text w-full md:w-auto">
+        {{ $t(text) }}
+      </Button>
     </div>
   </div>
 </template>
 <script setup>
-// import { ref } from 'vue'
 const props = defineProps(['imageSource', 'text'])
 
 const emits = defineEmits(['searchCollection'])
@@ -23,25 +26,84 @@ function searchCollection() {
 }
 </script>
 <style scoped>
+/* .p-button-text {
+  font-size: 1.1em;
+  color: #4a4949b6;
+  text-decoration: underline;
+} */
+
+/* .collectionDivLink {
+  min-width: 100%;
+  cursor: pointer;
+}
+.collectionTextLink {
+  float: left;
+  padding-top: 3em;
+}
+
 .p-button-text {
-  font-size: 16px;
+  font-size: 1.1rem;
   color: #4a4949b6;
   text-decoration: underline;
 }
 
 .p-button-text:hover {
-  font-size: 16px;
+  font-size: 1.2em;
+  color: #b3b0b0 !important;
+  text-decoration: none !important;
+  background: transparent !important;
+}
+@media (max-width: 768px) {
+  .p-button-text {
+    font-size: 0.675rem;
+  }
+
+  .p-button-text:hover {
+    font-size: 0.7em;
+    color: #b3b0b0 !important;
+    text-decoration: none !important;
+    background: transparent !important;
+  }
+
+  .collectionTextLink {
+    float: left;
+  }
+} */
+
+.p-button-text {
+  font-size: 1.1rem;
+  color: #4a4949b6;
+  text-decoration: underline;
+}
+
+.p-button-text:hover {
+  font-size: 1.2em;
   color: #b3b0b0 !important;
   text-decoration: none !important;
   background: transparent !important;
 }
 
 .collectionDivLink {
-  min-width: 100%;
-  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
-.collectionTextLink {
-  float: left;
-  padding-top: 50px;
+.collectionDivLink:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.collection-image img {
+  width: 100%;
+  max-width: 250px; /* default desktop size */
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Mobile-first spacing and alignment */
+@media (max-width: 768px) {
+  .p-button-text {
+    font-size: 0.675rem;
+  }
 }
 </style>
