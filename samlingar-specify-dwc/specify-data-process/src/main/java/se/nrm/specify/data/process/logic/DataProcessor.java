@@ -26,6 +26,8 @@ import se.nrm.specify.data.process.logic.solr.SolrService;
 public class DataProcessor implements Serializable {
  
     private final int max = 2000;
+    private final int daysToSubtract = 5;
+    private final int daysToAdd = 1;
   
     private int count;
     private int end;
@@ -34,20 +36,7 @@ public class DataProcessor implements Serializable {
 
     private List<Integer> ids;
     private List<Integer> fetchIds;
- 
-
-    @Inject
-    private DataCrud crud;
   
-    @Inject
-    private JsonConverter converter;
-
-    @Inject
-    private InitialProperties propeties;
-
-    @Inject
-    private SolrService solr;
-
     private List<String> collections;
 
     private boolean isUpdate;
@@ -69,6 +58,18 @@ public class DataProcessor implements Serializable {
     private Collection collection;
 
     private JsonArray jsonArray;
+    
+    @Inject
+    private DataCrud crud;
+  
+    @Inject
+    private JsonConverter converter;
+
+    @Inject
+    private InitialProperties propeties;
+
+    @Inject
+    private SolrService solr;
 
     public DataProcessor() {
     }
@@ -87,8 +88,8 @@ public class DataProcessor implements Serializable {
 //            updateJpql = buildGetUpdateIdsQuery(); 
             
             today = LocalDate.now();
-            fromDate = Date.valueOf(today.minusDays(10));
-            toDate = Date.valueOf(today.plusDays(1));
+            fromDate = Date.valueOf(today.minusDays(daysToSubtract));
+            toDate = Date.valueOf(today.plusDays(daysToAdd));
               
             log.info("dates : {} -- {}", fromDate, toDate);
         }

@@ -40,9 +40,8 @@ public class JsonConverter implements Serializable {
 
     private final String underScore = "_";
 
-    private Map<String, List<String>> map;
- 
-
+//    private Map<String, List<String>> map;
+  
     private String collectionName;
     private String collectionCode;
     private String collectionType;
