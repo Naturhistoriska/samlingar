@@ -39,6 +39,7 @@ export default createStore({
     searchMode: 'contains',
     searchParams: null, // saved search params
     searchText: null,
+    showImageView: false,
 
     startDate: null,
     startYear: null,
@@ -183,6 +184,9 @@ export default createStore({
 
     selectedCollectionGroup(state) {
       return state.selectedCollectionGroup
+    },
+    showImageView(state) {
+      return state.showImageView
     },
     startYear(state) {
       return state.startYear
@@ -475,6 +479,7 @@ export default createStore({
     setRowsPerPage: (state, payload) => (state.rowsPerPage = payload),
     setResetMapData: (state, payload) => (state.resetMapData = payload),
     setSelectedCollectionGroup: (state, payload) => (state.selectedCollectionGroup = payload),
+    setShowImageView: (state, payload) => (state.showImageView = payload),
     setStartYear: (state, payload) => (state.startYear = payload),
     setTotalGeoData: (state, payload) => (state.totalGeoData = payload),
     //

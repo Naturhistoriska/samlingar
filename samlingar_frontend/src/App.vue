@@ -32,6 +32,7 @@ body .p-overlay-mask,
 body .p-overlay-mask-enter {
   background-color: black !important;
 }
+
 .p-tooltip {
   max-width: 300px !important;
   white-space: normal !important;
@@ -105,6 +106,8 @@ body .p-overlay-mask-enter {
   max-width: 100%;
   margin: 0 auto;
   padding: 1rem 2rem 2rem;
-  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full viewport height */
 }
 </style>

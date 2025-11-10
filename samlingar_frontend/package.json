@@ -19,6 +19,7 @@
     "leaflet.heat": "^0.2.0",
     "leaflet.markercluster": "^1.5.3",
     "moment-timezone": "^0.6.0",
+    "openseadragon": "^5.0.1",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.0.0",

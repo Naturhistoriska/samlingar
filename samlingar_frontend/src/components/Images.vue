@@ -80,8 +80,8 @@ onMounted(() => {
 
     const botnayColection = 'vp, fungi, mosses, algae'
     const kbo = 'algae, fungi, mosses'
-    const paleo = 'pz, pa'
-    const zoo = 'ev, et, PI, HE'
+    const paleo = 'pz, pb'
+    const zoo = 'ev, et, PI, HE, MA, AV'
 
     let smallImage = 'tumme'
     if (associatedMedia) {
