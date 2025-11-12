@@ -4,6 +4,17 @@
       <img :src="thumb" alt="thumbnail" @click="imageClick(index)" />
     </div>
   </div>
+  <div v-if="showMetadata" class="metadata-row flex items-center gap-2">
+    <img src="/iiif.png" alt="iiif" width="30px" />
+    <Button
+      text
+      icon="pi pi-link"
+      label="View manifest data"
+      @click="viewMetadata"
+      style="color: #1d634a"
+      class="p-button-sm"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -14,6 +25,8 @@ const store = useStore()
 
 // const manifestUrl = 'https://assets.nrm.se/manifest/NHRS-HEMI000000010.json' //  IIIF manifest URL
 const thumbnails = ref([])
+const metadata = ref()
+const showMetadata = ref(false)
 
 onMounted(async () => {
   loadManifest()
@@ -25,20 +38,32 @@ async function loadManifest() {
     const { associatedMedia, collectionCode } = record
 
     if (isSpecifyCollections(collectionCode)) {
-      const response = await fetch(associatedMedia)
-      const manifest = await response.json()
-      const canvasList = manifest.items
-      thumbnails.value = canvasList
-        .map((canvas) => {
-          if (canvas.thumbnail?.[0]?.id) return canvas.thumbnail[0].id // v3
+      metadata.value = associatedMedia
+      try {
+        const response = await fetch(associatedMedia)
 
-          // Otherwise derive from image service
-          const imageService = canvas.items?.[0]?.items?.[0]?.body?.service?.[0]?.id // v3
+        if (!response.ok) {
+          showMetadata.value = false
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        showMetadata.value = true
 
-          return imageService ? `${imageService}/full/!200,200/0/default.jpg` : ''
-        })
-        .filter(Boolean) // remove empty entries
-      console.log('thumbnails.value', thumbnails.value)
+        const manifest = await response.json()
+        const canvasList = manifest.items
+        thumbnails.value = canvasList
+          .map((canvas) => {
+            if (canvas.thumbnail?.[0]?.id) return canvas.thumbnail[0].id // v3
+
+            // Otherwise derive from image service
+            const imageService = canvas.items?.[0]?.items?.[0]?.body?.service?.[0]?.id // v3
+
+            return imageService ? `${imageService}/full/!200,200/0/default.jpg` : ''
+          })
+          .filter(Boolean) // remove empty entries
+      } catch (err) {
+        console.error('Error fetching media:', err)
+        showMetadata.value = false
+      }
     } else {
       let dataset
       let media
@@ -94,8 +119,11 @@ const isSpecifyCollections = (code) => {
   // )
 }
 
+function viewMetadata() {
+  window.open(metadata.value, '_blank')
+}
+
 function imageClick(index) {
-  console.log('index:', index)
   store.commit('setShowImageView', true)
 }
 </script>
@@ -116,5 +144,10 @@ function imageClick(index) {
 .thumbnail img:hover {
   transform: scale(1.05);
   border-color: #888;
+}
+
+.thumbnail:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s;
 }
 </style>

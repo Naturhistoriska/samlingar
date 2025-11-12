@@ -206,24 +206,6 @@ function openImage(index) {
   })
 }
 
-// function scrollThumbnails(direction) {
-//   if (!thumbnailPanel.value) return
-//   thumbnailPanel.value.scrollBy({
-//     left: direction * scrollAmount,
-//     behavior: 'smooth'
-//   })
-// }
-
-// const isAtStart = computed(() =>
-//   thumbnailPanel.value ? thumbnailPanel.value.scrollLeft <= 0 : true
-// )
-
-// const isAtEnd = computed(() => {
-//   if (!thumbnailPanel.value) return false
-//   const { scrollLeft, scrollWidth, clientWidth } = thumbnailPanel.value
-//   return scrollLeft + clientWidth >= scrollWidth - 5
-// })
-
 function openInNewTab() {
   const img = images.value[currentIndex.value]
   if (!img) return
@@ -294,16 +276,6 @@ const isSpecifyCollections = (code) => {
   color: #fff !important;
 }
 
-/* .metadata {
-  width: 90%;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background: #fafafa;
-  border-top: 1px solid #ccc;
-  padding: 10px;
-} */
-
 .metadata {
   width: 100%;
   max-width: 900px;
@@ -366,7 +338,7 @@ const isSpecifyCollections = (code) => {
   border-color: #144836;
 }
 
-/* ✅ Fade animation for show/hide */
+/*  Fade animation for show/hide */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
@@ -375,42 +347,9 @@ const isSpecifyCollections = (code) => {
 .fade-leave-to {
   opacity: 0;
 }
-/*
-.metadata p {
-  margin: 0;
-  font-size: 14px;
-  color: #555;
-}
-
-.thumbnail-panel {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  background: #f0f0f0;
-  padding: 10px;
-  width: 90%;
-  box-sizing: border-box;
-  border-top: 1px solid #ccc;
-}
-
-.actions button {
-  margin-left: 8px;
-  padding: 6px 10px;
-  border: 1px solid #bbb;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-}
-
-.actions button:hover {
-  background: #007bff;
-  color: white;
-} */
 
 @media (max-width: 768px) {
   .osd-viewer {
-    /* max-width: 100%;
-    min-height: 300px; */
     width: 90%;
     height: 300px;
   }
@@ -441,96 +380,4 @@ const isSpecifyCollections = (code) => {
     display: block;
   }
 }
-
-/* ===============================
-   Thumbnail panel & nav buttons
-=============================== */
-/* .thumbnail-container {
-  width: 90%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f0f0f0;
-  padding: 5px 0;
-  border-top: 1px solid #ccc;
-  position: relative;
-}
-
-.nav-btn {
-  font-size: 20px;
-  padding: 6px 12px;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: 0.2s;
-  z-index: 2;
-}
-
-.nav-btn:hover:not(:disabled) {
-  background: #007bff;
-  color: white;
-}
-
-.nav-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.thumbnail-panel {
-  flex: 1;
-  display: flex;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  padding: 10px;
-}
-
-.thumbnail-panel::-webkit-scrollbar {
-  display: none;
-}
-
-.thumb {
-  flex: 0 0 auto;
-  margin-right: 8px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  position: relative;
-}
-
-.thumb.active {
-  border-color: #007bff;
-}
-
-.thumb-wrapper {
-  position: relative;
-}
-
-.thumb img {
-  height: 80px;
-  object-fit: cover;
-  display: block;
-}
-
-.viewport-rect {
-  box-sizing: border-box;
-  pointer-events: none;
-} */
-
-/* .thumb {
-  flex: 0 0 auto;
-  margin-right: 8px;
-  border: 2px solid transparent;
-  cursor: pointer;
-}
-
-.thumb.active {
-  border-color: #007bff;
-}
-
-.thumb img {
-  height: 80px;
-  object-fit: cover;
-  display: block;
-} */
 </style>
