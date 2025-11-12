@@ -7,7 +7,7 @@
   </div>
 </template>
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { entryType, previousRoute, currentRoute } from '@/router'
 

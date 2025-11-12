@@ -96,6 +96,7 @@ const menuOpen = ref(false)
 const routeTabMap = {
   '/': '0',
   '/search': '1',
+  '/record/:id': '1',
   '/collections': '2',
   '/contact': '3'
 }
@@ -112,34 +113,34 @@ watch(
   }
 )
 
-// watch(
-//   () => router.currentRoute.value.name,
-//   () => {
-//     const currentRouteName = router.currentRoute.value.name
-//     switch (currentRouteName) {
-//       case 'Home':
-//         value.value = '0'
-//         break
-//       case 'Search':
-//         value.value = '1'
-//         break
-//       case 'Record':
-//         value.value = '1'
-//         break
-//       case 'Collections':
-//         value.value = '2'
-//         break
-//       // case 'About':
-//       // value.value = '3'
-//       // break
-//       case 'Contact':
-//         value.value = '3'
-//         break
-//       default:
-//         value.value = '0'
-//     }
-//   }
-// )
+watch(
+  () => router.currentRoute.value.name,
+  () => {
+    const currentRouteName = router.currentRoute.value.name
+    switch (currentRouteName) {
+      case 'Home':
+        value.value = '0'
+        break
+      case 'Search':
+        value.value = '1'
+        break
+      case 'Record':
+        value.value = '1'
+        break
+      case 'Collections':
+        value.value = '2'
+        break
+      // case 'About':
+      // value.value = '3'
+      // break
+      case 'Contact':
+        value.value = '3'
+        break
+      default:
+        value.value = '0'
+    }
+  }
+)
 
 // const onClick = () => (menuOpen.value = false)
 
