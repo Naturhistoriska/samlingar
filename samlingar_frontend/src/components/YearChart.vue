@@ -1,5 +1,5 @@
 <template>
-  <div class="card" style="min-width: 80%">
+  <div class="card w-full p-2">
     <Chart type="bar" :data="chartData" :options="chartOptions" class="h-[30rem]" />
   </div>
 </template>
@@ -69,3 +69,23 @@ const chartOptions = computed(() => {
   }
 })
 </script>
+<style scoped>
+/* Make chart fully responsive */
+.responsive-chart {
+  width: 100% !important;
+  height: 250px; /* default height for mobile */
+}
+
+/* Increase height slightly for tablets/desktops */
+@media (min-width: 768px) {
+  .responsive-chart {
+    height: 400px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-chart {
+    height: 500px;
+  }
+}
+</style>

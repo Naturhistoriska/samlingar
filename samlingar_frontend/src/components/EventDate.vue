@@ -68,22 +68,22 @@
         </p>
       </div>
 
-      <div class="grid" v-else>
-        <div class="col-6">
+      <div class="grid formgrid" v-else>
+        <div class="col-12 md:col-6 mb-3">
           <DatePicker
             size="small"
             ref="startyearpickerRef"
             v-model="startYear"
             view="year"
             dateFormat="yy"
-            style="min-width: 210px"
+            style="width: 100%"
             @date-select="onStartYearSelected"
             :placeholder="$t('search.startYear')"
             :showIcon="true"
             :manualInput="true"
           >
             <template #footer>
-              <div class="p-d-flex p-jc-end p-w-full" style="float: right">
+              <div class="p-d-flex p-jc-end p-w-full">
                 <button
                   type="button"
                   class="p-button p-component p-button-text"
@@ -95,7 +95,7 @@
             </template>
           </DatePicker>
         </div>
-        <div class="col-6">
+        <div class="col-12 md:col-6 mb-3">
           <DatePicker
             size="small"
             ref="endyearpickerRef"
@@ -103,13 +103,13 @@
             view="year"
             dateFormat="yy"
             :minDate="minDate"
-            style="min-width: 210px"
+            style="width: 100%"
             @date-select="onEndYearSelected"
             :placeholder="$t('search.endYear')"
             :showIcon="true"
           >
             <template #footer>
-              <div class="p-d-flex p-jc-end p-w-full" style="float: right">
+              <div class="p-d-flex p-jc-end p-w-full">
                 <button
                   type="button"
                   class="p-button p-component p-button-text"

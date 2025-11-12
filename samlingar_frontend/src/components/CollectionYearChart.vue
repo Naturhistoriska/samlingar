@@ -1,11 +1,10 @@
 <template>
-  <div class="card" style="margin-left: 2rem; max-width: 800px; max-height: 800px">
-    <Chart type="bar" :data="chartData" :options="chartOptions" class="h-[30rem]" />
+  <div class="card w-full p-2 max-w-full">
+    <Chart type="bar" :data="chartData" :options="chartOptions" class="responsive-chart" />
   </div>
 </template>
 
 <script setup>
-// import Chart from 'primevue/chart'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -76,3 +75,24 @@ const chartOptions = computed(() => {
   }
 })
 </script>
+<style scoped>
+/* Responsive chart sizing */
+.responsive-chart {
+  width: 100% !important; /* full width */
+  height: 250px; /* mobile default height */
+}
+
+/* Tablet */
+@media (min-width: 640px) {
+  .responsive-chart {
+    height: 350px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .responsive-chart {
+    height: 500px;
+  }
+}
+</style>

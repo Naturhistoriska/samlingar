@@ -43,7 +43,7 @@
         <div class="col-12">
           <single-map />
         </div>
-        <div class="col-12">
+        <div class="col-12" v-if="showThumb">
           <image-thumbnails />
         </div>
       </div>
@@ -80,13 +80,17 @@ const hasData = ref(false)
 const code = ref()
 const isPalCollection = ref(false)
 const showImages = ref(false)
-
 watch(
   () => store.getters['showImageView'],
   (newValue, oldValue) => {
     showImages.value = newValue
   }
 )
+
+const showThumb = computed(() => {
+  const selectedRecord = store.getters['selectedRecord']
+  return selectedRecord.associatedMedia !== null
+})
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']

@@ -1,34 +1,46 @@
 <template>
-  <Card>
+  <Card class="w-full p-2">
     <template #title>
       <h2>{{ $t('statisticData.statisticData') }}</h2>
       <statistic-chart />
     </template>
     <template #content>
-      <CollectionStatisticChart
-        id="zoo"
-        v-bind:dataset="zooCollections"
-        v-bind:dataGroup="zooDataGroup"
-        v-bind:dataResource="zooResource"
-      />
-      <CollectionStatisticChart
-        id="botany"
-        v-bind:dataset="botanyCollections"
-        v-bind:dataGroup="botanyDataGroup"
-        v-bind:dataResource="botResource"
-      />
-      <CollectionStatisticChart
-        id="paleo"
-        v-bind:dataset="paleoCollections"
-        v-bind:dataGroup="paleoDataGroup"
-        v-bind:dataResource="palResource"
-      />
-      <CollectionStatisticChart
-        id="geo"
-        v-bind:dataset="geoCollections"
-        v-bind:dataGroup="geoDataGroup"
-        v-bind:dataResource="geoResource"
-      />
+      <div class="grid gap-4">
+        <div class="w-full">
+          <CollectionStatisticChart
+            id="zoo"
+            v-bind:dataset="zooCollections"
+            v-bind:dataGroup="zooDataGroup"
+            v-bind:dataResource="zooResource"
+          />
+        </div>
+
+        <div class="w-full">
+          <CollectionStatisticChart
+            id="botany"
+            v-bind:dataset="botanyCollections"
+            v-bind:dataGroup="botanyDataGroup"
+            v-bind:dataResource="botResource"
+          />
+        </div>
+
+        <div class="w-full">
+          <CollectionStatisticChart
+            id="paleo"
+            v-bind:dataset="paleoCollections"
+            v-bind:dataGroup="paleoDataGroup"
+            v-bind:dataResource="palResource"
+          />
+        </div>
+        <div class="w-full">
+          <CollectionStatisticChart
+            id="geo"
+            v-bind:dataset="geoCollections"
+            v-bind:dataGroup="geoDataGroup"
+            v-bind:dataResource="geoResource"
+          />
+        </div>
+      </div>
     </template>
   </Card>
 </template>
@@ -77,11 +89,10 @@ const geoResource = computed(() => {
 })
 </script>
 <style scoped>
-.footerDiv {
-  width: 500px;
-}
-
-.footerlabel {
-  font-weight: bold;
+/* Make charts responsive */
+:deep(.chart-container),
+:deep(canvas) {
+  width: 100% !important;
+  height: auto !important;
 }
 </style>

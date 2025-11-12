@@ -1,5 +1,5 @@
 <template>
-  <div class="card" id="recordsLabelsDiv">
+  <div class="card table-wrapper" id="recordsLabelsDiv">
     <DataView
       :value="records"
       layout="grid"
@@ -9,15 +9,54 @@
       :lazy="true"
       @page="onPage($event)"
       :totalRecords="totalCount"
+      responsiveLayout="scroll"
+      class="responsive-table"
     >
       <template #grid="slotProps">
-        <div class="grid grid-cols-12">
+        <div class="grid">
           <div
             v-for="(item, index) in slotProps.items"
             :key="index"
-            class="col-span-12 sm:col-span-6 md:col-span-4 xl:col-span-6 p-2"
+            class="col-12 sm:col-6 md:col-4 lg:col-3 p-2"
           >
-            <div
+            <Card v-if="item" class="h-full shadow-1 hover:shadow-3 transition-shadow">
+              <!-- Title -->
+              <template #title>
+                <div class="flex justify-content-between align-items-start">
+                  <small class="font-semibold line-height-2 text-sm md:text-base">
+                    {{ getTaxon(item) }}
+                  </small>
+                  <Button text size="small" @click="view(item)" class="p-0 text-xs md:text-sm">
+                    {{ $t('records.view') }}
+                  </Button>
+                </div>
+              </template>
+
+              <!-- Subtitle -->
+              <template #subtitle>
+                <small class="text-color-secondary text-xs md:text-sm">
+                  {{ item.collectionName }}
+                </small>
+              </template>
+
+              <!-- Content -->
+              <template #content>
+                <div class="text-xs md:text-sm text-color-secondary">
+                  <div>{{ item.catalogNumber }}</div>
+                  <div>
+                    {{ item.locality }}<br />
+                    {{ item.continent }} {{ item.country }} {{ item.stateProvince }}
+                    {{ item.county }}
+                  </div>
+                  <div v-if="item.decimalLatitude != null">
+                    Lat: {{ item.decimalLatitude }}<br />
+                    Lon: {{ item.decimalLongitude }}
+                  </div>
+                </div>
+              </template>
+            </Card>
+
+            <!-- <div
               class="flex flex-row justify-between items-start gap-3"
               style="max-width: 350px; min-width: 350px"
             >
@@ -52,7 +91,7 @@
                   </div>
                 </template>
               </card>
-            </div>
+            </div> -->
           </div>
         </div>
       </template>
@@ -171,6 +210,10 @@ function view(data) {
 }
 </script>
 <style scoped>
+.responsive-table {
+  font-size: 0.85rem;
+}
+
 ::v-deep(.p-card-title) {
   font-size: 15px;
   font-weight: bold;
@@ -181,5 +224,73 @@ function view(data) {
 
 ::v-deep(.p-card-subtitle) {
   margin-top: 0 !important;
+}
+
+:deep(.p-paginator) {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  background: var(--surface-card, #fff);
+  border-top: 1px solid var(--surface-border, #ddd);
+  z-index: 20;
+}
+
+/* ✅ Row select font size (like before) */
+:deep(.p-paginator .p-dropdown) {
+  font-size: 0.85rem;
+  height: 2rem;
+  min-width: 4.5rem;
+}
+:deep(.p-paginator .p-dropdown .p-dropdown-label) {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* ✅ Sticky paginator only on mobile */
+@media (max-width: 768px) {
+  :deep(.p-paginator) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0;
+    justify-content: space-around;
+    padding: 0.5rem;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Reduce paginator size for small screens */
+  :deep(.p-paginator .p-paginator-page),
+  :deep(.p-paginator .p-paginator-next),
+  :deep(.p-paginator .p-paginator-prev) {
+    min-width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.8rem;
+    backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Compact dropdown */
+  :deep(.p-paginator .p-dropdown) {
+    font-size: 0.75rem;
+    min-width: 3.5rem;
+  }
+
+  /* Optional: hide report text to save space */
+  :deep(.p-paginator-current) {
+    display: none;
+  }
+
+  /* Add padding-bottom to table wrapper to avoid content overlap */
+  .table-wrapper {
+    padding-bottom: 4rem; /* height of sticky paginator area */
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :deep(.p-paginator) {
+    background: rgba(30, 30, 30, 0.95);
+    border-top: 1px solid #444;
+  }
 }
 </style>

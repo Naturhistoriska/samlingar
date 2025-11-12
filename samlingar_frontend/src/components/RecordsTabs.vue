@@ -1,22 +1,42 @@
 <template>
   <div class="card">
-    <Tabs v-model:value="value">
-      <TabList class="my-tablist">
-        <Tab value="0" class="my-tab">{{ $t('records.list') }}</Tab>
-        <Tab value="1" class="my-tab">{{ $t('records.labels') }}</Tab>
-        <!-- <Tab value="2" class="my-tab">{{ $t('records.media') }}</Tab> -->
-        <Tab value="2" disabled>
-          <span class="text-900 font-bold">
-            [{{ $t('results.searchResults') }} {{ $t('results.num_results', totalCount) }}]
-          </span>
-        </Tab>
-        <Tab :value="value" style="border-color: transparent !important">
-          <div style="float: left; text-align: left; min-width: 380px; padding-top: 6px">
-            <Download @exportData="preparaDataExport" />
-          </div>
-        </Tab>
-      </TabList>
-      <TabPanels>
+    <Tabs v-model:value="value" class="responsive-tabs">
+      <div
+        class="flex flex-column md:flex-row justify-content-between align-items-start md:align-items-center flex-wrap gap-2"
+      >
+        <TabList class="my-tablist flex flex-wrap md:flex-nowrap overflow-x-auto">
+          <Tab value="0" class="my-tab text-sm md:text-base">{{ $t('records.list') }}</Tab>
+          <Tab value="1" class="my-tab text-sm md:text-base">{{ $t('records.labels') }}</Tab>
+          <!-- <Tab value="2" class="my-tab">{{ $t('records.media') }}</Tab> -->
+          <Tab value="2" disabled class="my-tab flex align-items-center text-xs md:text-sm">
+            <span class="text-900 font-bold whitespace-nowrap">
+              [{{ $t('results.searchResults') }} {{ $t('results.num_results', totalCount) }}]
+            </span>
+          </Tab>
+
+          <!-- Download  -->
+          <!-- <Tab
+            :value="value"
+            style="border-color: transparent !important"
+            class="flex-grow-1 flex justify-content-end md:justify-content-start"
+          >
+            <div
+              class="download-container w-full md:w-auto text-left pt-2 md:pt-0"
+              style="min-width: 220px"
+            >
+              <Download @exportData="preparaDataExport" />
+            </div>
+          </Tab> -->
+        </TabList>
+
+        <!-- Download area (moves below on mobile) -->
+        <div class="download-container w-full md:w-auto text-left md:text-right">
+          <Download @exportData="preparaDataExport" />
+        </div>
+      </div>
+
+      <!-- Panels -->
+      <TabPanels class="mt-3">
         <TabPanel value="0" v-if="isListView">
           <RecordTable />
         </TabPanel>
@@ -98,37 +118,39 @@ function preparaDataExport() {
 // }
 </script>
 <style scoped>
-/* a {
-  cursor: pointer;
-  text-decoration: none;
-  color: #fff !important;
-}
-
-a:hover {
-  color: rgb(166, 158, 158) !important;
-} */
-/* Base (inactive) tab style */
-:deep(.my-tablist .my-tab) {
+/* :deep(.my-tablist .my-tab) {
   padding: 0.75rem 1.25rem;
   cursor: pointer;
-  color: #989797 !important; /* inactive text color */
-  /* background-color: #f0f0f0 !important;   */
-  /* border-bottom: 2px solid transparent; */
-  /* transition: all 0.3s ease; */
+  color: #989797 !important;
 }
 
-/* Hover state (inactive) */
 :deep(.my-tablist .my-tab:hover) {
-  /* background-color: #e0e0e0 !important; */
   color: #444444 !important;
 }
 
-/* Active tab style - when its value matches active val */
 :deep(.my-tablist .my-tab[aria-selected='true']) {
-  /* PrimeVue Tabs uses aria-selected on active Tab */
   color: #1d634a !important;
-  /* background-color: #007bff !important; */
-  /* border-bottom-color: #0056b3 !important;
-  font-weight: bold; */
+} */
+
+.download-container {
+  min-width: 30rem;
+}
+
+.my-tablist {
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+.my-tablist::-webkit-scrollbar {
+  height: 6px;
+}
+.my-tablist::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+  .download-container {
+    min-width: 20rem;
+  }
 }
 </style>

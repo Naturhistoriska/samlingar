@@ -1,10 +1,8 @@
 <template>
-  <div class="card table-wrapper" :class="{ 'hide-paginator': hidePaginator }">
-    <!-- Loading overlay -->
+  <div class="card table-wrapper">
     <div v-if="loading" class="spinner-overlay">
       <div class="spinner"></div>
     </div>
-
     <DataTable
       class="p-datatable-sm responsive-table"
       dataKey="id"
@@ -32,15 +30,14 @@
     >
       <template #empty>{{ $t('search.noResultsFound') }}</template>
       <template #loading>{{ $t('search.loadingData') }}</template>
-      <!-- Collection -->
       <Column
         field="collectionName"
         :header="$t('labels.collectionName')"
         :showFilterMenu="false"
-        style="min-width: 8rem"
+        style="min-width: 8rem; max-width: 8rem"
       >
         <template #body="{ data }">
-          <small>{{ data.collectionName }}</small>
+          {{ data.collectionName }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <MultiSelect
@@ -63,21 +60,21 @@
           </MultiSelect>
         </template>
       </Column>
-      <!-- Scientific Name -->
+
       <Column
         field="scientificName"
         :header="$t('labels.scientificName')"
-        style="min-width: 10rem"
+        style="min-width: 10rem; max-width: 10rem"
         filterField="scientificName"
         sortable
         :filter="true"
         :filterMatchModeOptions="nameFilterMatchModes"
       >
         <template #body="{ data }">
-          <div class="text-xs md:text-sm">
-            {{ getTaxon(data) }}<br />
-            {{ buildClassification(data) }}
-          </div>
+          <!-- {{ data.scientificName }} -->
+          {{ getTaxon(data) }}
+          <br />
+          {{ buildClassification(data) }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <InputText
@@ -91,16 +88,15 @@
         </template>
       </Column>
 
-      <!-- Catalog Number -->
       <Column
         field="catalogNumber"
         :header="$t('labels.catalogNumber')"
         :showFilterMenu="false"
         sortable
-        style="min-width: 5rem"
+        style="min-width: 5rem; max-width: 5rem"
       >
         <template #body="{ data }">
-          <small>{{ data.catalogNumber }}</small>
+          {{ data.catalogNumber }}
         </template>
         <template #filter="{ filterModel }">
           <InputText
@@ -110,22 +106,21 @@
             class="small-placeholder w-full"
             @input="onCatalogNumberFilterInput($event, filterModel)"
             :placeholder="$t('search.filterCatalogNumber')"
+            style="font-size: 0.8rem"
           />
         </template>
       </Column>
-      <!-- Locality -->
+
       <Column
         field="locality"
         :header="$t('labels.locality')"
         sortable
         :showFilterMenu="false"
-        style="min-width: 12rem"
+        style="min-width: 12rem; max-width: 12rem"
       >
         <template #body="{ data }">
-          <div class="text-xs md:text-sm">
-            {{ data.locality }}<br />
-            {{ data.continent }} {{ data.country }} {{ data.stateProvince }} {{ data.county }}
-          </div>
+          {{ data.locality }}<br />
+          {{ data.continent }} {{ data.country }} {{ data.stateProvince }} {{ data.county }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <InputText
@@ -139,14 +134,13 @@
         </template>
       </Column>
 
-      <Column style="min-width: 2rem; text-align: center">
+      <Column style="min-width: 1.2rem; max-width: 1.2rem">
         <template #body="{ data }">
           <Button
             text
             icon="pi pi-external-link"
             @click="selectRow(data)"
             severity="secondary"
-            class="p-button-sm"
           ></Button>
         </template>
       </Column>
@@ -155,7 +149,7 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 // import { useToast } from 'primevue/usetoast'
 import { FilterMatchMode } from '@primevue/core/api'
 import { useRouter } from 'vue-router'
@@ -172,8 +166,8 @@ const service = new Service()
 
 let columns = ref([])
 const dt = ref()
-const hidePaginator = ref(false)
-let lastScroll = 0
+// const showColumn = ref(false)
+// const params = ref()
 
 const defaultColumns = ref([
   // { field: 'dataResourceName', header: 'Collection Name', minWidth: '150px', maxWidth: '150px' },
@@ -237,14 +231,8 @@ watch(
   }
 )
 
-const handleScroll = () => {
-  const current = window.scrollY
-  hidePaginator.value = current > lastScroll && current > 100
-  lastScroll = current
-}
-
 onMounted(async () => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
+  console.log('record table onMounted')
   records.value = store.getters['results']
   const collections = store.getters['selectedCollectionGroup']
 
@@ -258,8 +246,6 @@ onMounted(async () => {
     firstPage.value = currentPage * rowsPerPage
   }
 })
-
-onBeforeUnmount(() => window.removeEventListener('scroll', handleScroll))
 
 function getTaxon(data) {
   const { collectionCode, genus, scientificName, species, taxonRank } = data
@@ -659,10 +645,6 @@ const onPage = async (event) => {
 // }
 </script>
 <style scoped>
-.responsive-table {
-  font-size: 0.85rem;
-}
-
 .small-placeholder::placeholder {
   font-size: 0.8rem; /* or use 12px, etc. */
 }
@@ -713,26 +695,18 @@ const onPage = async (event) => {
   }
 }
 
+/* ✅ Make paginator compact and responsive */
 :deep(.p-paginator) {
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   padding: 0.5rem 0;
   background: var(--surface-card, #fff);
   border-top: 1px solid var(--surface-border, #ddd);
-  transition:
-    transform 0.35s ease,
-    opacity 0.25s ease;
   z-index: 20;
 }
 
-:deep(.p-paginator .p-dropdown),
-:deep(.p-paginator .p-dropdown-label),
-:deep(.p-paginator .p-dropdown-item) {
-  font-size: 0.85rem;
-}
-
-/* :deep(.p-paginator .p-dropdown) {
+:deep(.p-paginator .p-dropdown) {
   font-size: 0.85rem;
   height: 2rem;
   min-width: 4.5rem;
@@ -740,7 +714,7 @@ const onPage = async (event) => {
 :deep(.p-paginator .p-dropdown .p-dropdown-label) {
   font-size: 0.85rem;
   padding: 0.25rem 0.5rem;
-} */
+}
 
 @media (max-width: 768px) {
   :deep(.p-paginator) {
@@ -748,39 +722,25 @@ const onPage = async (event) => {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    border-top: 1px solid var(--surface-border, #ddd);
-    backdrop-filter: blur(6px);
+    border-radius: 0;
+    justify-content: space-around;
+    padding: 0.5rem;
     box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
   }
 
-  /* Add space below table to prevent overlap */
-  .table-wrapper {
-    padding-bottom: 4rem;
-  }
-
-  /* Hide paginator smoothly when scrolling down */
-  .hide-paginator :deep(.p-paginator) {
-    transform: translateY(100%);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  /* Compact paginator buttons */
+  /* Reduce paginator size for small screens */
   :deep(.p-paginator .p-paginator-page),
-  :deep(.p-paginator .p-paginator-prev),
-  :deep(.p-paginator .p-paginator-next) {
+  :deep(.p-paginator .p-paginator-next),
+  :deep(.p-paginator .p-paginator-prev) {
     min-width: 1.8rem;
     height: 1.8rem;
     font-size: 0.8rem;
   }
 
   /* Compact dropdown */
-  /* Smaller filter inputs on phones */
-  :deep(.p-inputtext),
-  :deep(.p-multiselect),
-  :deep(.p-dropdown) {
-    font-size: 0.8rem;
+  :deep(.p-paginator .p-dropdown) {
+    font-size: 0.75rem;
+    min-width: 3.5rem;
   }
 
   /* Optional: hide report text to save space */
