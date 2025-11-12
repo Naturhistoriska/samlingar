@@ -196,14 +196,13 @@ public class EntityToJson implements Serializable {
     private String typeStatusName;
 //    private String typeStatus;
     private boolean isType;
-    
+
     private boolean hasAnyAttachment;
 
-    private StringBuilder associalMediaSb; 
+    private StringBuilder associalMediaSb;
     private StringBuilder waterbodySb;
     private StringBuilder isIslandSb;
     private StringBuilder islandGroupSb;
-    
 
     private String waterbody;
     private String isIsland;
@@ -256,10 +255,10 @@ public class EntityToJson implements Serializable {
         addAdditionalDetermination(attBuilder, bean.getDeterminationList(),
                 collectionCode.equals(mineralogyCollection));
 
-        if(collectionCode.equals(entomologyCollectionCode)) {
-            addImages(attBuilder, bean.getCatalogNumber(), 
-                bean.getCollectionobjectattachmentList());
-        } 
+        if (collectionCode.equals(entomologyCollectionCode)) {
+            addImages(attBuilder, bean.getCatalogNumber(),
+                    bean.getCollectionobjectattachmentList());
+        }
 
 //        if (collectionCode.equals(entomologyCollectionCode)) {
 //            addImages(attBuilder, bean);
@@ -272,19 +271,19 @@ public class EntityToJson implements Serializable {
         if (collectionObjectAttachments != null && !collectionObjectAttachments.isEmpty()) {
 
             hasAnyAttachment = collectionObjectAttachments.stream()
-                    .anyMatch(att -> att.getAttachment() != null);
-            
-            if(hasAnyAttachment) {
+                    .anyMatch(att -> att.getAttachment() != null && att.getAttachment().isIsPublic());
+
+            if (hasAnyAttachment) {
                 attBuilder.add(hasImageKey, true);
-                
+
                 associalMediaSb = new StringBuilder();
                 associalMediaSb.append(iiifManifest);
                 associalMediaSb.append(catalogNumber);
                 associalMediaSb.append(json);
-                
+
                 attBuilder.add(associatedMediaKey, associalMediaSb.toString().trim());
-            } 
-        } 
+            }
+        }
     }
 
     private void addAccession(JsonObjectBuilder attBuilder, Accession accession) {

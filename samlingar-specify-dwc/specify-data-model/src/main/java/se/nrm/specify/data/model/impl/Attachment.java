@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery; 
 import javax.persistence.Table;  
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;  
 import se.nrm.specify.data.model.BaseEntity;
 
@@ -38,6 +39,12 @@ public class Attachment extends BaseEntity {
     @Column(name = "origFilename")
     private String origFilename;
     
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IsPublic")
+    private boolean isPublic;
+
+ 
     @Lob
     @Size(max = 65535)
     @Column(name = "Remarks")
@@ -84,6 +91,16 @@ public class Attachment extends BaseEntity {
     public void setOrigFilename(String origFilename) {
         this.origFilename = origFilename;
     }
+    
+    
+    public boolean isIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
 
     public String getRemarks() {
         return remarks;
