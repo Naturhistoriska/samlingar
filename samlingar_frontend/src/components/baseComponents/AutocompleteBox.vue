@@ -1,5 +1,5 @@
 <template>
-  <div class="justify-right" style="float: left; margin-top: 10px">
+  <div class="input-wrapper">
     <FloatLabel variant="on">
       <InputGroup>
         <AutoComplete
@@ -129,11 +129,42 @@ function itemsChanged() {
   text-decoration: none !important;
 }
 .p-button-text:hover {
-  /* color: #fff !important; */
   text-decoration: none !important;
   background: var(--p-emerald-500) !important;
   border-start-end-radius: var(--p-inputgroup-addon-border-radius);
   border-end-end-radius: var(--p-inputgroup-addon-border-radius);
   border: 1px solid var(--p-button-primary-border-color);
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 8px;
+  padding: 0 5%;
+  box-sizing: border-box;
+}
+
+::v-deep(.p-inputgroup),
+::v-deep(.p-autocomplete) {
+  width: 100%;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .input-wrapper {
+    padding: 0 10%;
+    margin-top: 10px;
+  }
+}
+
+/* Desktop and large screens */
+@media (min-width: 1024px) {
+  .input-wrapper {
+    flex-direction: row;
+    justify-content: flex-start; /* align left horizontally */
+    padding: 0 20px;
+    width: auto;
+  }
 }
 </style>

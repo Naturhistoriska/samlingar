@@ -1,18 +1,18 @@
 <template>
   <div class="search-help">
     <Panel :header="$t('help.howToSearch')" toggleable>
-      <p style="padding-left: 1rem">{{ $t('help.howToSearchText') }}</p>
+      <p class="help-text">{{ $t('help.howToSearchText') }}</p>
     </Panel>
     <Divider />
     <Panel :header="$t('help.basicSearch')" toggleable>
-      <p style="padding-left: 1rem">{{ $t('help.basicSearchText') }}</p>
-      <p style="padding-left: 1rem">
+      <p class="help-text">{{ $t('help.basicSearchText') }}</p>
+      <p class="help-text">
         <b>{{ $t('help.example') }}</b>
         &nbsp; {{ $t('help.bySearching') }} <i>aves västergötland</i>
         {{ $t('help.returnMatchingTerms') }}
       </p>
-      <p style="padding-left: 1rem">{{ $t('help.fullTextSearchOptions') }}:</p>
-      <ul>
+      <p class="help-text">{{ $t('help.fullTextSearchOptions') }}:</p>
+      <ul class="help-list">
         <li>
           {{ $t('help.exact') }}
 
@@ -22,12 +22,12 @@
             <li>{{ $t('help.exactExampleLocality') }}</li>
           </ul>
         </li>
-        <li style="padding-top: 2em">
+        <li class="list-section">
           {{ $t('help.contains') }}
           <p>{{ $t('help.example') }}</p>
           <p>{{ $t('help.containsExample') }}</p>
         </li>
-        <li>
+        <li class="list-section">
           {{ $t('help.startWith') }}
           <p>{{ $t('help.example') }}</p>
           <p>{{ $t('help.startWithExample') }}</p>
@@ -36,8 +36,8 @@
     </Panel>
     <Divider />
     <Panel :header="$t('help.filterSearch')" toggleable>
-      <p style="padding-left: 1rem">{{ $t('help.advanceSearchSubtitle') }}:</p>
-      <ul>
+      <p class="help-text">{{ $t('help.advanceSearchSubtitle') }}:</p>
+      <ul class="help-list">
         <li>
           {{ $t('help.checkbox') }} (e.g.
           <em>Has images, Have coordinates, Is typestatus etc...</em>)
@@ -48,8 +48,8 @@
         <li>{{ $t('help.predefinedFilters') }}</li>
       </ul>
       <Divider />
-      <p style="padding-left: 1rem">{{ $t('help.advanceSearchFeatures') }}:</p>
-      <ul>
+      <p lass="help-text">{{ $t('help.advanceSearchFeatures') }}:</p>
+      <ul class="help-list">
         <li>
           {{ $t('help.checkbox') }}
           <p>{{ $t('help.checkboxSearchText') }}</p>
@@ -61,7 +61,7 @@
             <li>{{ $t('help.checkboxNordic') }}</li>
           </ul>
         </li>
-        <li style="padding-top: 2em">
+        <li class="list-section">
           {{ $t('help.scientificNameSearch') }}:
           <p>{{ $t('help.scientificNameSearchText') }}:</p>
           <ul>
@@ -70,7 +70,7 @@
             <li>{{ $t('help.scienticNameSearchStartWith') }}</li>
           </ul>
         </li>
-        <li style="padding-top: 2em">
+        <li class="list-section">
           {{ $t('help.collectionNameSearch') }}:
           <p>{{ $t('help.collectionNameSearchText') }}</p>
           <ul>
@@ -79,7 +79,7 @@
             <li>{{ $t('help.collectionNameSearchHelp3') }}</li>
           </ul>
         </li>
-        <li style="padding-top: 2em">
+        <li class="list-section">
           {{ $t('help.collectedDateSearch') }}
           <p>{{ $t('help.collectedDateSearchText') }}</p>
           <ul>
@@ -87,7 +87,7 @@
             <li>{{ $t('help.yearRange') }} - {{ $t('help.collectedYearRangeSearch') }}</li>
           </ul>
         </li>
-        <li style="padding-top: 2em">
+        <li class="list-section">
           {{ $t('help.predefinedFilterSearch') }}:
           <p>{{ $t('help.predefinedFiltersText') }}</p>
 
@@ -95,7 +95,7 @@
             :value="searchExamples"
             :size="size"
             stripedRows
-            class="p-datatable-sm"
+            class="p-datatable-sm mobile-table"
             responsiveLayout="scroll"
           >
             <Column field="fieldName" :header="$t('help.fieldName')" />
@@ -107,10 +107,10 @@
     </Panel>
     <Divider />
     <Panel :header="$t('help.moreHelp')" toggleable>
-      <p style="padding-left: 1rem">
+      <p class="help-text">
         {{ t('help.text') }}
       </p>
-      <p style="padding-left: 1rem">
+      <p class="help-text">
         <strong>{{ t('help.email') }}:</strong>
         <a :href="`mailto:${email}`">{{ email }}</a>
       </p>
@@ -236,5 +236,59 @@ const email = computed(() => {
 /* Remove content padding */
 ::v-deep(.p-panel-content) {
   padding: 0;
+}
+
+.search-help {
+  width: 100%;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  background-color: var(--surface-ground);
+}
+
+/* Text spacing and sizing */
+.help-text {
+  padding-left: 1rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  word-wrap: break-word;
+}
+
+/* Lists look clean and readable */
+.help-list {
+  padding-left: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.help-list li {
+  margin-bottom: 0.75rem;
+}
+
+.list-section {
+  padding-top: 1.25rem;
+}
+
+/* Table responsiveness */
+.mobile-table {
+  width: 100%;
+  overflow-x: auto;
+  font-size: 0.85rem;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .search-help {
+    padding: 1.5rem;
+  }
+  .help-text {
+    font-size: 1rem;
+  }
+}
+
+/* Desktop and large screens */
+@media (min-width: 1024px) {
+  .search-help {
+    max-width: 900px;
+    margin: 0 auto;
+  }
 }
 </style>
