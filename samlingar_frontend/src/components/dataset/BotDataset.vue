@@ -32,6 +32,11 @@
         {{ preparationString }}
       </div>
 
+      <div class="col-4 reducePadding" v-if="isVPCollection">{{ $t('results.herbarium') }}</div>
+      <div class="col-8 reducePadding" v-if="isVPCollection">
+        {{ herbariumData }}
+      </div>
+
       <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
       <div class="col-8 reducePadding">
         {{ remarks }}
@@ -52,7 +57,9 @@ const store = useStore()
 const dateCataloged = ref()
 const catNumber = ref()
 const collection = ref()
+const herbariumData = ref()
 const institution = ref()
+const isVPCollection = ref(false)
 const modifiedDate = ref()
 const preparationString = ref()
 const remarks = ref()
@@ -63,7 +70,9 @@ onMounted(async () => {
   const {
     catalogedDate,
     catalogNumber,
+    collectionCode,
     collectionName,
+    herbarium,
     modified,
     preparations,
     occurrenceRemarks
@@ -84,6 +93,9 @@ onMounted(async () => {
   }
 
   collection.value = collectionName
+
+  isVPCollection.value = collectionCode === 'vp'
+  herbariumData.value = isVPCollection.value ? herbarium : ''
 
   institution.value = t('common.institution') + ' [  NRM  ]'
 

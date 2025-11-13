@@ -311,7 +311,7 @@
 
   <field name="habitat" type="string" indexed="true" stored="true"/>
   <field name="hasImage" type="boolean" indexed="true" stored="false" docValues="true" />
-  <field name="herbarium" type="string" indexed="false" stored="true"/>
+  <field name="herbarium" type="string" indexed="true" stored="true"/>
   <field name="higherClassification" type="string" indexed="false" stored="true"/>
   <field name="higherGeography" type="string" indexed="false" stored="true"/>
 

@@ -215,6 +215,24 @@ const groupedSelections = ref([
   },
   {
     label: {
+      en: 'Botanical and mycological collections',
+      sv: 'Botaniska och mykologiska samlingar'
+    },
+    code: 'bot',
+    items: [
+      {
+        label: 'Herbarium',
+        locale: { en: 'Herbarium', sv: 'Herbarium' },
+        value: 'herbarium',
+        key: 'herbarium:',
+        code: 'bot',
+        multiple: false
+      }
+    ]
+  },
+
+  {
+    label: {
       en: 'Paleontological collection',
       sv: 'Paleontologisk samling'
     },
