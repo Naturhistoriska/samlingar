@@ -209,6 +209,7 @@ public class SolrSearchHelper {
         dateRangeSb = new StringBuilder();
         if(!StringUtils.isBlank(startDate)) {
             dateRangeSb.append(eventDateKey);
+            dateRangeSb.append(colon);
             dateRangeSb.append(leftBlacket);
             dateRangeSb.append(startDate);
             
