@@ -85,7 +85,7 @@ function doSearch() {
   padding-right: 5em;
 }
 
-/* 📱 Mobile-friendly adjustments */
+/* Mobile-friendly adjustments */
 @media (max-width: 768px) {
   .divLink {
     flex-wrap: nowrap; /* keep buttons on same line */

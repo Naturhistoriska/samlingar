@@ -119,14 +119,6 @@ onMounted(async () => {
   // }, 2000)
 })
 
-// function download() {
-// loading.value = true
-//
-// setTimeout(() => {
-// loading.value = false
-// }, 2000)
-// }
-
 function handleSearch() {
   const params = buildParams(true)
   search(params, 0, 20, true)

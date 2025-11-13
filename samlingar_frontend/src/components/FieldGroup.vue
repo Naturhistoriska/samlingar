@@ -11,7 +11,6 @@ import { onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import AutocompleteBox from './baseComponents/AutocompleteBox.vue'
 import InputBox from './baseComponents/InputBox.vue'
-// const emits = defineEmits(['search'])
 
 const store = useStore()
 
