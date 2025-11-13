@@ -25,11 +25,6 @@ import { entryType } from '@/router'
 import StartPage from '../components/StartPage.vue'
 import StatisticCharts from '../components/StatisticCharts.vue'
 
-import moment from 'moment'
-
-// import { useI18n } from 'vue-i18n'
-// const { t } = useI18n()
-
 import Service from '../Service'
 const service = new Service()
 
@@ -40,13 +35,7 @@ const loading = ref(false)
 const initData = ref(false)
 
 onMounted(() => {
-  console.log('type visit', entryType.value)
-
-  // const collectionCode = 'collectionCode: *'
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
-    // fetchInitdata()
-    //  fetchYearChartData(collectionCode)
-    //  fetchMonthChartData(collectionCode)
     initData.value = true
   } else {
     const totalCount = store.getters['totalCount']
@@ -56,9 +45,6 @@ onMounted(() => {
   }
   if (initData.value) {
     fetchInitdata()
-
-    // fetchYearChartData(collectionCode)
-    // fetchMonthChartData(collectionCode)
   }
 })
 
@@ -126,17 +112,6 @@ async function filterSearch(params) {
 
       store.commit('setPageNum', 0)
       store.commit('setRowsPerPage', 20)
-
-      // if (total > 0) {
-      //   const collectionfacet = response.facets.collectionName.buckets
-      //   store.commit('setSelectedCollectionGroup', collectionfacet)
-
-      //   // const collectionCodefacet = response.facets.collectionCode.buckets
-      //   // store.commit('setSelectedCollection', collectionCodefacet)
-      // } else {
-      //   store.commit('setSelectedCollectionGroup', null)
-      //   store.commit('setSelectedCollection', null)
-      // }
     })
     .catch((error) => {
       console.log('error', error)
@@ -196,130 +171,6 @@ async function freeTextSearch(value, mode) {
       router.push('/search')
     })
 }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-function fetchMonthChartData(collectionCode) {
-  service
-    .apiChart(collectionCode, false)
-    .then((response) => {
-      // const counts = response.facet_counts.facet_ranges.createdDate.counts
-
-      let facet = response.facet_counts.facet_ranges.catalogedDate
-      // if (facet === undefined) {
-      //   facet = response.facet_counts.facet_ranges.createdDate
-      // }
-      // const counts = facet.counts
-      setMonthChartData(facet.counts)
-    })
-    .catch((error) => {
-      console.log('error', error)
-    })
-    .finally(() => {})
-}
-
-function fetchYearChartData(collectionCode) {
-  service
-    .apiChart(collectionCode, true)
-    .then((response) => {
-      // const counts = response.facet_counts.facet_ranges.createdDate.counts
-      let facet = response.facet_counts.facet_ranges.catalogedDate
-      if (facet === undefined) {
-        facet = response.facet_counts.facet_ranges.createdDate
-      }
-      const counts = facet.counts
-      const totalCount = response.total
-      setYearChartData(totalCount, counts)
-    })
-    .catch((error) => {
-      console.log('error', error)
-    })
-    .finally(() => {})
-}
-
-function setMonthChartData(monthData) {
-  const cumulativeData = {}
-  let key
-  for (const [date, value] of Object.entries(monthData)) {
-    key = moment(date).format('MMM YYYY')
-    cumulativeData[key] = value
-  }
-  store.commit('setMonthData', cumulativeData)
-}
-
-function setYearChartData(total, years) {
-  const sum = Object.values(years).reduce((total, num) => total + num, 0)
-  let cumulatedTotal = total - sum
-  let key
-  const cumulativeData = {}
-
-  for (const [date, value] of Object.entries(years)) {
-    cumulatedTotal += value
-    key = moment(date).year()
-    cumulativeData[key] = cumulatedTotal
-  }
-  store.commit('setYearData', cumulativeData)
-}
-
-// async function collectionsSearch(params) {
-//   loading.value = true
-//   console.log('params', params)
-
-//   await service
-//     .apiFilterSearch(params)
-//     .then((response) => {
-//       const total = response.facets.count
-//       const results = response.response
-
-//       store.commit('setTotalRecords', total)
-//       if (total > 0) {
-//         store.commit('setResults', results)
-//         const collectionfacet = response.facets.collectionName.buckets
-//         store.commit('setSelectedCollectionGroup', collectionfacet)
-
-//         const collectionCodefacet = response.facets.collectionCode.buckets
-//         store.commit('setSelectedCollection', collectionCodefacet)
-//       } else {
-//         store.commit('setSelectedCollectionGroup', null)
-//         store.commit('setSelectedCollection', null)
-//         store.commit('setResults', null)
-//       }
-//     })
-//     .catch((error) => {
-//       console.log('error', error)
-//     })
-//     .finally(() => {
-//       store.commit('setIsUrlPush', true)
-//       store.commit('setSearchParams', params)
-//       loading.value = true
-//       router.push('/search')
-//     })
-// }
 </script>
 <style scoped>
 .homePage {
