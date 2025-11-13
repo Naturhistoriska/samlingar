@@ -1,4 +1,8 @@
-FROM openjdk:8-jdk-stretch
+#FROM openjdk:8-jdk-stretch
+FROM eclipse-temurin:8-jdk
+
+
+
 
 
 
