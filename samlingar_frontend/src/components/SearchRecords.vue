@@ -166,6 +166,7 @@ function reset() {
 
   store.commit('setPageNum', 0)
   store.commit('setRowsPerPage', 20)
+  store.commit('setClearSearch', true)
   search()
 }
 

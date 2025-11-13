@@ -76,45 +76,17 @@ let type = ref(false)
 let sweden = ref(false)
 let nordicCountries = ref(false)
 
-// watch(
-//   () => store.getters['filterImage'],
-//   (newValue, oldValue) => {
-//     image.value = newValue
-//   }
-// )
-
-// watch(
-//   () => store.getters['filterCoordinates'],
-//   (newValue, oldValue) => {
-//     coordinates.value = newValue
-//   }
-// )
-
-// watch(
-//   () => store.getters['filterInSweden'],
-//   (newValue, oldValue) => {
-//     console.log('old and new', oldValue, newValue)
-//     sweden.value = newValue
-//   }
-// )
-
-// watch(
-//   () => store.getters['filterType'],
-//   (newValue, oldValue) => {
-//     console.log('newValue', newValue, oldValue)
-//     type.value = newValue
-//   }
-// )
-
 watch(
   () => store.getters['clearSearch'],
   () => {
     const reset = store.getters['clearSearch']
+    console.log('reset', reset)
     if (reset) {
       image.value = store.getters['filterImage']
       coordinates.value = store.getters['filterCoordinates']
       type.value = store.getters['filterType']
       sweden.value = store.getters['filterInSweden']
+      nordicCountries.value = store.getters['filterNordicCountry']
       store.commit('setClearSearch', false)
     }
   }
