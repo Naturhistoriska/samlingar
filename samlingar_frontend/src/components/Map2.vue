@@ -50,8 +50,6 @@ const attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">Ope
 // const tileUrl = "'https://tile.openstreetmap.org/{z}/{x}/{y}.png'"
 
 onMounted(async () => {
-  console.log('onMounted')
-
   mapRef.value = L.map('map', {
     zoomControl: true,
     zoomAnimation: false
@@ -230,20 +228,31 @@ async function fetchRecord(id, marker) {
 }
 
 function getTaxon(data) {
-  const { collectionCode, genus, scientificName, species, taxonRank } = data
+  const { collectionCode, genus, species, scientificName, taxonRank } = data
 
-  if (collectionCode === 'pz' || collectionCode === 'pb') {
-    return taxonRank === 'species' ? genus + ' ' + species : scientificName
-  } else if (collectionCode === 'PI' || collectionCode === 'HE') {
-    return taxonRank === 'Species' ? genus + ' ' + species : scientificName
-  } else if (collectionCode === 'vp') {
-    if (species) {
-      return genus ? genus + ' ' + species : species
-    }
-  } else {
-    return scientificName
+  const rank = taxonRank?.toLowerCase()
+  const codes = ['pz', 'pb', 'PI', 'HE', 'vp']
+
+  if (codes.includes(collectionCode)) {
+    return rank === 'species' ? `${genus} ${species}` : scientificName
   }
+  return scientificName
 }
+// function getTaxon(data) {
+//   const { collectionCode, genus, scientificName, species, taxonRank } = data
+
+//   if (collectionCode === 'pz' || collectionCode === 'pb') {
+//     return taxonRank === 'species' ? genus + ' ' + species : scientificName
+//   } else if (collectionCode === 'PI' || collectionCode === 'HE') {
+//     return taxonRank === 'Species' ? genus + ' ' + species : scientificName
+//   } else if (collectionCode === 'vp') {
+//     if (species) {
+//       return genus ? genus + ' ' + species : species
+//     }
+//   } else {
+//     return scientificName
+//   }
+// }
 
 function displayDetail(data) {
   store.commit('setSelectedRecord', data)
@@ -385,46 +394,6 @@ function buildParams() {
   }
   return params
 }
-
-// function addClustringPopup() {
-//   console.log('addClustringPopup')
-
-//   const SPIDERFY_THRESHOLD = 3
-
-//   mapRef.value.eachLayer((layer) => {
-//     if (layer instanceof L.MarkerClusterGroup) {
-//       layer.on('clusterclick', (e) => {
-//         // Get the actual cluster clicked
-//         const cluster = e.propagatedFrom || e.target
-//         const children = cluster.getAllChildMarkers()
-
-//         const maxZoom = mapRef.value.getMaxZoom()
-//         const childCount = children.length
-
-//         if (childCount <= SPIDERFY_THRESHOLD) {
-//           cluster.spiderfy()
-//         } else {
-//           mapRef.value.fitBounds(cluster.getBounds())
-
-//           if (mapRef.value.getZoom() === maxZoom) {
-//             const data = children[0]
-//             const locality = data.myData.locality
-
-//             const content =
-//               `<b>Total: ${children.length} </b> <br> Locality: ${locality} [ ${data._latlng.lat}, ${data._latlng.lng} ]<br><br>` +
-//               children.map((m, i) => `Scientific name:  ${m.myData.scientificName} `).join('<br>')
-
-//             // Open popup at cluster position
-//             L.popup().setLatLng(cluster.getLatLng()).setContent(content).openOn(mapRef.value)
-
-//             e.originalEvent.preventDefault()
-//             e.originalEvent.stopPropagation()
-//           }
-//         }
-//       })
-//     }
-//   })
-// }
 </script>
 <style scoped>
 .loading-overlay {

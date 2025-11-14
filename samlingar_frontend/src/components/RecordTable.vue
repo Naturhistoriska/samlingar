@@ -262,16 +262,28 @@ onMounted(async () => {
 onBeforeUnmount(() => window.removeEventListener('scroll', handleScroll))
 
 function getTaxon(data) {
-  const { collectionCode, genus, scientificName, species, taxonRank } = data
+  const { collectionCode, genus, species, scientificName, taxonRank } = data
 
-  if (collectionCode === 'pz' || collectionCode === 'pb') {
-    return taxonRank === 'species' ? genus + ' ' + species : scientificName
-  } else if (collectionCode == 'PI' || collectionCode === 'HE' || collectionCode === 'vp') {
-    return taxonRank === 'Species' ? genus + ' ' + species : scientificName
-  } else {
-    return scientificName
+  const rank = taxonRank?.toLowerCase()
+  const codes = ['pz', 'pb', 'PI', 'HE', 'vp']
+
+  if (codes.includes(collectionCode)) {
+    return rank === 'species' ? `${genus} ${species}` : scientificName
   }
+  return scientificName
 }
+
+// function getTaxon(data) {
+//   const { collectionCode, genus, scientificName, species, taxonRank } = data
+
+//   if (collectionCode === 'pz' || collectionCode === 'pb') {
+//     return taxonRank === 'species' ? genus + ' ' + species : scientificName
+//   } else if (collectionCode == 'PI' || collectionCode === 'HE' || collectionCode === 'vp') {
+//     return taxonRank === 'Species' ? genus + ' ' + species : scientificName
+//   } else {
+//     return scientificName
+//   }
+// }
 
 function buildClassification(data) {
   const { kingdom, phylum, clazz, order, family, genus, subgenus } = data
