@@ -103,7 +103,7 @@ onMounted(async () => {
 
   if (preparations) {
     preparationList.value = preparations
-    preparationString.value = preparationList.value.join(', ')
+    preparationString.value = preparationList.value.join(' | ')
   }
 
   recordType.value = basisOfRecord

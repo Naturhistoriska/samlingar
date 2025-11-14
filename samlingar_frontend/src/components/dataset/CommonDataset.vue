@@ -1,183 +1,77 @@
 <template>
-  <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
+  <div class="wrapper">
+    <p class="title">{{ $t('results.dataset') }}</p>
+
     <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.dataResource') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collection }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.institiutionCode') }}</div>
-      <div class="col-8 reducePadding">
-        {{ institution }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
-      <div class="col-8 reducePadding">
-        {{ catNumber }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.otherCatalogNumbers') }}</div>
-      <div class="col-8 reducePadding">
-        {{ otherCatNumbers }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.catalogedDate') }}</div>
-      <div class="col-8 reducePadding">
-        {{ dateCataloged }}
-      </div>
-      <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
-      <div class="col-8 reducePadding">
-        {{ modifiedDate }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.recordType') }}</div>
-      <div class="col-8 reducePadding">
-        {{ recordType }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.expeditionName') }}</div>
-      <div class="col-8 reducePadding">
-        {{ expeditionNameData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
-      <div class="col-8 reducePadding">
-        {{ preparationString }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.preservation') }}</div>
-      <div class="col-8 reducePadding">
-        {{ preservations }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.sex') }}</div>
-      <div class="col-8 reducePadding">
-        {{ specimenSex }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.lifeStage') }}</div>
-      <div class="col-8 reducePadding">
-        {{ stage }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.reproductiveCondition') }}</div>
-      <div class="col-8 reducePadding">
-        {{ reproductCondition }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.individualCount') }}</div>
-      <div class="col-8 reducePadding">
-        {{ count }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.license') }}</div>
-      <div class="col-8 reducePadding">
-        {{ specimenLicense }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
-      <div class="col-8 reducePadding">
-        {{ occurrenceAttRemarks }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
-      <div class="col-8 reducePadding">
-        {{ remarks }}
-      </div>
+      <template v-for="item in fields" :key="item.label">
+        <div class="col-4 reducePadding">
+          {{ $t(item.label) }}
+        </div>
+        <div class="col-8 reducePadding">
+          {{ item.value }}
+        </div>
+      </template>
     </div>
   </div>
 </template>
+
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
 import moment from 'moment-timezone'
 
 const { t } = useI18n()
-
 const store = useStore()
 
-const dateCataloged = ref()
-const catNumber = ref()
-const collection = ref()
-const count = ref()
-const expeditionNameData = ref()
-const institution = ref()
-const modifiedDate = ref()
-const occurrenceAttRemarks = ref()
-const otherCatNumbers = ref()
-const specimenLicense = ref()
-const preparationString = ref()
-const preservations = ref()
-const recordType = ref()
-const remarks = ref()
-const reproductCondition = ref()
-const specimenSex = ref()
-const stage = ref()
+const record = computed(() => store.getters['selectedRecord'] ?? {})
 
-onMounted(async () => {
-  const record = store.getters['selectedRecord']
+const formatDate = (value) =>
+  value ? moment.tz(value, 'ddd MMM DD HH:mm:ss z YYYY', 'CET').format('YYYY-MM-DD') : ''
 
-  const {
-    basisOfRecord,
-    catalogNumber,
-    collectionName,
-    catalogedDate,
-    expeditionName,
-    preservation,
-    institutionCode,
-    institutionName,
-    individualCount,
-    license,
-    lifeStage,
-    modified,
-    occurrenceAttributeRemarks,
-    occurrenceRemarks,
-    preparations,
-    otherCatalogNumbers,
-    sex
-  } = record
+const preparationString = computed(() => record.value.preparations?.join(', ') ?? '')
 
-  catNumber.value = catalogNumber
+const fields = computed(() => [
+  { label: 'results.dataResource', value: record.value.collectionName },
+  {
+    label: 'results.institiutionCode',
+    value: `${record.value.institutionName} [ ${record.value.institutionCode} ]`
+  },
 
-  if (catalogedDate) {
-    dateCataloged.value = moment
-      .tz(catalogedDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
-      .format('YYYY-MM-DD')
-  }
+  { label: 'results.catalogNumber', value: record.value.catalogNumber },
+  { label: 'results.otherCatalogNumbers', value: record.value.otherCatalogNumbers },
 
-  collection.value = collectionName
-  count.value = individualCount
-  expeditionNameData.value = expeditionName
+  { label: 'results.catalogedDate', value: formatDate(record.value.catalogedDate) },
+  { label: 'results.modified', value: formatDate(record.value.modified) },
 
-  institution.value = institutionName + ' [ ' + institutionCode + ' ] '
+  { label: 'results.recordType', value: record.value.basisOfRecord },
+  { label: 'results.expeditionName', value: record.value.expeditionName },
 
-  if (modified) {
-    modifiedDate.value = moment
-      .tz(modified, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
-      .format('YYYY-MM-DD')
-  }
+  { label: 'results.preparation', value: preparationString.value },
+  { label: 'results.preservation', value: record.value.preservation },
 
-  occurrenceAttRemarks.value = occurrenceAttributeRemarks
-  otherCatNumbers.value = otherCatalogNumbers
+  { label: 'results.sex', value: record.value.sex },
+  { label: 'results.lifeStage', value: record.value.lifeStage },
+  { label: 'results.reproductiveCondition', value: record.value.reproductiveCondition },
 
-  if (preparations) {
-    const preparationList = preparations
-    preparationString.value = preparationList.join(', ')
-  }
+  { label: 'results.individualCount', value: record.value.individualCount },
+  { label: 'results.license', value: record.value.license },
 
-  preservations.value = preservation
-
-  recordType.value = basisOfRecord
-  remarks.value = occurrenceRemarks
-
-  specimenSex.value = sex
-  specimenLicense.value = license
-  stage.value = lifeStage
-})
+  { label: 'results.occurrenceAttributeRemarks', value: record.value.occurrenceAttributeRemarks },
+  { label: 'results.occurrenceRemarks', value: record.value.occurrenceRemarks }
+])
 </script>
+
 <style scoped>
+.wrapper {
+  font-size: 12px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
 .reducePadding {
   padding-top: 0px;
   padding-bottom: 1px;

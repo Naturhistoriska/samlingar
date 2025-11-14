@@ -1,208 +1,107 @@
 <template>
-  <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
+  <div class="wrapper">
+    <p class="title">{{ $t('results.dataset') }}</p>
+
     <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.collectionName') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collection }}
-      </div>
+      <template v-for="item in fields" :key="item.label">
+        <div class="col-4 reducePadding" v-if="item.show !== false">
+          {{ $t(item.label) }}
+        </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.institiutionCode') }}</div>
-      <div class="col-8 reducePadding">
-        {{ institution }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
-      <div class="col-8 reducePadding">
-        {{ catNumber }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.otherCatalogNumbers') }}</div>
-      <div class="col-8 reducePadding">
-        {{ otherCatNumbers }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.catalogedDate') }}</div>
-      <div class="col-8 reducePadding">
-        {{ dateCataloged }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
-      <div class="col-8 reducePadding">
-        {{ modifiedDate }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.recordType') }}</div>
-      <div class="col-8 reducePadding">
-        {{ recordType }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
-      <div class="col-8 reducePadding">
-        {{ preparationString }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.sex') }}</div>
-      <div class="col-8 reducePadding">
-        {{ specimenSex }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.lifeStage') }}</div>
-      <div class="col-8 reducePadding">
-        {{ stage }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.reproductiveCondition') }}</div>
-      <div class="col-8 reducePadding">
-        {{ reproductCondition }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.individualCount') }}</div>
-      <div class="col-8 reducePadding">
-        {{ count }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.license') }}</div>
-      <div class="col-8 reducePadding">
-        {{ specimenLicense }}
-      </div>
-
-      <div class="col-4 reducePadding" v-if="isNHRS">{{ $t('results.accession') }}</div>
-      <div class="col-8 reducePadding" v-if="isNHRS">
-        {{ accession }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.occurrenceAttributeRemarks') }}</div>
-      <div class="col-8 reducePadding multiline-text">
-        {{ occurrenceAttRemarks }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
-      <div class="col-8 reducePadding multiline-text">
-        {{ remarks }}
-      </div>
+        <div
+          class="col-8 reducePadding"
+          :class="{ 'multiline-text': item.multiline }"
+          v-if="item.show !== false"
+        >
+          {{ item.value }}
+        </div>
+      </template>
     </div>
   </div>
 </template>
-<script setup>
-import { computed, onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
 
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import moment from 'moment-timezone'
 
 const store = useStore()
+const record = computed(() => store.getters['selectedRecord'] ?? {})
 
-const accession = ref()
-const catNumber = ref()
-const dateCataloged = ref()
+const isNHRS = computed(() => record.value.collectionCode === 'NHRS')
 
-const collection = ref()
+const formatDate = (value) => {
+  if (!value) return ''
+  return moment.tz(value, 'ddd MMM DD HH:mm:ss z YYYY', 'CET').format('YYYY-MM-DD')
+}
 
-const recordType = ref()
-const preparationList = ref()
-const preparationString = ref()
+const preparation = computed(() => {
+  const { collectionCode, prepCount, preparations } = record.value
 
-const specimenSex = ref()
-const stage = ref()
-const count = ref()
-const specimenLicense = ref()
-const modifiedDate = ref()
+  if (collectionCode === 'NHRS' && prepCount) return prepCount.join(' | ')
 
-const institution = ref()
+  if (preparations) return preparations.join(' | ')
 
-const occurrenceAttRemarks = ref()
-const otherCatNumbers = ref()
-
-const reproductCondition = ref()
-const remarks = ref()
-
-// const isSmty = computed(() => {
-//   const record = store.getters['selectedRecord']
-//   const collectionCode = record.collectionCode
-//   return collectionCode === 'SMTP_INV' || collectionCode === 'SMTP_SPPLST'
-// })
-
-const isNHRS = computed(() => {
-  const record = store.getters['selectedRecord']
-  const collectionCode = record.collectionCode
-  return collectionCode === 'NHRS'
+  return ''
 })
 
-onMounted(async () => {
-  console.log('onMounted dataset')
-  const record = store.getters['selectedRecord']
+const fields = computed(() => [
+  { label: 'results.collectionName', value: record.value.collectionName },
+  {
+    label: 'results.institiutionCode',
+    value: `${record.value.institutionName} [ ${record.value.institutionCode} ]`
+  },
+  { label: 'results.catalogNumber', value: record.value.catalogNumber },
+  { label: 'results.otherCatalogNumbers', value: record.value.otherCatalogNumbers },
 
-  const {
-    accessionNumber,
-    basisOfRecord,
-    catalogNumber,
-    collectionCode,
-    collectionName,
-    catalogedDate,
-    individualCount,
-    institutionCode,
-    institutionName,
-    license,
-    lifeStage,
-    modified,
-    occurrenceAttributeRemarks,
-    occurrenceRemarks,
-    otherCatalogNumbers,
-    preparations,
-    prepCount,
-    reproductiveCondition,
-    sex
-  } = record
+  { label: 'results.catalogedDate', value: formatDate(record.value.catalogedDate) },
+  { label: 'results.modified', value: formatDate(record.value.modified) },
 
-  accession.value = accessionNumber
+  { label: 'results.recordType', value: record.value.basisOfRecord },
+  { label: 'results.preparation', value: preparation.value },
 
-  catNumber.value = catalogNumber
-  collection.value = collectionName
-  count.value = individualCount
+  { label: 'results.sex', value: record.value.sex },
+  { label: 'results.lifeStage', value: record.value.lifeStage },
+  { label: 'results.reproductiveCondition', value: record.value.reproductiveCondition },
+  { label: 'results.individualCount', value: record.value.individualCount },
 
-  if (catalogedDate) {
-    dateCataloged.value = moment
-      .tz(catalogedDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
-      .format('YYYY-MM-DD')
+  { label: 'results.license', value: record.value.license },
+
+  // NHRS conditional field
+  {
+    label: 'results.accession',
+    value: record.value.accessionNumber,
+    show: isNHRS.value
+  },
+
+  {
+    label: 'results.occurrenceAttributeRemarks',
+    value: record.value.occurrenceAttributeRemarks,
+    multiline: true
+  },
+  {
+    label: 'results.occurrenceRemarks',
+    value: record.value.occurrenceRemarks,
+    multiline: true
   }
-
-  institution.value = institutionName + ' [ ' + institutionCode + ' ] '
-
-  if (modified) {
-    modifiedDate.value = moment
-      .tz(modified, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
-      .format('YYYY-MM-DD')
-  }
-
-  if (occurrenceAttributeRemarks) {
-    occurrenceAttRemarks.value = occurrenceAttributeRemarks
-  }
-
-  otherCatNumbers.value = otherCatalogNumbers
-
-  if (collectionCode === 'NHRS' && prepCount) {
-    preparationList.value = prepCount.join(' | ')
-  } else if (preparations) {
-    preparationString.value = preparations.join(' |')
-  }
-
-  if (occurrenceRemarks) {
-    remarks.value = occurrenceRemarks
-  }
-
-  recordType.value = basisOfRecord
-  reproductCondition.value = reproductiveCondition
-
-  specimenSex.value = sex
-  specimenLicense.value = license
-  stage.value = lifeStage
-})
+])
 </script>
+
 <style scoped>
+.wrapper {
+  font-size: 12px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
 .reducePadding {
   padding-top: 0px;
   padding-bottom: 1px;
 }
+
 .multiline-text {
   white-space: pre-line;
 }

@@ -2,173 +2,64 @@
   <div style="font-size: 12px">
     <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.locality') }}</p>
     <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.locality') }}</div>
-      <div class="col-8 reducePadding">
-        {{ localityName }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.continet') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theContinent }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.country') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theCountry }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.stateProvince') }}</div>
-      <div class="col-8 reducePadding">
-        {{ state }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.county') }}</div>
-      <div class="col-8 reducePadding">
-        {{ theCounty }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.higherGeography') }}</div>
-      <div class="col-8 reducePadding">
-        {{ highGeo }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.latitude') }}</div>
-      <div class="col-8 reducePadding">
-        {{ latitude }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.longitude') }}</div>
-      <div class="col-8 reducePadding">
-        {{ longigude }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.coordinateUncertaintyInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ uncertaintyInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.geodeticDatum') }}</div>
-      <div class="col-8 reducePadding">
-        {{ datum }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.minElevationInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ minElevationInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.maxElevationInMeters') }}</div>
-      <div class="col-8 reducePadding">
-        {{ maxElevationInMeters }}
-      </div>
-
-      <div class="col-4 reducePadding" v-if="isMineralCollection">
-        {{ $t('results.waterBody') }}
-      </div>
-      <div class="col-8 reducePadding" v-if="isMineralCollection">
-        {{ water }}
-      </div>
-
-      <div class="col-4 reducePadding" v-if="isMineralCollection">{{ $t('results.island') }}</div>
-      <div class="col-8 reducePadding" v-if="isMineralCollection">
-        {{ theIsland }}
-      </div>
-
-      <div class="col-4 reducePadding" v-if="!isMineralCollection">
-        {{ $t('results.islandGroup') }}
-      </div>
-      <div class="col-8 reducePadding" v-if="!isMineralCollection">
-        {{ theIslandGroup }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.locationRemarks') }}</div>
-      <div class="col-8 reducePadding multiline-text">
-        {{ remarks }}
-      </div>
+      <template v-for="(field, index) in displayFields" :key="index">
+        <div class="col-4 reducePadding" v-if="field.show !== false">
+          {{ $t(field.label) }}
+        </div>
+        <div class="col-8 reducePadding" v-if="field.show !== false">
+          <span v-if="field.multiline">{{ field.value }}</span>
+          <span v-else>{{ field.value }}</span>
+        </div>
+      </template>
     </div>
   </div>
 </template>
+
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
+const recordData = ref({})
 
-const theCountry = ref()
-const theCounty = ref()
-const theContinent = ref()
-const datum = ref()
-const highGeo = ref()
-const latitude = ref()
-const longigude = ref()
-const localityName = ref()
-const minElevationInMeters = ref()
-const maxElevationInMeters = ref()
+// Check for mineral collection
+const isMineralCollection = computed(() => {
+  const code = recordData.value.collectionCode
+  return code === 'NRMLIG' || code === 'NRMMIN' || code === 'NRMNOD'
+})
 
-const remarks = ref()
-const state = ref()
-const theIsland = ref()
-const theIslandGroup = ref()
-const water = ref()
-const uncertaintyInMeters = ref()
+// Format decimal coordinates
+const formatCoord = (value) => (value != null ? value.toFixed(5) : '')
 
-const isMineralCollection = ref(false)
+const displayFields = ref([])
 
-onMounted(async () => {
+onMounted(() => {
   const record = store.getters['selectedRecord']
+  if (!record) return
 
-  const {
-    collectionCode,
-    continent,
-    country,
-    county,
-    coordinateUncertaintyInMeters,
-    decimalLongitude,
-    decimalLatitude,
-    geodeticDatum,
-    higherGeography,
-    island,
-    islandGroup,
-    locality,
-    locationRemarks,
-    minimumElevationInMeters,
-    maximumElevationInMeters,
-    stateProvince,
-    waterBody
-  } = record
+  recordData.value = record
 
-  theCountry.value = country
-  theCounty.value = county
-  state.value = stateProvince
-  theContinent.value = continent
-
-  highGeo.value = higherGeography
-  datum.value = geodeticDatum
-  theIsland.value = island
-  theIslandGroup.value = islandGroup
-
-  if (decimalLatitude) {
-    latitude.value = decimalLatitude.toFixed(5)
-  }
-  if (decimalLongitude) {
-    longigude.value = decimalLongitude.toFixed(5)
-  }
-
-  localityName.value = locality
-
-  minElevationInMeters.value = minimumElevationInMeters
-  maxElevationInMeters.value = maximumElevationInMeters
-
-  remarks.value = locationRemarks
-  water.value = waterBody
-  uncertaintyInMeters.value = coordinateUncertaintyInMeters
-
-  console.log('collectionCode', collectionCode)
-  isMineralCollection.value =
-    collectionCode === 'NRMLIG' || collectionCode === 'NRMMIN' || collectionCode === 'NRMNOD'
-  console.log('collectionCode', collectionCode, isMineralCollection)
+  displayFields.value = [
+    { label: 'results.locality', value: record.locality },
+    { label: 'results.continet', value: record.continent },
+    { label: 'results.country', value: record.country },
+    { label: 'results.stateProvince', value: record.stateProvince },
+    { label: 'results.county', value: record.county },
+    { label: 'results.higherGeography', value: record.higherGeography },
+    { label: 'results.latitude', value: formatCoord(record.decimalLatitude) },
+    { label: 'results.longitude', value: formatCoord(record.decimalLongitude) },
+    { label: 'results.coordinateUncertaintyInMeters', value: record.coordinateUncertaintyInMeters },
+    { label: 'results.geodeticDatum', value: record.geodeticDatum },
+    { label: 'results.minElevationInMeters', value: record.minimumElevationInMeters },
+    { label: 'results.maxElevationInMeters', value: record.maximumElevationInMeters },
+    { label: 'results.waterBody', value: record.waterBody, show: !isMineralCollection.value },
+    { label: 'results.island', value: record.island, show: !isMineralCollection.value },
+    { label: 'results.islandGroup', value: record.islandGroup, show: !isMineralCollection.value },
+    { label: 'results.locationRemarks', value: record.locationRemarks, multiline: true }
+  ]
 })
 </script>
+
 <style scoped>
 .reducePadding {
   padding-top: 0px;

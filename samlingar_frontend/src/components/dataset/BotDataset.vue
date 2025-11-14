@@ -1,112 +1,73 @@
 <template>
-  <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.dataset') }}</p>
+  <div class="wrapper">
+    <p class="title">{{ $t('results.dataset') }}</p>
+
     <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.dataResource') }}</div>
-      <div class="col-8 reducePadding">
-        {{ collection }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.institiutionCode') }}</div>
-      <div class="col-8 reducePadding">
-        {{ institution }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.catalogNumber') }}</div>
-      <div class="col-8 reducePadding">
-        {{ catNumber }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.catalogedDate') }}</div>
-      <div class="col-8 reducePadding">
-        {{ dateCataloged }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.modified') }}</div>
-      <div class="col-8 reducePadding">
-        {{ modifiedDate }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.preparation') }}</div>
-      <div class="col-8 reducePadding">
-        {{ preparationString }}
-      </div>
-
-      <div class="col-4 reducePadding" v-if="isVPCollection">{{ $t('results.herbarium') }}</div>
-      <div class="col-8 reducePadding" v-if="isVPCollection">
-        {{ herbariumData }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.occurrenceRemarks') }}</div>
-      <div class="col-8 reducePadding">
-        {{ remarks }}
-      </div>
+      <template v-for="item in fields" :key="item.label">
+        <div class="col-4 reducePadding" v-if="item.show !== false">
+          {{ $t(item.label) }}
+        </div>
+        <div class="col-8 reducePadding" v-if="item.show !== false">
+          {{ item.value }}
+        </div>
+      </template>
     </div>
   </div>
 </template>
+
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
 import moment from 'moment-timezone'
 
 const { t } = useI18n()
-
 const store = useStore()
 
-const dateCataloged = ref()
-const catNumber = ref()
-const collection = ref()
-const herbariumData = ref()
-const institution = ref()
-const isVPCollection = ref(false)
-const modifiedDate = ref()
-const preparationString = ref()
-const remarks = ref()
+const record = computed(() => store.getters['selectedRecord'] ?? {})
 
-onMounted(async () => {
-  const record = store.getters['selectedRecord']
+const formatDate = (value) => {
+  if (!value) return ''
+  return moment.tz(value, 'ddd MMM DD HH:mm:ss z YYYY', 'CET').format('YYYY-MM-DD')
+}
 
-  const {
-    catalogedDate,
-    catalogNumber,
-    collectionCode,
-    collectionName,
-    herbarium,
-    modified,
-    preparations,
-    occurrenceRemarks
-  } = record
+const isVPCollection = computed(() => record.value.collectionCode === 'vp')
 
-  catNumber.value = catalogNumber
+const preparationString = computed(() => record.value.preparations?.join(', ') ?? '')
 
-  if (catalogedDate) {
-    dateCataloged.value = moment
-      .tz(catalogedDate, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
-      .format('YYYY-MM-DD')
-  }
+const fields = computed(() => [
+  { label: 'results.dataResource', value: record.value.collectionName },
+  {
+    label: 'results.institiutionCode',
+    value: `${t('common.institution')} [ NRM ]`
+  },
+  { label: 'results.catalogNumber', value: record.value.catalogNumber },
 
-  if (modified) {
-    modifiedDate.value = moment
-      .tz(modified, 'ddd MMM DD HH:mm:ss z YYYY', 'CET')
-      .format('YYYY-MM-DD')
-  }
+  { label: 'results.catalogedDate', value: formatDate(record.value.catalogedDate) },
+  { label: 'results.modified', value: formatDate(record.value.modified) },
 
-  collection.value = collectionName
+  { label: 'results.preparation', value: preparationString.value },
 
-  isVPCollection.value = collectionCode === 'vp'
-  herbariumData.value = isVPCollection.value ? herbarium : ''
+  {
+    label: 'results.herbarium',
+    value: record.value.herbarium,
+    show: isVPCollection.value
+  },
 
-  institution.value = t('common.institution') + ' [  NRM  ]'
-
-  if (preparations) {
-    const preparationList = preparations
-    preparationString.value = preparationList.join(', ')
-  }
-  remarks.value = occurrenceRemarks
-})
+  { label: 'results.occurrenceRemarks', value: record.value.occurrenceRemarks }
+])
 </script>
+
 <style scoped>
+.wrapper {
+  font-size: 12px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
 .reducePadding {
   padding-top: 0px;
   padding-bottom: 1px;

@@ -143,9 +143,7 @@ onMounted(async () => {
   otherCatNumbers.value = otherCatalogNumbers ? otherCatalogNumbers.join(', ') : ''
 
   preparationList.value = prepCount ? prepCount : ''
-  preparationString.value = preparationList.value.join(', ')
-
-  preparationList.value = prepCount
+  preparationString.value = preparationList.value.join(' | ')
 
   remarks.value = occurrenceRemarks
   recordType.value = basisOfRecord
