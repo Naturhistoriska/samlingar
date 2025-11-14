@@ -1,93 +1,52 @@
 <template>
-  <div style="font-size: 12px">
-    <p style="font-weight: bold; font-size: 1.1em">{{ $t('results.geologicalContext') }}</p>
+  <div class="wrapper">
+    <p class="title">{{ $t('results.geologicalContext') }}</p>
+
     <div class="grid">
-      <div class="col-4 reducePadding">{{ $t('results.lithostratigraphy') }}</div>
-      <div class="col-8 reducePadding">
-        {{ lithostratigraphy }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.site') }}</div>
-      <div class="col-8 reducePadding">
-        {{ site }}
-      </div>
-      <div class="col-4 reducePadding">{{ $t('results.earliestAgeOrLowestStage') }}</div>
-      <div class="col-8 reducePadding">
-        {{ stageMin }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.latestAgeOrHighestStage') }}</div>
-      <div class="col-8 reducePadding">
-        {{ stageMax }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.earliestPeriodOrLowestSystem') }}</div>
-      <div class="col-8 reducePadding">
-        {{ periodMin }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.latestPeriodOrHighestSystem') }}</div>
-      <div class="col-8 reducePadding">
-        {{ periodMax }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.earliestEpochOrLowestSeries') }}</div>
-      <div class="col-8 reducePadding">
-        {{ epochMin }}
-      </div>
-
-      <div class="col-4 reducePadding">{{ $t('results.latestEpochOrHighestSeries') }}</div>
-      <div class="col-8 reducePadding">
-        {{ epochMax }}
-      </div>
+      <template v-for="item in fields" :key="item.label">
+        <div class="col-4 reducePadding">{{ $t(item.label) }}</div>
+        <div class="col-8 reducePadding">{{ item.value }}</div>
+      </template>
     </div>
   </div>
 </template>
+
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
 
-const lithostratigraphy = ref()
+const record = computed(() => store.getters['selectedRecord'] ?? {})
 
-const periodMin = ref()
-const periodMax = ref()
-const epochMax = ref()
-const epochMin = ref()
-const stageMax = ref()
-const stageMin = ref()
+const fields = computed(() => [
+  { label: 'results.lithostratigraphy', value: record.value.lithostratigraphicTerms },
+  { label: 'results.site', value: record.value.fieldNumber },
 
-const site = ref()
+  { label: 'results.earliestAgeOrLowestStage', value: record.value.earliestAgeOrLowestStage },
+  { label: 'results.latestAgeOrHighestStage', value: record.value.latestAgeOrHighestStage },
 
-onMounted(async () => {
-  const record = store.getters['selectedRecord']
+  {
+    label: 'results.earliestPeriodOrLowestSystem',
+    value: record.value.earliestPeriodOrLowestSystem
+  },
+  { label: 'results.latestPeriodOrHighestSystem', value: record.value.latestPeriodOrHighestSystem },
 
-  const {
-    earliestPeriodOrLowestSystem,
-    latestPeriodOrHighestSystem,
-    latestEpochOrHighestSeries,
-    earliestEpochOrLowestSeries,
-    latestAgeOrHighestStage,
-    earliestAgeOrLowestStage,
-    fieldNumber,
-    lithostratigraphicTerms
-  } = record
-
-  lithostratigraphy.value = lithostratigraphicTerms
-
-  periodMin.value = earliestPeriodOrLowestSystem
-  periodMax.value = latestPeriodOrHighestSystem
-
-  epochMin.value = earliestEpochOrLowestSeries
-  epochMax.value = latestEpochOrHighestSeries
-
-  stageMin.value = earliestAgeOrLowestStage
-  stageMax.value = latestAgeOrHighestStage
-  site.value = fieldNumber
-})
+  { label: 'results.earliestEpochOrLowestSeries', value: record.value.earliestEpochOrLowestSeries },
+  { label: 'results.latestEpochOrHighestSeries', value: record.value.latestEpochOrHighestSeries }
+])
 </script>
+
 <style scoped>
+.wrapper {
+  font-size: 12px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
 .reducePadding {
   padding-top: 0px;
   padding-bottom: 1px;

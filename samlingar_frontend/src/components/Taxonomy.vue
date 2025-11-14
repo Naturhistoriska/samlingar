@@ -1,67 +1,44 @@
 <template>
   <div style="font-size: 12px">
-    <nhrs-taxonomy v-if="isNhrsCollection" />
-    <bot-taxonomy v-else-if="isBotCollection" />
-    <pal-taxonomy v-else-if="isPalCollection" />
-    <zoo-taxonomy v-else-if="isZooCollection" />
-    <common-taxonomy v-else />
+    <component :is="currentTaxonomy" />
   </div>
 </template>
+
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 
-import BotTaxonomy from './taxonomy/BotTaxonomy.vue'
-import CommonTaxonomy from './taxonomy/CommonTaxonomy.vue'
-import NhrsTaxonomy from './taxonomy/NhrsTaxonomy.vue'
-import PalTaxonomy from './taxonomy/PalTaxonomy.vue'
-import ZooTaxonomy from './taxonomy/ZooTaxonomy.vue'
+const props = defineProps({ code: String })
 
-const props = defineProps(['code'])
+const TAXONOMY_MAP = {
+  nhrs: defineAsyncComponent(() => import('./taxonomy/NhrsTaxonomy.vue')),
+  bot: defineAsyncComponent(() => import('./taxonomy/BotTaxonomy.vue')),
+  pal: defineAsyncComponent(() => import('./taxonomy/PalTaxonomy.vue')),
+  zoo: defineAsyncComponent(() => import('./taxonomy/ZooTaxonomy.vue')),
+  common: defineAsyncComponent(() => import('./taxonomy/CommonTaxonomy.vue'))
+}
 
-const isBirdAndMammalCollection = ref(false)
-const isEvCollection = ref(false)
-const isFishAndHerpCollection = ref(false)
+const CODE_MAP = {
+  nhrs: ['NHRS', 'SMTP_INV', 'SMTP_SPPLST', 'NRMLIG', 'NRMMIN', 'NRMNOD'],
+  pal: ['pb', 'pz'],
+  bot: ['algae', 'fungi', 'mosses', 'vp'],
+  zoo: ['AV', 'MA', 'ev', 'et', 'PI', 'HE']
+}
 
-const isBotCollection = ref(false)
+const currentTaxonomy = computed(() => {
+  const code = props.code
 
-const isNhrsCollection = ref(false)
-const isPalCollection = ref(false)
+  if (CODE_MAP.nhrs.includes(code)) return TAXONOMY_MAP.nhrs
+  if (CODE_MAP.bot.includes(code)) return TAXONOMY_MAP.bot
+  if (CODE_MAP.pal.includes(code)) return TAXONOMY_MAP.pal
+  if (CODE_MAP.zoo.includes(code)) return TAXONOMY_MAP.zoo
 
-const isZooCollection = ref(false)
-
-onMounted(async () => {
-  isBirdAndMammalCollection.value = props.code === 'AV' || props.code === 'MA'
-  isEvCollection.value = props.code === 'ev' || props.code === 'et'
-  isFishAndHerpCollection.value = props.code === 'PI' || props.code === 'HE'
-
-  isZooCollection.value =
-    props.code === 'MA' ||
-    props.code === 'AV' ||
-    props.code === 'ev' ||
-    props.code === 'et' ||
-    props.code === 'PI' ||
-    props.code === 'HE'
-
-  isNhrsCollection.value =
-    props.code === 'NHRS' ||
-    props.code === 'SMTP_INV' ||
-    props.code === 'SMTP_SPPLST' ||
-    props.code === 'NRMLIG' ||
-    props.code === 'NRMMIN' ||
-    props.code === 'NRMNOD'
-
-  isPalCollection.value = props.code === 'pb' || props.code === 'pz'
-
-  isBotCollection.value =
-    props.code === 'algae' ||
-    props.code === 'fungi' ||
-    props.code === 'mosses' ||
-    props.code === 'vp'
+  return TAXONOMY_MAP.common
 })
 </script>
+
 <style scoped>
 .reducePadding {
-  padding-top: 0px;
+  padding-top: 0;
   padding-bottom: 1px;
 }
 </style>
