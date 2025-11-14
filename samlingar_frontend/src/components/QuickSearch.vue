@@ -156,6 +156,7 @@ function reset() {
   store.commit('setFilterInSweden', false)
   store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
+  store.commit('setFilterNordicCountry', false)
 
   store.commit('setFields', [])
   store.commit('setDataResource', null)

@@ -157,6 +157,7 @@ function onClick() {
   store.commit('setFilterInSweden', false)
   store.commit('setFilterImage', false)
   store.commit('setFilterType', false)
+  store.commit('setFilterNordicCountry', false)
 
   store.commit('setStartDate', null)
   store.commit('setEndDate', null)
