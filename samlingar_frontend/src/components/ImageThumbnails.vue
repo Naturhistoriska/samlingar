@@ -99,10 +99,10 @@ async function loadManifest() {
           }
           media = associatedMedia.filter((media) => media.includes(smallImage))
         }
+        thumbnails.value = media.map(
+          (media) => `https://media-service.nrm.se/images?id=${media}${dataset}`
+        )
       }
-      thumbnails.value = media.map(
-        (media) => `https://media-service.nrm.se/images?id=${media}${dataset}`
-      )
     }
   }
 }
