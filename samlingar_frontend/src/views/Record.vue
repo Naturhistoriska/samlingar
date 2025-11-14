@@ -57,8 +57,6 @@ import { useStore } from 'vuex'
 import Service from '../Service'
 
 import GeologicalContext from '../components/GeologicalContext.vue'
-// import Images from '../components/Images.vue'
-// import ImageView from '../components/IiifViewer.vue'
 import ImageView from '../components/ImageView.vue'
 import ImageThumbnails from '../components/ImageThumbnails.vue'
 import Location from '../components/Location.vue'
@@ -141,21 +139,9 @@ function buildRecordData(record) {
 
   classification.value = higherClassification.filter((str) => str !== undefined).join(' > ')
 
-  // const addGenus = collectionCode === 'pz' || collectionCode === 'pb' || collectionCode === 'vp'
-  // if (addGenus) {
-  //   name.value = taxonRank === 'species' ? genus + ' ' + species : scientificName
-  // } else {
-  //   name.value = scientificName
-  // }
   if (collectionCode === 'pz' || collectionCode === 'pb') {
     name.value = taxonRank === 'species' ? genus + ' ' + species : scientificName
-  } else if (collectionCode === 'PI' || collectionCode === 'HE') {
-    name.value = taxonRank === 'Species' ? genus + ' ' + species : scientificName
-  } else if (collectionCode === 'vp') {
-    if (species) {
-      name.value = genus ? genus + ' ' + species : species
-    }
-  } else if (collectionCode === 'PI') {
+  } else if (collectionCode === 'PI' || collectionCode === 'HE' || collectionCode === 'vp') {
     name.value = taxonRank === 'Species' ? genus + ' ' + species : scientificName
   } else {
     name.value = scientificName

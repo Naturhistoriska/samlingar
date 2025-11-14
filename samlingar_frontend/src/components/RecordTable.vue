@@ -266,15 +266,18 @@ function getTaxon(data) {
 
   if (collectionCode === 'pz' || collectionCode === 'pb') {
     return taxonRank === 'species' ? genus + ' ' + species : scientificName
-  } else if (collectionCode == 'PI' || collectionCode === 'HE') {
+  } else if (collectionCode == 'PI' || collectionCode === 'HE' || collectionCode === 'vp') {
     return taxonRank === 'Species' ? genus + ' ' + species : scientificName
-  } else if (collectionCode === 'vp') {
-    if (species) {
-      return genus ? genus + ' ' + species : species
-    }
   } else {
     return scientificName
   }
+}
+
+function buildClassification(data) {
+  const { kingdom, phylum, clazz, order, family, genus, subgenus } = data
+
+  const higherClassification = new Array(kingdom, phylum, clazz, order, family, genus, subgenus)
+  return higherClassification.filter((str) => str !== undefined).join(' > ')
 }
 
 function clearFilters() {
@@ -300,20 +303,6 @@ function onSort(event) {
 
   loadRecordsLazy(params, 0, 20)
 }
-
-function buildClassification(data) {
-  const { kingdom, phylum, clazz, order, family, genus, subgenus } = data
-
-  const higherClassification = new Array(kingdom, phylum, clazz, order, family, genus, subgenus)
-  return higherClassification.filter((str) => str !== undefined).join(' > ')
-}
-
-// function buildHighGeographigher(data) {
-//   const { continent, country, county, municipality, stateProvince } = data
-
-//   const highGeographigher = new Array(continent, country, stateProvince, municipality, county)
-//   return highGeographigher.filter((str) => str !== undefined).join(', ')
-// }
 
 function onLocalityFilterInput(event, filterModel, filterCallback) {
   console.log('onLocalityFilterInput')
