@@ -1,7 +1,7 @@
 <template>
   <header class="app-header">
     <!-- Logo Section -->
-    <div class="logo">
+    <div class="logo clickable" @click="openLink">
       <img src="/nrm-logo-liggande-svensk-negativ_copy.png" alt="Logo" class="logo-img" />
     </div>
 
@@ -14,7 +14,10 @@
 
 <script setup>
 import Search from './QuickSearch.vue'
-import Navigation from './Navigation.vue'
+
+function openLink() {
+  window.open('https://www.nrm.se', '_blank', 'noopener,noreferrer')
+}
 </script>
 
 <style scoped>
@@ -30,25 +33,6 @@ import Navigation from './Navigation.vue'
   z-index: 100;
 }
 
-/* .app-header { */
-/* background-color: #144836; */
-/* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); */
-/* position: sticky; */
-/* top: 0; */
-/* z-index: 100; */
-/* display: flex; */
-/* flex-direction: column; */
-/* } */
-
-/* ===== Top Bar ===== */
-/* .top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
-} */
-/*  */
-/* Logo section */
 .logo {
   display: flex;
   align-items: center;
@@ -74,6 +58,10 @@ import Navigation from './Navigation.vue'
   font-size: 1rem; /* ≥16px for mobile */
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
+}
+
+.clickable {
+  cursor: pointer;
 }
 
 /* Responsive adjustments */
