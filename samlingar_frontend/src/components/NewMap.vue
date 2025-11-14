@@ -8,13 +8,6 @@
 
       <!-- Draw heatmap polygons -->
       <l-geo-json v-if="geojson" :geojson="geojson" :options-style="styleFeature" />
-
-      <!-- <l-geo-json
-        v-if="geojson"
-        :geojson="geojson"
-        :options-style="styleFeature"
-        :options-on-each-feature="onEachFeature"
-      /> -->
     </l-map>
 
     <!-- ✅ Toggle Button -->
@@ -36,9 +29,6 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-// import { LMap, LTileLayer, LGeoJson, LFeatureGroup } from '@vue-leaflet/vue-leaflet'
-// import { LMap, LTileLayer } from '@vue-leaflet/vue-leaflet'
-
 import { LMap, LTileLayer, LGeoJson, LMarker, LIcon } from '@vue-leaflet/vue-leaflet'
 
 const center = ref([59.0, 15.0]) // set to your area
@@ -59,17 +49,6 @@ const store = useStore()
 const showLegend = ref(true)
 
 const props = defineProps(['entry', 'from', 'reloadData'])
-
-// watch(
-//   () => store.getters['searchParams'],
-//   () => {
-//     console.log('map data changed..')
-
-//     if (store.getters['totalRecords'] > 50000) {
-//       fetchHeatmapData()
-//     }
-//   }
-// )
 
 watch(
   () => store.getters['resetMapData'],
@@ -100,24 +79,6 @@ onMounted(async () => {
   } else {
     geojson.value = store.getters['geoJson']
   }
-  //   if (entryType === 'first-visit' || entryType === 'reload') {
-  //     reloadMap = true
-  //   } else {
-  //     if (isUrlPush) {
-  //       reloadMap = true
-  //       store.commit('setIsUrlPush', false)
-  //     }
-  //   }
-  //   if (reloadMap) {
-  //     let params = store.getters['searchParams']
-  //     if (params === null) {
-  //       params = new URLSearchParams({
-  //         catchall: '*'
-  //       })
-  //     }
-  //     await fetchHeatmapData()
-  //   }
-  // }
 })
 
 async function fetchHeatmapData() {
@@ -245,56 +206,6 @@ function buildParams() {
   //store.commit('setSearchParams', params)
   return params
 }
-
-// Compute the centroid of a polygon (rectangle in our case)
-// function getCentroid(polygon) {
-//   const coords = polygon[0] // outer ring
-//   let x = 0,
-//     y = 0
-//   for (let i = 0; i < coords.length - 1; i++) {
-//     x += coords[i][0]
-//     y += coords[i][1]
-//   }
-//   const len = coords.length - 1
-//   return [y / len, x / len] // [lat, lng]
-// }
-
-// Prepare list of count labels as Leaflet markers
-// const countMarkers = computed(() => {
-//   if (!geojson.value) return []
-
-//   return geojson.value.features
-//     .filter((f) => f.properties.count > 0)
-//     .map((f) => {
-//       const coords = f.geometry.coordinates
-//       const count = f.properties.count
-//       const position = getCentroid(coords)
-//       const icon = L.divIcon({
-//         html: `<div style="font-size:12px;color:black;font-weight:bold;">${count}</div>`,
-//         className: 'label-icon', // prevent default marker styling
-//         iconSize: [30, 12],
-//         iconAnchor: [15, 6]
-//       })
-
-//       return { position, icon }
-//     })
-// })
-
-// function onEachFeature(feature, layer) {
-//   console.log('Adding tooltip to feature:', feature)
-
-//   layer.bindTooltip(`Count: ${feature.properties.count}`, {
-//     sticky: true,
-//     direction: 'auto'
-//   })
-
-//   layer.on('mouseover', () => {
-//     layer.openTooltip()
-//   })
-//   layer.on('mouseout', () => {
-//     layer.closeTooltip()
-//   })
-// }
 </script>
 <style>
 .map-container {
