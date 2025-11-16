@@ -1,95 +1,98 @@
 <template>
   <div class="grid record-container">
-    <div class="col-12" no-gutters>
+    <record-header :classification="classification" :name="name" />
+
+    <!-- <div class="col-12">
       <p class="m-0 titleStyle">{{ $t('records.recordTitle') }}</p>
     </div>
-    <div class="col-12 classificationText" no-gutters>
+
+    <div class="col-12 classificationText">
       {{ classification }}
     </div>
-    <div class="col-12 scientificNameText" no-gutters>
+
+    <div class="col-12 scientificNameText">
       <i>{{ name }}</i>
-    </div>
-    <div v-if="showImages" class="col-12">
-      <div class="grid" v-if="hasData">
-        <div class="col-12">
-          <image-view />
-        </div>
-      </div>
+    </div> -->
+
+    <!-- IMAGE VIEW MODE -->
+    <!-- <div v-if="showImages && hasData" class="col-12">
+      <image-view />
+    </div> -->
+
+    <image-view v-if="showImages && hasData" />
+
+    <div v-else-if="hasData" class="grid col-12">
+      <record-left :code="code" :isPalCollection="isPalCollection" />
+      <record-right :showThumb="showThumb" />
     </div>
 
-    <div v-else class="grid" v-if="hasData">
+    <!-- DEFAULT VIEW -->
+    <div v-else-if="hasData" class="grid col-12">
+      <!-- Left column -->
       <div class="col-12 md:col-7">
-        <div class="col-12">
-          <record-dataset v-bind:code="code" />
-        </div>
-        <div class="col-12">
-          <record-event v-bind:code="code" />
-        </div>
-        <div class="col-12">
-          <Location v-bind:code="code" />
-        </div>
-        <div class="col-12" v-if="isPalCollection">
-          <geological-context />
-        </div>
+        <record-dataset :code="code" />
+        <record-event :code="code" />
+        <location :code="code" />
 
-        <div class="col-12">
-          <record-identification v-bind:code="code" />
-        </div>
-        <div class="col-12">
-          <Taxonomy v-bind:code="code" />
-        </div>
+        <geological-context v-if="isPalCollection" />
+
+        <record-identification :code="code" />
+        <taxonomy :code="code" />
       </div>
+
+      <!-- Right column -->
       <div class="col-12 md:col-5">
-        <div class="col-12">
-          <single-map />
-        </div>
-        <div class="col-12" v-if="showThumb">
-          <image-thumbnails />
-        </div>
+        <single-map />
+        <image-thumbnails v-if="showThumb" />
       </div>
     </div>
   </div>
 </template>
+
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Service from '../Service'
 
-import GeologicalContext from '../components/GeologicalContext.vue'
-import ImageView from '../components/ImageView.vue'
-import ImageThumbnails from '../components/ImageThumbnails.vue'
-import Location from '../components/Location.vue'
-import SingleMap from '../components/SingleMap.vue'
-import RecordDataset from '../components/RecordDataset.vue'
-import RecordEvent from '../components/RecordEvent.vue'
-import RecordIdentification from '../components/RecordIdentification.vue'
-import Taxonomy from '../components/Taxonomy.vue'
+// import GeologicalContext from '../components/GeologicalContext.vue'
+// import ImageView from '../components/ImageView.vue'
+// import ImageThumbnails from '../components/ImageThumbnails.vue'
+// import Location from '../components/Location.vue'
+// import SingleMap from '../components/SingleMap.vue'
+// import RecordDataset from '../components/RecordDataset.vue'
+// import RecordEvent from '../components/RecordEvent.vue'
 
+import RecordHeader from '../components/record/RecordHeader.vue'
+import RecordLeft from '../components/record/RecordLeft.vue'
+import RecordRight from '../components/record/RecordRight.vue'
+
+// import RecordIdentification from '../components/RecordIdentification.vue'
+// import Taxonomy from '../components/Taxonomy.vue'
+
+const service = new Service()
 const store = useStore()
 const router = useRouter()
-const service = new Service()
 
-const classification = ref()
-const name = ref()
+const classification = ref('')
+const name = ref('')
+const code = ref('')
 const hasData = ref(false)
-// const clazz = ref()
 
-const code = ref()
 const isPalCollection = ref(false)
 const showImages = ref(false)
+
 watch(
   () => store.getters['showImageView'],
-  (newValue, oldValue) => {
-    showImages.value = newValue
-  }
+  (value) => (showImages.value = value)
 )
 
 const showThumb = computed(() => {
-  const selectedRecord = store.getters['selectedRecord']
-  return selectedRecord.associatedMedia !== null
+  const rec = store.getters['selectedRecord']
+  return rec?.associatedMedia !== null
 })
 
+// --- MOUNT LOGIC ---
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
@@ -98,23 +101,21 @@ onMounted(async () => {
   } else {
     const id = router.currentRoute.value.path.slice(8)
     hasData.value = false
-    fetchRecord(id)
+    await fetchRecord(id)
   }
 })
 
-function fetchRecord(id) {
-  service
-    .apiIdSearch(id)
-    .then((response) => {
-      const record = response.response[0]
+async function fetchRecord(id) {
+  try {
+    const response = await service.apiIdSearch(id)
+    const record = response?.response?.[0]
 
-      if (record) {
-        buildRecordData(record)
-      }
-      setTimeout(() => {}, 2000)
-    })
-    .catch()
-    .finally(() => {})
+    if (record) {
+      buildRecordData(record)
+    }
+  } catch (err) {
+    console.error('Record fetch failed:', err)
+  }
 }
 
 function buildRecordData(record) {
@@ -133,28 +134,30 @@ function buildRecordData(record) {
   } = record
 
   code.value = collectionCode
-  isPalCollection.value = collectionCode === 'pz' || collectionCode === 'pb'
+  isPalCollection.value = ['pz', 'pb'].includes(collectionCode)
 
-  const higherClassification = new Array(kingdom, phylum, clazz, order, family, genus, subgenus)
+  // Build classification string
+  const higher = [kingdom, phylum, clazz, order, family, genus, subgenus]
+  classification.value = higher.filter(Boolean).join(' > ')
 
-  classification.value = higherClassification.filter((str) => str !== undefined).join(' > ')
-
-  if (collectionCode === 'pz' || collectionCode === 'pb') {
-    name.value = taxonRank === 'species' ? genus + ' ' + species : scientificName
-  } else if (collectionCode === 'PI' || collectionCode === 'HE' || collectionCode === 'vp') {
-    name.value = taxonRank === 'Species' ? genus + ' ' + species : scientificName
+  if (['pz', 'pb'].includes(collectionCode)) {
+    name.value = taxonRank === 'species' ? `${genus} ${species}` : scientificName
+  } else if (['PI', 'HE', 'vp'].includes(collectionCode)) {
+    name.value = taxonRank === 'Species' ? `${genus} ${species}` : scientificName
   } else {
     name.value = scientificName
   }
 
   store.commit('setSelectedRecord', record)
   store.commit('setShowImageView', false)
+
   hasData.value = true
 }
 </script>
+
 <style scoped>
 .record-container {
-  padding-left: 2rem; /* smaller default padding */
+  padding-left: 2rem;
   padding-right: 2rem;
 }
 
@@ -163,10 +166,12 @@ function buildRecordData(record) {
   font-size: 2em;
   color: #777676;
 }
+
 .classificationText {
   font-size: 1em;
   color: #6fade6;
 }
+
 .scientificNameText {
   font-size: 1.5em;
   font-weight: bold;
@@ -175,7 +180,7 @@ function buildRecordData(record) {
 
 @media (max-width: 768px) {
   .record-container {
-    padding-left: 1rem; /* remove big left padding */
+    padding-left: 1rem;
     padding-right: 1rem;
   }
 

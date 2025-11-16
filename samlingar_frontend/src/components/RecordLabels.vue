@@ -55,43 +55,6 @@
                 </div>
               </template>
             </Card>
-
-            <!-- <div
-              class="flex flex-row justify-between items-start gap-3"
-              style="max-width: 350px; min-width: 350px"
-            >
-              <card style="height: 150px; width: 350px" v-if="item != undefined">
-                <template #title>
-                  <div class="grid">
-                    <div class="col-10" no-gutters>
-                      <small>{{ getTaxon(item) }}</small>
-                    </div>
-                    <div class="col-2" no-gutters>
-                      <Button variant="link" @click="view(item)">
-                        <small>{{ $t('records.view') }}</small>
-                      </Button>
-                    </div>
-                  </div>
-                </template>
-                <template #subtitle>
-                  <small>{{ item.collectionName }}</small>
-                </template>
-                <template #content>
-                  <div style="font-size: 0.7em">
-                    {{ item.catalogNumber }}
-                  </div>
-                  <div style="font-size: 0.7em">
-                    {{ item.locality }}
-                    <br />
-                    {{ item.continent }} {{ item.country }} {{ item.stateProvince }}
-                    {{ item.county }}
-                  </div>
-                  <div v-if="item.decimalLatitude != null" style="font-size: 0.7em">
-                    Lat: {{ item.decimalLatitude }} Lon: {{ item.decimalLongitude }}
-                  </div>
-                </template>
-              </card>
-            </div> -->
           </div>
         </div>
       </template>

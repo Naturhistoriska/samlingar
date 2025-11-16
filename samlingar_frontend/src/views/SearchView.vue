@@ -46,10 +46,16 @@ import { defineAsyncComponent, onMounted, ref, toRaw, watch } from 'vue'
 import { useStore } from 'vuex'
 import Service from '../Service'
 
+import { usePreviousRoute } from '@/composables/usePreviousRoute'
+
 import SearchRecords from '../components/SearchRecords.vue'
 import RecordsTabs from '../components/RecordsTabs.vue'
 
-import { entryType, previousRoute, currentRoute } from '@/router'
+import { useRouter } from 'vue-router'
+import { entryType, currentRoute } from '@/router'
+const router = useRouter()
+
+const { previousRoute, previousPath } = usePreviousRoute()
 
 const store = useStore()
 
@@ -61,24 +67,15 @@ const AsyncMap = defineAsyncComponent({
 
 let loading = ref(false)
 let isLargeMap = ref(true)
-// let totalCount = ref()
-
-// watch(
-//   () => store.getters['totalRecords'],
-//   (newValue, oldValue) => {
-//     console.log('TotalRecord', newValue)
-//   }
-// )
 
 onMounted(async () => {
   console.log('onMounted SearchView')
 
-  const from = previousRoute.value?.fullPath
-  const to = currentRoute.value?.fullPath
+  const from = previousPath.value
 
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
     const queries = toRaw(currentRoute.value?.query)
-    console.log('queries', queries)
+
     let params = new URLSearchParams({
       catchall: '*'
     })
@@ -94,9 +91,11 @@ onMounted(async () => {
       // do nothing
     } else {
       // do something
+      console.log('here...')
 
       let params = store.getters['searchParams']
 
+      console.log('params...', params)
       if (params === null) {
         params = buildParams()
         search(params, 0, 20, true)
@@ -246,51 +245,6 @@ function buildParams() {
   }
   return params
 }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-// function handleMediaSearch() {
-//   console.log('handleMeadSearch')
-// }
-
-// function handleFreeTextSearch(value, start, numPerPage) {
-//   console.log('handleFreeTextSearch...', value, start, numPerPage)
-
-//   service
-//     .apiFreeTextSearch(value, start, numPerPage)
-//     .then((response) => {
-//       const total = response.response.numFound
-//       const results = response.response.docs
-
-//       store.commit('setResults', results)
-//       store.commit('setTotalRecords', total)
-
-//       console.log('total:', total)
-//       console.log('results:', results)
-//     })
-//     .catch((error) => {
-//       console.error('Fetch error:', error)
-//     })
-//     .finally(() => {})
-// }
 </script>
 <style scoped>
 .page-container {

@@ -273,18 +273,6 @@ function getTaxon(data) {
   return scientificName
 }
 
-// function getTaxon(data) {
-//   const { collectionCode, genus, scientificName, species, taxonRank } = data
-
-//   if (collectionCode === 'pz' || collectionCode === 'pb') {
-//     return taxonRank === 'species' ? genus + ' ' + species : scientificName
-//   } else if (collectionCode == 'PI' || collectionCode === 'HE' || collectionCode === 'vp') {
-//     return taxonRank === 'Species' ? genus + ' ' + species : scientificName
-//   } else {
-//     return scientificName
-//   }
-// }
-
 function buildClassification(data) {
   const { kingdom, phylum, clazz, order, family, genus, subgenus } = data
 
@@ -324,12 +312,6 @@ function onLocalityFilterInput(event, filterModel, filterCallback) {
     dt.value.filter(filters.value.locality.value, 'locality', 'contains')
     filters.value.locality.value = value
   }
-  // else {
-  //   if (value.length === 0) {
-  //     dt.value.filter(filters.value.locality.value, 'locality', 'contains')
-  //     filters.value.locality.value = value
-  //   }
-  // }
 }
 
 function onCatalogNumberFilterInput(event, filterModel) {
@@ -339,12 +321,6 @@ function onCatalogNumberFilterInput(event, filterModel) {
     dt.value.filter(filters.value.catalogNumber.value, 'catalogNumber', 'startsWith')
     filters.value.catalogNumber.value = value
   }
-  // else {
-  //   if (value.length === 0) {
-  //     dt.value.filter(filters.value.catalogNumber.value, 'catalogNumber', 'startsWith')
-  //     filters.value.catalogNumber.value = value
-  //   }
-  // }
 }
 
 function onScientificNameFilterInput(event, filterModel) {
@@ -353,12 +329,6 @@ function onScientificNameFilterInput(event, filterModel) {
     dt.value.filter(filters.value.scientificName.value, 'scientificName', 'equals')
     filters.value.scientificName.value = value
   }
-  // else {
-  //   if () {
-  //     dt.value.filter(filters.value.scientificName.value, 'catalogNumber', 'equals')
-  //     filters.value.scientificName.value = value
-  //   }
-  // }
 }
 
 function onFilter(event) {
@@ -410,7 +380,6 @@ function buildFilter(data, filterKey, isArray) {
     matchMode
   }
   filterArray.value.push(json)
-  console.log('filterArray', filterArray.value)
 }
 
 async function loadRecordsLazy(params, first, rows) {
@@ -535,22 +504,8 @@ function buildParams() {
     const catalogNumber =
       filterArray.value.filter((item) => item.key === 'catalogNumber')[0].value + '*'
 
-    // const firstUpCatalogNumber = catalogNumber.charAt(0).toUpperCase() + catalogNumber.slice(1)
-    // const upcaseCatalogNumber = catalogNumber.toUpperCase()
-    // const value = `(${firstUpCatalogNumber} ${upcaseCatalogNumber} ${catalogNumber})`
-
     params.set('copy_catalogNumber', catalogNumber)
   }
-
-  // else {
-  // fields
-  // .filter((field) => field.value === 'catalogNumber')
-  // .forEach((field) => {
-  // if (field.text) {
-  // params.set(field.value, field.text)
-  // }
-  // })
-  // }
 
   const hasLocality = filterArray.value.some((obj) => obj.key === 'locality')
   if (hasLocality) {
@@ -558,15 +513,6 @@ function buildParams() {
 
     params.set('location', locality)
   }
-  // else {
-  //   fields
-  //     .filter((field) => field.value === 'locality')
-  //     .forEach((field) => {
-  //       if (field.text) {
-  //         params.set(field.value, field.text)
-  //       }
-  //     })
-  // }
 
   if (fields) {
     fields
@@ -589,11 +535,6 @@ function onRowSelect(event) {
 }
 
 function selectRow(data) {
-  // selectedRecord.value = data
-  // store.commit('setSelectedRecord', selectedRecord)
-
-  // router.push(`/record/${data.id}`)
-
   const url = `/record/${data.id}` // Example URL
   window.open(url, '_blank')
 }
@@ -608,56 +549,6 @@ const onPage = async (event) => {
   const params = store.getters['searchParams']
   loadRecordsLazy(params, first, rows)
 }
-
-// function onFilterChange(filterModel, filterCallback) {
-//   filterModel.value = null
-//   filterCallback()
-// }
-
-// function exportCSV() {
-//   console.log('exportCSV')
-//   // dt.value.exportCSV()
-
-//   const exportFields = [
-//     'scientificName',
-//     'catalogNumber',
-//     'locality',
-//     'decimalLatitude',
-//     'decimalLongitude',
-//     'stateProvince',
-//     'country'
-//   ]
-//   const exportHeaders = [
-//     'Scientific Name',
-//     'Catalog Number',
-//     'Locality',
-//     'DecimalLatitude',
-//     'DecimalLongitude',
-//     'Province',
-//     'Country'
-//   ]
-
-//   const csvRows = [exportHeaders.join(',')]
-
-//   records.value.forEach((record) => {
-//     const row = exportFields.map((field) => {
-//       let value = record[field] ?? ''
-//       // Escape quotes and wrap in double quotes
-//       return `"${String(value).replace(/"/g, '""')}"`
-//     })
-//     csvRows.push(row.join(','))
-//   })
-
-//   const csvContent = csvRows.join('\n')
-//   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-
-//   const link = document.createElement('a')
-//   link.href = URL.createObjectURL(blob)
-//   link.download = 'records.csv'
-//   document.body.appendChild(link)
-//   link.click()
-//   document.body.removeChild(link)
-// }
 </script>
 <style scoped>
 .responsive-table {

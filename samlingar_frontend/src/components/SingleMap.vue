@@ -120,18 +120,6 @@ function getTaxon(data) {
   }
   return scientificName
 }
-
-// function getTaxon(data) {
-//   const { collectionCode, genus, scientificName, species, taxonRank } = data
-
-//   if (collectionCode === 'pz' || collectionCode === 'pb') {
-//     return taxonRank === 'species' ? genus + ' ' + species : scientificName
-//   } else if (collectionCode === 'PI' || collectionCode === 'HE' || collectionCode === 'vp') {
-//     return taxonRank === 'Species' ? genus + ' ' + species : scientificName
-//   } else {
-//     return scientificName
-//   }
-// }
 </script>
 <style scoped>
 .leaflet-popup-content-wrapper {
