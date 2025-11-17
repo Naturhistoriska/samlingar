@@ -12,11 +12,11 @@
 </template>
 
 <script setup>
-import Location from '../Location.vue'
-import GeologicalContext from '../GeologicalContext.vue'
-import RecordDataset from '../RecordDataset.vue'
-import RecordEvent from '../RecordEvent.vue'
-import RecordIdentification from '../RecordIdentification.vue'
+import Location from './Location.vue'
+import GeologicalContext from './GeologicalContext.vue'
+import RecordDataset from './RecordDataset.vue'
+import RecordEvent from './RecordEvent.vue'
+import RecordIdentification from './RecordIdentification.vue'
 import Taxonomy from './Taxonomy.vue'
 
 defineProps({

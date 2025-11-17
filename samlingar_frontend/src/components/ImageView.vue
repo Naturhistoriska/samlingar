@@ -158,7 +158,6 @@ function loadRawImages(associatedMedia, catalogNumber, collectionCode) {
         } else if (collectionCode === 'PI') {
           dataset = '&dataset=fish'
         } else {
-          console.log('here...111')
           dataset = '&dataset=' + collectionCode
           console.log('dataset', dataset)
         }

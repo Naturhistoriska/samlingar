@@ -2,49 +2,11 @@
   <div class="grid record-container">
     <record-header :classification="classification" :name="name" />
 
-    <!-- <div class="col-12">
-      <p class="m-0 titleStyle">{{ $t('records.recordTitle') }}</p>
-    </div>
-
-    <div class="col-12 classificationText">
-      {{ classification }}
-    </div>
-
-    <div class="col-12 scientificNameText">
-      <i>{{ name }}</i>
-    </div> -->
-
-    <!-- IMAGE VIEW MODE -->
-    <!-- <div v-if="showImages && hasData" class="col-12">
-      <image-view />
-    </div> -->
-
     <image-view v-if="showImages && hasData" />
 
     <div v-else-if="hasData" class="grid col-12">
       <record-left :code="code" :isPalCollection="isPalCollection" />
       <record-right :showThumb="showThumb" />
-    </div>
-
-    <!-- DEFAULT VIEW -->
-    <div v-else-if="hasData" class="grid col-12">
-      <!-- Left column -->
-      <div class="col-12 md:col-7">
-        <record-dataset :code="code" />
-        <record-event :code="code" />
-        <location :code="code" />
-
-        <geological-context v-if="isPalCollection" />
-
-        <record-identification :code="code" />
-        <taxonomy :code="code" />
-      </div>
-
-      <!-- Right column -->
-      <div class="col-12 md:col-5">
-        <single-map />
-        <image-thumbnails v-if="showThumb" />
-      </div>
     </div>
   </div>
 </template>
@@ -55,20 +17,10 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Service from '../Service'
 
-// import GeologicalContext from '../components/GeologicalContext.vue'
-// import ImageView from '../components/ImageView.vue'
-// import ImageThumbnails from '../components/ImageThumbnails.vue'
-// import Location from '../components/Location.vue'
-// import SingleMap from '../components/SingleMap.vue'
-// import RecordDataset from '../components/RecordDataset.vue'
-// import RecordEvent from '../components/RecordEvent.vue'
-
 import RecordHeader from '../components/record/RecordHeader.vue'
 import RecordLeft from '../components/record/RecordLeft.vue'
 import RecordRight from '../components/record/RecordRight.vue'
-
-// import RecordIdentification from '../components/RecordIdentification.vue'
-// import Taxonomy from '../components/Taxonomy.vue'
+import ImageView from '../components/ImageView.vue'
 
 const service = new Service()
 const store = useStore()
