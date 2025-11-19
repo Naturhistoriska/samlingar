@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -28,6 +31,7 @@ import se.nrm.specify.data.model.impl.Localitydetail;
 import se.nrm.specify.data.model.impl.Preparation;
 import se.nrm.specify.data.model.impl.Preptype;
 import se.nrm.specify.data.model.impl.Taxon;
+import se.nrm.specify.data.process.logic.util.AttachmentPredicates;
 import se.nrm.specify.data.process.logic.util.Util;
 
 /**
@@ -270,8 +274,12 @@ public class EntityToJson implements Serializable {
 
         if (collectionObjectAttachments != null && !collectionObjectAttachments.isEmpty()) {
 
+//            hasAnyAttachment = collectionObjectAttachments.stream()
+//                    .anyMatch(att -> att.getAttachment() != null && att.getAttachment().isIsPublic());
+
             hasAnyAttachment = collectionObjectAttachments.stream()
-                    .anyMatch(att -> att.getAttachment() != null && att.getAttachment().isIsPublic());
+                .anyMatch(AttachmentPredicates.validPublicAttachment());
+
 
             if (hasAnyAttachment) {
                 attBuilder.add(hasImageKey, true);
@@ -285,6 +293,20 @@ public class EntityToJson implements Serializable {
             }
         }
     }
+
+//    Predicate<Collectionobjectattachment> validPublicAttachment = (Collectionobjectattachment att) -> att != null
+//            && att.getAttachment() != null
+//            && att.getAttachment().isIsPublic()
+//            && !EXCLUDED_MIME_TYPES.contains(att.getAttachment().getMineType());
+//
+//    private static final Set<String> EXCLUDED_MIME_TYPES
+//            = new HashSet<>(Arrays.asList(
+//                    "image/CR2",
+//                    "application/octet-stream",
+//                    "application/pdf",
+//                    "text/plain",
+//                    "text/rtf"
+//            ));
 
     private void addAccession(JsonObjectBuilder attBuilder, Accession accession) {
         if (accession != null) {
@@ -650,119 +672,4 @@ public class EntityToJson implements Serializable {
         }
     }
 
-//    public Object getStringValueFromEntity(EntityBean bean, String field) {
-//        return ReflectionHelper.getInstance().getValueFromFieldOrMethod(bean, field);
-//    }
-//    public void convertEntityToJson1(JsonObjectBuilder builder, JsonObject json,
-//            EntityBean bean, Map<String, List<String>> map, boolean isCollection) {
-//
-//        json.keySet().stream()
-//                .forEach(key -> {
-//                    if (JsonHelper.getInstance().isStringType(json.get(key).getValueType())) {
-//                        Object value = getStringValueFromEntity(bean, json.getString(key));
-//                        if (value != null) {
-//                            if (isCollection) {
-//                                List<String> list;
-//                                if (map.containsKey(key)) {
-//                                    list = map.get(key);
-//                                } else {
-//                                    list = new ArrayList();
-//                                }
-//                                list.add(Util.getInstance().convertDataValueToString(value));
-//                                map.put(key, list);
-//                            } else {
-//                                JsonHelper.getInstance().addAttributes(builder, key, value);
-//                            }
-//                        }
-//                    } else {
-//                        if (ReflectionHelper.getInstance().isCollection(bean.getClass(), key)) {
-//                            List<EntityBean> beans = ReflectionHelper.getInstance().getChildListFromParent(bean, key);
-//                            convertEntitiesToJson(builder, json.getJsonObject(key), beans, map);
-//                        } else {
-//                            EntityBean child = (EntityBean) ReflectionHelper.getInstance().getChildFromParent(bean, key);
-//                            if (child != null) {
-//                                convertEntityToJson1(builder, json.getJsonObject(key), child, map, isCollection);
-//                            }
-//                        }
-//                    }
-//                });
-//    }
-//    public void convertEntitiesToJson(JsonObjectBuilder builder, JsonObject json,
-//            List<EntityBean> beans, Map<String, List<String>> map) {
-//        isCollection = true;
-//        beans.stream()
-//                .forEach(bean -> {
-//                    convertEntityToJson1(builder, json, bean, map, isCollection);
-//                });
-//        map.keySet().stream()
-//                .forEach(key -> {
-//                    builder.add(key, String.join(", ", map.get(key)));
-//                });
-//        isCollection = false;
-//    }
-    //    private void addImages(JsonObjectBuilder attBuilder, Collectionobject collectionObject) {
-//        morphBankId = collectionObject.getReservedText();
-// 
-//        if (!StringUtils.isBlank(morphBankId)) {
-//             
-//            imageViewArrayBuilder = Json.createArrayBuilder(); 
-//            
-//            collectionobjectattachmentList = collectionObject.getCollectionobjectattachmentList();
-//            if(collectionobjectattachmentList != null && !collectionobjectattachmentList.isEmpty()) {
-//                
-//                collectionobjectattachmentList.stream()
-//                    .map(ca -> ca.getAttachment())
-//                    .filter(hasImageAttachmentecPredicate)
-//                    .map(a -> a.getAttachmentImageAttribute())
-//                    .forEach(attImg -> { 
-//                        morphBankImageId = attImg.getMBImageID();   
-//                        associatedMedia = buildMorphbankView(morphBankImageId, attImg.getMorphBankWiew());
-//                        if(!StringUtils.isBlank(associatedMedia)) {
-//                            attBuilder.add(hasImageKey, true);
-//                            imageViewArrayBuilder.add(associatedMedia); 
-//                        }  
-//                    }); 
-//                
-//                attBuilder.add(associatedMediaKey, imageViewArrayBuilder); 
-//            }  
-//        }
-//    }
-//    
-//     private String buildMorphbankView(int mbImageId, Morphbankview view) {
-//        if (view != null) {
-//            imageSb = new StringBuilder();
-//            imageSb.append(mbImageId);
-//            imageSb.append(space);
-//            imageSb.append(leftParentheses);
-//
-//            if (!StringUtils.isBlank(view.getSex()) ) {
-//                imageSb.append(view.getSex());
-//                imageSb.append(pipe);
-//            }
-//            if (!StringUtils.isBlank(view.getDevelopmentState())) {
-//                imageSb.append(view.getDevelopmentState());
-//                imageSb.append(pipe);
-//            }
-//            if (!StringUtils.isBlank(view.getSpecimenPart()) ) {
-//                imageSb.append(view.getSpecimenPart());
-//                imageSb.append(pipe);
-//            }
-//            if (!StringUtils.isBlank(view.getViewAngle())) {
-//                imageSb.append(view.getViewAngle());
-//                imageSb.append(pipe);
-//            }
-//            if (!StringUtils.isBlank(view.getViewName())) {
-//                imageSb.append(view.getViewName());
-//                imageSb.append(pipe);
-//            }
-//            
-//            imageSb.append(rightParentheses);
-//            return imageSb.toString().trim(); 
-//        }
-//        return null;
-//    }
-//    
-//    private final Predicate<Attachment> hasImageAttachmentecPredicate
-//            = attachment -> attachment != null 
-//                    && attachment.getAttachmentImageAttribute() != null;
 }

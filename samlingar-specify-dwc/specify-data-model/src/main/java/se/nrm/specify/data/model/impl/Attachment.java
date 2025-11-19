@@ -43,6 +43,9 @@ public class Attachment extends BaseEntity {
     @NotNull
     @Column(name = "IsPublic")
     private boolean isPublic;
+      
+    @Column(name = "MimeType")
+    private String mineType;
 
  
     @Lob
@@ -117,6 +120,16 @@ public class Attachment extends BaseEntity {
     public void setAttachmentImageAttribute(Attachmentimageattribute attachmentImageAttribute) {
         this.attachmentImageAttribute = attachmentImageAttribute;
     }
+    
+    
+    public String getMineType() {
+        return mineType;
+    }
+
+    public void setMineType(String mineType) {
+        this.mineType = mineType;
+    }
+
 
     @Override
     public int hashCode() {
