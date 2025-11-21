@@ -89,25 +89,14 @@ const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
-const value = ref('0')
+const value = ref(true)
 const menuOpen = ref(false)
-
-// Map routes to tab values
-const routeTabMap = {
-  '/': '0',
-  '/search': '1',
-  '/record/:id': '1',
-  '/collections': '2',
-  '/contact': '3'
-}
-
-value.value = routeTabMap[route.path] || '0'
 
 watch(
   () => route.path,
   (newPath) => {
-    value.value = routeTabMap[newPath] || '0'
-    if (value.value === '0') {
+    value.value = newPath === '/'
+    if (value.value) {
       onClick()
     }
   }
@@ -142,8 +131,6 @@ watch(
   }
 )
 
-// const onClick = () => (menuOpen.value = false)
-
 function onClick() {
   store.commit('setSearchText', null)
   store.commit('setFullTextSearchMode', 'contains')
@@ -177,7 +164,6 @@ function onClick() {
 }
 
 const onTabEnter = (index) => {
-  console.log('Tab pressed enter:', index)
   menuOpen.value = false
 }
 </script>
