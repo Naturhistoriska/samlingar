@@ -252,7 +252,6 @@ onMounted(async () => {
   columns.value = defaultColumns.value
 
   const currentPage = store.getters['pageNum']
-  console.log('currentPage', currentPage)
   if (currentPage > 0) {
     const rowsPerPage = store.getters['rowsPerPage']
     firstPage.value = currentPage * rowsPerPage
@@ -287,8 +286,6 @@ function clearFilters() {
 }
 
 function onSort(event) {
-  console.log('Multi-sort event:', event)
-
   const sortMeta = event.multiSortMeta
   const sortString = sortMeta
     .map(({ field, order }) => `${field} ${order === 1 ? 'asc' : 'desc'}`)
@@ -305,7 +302,6 @@ function onSort(event) {
 }
 
 function onLocalityFilterInput(event, filterModel, filterCallback) {
-  console.log('onLocalityFilterInput')
   const value = event.target.value
 
   if (value.length >= 2 || value.length === 0) {
@@ -332,7 +328,6 @@ function onScientificNameFilterInput(event, filterModel) {
 }
 
 function onFilter(event) {
-  console.log('event', event)
   filterArray.value = []
 
   const { filters: filterMeta, first, rows } = event
@@ -365,7 +360,6 @@ function onFilter(event) {
 
 function buildFilter(data, filterKey, isArray) {
   let value
-  console.log('data', data.value.length)
   if (isArray && data.value.length > 0) {
     const string = data.value.map((val) => `'${val}'`).join(' ')
     value = `(${string})`
@@ -535,7 +529,7 @@ function onRowSelect(event) {
 }
 
 function selectRow(data) {
-  const url = `/record/${data.id}` // Example URL
+  const url = `/record/${data.id}`
   window.open(url, '_blank')
 }
 

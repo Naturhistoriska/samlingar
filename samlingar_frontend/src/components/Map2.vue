@@ -238,21 +238,6 @@ function getTaxon(data) {
   }
   return scientificName
 }
-// function getTaxon(data) {
-//   const { collectionCode, genus, scientificName, species, taxonRank } = data
-
-//   if (collectionCode === 'pz' || collectionCode === 'pb') {
-//     return taxonRank === 'species' ? genus + ' ' + species : scientificName
-//   } else if (collectionCode === 'PI' || collectionCode === 'HE') {
-//     return taxonRank === 'Species' ? genus + ' ' + species : scientificName
-//   } else if (collectionCode === 'vp') {
-//     if (species) {
-//       return genus ? genus + ' ' + species : species
-//     }
-//   } else {
-//     return scientificName
-//   }
-// }
 
 function displayDetail(data) {
   store.commit('setSelectedRecord', data)

@@ -55,6 +55,7 @@ onMounted(async () => {
     hasData.value = false
     await fetchRecord(id)
   }
+  store.commit('setShowImageView', false)
 })
 
 async function fetchRecord(id) {
@@ -64,6 +65,7 @@ async function fetchRecord(id) {
 
     if (record) {
       buildRecordData(record)
+      store.commit('setSelectedRecord', record)
     }
   } catch (err) {
     console.error('Record fetch failed:', err)
@@ -99,9 +101,6 @@ function buildRecordData(record) {
   } else {
     name.value = scientificName
   }
-
-  store.commit('setSelectedRecord', record)
-  store.commit('setShowImageView', false)
 
   hasData.value = true
 }

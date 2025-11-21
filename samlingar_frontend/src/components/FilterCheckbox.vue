@@ -80,7 +80,6 @@ watch(
   () => store.getters['clearSearch'],
   () => {
     const reset = store.getters['clearSearch']
-    console.log('reset', reset)
     if (reset) {
       image.value = store.getters['filterImage']
       coordinates.value = store.getters['filterCoordinates']
@@ -97,6 +96,7 @@ onMounted(() => {
   coordinates.value = store.getters['filterCoordinates']
   type.value = store.getters['filterType']
   sweden.value = store.getters['filterInSweden']
+  nordicCountries.value = store.getters['filterNordicCountry']
 })
 
 function toggleCoordinatesCheck() {
@@ -108,6 +108,7 @@ function toggleCoordinatesCheck() {
 function toggleImageCheck() {
   image.value = !image.value
   store.commit('setFilterImage', image.value)
+
   search()
 }
 

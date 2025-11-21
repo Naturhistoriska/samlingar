@@ -182,7 +182,7 @@ watch(
   (newValue, oldValue) => {
     if (store.getters['startYear'] === null) {
       startYear.value = null
-      store.commit('setStartYear', null)
+      // store.commit('setStartYear', null)
     }
   }
 )
@@ -192,7 +192,7 @@ watch(
   (newValue, oldValue) => {
     if (store.getters['endYear'] === null) {
       endYear.value = null
-      store.commit('setEndYear', null)
+      // store.commit('setEndYear', null)
     }
   }
 )

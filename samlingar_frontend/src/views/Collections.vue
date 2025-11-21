@@ -47,7 +47,7 @@
 <script setup>
 import { computed } from 'vue'
 import CollectionStatisticChart from '../components/CollectionStatisticChart.vue'
-import StatisticChart from '../components/CollectionsChart.vue'
+import StatisticChart from '../components/collections/CollectionsChart.vue'
 
 const zooCollections = computed(() => {
   return import.meta.env.VITE_SUPPORTED_ZOO_DATASET

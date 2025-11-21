@@ -69,8 +69,6 @@ let loading = ref(false)
 let isLargeMap = ref(true)
 
 onMounted(async () => {
-  console.log('onMounted SearchView')
-
   const from = previousPath.value
 
   if (entryType.value === 'first-visit' || entryType.value === 'reload') {
@@ -91,11 +89,8 @@ onMounted(async () => {
       // do nothing
     } else {
       // do something
-      console.log('here...')
 
       let params = store.getters['searchParams']
-
-      console.log('params...', params)
       if (params === null) {
         params = buildParams()
         search(params, 0, 20, true)
@@ -177,7 +172,6 @@ function buildParams() {
   const fullTextSearchMode = store.getters['fullTextSearchMode']
 
   const selectedCollection = store.getters['selectedCollection']
-  console.log('selectedCollection', selectedCollection)
 
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
