@@ -26,53 +26,9 @@ function searchCollection() {
 }
 </script>
 <style scoped>
-/* .p-button-text {
-  font-size: 1.1em;
-  color: #4a4949b6;
-  text-decoration: underline;
-} */
-
-/* .collectionDivLink {
-  min-width: 100%;
-  cursor: pointer;
-}
-.collectionTextLink {
-  float: left;
-  padding-top: 3em;
-}
-
 .p-button-text {
   font-size: 1.1rem;
-  color: #4a4949b6;
-  text-decoration: underline;
-}
-
-.p-button-text:hover {
-  font-size: 1.2em;
-  color: #b3b0b0 !important;
-  text-decoration: none !important;
-  background: transparent !important;
-}
-@media (max-width: 768px) {
-  .p-button-text {
-    font-size: 0.675rem;
-  }
-
-  .p-button-text:hover {
-    font-size: 0.7em;
-    color: #b3b0b0 !important;
-    text-decoration: none !important;
-    background: transparent !important;
-  }
-
-  .collectionTextLink {
-    float: left;
-  }
-} */
-
-.p-button-text {
-  font-size: 1.1rem;
-  color: #4a4949b6;
+  color: #000000e2;
   text-decoration: underline;
 }
 

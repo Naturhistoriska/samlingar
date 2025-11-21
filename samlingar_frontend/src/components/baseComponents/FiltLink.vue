@@ -47,7 +47,7 @@ function doSearch() {
 
 /* PrimeVue Button styling */
 .text-btn {
-  color: #4a4949b6;
+  color: #000000e2;
   text-decoration: underline;
   background: transparent;
   border: none;
