@@ -9,7 +9,7 @@ import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
-import Service from '../Service'
+import Service from '../../Service'
 const service = new Service()
 
 const store = useStore()
@@ -95,6 +95,7 @@ const collections = ref([
 
 onMounted(() => {
   const data = store.getters['collections']
+  console.log('collections....', data)
   if (data === null) {
     loadData()
   } else {
@@ -104,6 +105,7 @@ onMounted(() => {
 })
 
 async function loadData() {
+  console.log('loadData...')
   await service
     .apiInitdata()
     .then((response) => {
@@ -163,6 +165,7 @@ function search(label) {
 }
 
 function reset() {
+  console.log('CollectionChart.reset...')
   store.commit('setSearchText', null)
   store.commit('setFullTextSearchMode', 'contains')
   store.commit('setScientificName', null)
