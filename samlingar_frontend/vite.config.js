@@ -15,6 +15,9 @@ export default defineConfig({
   //   proxy: 'https://naturarv-stage.nrm.se'
   // },
 
+  optimizeDeps: {
+    exclude: ['the-problem-package']
+  },
 
   plugins: [
     vue({
