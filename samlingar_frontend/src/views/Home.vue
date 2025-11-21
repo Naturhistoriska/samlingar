@@ -144,6 +144,7 @@ async function freeTextSearch(value, mode) {
       store.commit('setFilterCoordinates', false)
       store.commit('setFilterInSweden', false)
       store.commit('setFilterType', false)
+      store.commit('setFilterNordicCountry', false)
 
       store.commit('setChartCode', null)
 
