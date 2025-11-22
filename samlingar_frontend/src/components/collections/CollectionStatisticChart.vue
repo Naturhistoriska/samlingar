@@ -29,8 +29,8 @@ import Accordion from 'primevue/accordion'
 import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
-import CollectionMonthChart from '../components/CollectionMonthChart.vue'
-import CollectionYearChart from '../components/CollectionYearChart.vue'
+import CollectionMonthChart from './CollectionMonthChart.vue'
+import CollectionYearChart from './CollectionYearChart.vue'
 
 import { useI18n } from 'vue-i18n'
 
@@ -43,7 +43,7 @@ const { locale } = useI18n()
 // const AsyncYearChart = defineAsyncComponent({
 //   loader: () => import('../components/CollectionYearChart.vue')
 // })
-import Service from '../Service'
+import Service from '../../Service'
 const service = new Service()
 
 import moment from 'moment'
@@ -101,6 +101,7 @@ const tabs = computed(() => {
 })
 
 function getMonthData(tab) {
+  console.log('getMonthData', tab)
   const { dataGroup, dataResource } = props
 
   if (dataResource === 'bot') {
@@ -208,6 +209,7 @@ async function onTabClick(tab) {
 }
 
 async function getChartData(collection, tab, isYear) {
+  console.log('getChartData', collection)
   await service
     .apiChart(collection, isYear)
     .then((response) => {
@@ -377,15 +379,6 @@ function setMonthData(tab, month) {
 }
 </script>
 <style scoped>
-/* .p-accordionpanel:not(.p-active).p-accordionpanel > .p-accordionheader {
-  background: var(--p-accordion-header-active-background);
-  color: #838282;
-  font-size: 1rem;
-}
-.p-panel .p-panel-header {
-  font-size: 3rem;
-} */
-
 .panel-title {
   font-size: 1.3em;
 }

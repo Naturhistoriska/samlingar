@@ -46,7 +46,7 @@
 </template>
 <script setup>
 import { computed } from 'vue'
-import CollectionStatisticChart from '../components/CollectionStatisticChart.vue'
+import CollectionStatisticChart from '../components/collections/CollectionStatisticChart.vue'
 import StatisticChart from '../components/collections/CollectionsChart.vue'
 
 const zooCollections = computed(() => {

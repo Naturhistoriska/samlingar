@@ -59,43 +59,7 @@ export default class Service {
     const response = await axios.get(url)
     return response.data
   }
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
 
   async apiGeoFetch(params, start, rows) {
     let url = `${samlingApi}/geojson?${params.toString()}&start=${start}&numPerPage=${rows}`
@@ -111,13 +75,6 @@ export default class Service {
     return response.data
   }
 
-  // async apiPreparaExport(params, total) {
-  //   let url = `${samlingApi}/download?${params.toString()}&numRows=${total}`
-
-  //   const response = await axios.get(url)
-
-  //   return response.data
-  // }
 
   async apiPreparaExport(params, total) {
     let url = `${samlingApi}/download?${params.toString()}&numPerPage=${total}&sort=catalogedDate desc`
@@ -127,54 +84,4 @@ export default class Service {
     return response.data
   }
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
 }

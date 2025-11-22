@@ -63,6 +63,7 @@ function fetchInitdata() {
 
       const collectionFacet = facets.collectionName.buckets
       store.commit('setCollections', collectionFacet)
+      store.commit('setChartCode', null)
 
       store.commit('setHasCoordinatesCount', totalSpeciemensHasCoordinates)
       store.commit('setInSwedenCount', totalInSweden)

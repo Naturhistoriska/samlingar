@@ -92,7 +92,7 @@ import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import Collections from './Collections.vue'
 
-import EventDate from './EventDate.vue'
+import EventDate from './search/EventDate.vue'
 import FilterCheckbox from './FilterCheckbox.vue'
 import FilterFields from './FilterFields.vue'
 import Help from './Help.vue'

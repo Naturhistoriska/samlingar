@@ -176,8 +176,9 @@ function buildParams() {
   const endDate = store.getters['endDate']
   const startDate = store.getters['startDate']
 
-  const startYear = store.getters['startYear']
-  const endYear = store.getters['endYear']
+  const startYear =
+    store.getters['startYear'] === null ? '*' : store.getters['startYear'].getFullYear()
+  const endYear = store.getters['endYear'] === null ? '*' : store.getters['endYear'].getFullYear()
 
   const dateFilter = store.getters['dateFilter']
 
@@ -219,9 +220,10 @@ function buildParams() {
       params.set('endDate', endDate)
     }
   } else {
+    const yearQuery = `[${startYear} TO ${endYear}]`
+    params.set('year', yearQuery)
+
     if (startYear && endYear) {
-      const yearQuery = `[${startYear.getFullYear()} TO ${endYear.getFullYear()}]`
-      params.set('year', yearQuery)
     }
   }
 
@@ -277,12 +279,6 @@ function buildParams() {
     transform: rotate(360deg);
   }
 }
-
-/* @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-} */
 
 /* Responsive layout grid */
 .responsive-grid {

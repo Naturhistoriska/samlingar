@@ -61,18 +61,18 @@
     <!-- ===== Collapsible Mobile Nav ===== -->
     <transition name="slide-fade">
       <div v-if="menuOpen" class="mobile-nav">
-        <RouterLink to="/" class="mobile-nav-item" @click="menuOpen = false">{{
-          $t('nav.home')
-        }}</RouterLink>
-        <RouterLink to="/search" class="mobile-nav-item" @click="menuOpen = false">{{
-          $t('nav.search')
-        }}</RouterLink>
-        <RouterLink to="/collections" class="mobile-nav-item" @click="menuOpen = false">{{
-          $t('nav.collections')
-        }}</RouterLink>
-        <RouterLink to="/contact" class="mobile-nav-item" @click="menuOpen = false">{{
-          $t('common.contactus')
-        }}</RouterLink>
+        <RouterLink to="/" class="mobile-nav-item" @click="menuOpen = false">
+          {{ $t('nav.home') }}
+        </RouterLink>
+        <RouterLink to="/search" class="mobile-nav-item" @click="menuOpen = false">
+          {{ $t('nav.search') }}
+        </RouterLink>
+        <RouterLink to="/collections" class="mobile-nav-item" @click="menuOpen = false">
+          {{ $t('nav.collections') }}
+        </RouterLink>
+        <RouterLink to="/contact" class="mobile-nav-item" @click="menuOpen = false">
+          {{ $t('common.contactus') }}
+        </RouterLink>
       </div>
     </transition>
   </div>
@@ -89,14 +89,14 @@ const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
-const value = ref(true)
+const value = ref('0')
 const menuOpen = ref(false)
 
 watch(
   () => route.path,
   (newPath) => {
-    value.value = newPath === '/'
-    if (value.value) {
+    const isHome = newPath === '/'
+    if (isHome) {
       onClick()
     }
   }
@@ -139,6 +139,7 @@ function onClick() {
 
   store.commit('setCollectionGroup', null)
   store.commit('setSelectedCollection', null)
+  store.commit('setChartCode', null)
 
   store.commit('setFilterCoordinates', false)
   store.commit('setFilterInSweden', false)
@@ -333,16 +334,6 @@ a:hover {
   max-width: 7em;
   min-width: 7em;
 }
-
-/* .p-tabview-nav {
-  display: flex !important;
-}
-
-.p-tabview-nav li {
-  flex: 1 1 0;
-  max-width: 200px;
-  min-width: 200px;
-} */
 
 .navbg {
   background-color: #052b1e;
