@@ -27,7 +27,6 @@ const chartData = computed(() => {
 
     if (currentLocale.value === 'sv') {
       labels = buildSwedishMonthLabel(labels)
-      console.log('nes labels...', labels)
     }
   }
 

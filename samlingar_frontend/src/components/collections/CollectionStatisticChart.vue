@@ -101,7 +101,6 @@ const tabs = computed(() => {
 })
 
 function getMonthData(tab) {
-  console.log('getMonthData', tab)
   const { dataGroup, dataResource } = props
 
   if (dataResource === 'bot') {
@@ -209,7 +208,6 @@ async function onTabClick(tab) {
 }
 
 async function getChartData(collection, tab, isYear) {
-  console.log('getChartData', collection)
   await service
     .apiChart(collection, isYear)
     .then((response) => {
