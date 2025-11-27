@@ -26,7 +26,7 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
 @SwaggerDefinition(
         info = @Info(
                 title = "Samlingar service",
-                version = "0.1.5"
+                version = "0.3.0"
         ),
         tags = {
             @Tag(name = "samlingar-service", description = "samlingar api")
@@ -37,8 +37,6 @@ public class SamlingarService {
      
     @Inject
     private SamlingarLogic logic;
-    
-        
       
     @GET
     @Path("/initialData")
