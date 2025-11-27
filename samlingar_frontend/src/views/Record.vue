@@ -84,15 +84,21 @@ function buildRecordData(record) {
     subgenus,
     scientificName,
     species,
-    taxonRank
+    taxonRank,
+    variety
   } = record
 
   code.value = collectionCode
   isPalCollection.value = ['pz', 'pb'].includes(collectionCode)
 
   // Build classification string
-  const higher = [kingdom, phylum, clazz, order, family, genus, subgenus]
-  classification.value = higher.filter(Boolean).join(' > ')
+  const higher = [kingdom, phylum, clazz, order, family, genus, subgenus, species, variety]
+
+  const filtered = higher.filter(Boolean)
+  classification.value = filtered.slice(0, -1).join(' > ')
+
+  // const result = filtered.slice(0, -1).join(' > ')
+  // classification.value = higher.filter(Boolean).join(' > ')
 
   if (['pz', 'pb'].includes(collectionCode)) {
     name.value = taxonRank === 'species' ? `${genus} ${species}` : scientificName
