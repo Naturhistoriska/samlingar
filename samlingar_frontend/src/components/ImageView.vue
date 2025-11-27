@@ -7,7 +7,6 @@
     <div class="metadata">
       <div class="info">
         <h3>{{ currentLabel }}</h3>
-        <!-- <p v-if="currentDescription">{{ currentDescription }}</p> -->
       </div>
 
       <div class="actions">
@@ -58,7 +57,6 @@ import { useStore } from 'vuex'
 const store = useStore()
 
 const viewer = ref(null)
-// const thumbnailPanel = ref(null)
 
 let osdViewer = null
 let mainItem = null
@@ -90,6 +88,7 @@ onMounted(() => {
   const record = store.getters['selectedRecord']
   if (record) {
     const { associatedMedia, catalogNumber, collectionCode } = record
+
     catNumber.value = catalogNumber
 
     if (isSpecifyCollections(collectionCode)) {
@@ -137,19 +136,21 @@ function loadRawImages(associatedMedia, catalogNumber, collectionCode) {
   const zoo = 'ev, et, PI, HE, MA, AV'
 
   let smallImage = 'tumme'
+
   if (associatedMedia) {
+    let largeImage = 'max'
     if (botnayColection.includes(collectionCode)) {
       if (kbo.includes(collectionCode)) {
         dataset = '&dataset=kbo'
       } else {
-        smallImage = 'mini'
+        largeImage = 'large'
         dataset = '&dataset=fbo'
       }
       media = associatedMedia
-        .filter((media) => !media.includes(smallImage))
+        .filter((media) => media.includes(largeImage))
         .map((a) => (a = a.match(/(?<=\[).+?(?=\])/g).toString()))
     } else {
-      smallImage = 'thumb'
+      const fullSize = 'Full'
       if (paleo.includes(collectionCode)) {
         dataset = '&dataset=pal'
       } else if (zoo.includes(collectionCode)) {
@@ -162,7 +163,7 @@ function loadRawImages(associatedMedia, catalogNumber, collectionCode) {
           console.log('dataset', dataset)
         }
       }
-      media = associatedMedia.filter((media) => !media.includes(smallImage))
+      media = associatedMedia.filter((media) => media.startsWith(fullSize))
     }
     images.value = media.map((url) => ({
       type: 'raw',
