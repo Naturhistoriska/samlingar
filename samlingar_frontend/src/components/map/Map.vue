@@ -22,7 +22,7 @@ import markerIconUrl from '/node_modules/leaflet/dist/images/marker-icon.png'
 import markerIconRetinaUrl from '/node_modules/leaflet/dist/images/marker-icon-2x.png'
 import markerShadowUrl from '/node_modules/leaflet/dist/images/marker-shadow.png'
 
-import Service from '../Service'
+import Service from '../../Service'
 import moment from 'moment-timezone'
 
 import { useI18n } from 'vue-i18n'

@@ -6,8 +6,8 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
-import Map from '../components/Map2.vue'
-import LargeMap from '../components/NewMap.vue'
+import Map from './Map.vue'
+import LargeMap from './LargeMap.vue'
 
 const store = useStore()
 

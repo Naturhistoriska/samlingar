@@ -62,7 +62,7 @@ const store = useStore()
 const service = new Service()
 
 const AsyncMap = defineAsyncComponent({
-  loader: () => import('../components/MapSwitch.vue')
+  loader: () => import('../components/map/MapSwitch.vue')
 })
 
 let loading = ref(false)

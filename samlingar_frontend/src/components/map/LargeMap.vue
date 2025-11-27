@@ -10,6 +10,10 @@
       <l-geo-json v-if="geojson" :geojson="geojson" :options-style="styleFeature" />
     </l-map>
 
+    <div v-if="loading" class="loading-overlay">
+      <span>{{ mapLoadingText }}</span>
+    </div>
+
     <!-- ✅ Toggle Button -->
     <button class="legend-toggle" @click="showLegend = !showLegend">
       {{ showLegend ? 'Hide Legend' : 'Show Legend' }}
@@ -41,12 +45,14 @@ import 'leaflet.heat'
 
 import { useStore } from 'vuex'
 
-import Service from '../Service'
+import Service from '../../Service'
 const service = new Service()
 
 const store = useStore()
 
 const showLegend = ref(true)
+const loading = ref(false)
+const mapLoadingText = ref('Fetch data....')
 
 const props = defineProps(['entry', 'from', 'reloadData'])
 
@@ -84,6 +90,7 @@ onMounted(async () => {
 async function fetchHeatmapData() {
   const totalToFatch = store.getters['totalGeoData']
   // const params = buildParams()
+  loading.value = true
 
   let params = store.getters['searchParams']
   if (params === null) {
@@ -103,7 +110,9 @@ async function fetchHeatmapData() {
     .catch((error) => {
       console.log('error', error)
     })
-    .finally(() => {})
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 function getColor(count) {
@@ -259,4 +268,18 @@ function buildParams() {
   border: none !important;
   box-shadow: none !important;
 } */
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 1.2em;
+  z-index: 1000;
+}
 </style>
