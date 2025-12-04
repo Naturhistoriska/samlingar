@@ -81,6 +81,8 @@ onMounted(() => {
   osdViewer = OpenSeadragon({
     element: viewer.value,
     prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
+    crossOriginPolicy: 'Anonymous', // important
+    ajaxWithCredentials: false,
     showNavigator: true,
     showRotationControl: true,
     gestureSettingsTouch: { pinchRotate: true }
