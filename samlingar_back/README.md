@@ -77,7 +77,12 @@ java -jar samlingar-api/target/samlingarApi-thorntail.jar -Sinitdata
 ## API Endpoints
 
 ### Base URL
-http://localhost:8080/api/v1
+http://localhost:8080/
+
+
+### Swagger URL
+http://localhost:8180/swagger.json
+
 
 ## Configuration
 
