@@ -35,22 +35,19 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
 @Slf4j
 public class SamlingarService {
      
-    private final String text = "Samlingar API, a RESTful service that provides search and retrieval functionality for a museum's online collection data, backed by an Apache Solr search index. This API acts as an abstraction layer between client applications and the underlying Solr instance, offering a simplified and consistent interface for querying cultural heritage metadata.";
+    private final String text = "{ \"status\": \"ok\", \"message\": \"Museum Search API online\" }";
     
     @Inject
     private SamlingarLogic logic;
     
-          
     @GET
-    @Path("/")
-    @ApiOperation(value = "TEXT",
-            notes = "Return api description",
-            response = String.class
-    )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAPI() {
-        log.info("getAPI");
-        return Response.ok(text).build();
+    @ApiOperation(
+            value = "Test endpoint",
+            notes = "Returns a simple JSON to confirm Swagger + JAX-RS works."
+    )
+    public String hello() {
+        return text;
     }
       
     @GET
