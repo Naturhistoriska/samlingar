@@ -81,6 +81,8 @@ http://localhost:8080/api/v1
 
 ## Configuration
 
+
+```
 ## YAML Template.
 ---
 swarm:
@@ -89,6 +91,9 @@ swarm:
     core: samlingar
     username: {{ solr_user }}
     password: {{ solr_user_password }}
+```
+
+
 
 
 
