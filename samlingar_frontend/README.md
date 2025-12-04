@@ -1,29 +1,65 @@
-# primevue-quickstart-create-vue
+# Samlingar - Vue 3 Frontend for Museum Collections Search
 
-This template should help get you started developing with Vue 3 in Vite.
+A Vue 3 web application for exploring the museum’s online collections.
 
-## Recommended IDE Setup
+This UI connects to the Museum Search REST API (backed by Solr) to provide interactive search, filtering, and item browsing.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Purpose
 
-## Customize configuration
+This project provides a user-friendly interface that allows visitors to search and browse the museum’s digital collection.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+It is built using Vue 3, Vite, and Axios, and communicates with a RESTful backend.
 
-## Project Setup
+## Tech Stack
 
-```sh
+- Vue 3 (Composition API)
+- Vite (development server + build)
+- Vue Router 4
+- Axios for API requests
+- Vuex
+- Node.js 22.3.0
+- yarn 1.22.22
+- primevue 4.x
+- leaflet
+- openseadragon
+- RESTful API backend (Java 8 + SolrJ + Thorntail)
+
+## Configuration
+
+Environment variables for API endpoints are stored in:
+
+.env
+
+```
+VITE_SAMLINGAR_API_LOCAL=http://localhost:8180
+```
+
+## Getting Started
+
+1. Install Node.js
+
+Make sure you have Node.js (LTS recommended):
+
+https://nodejs.org/
+
+2. Install dependencies
+
+```
 npm install
+
+# or
+
+yarn install
 ```
 
-### Compile and Hot-Reload for Development
+3. Run the development server
 
-```sh
-npm run dev
+```
+yarn dev
 ```
 
-### Compile and Minify for Production
+4. Open the UI:
 
-```sh
-npm run build
+```
+http://localhost:5173/
 ```
