@@ -21,12 +21,12 @@
 
     <div v-if="showLegend" class="legend">
       <div><span style="background: #fed398"></span> 1-100</div>
-      <div><span style="background: #feb24c"></span> 100-500</div>
-      <div><span style="background: #fd8d3c"></span> 500–1000</div>
-      <div><span style="background: #fc4e2a"></span> 1000-2000</div>
-      <div><span style="background: #e31a1c"></span> 2000-5000</div>
-      <div><span style="background: #bd0026"></span> 5000-10000</div>
-      <div><span style="background: #800026"></span> 10000+</div>
+      <div><span style="background: #feb24c"></span> 101-500</div>
+      <div><span style="background: #fd8d3c"></span> 501–1000</div>
+      <div><span style="background: #fc4e2a"></span> 1001-2000</div>
+      <div><span style="background: #e31a1c"></span> 2001-5000</div>
+      <div><span style="background: #bd0026"></span> 5001-10000</div>
+      <div><span style="background: #800026"></span> 10001+</div>
     </div>
   </div>
 </template>
@@ -59,7 +59,6 @@ const props = defineProps(['entry', 'from', 'reloadData'])
 watch(
   () => store.getters['resetMapData'],
   () => {
-    console.log('map 2 map data changed..')
     const reset = store.getters['resetMapData']
     const total = store.getters['totalGeoData']
 
@@ -263,11 +262,6 @@ function buildParams() {
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
-/* .label-icon {
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
-} */
 
 .loading-overlay {
   position: absolute;
