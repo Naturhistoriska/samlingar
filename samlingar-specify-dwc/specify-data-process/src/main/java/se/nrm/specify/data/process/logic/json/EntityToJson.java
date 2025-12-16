@@ -3,12 +3,9 @@ package se.nrm.specify.data.process.logic.json;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.time.LocalDate; 
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
+import java.util.Set; 
 import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -73,7 +70,7 @@ public class EntityToJson implements Serializable {
 
     private final String identifiedByKey = "identifiedBy";
 
-    private final String iiifManifest = "https://assets.nrm.se/manifest/";
+//    private final String iiifManifest = "https://assets.nrm.se/manifest/";
     private final String individualCountKey = "individualCount";
 
     private final String islandKey = "island";
@@ -144,14 +141,14 @@ public class EntityToJson implements Serializable {
     private final String sv = "sv";
     private final String strDet = " [det. ";
 
-    private final String entomologyCollectionCode = "NHRS";
+//    private final String entomologyCollectionCode = "NHRS";
     private final String mineralogyCollection = "NRMMIN";
 
     private Date eventDate;
     private LocalDate localEventDate;
 
     private LocalDate endDate;
-    private String strEventDate;
+//    private String strEventDate;
 
     private Date determinedDate;
 
@@ -219,8 +216,8 @@ public class EntityToJson implements Serializable {
 
     private Map<String, String> taxonMap;
 
-    public void convertEntityToJson1(JsonObjectBuilder attBuilder,
-            Collectionobject bean, String collectionCode) {
+    public void convertEntityToJson(JsonObjectBuilder attBuilder,
+            Collectionobject bean, String collectionCode, String iiifManifest) {
         log.info("catalogNumber : {}", bean.getCatalogNumber());
 
         addAttValue(attBuilder, catalogNumberKey, bean.getCatalogNumber());
@@ -259,24 +256,21 @@ public class EntityToJson implements Serializable {
         addAdditionalDetermination(attBuilder, bean.getDeterminationList(),
                 collectionCode.equals(mineralogyCollection));
 
-        if (collectionCode.equals(entomologyCollectionCode)) {
-            addImages(attBuilder, bean.getCatalogNumber(),
-                    bean.getCollectionobjectattachmentList());
-        }
-
 //        if (collectionCode.equals(entomologyCollectionCode)) {
-//            addImages(attBuilder, bean);
+//            addImages(attBuilder, bean.getCatalogNumber(),
+//                    bean.getCollectionobjectattachmentList(), iiifManifest);
 //        }
+        
+            addImages(attBuilder, bean.getCatalogNumber(),
+                    bean.getCollectionobjectattachmentList(), iiifManifest);
+ 
     }
 
     private void addImages(JsonObjectBuilder attBuilder, String catalogNumber,
-            Set<Collectionobjectattachment> collectionObjectAttachments) {
+            Set<Collectionobjectattachment> collectionObjectAttachments, String iiifManifest) {
 
         if (collectionObjectAttachments != null && !collectionObjectAttachments.isEmpty()) {
-
-//            hasAnyAttachment = collectionObjectAttachments.stream()
-//                    .anyMatch(att -> att.getAttachment() != null && att.getAttachment().isIsPublic());
-
+  
             hasAnyAttachment = collectionObjectAttachments.stream()
                 .anyMatch(AttachmentPredicates.validPublicAttachment());
 
@@ -293,20 +287,7 @@ public class EntityToJson implements Serializable {
             }
         }
     }
-
-//    Predicate<Collectionobjectattachment> validPublicAttachment = (Collectionobjectattachment att) -> att != null
-//            && att.getAttachment() != null
-//            && att.getAttachment().isIsPublic()
-//            && !EXCLUDED_MIME_TYPES.contains(att.getAttachment().getMineType());
-//
-//    private static final Set<String> EXCLUDED_MIME_TYPES
-//            = new HashSet<>(Arrays.asList(
-//                    "image/CR2",
-//                    "application/octet-stream",
-//                    "application/pdf",
-//                    "text/plain",
-//                    "text/rtf"
-//            ));
+ 
 
     private void addAccession(JsonObjectBuilder attBuilder, Accession accession) {
         if (accession != null) {

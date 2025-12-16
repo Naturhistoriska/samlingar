@@ -59,8 +59,8 @@ public class JsonConverter implements Serializable {
         this.entityToJson = entityJson;
     }
 
-    public JsonArray convert(List<Collectionobject> beans, 
-            Institution institution, Collection collection) {
+    public JsonArray convert(List<Collectionobject> beans, Institution institution, 
+            Collection collection, String iiifManifest) {
         log.info("convert : {}", beans.size());
 
         arrayBuilder = Json.createArrayBuilder();
@@ -75,7 +75,7 @@ public class JsonConverter implements Serializable {
                     addInstitution(institution);
 
                     attBuilder.add(idKey, addId(bean.getCollectionObjectID()));
-                    entityToJson.convertEntityToJson1(attBuilder, bean, collectionCode);
+                    entityToJson.convertEntityToJson(attBuilder, bean, collectionCode, iiifManifest);
                     arrayBuilder.add(attBuilder);
                 });
 

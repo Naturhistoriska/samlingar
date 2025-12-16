@@ -33,6 +33,7 @@ public class DataProcessor implements Serializable {
     private int end;
     private int statusCode;
 
+    private String iiifManifest;
 
     private List<Integer> ids;
     private List<Integer> fetchIds;
@@ -80,6 +81,7 @@ public class DataProcessor implements Serializable {
         collections = Arrays.asList(propeties.getCollections().split(slash));
         log.info("collections.... {}", collections);
         
+        iiifManifest = propeties.getIiifManifest();
         
         institution = crud.getInstitutionByCode(propeties.getInstitutionCode());
      
@@ -117,7 +119,7 @@ public class DataProcessor implements Serializable {
                                 log.info("start: {} --- end: {}", i, end);
                                 entities = crud.fetchDataByIds(collectionCode, fetchIds, jpql);
                      
-                                jsonArray = converter.convert(entities, institution, collection);
+                                jsonArray = converter.convert(entities, institution, collection, iiifManifest);
 
                                 statusCode = solr.postToSolr(jsonArray.toString().trim());
                                 log.info("status : {}", statusCode);
