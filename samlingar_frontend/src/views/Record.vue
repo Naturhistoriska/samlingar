@@ -4,6 +4,8 @@
 
     <image-view v-if="showImages && hasData" />
 
+    <!-- <iiif-viewer v-if="showImages && hasData" /> -->
+
     <div v-else-if="hasData" class="grid col-12">
       <record-left :code="code" :isPalCollection="isPalCollection" />
       <record-right :showThumb="showThumb" />
@@ -21,6 +23,8 @@ import RecordHeader from '../components/record/RecordHeader.vue'
 import RecordLeft from '../components/record/RecordLeft.vue'
 import RecordRight from '../components/record/RecordRight.vue'
 import ImageView from '../components/ImageView.vue'
+
+import IiifViewer from '../components/IIIFViewer.vue'
 
 const service = new Service()
 const store = useStore()

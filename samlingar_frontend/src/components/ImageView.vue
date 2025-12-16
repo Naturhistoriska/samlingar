@@ -1,7 +1,16 @@
 <template>
   <div class="iiif-viewer">
     <!-- Main image viewer -->
-    <div ref="viewer" class="osd-viewer"></div>
+    <iframe
+      v-if="isSpecifyCollections"
+      :src="iiifManifestUrl"
+      width="90%"
+      height="600"
+      frameborder="0"
+      allowfullscreen
+    ></iframe>
+
+    <div v-else ref="viewer" class="osd-viewer"></div>
 
     <!-- Metadata and actions -->
     <div class="metadata">
@@ -70,32 +79,57 @@ const currentDescription = ref('')
 const showThumbnails = ref(true)
 const catNumber = ref('')
 
+const iiifManifestUrl = ref('')
+
+// const iiifManifestUrl = 'https://assets.nrm.se/viewer/NHRS-TOBI000002720'
+// const iiifManifestUrl = 'https://assets.nrm.se/viewer/uv.html/NHRS-TOBI000002720'
+
 // const scrollAmount = 300 // px per navigation click
 
 // Example IIIF v3 manifest
 // const iiifManifestUrl = 'https://assets.nrm.se/manifest/NHRS-HEMI000000010.json'
 // const iiifManifestUrl = 'https://assets.nrm.se/manifest/NHRS-COLE000007412.json'
 
-//  Initialize OpenSeadragon
+const isSpecifyCollections = computed(() => {
+  const record = store.getters['selectedRecord']
+  const code = record?.collectionCode
+  return code === 'NHRS' || code === 'NRMMIN'
+})
+
+// const isSpecifyCollections = (code) => {
+//   return code === 'NHRS' || code === 'NRMMIN'
+//   // return (
+//   // code === 'NHRS' ||
+//   // code === 'SMTP_INV' ||
+//   // code === 'SMTP_SPPLST' ||
+//   // code === 'NRMLIG' ||
+//   // code === 'NRMMIN' ||
+//   // code === 'NRMNOD'
+//   // )
+// }
+
 onMounted(() => {
-  osdViewer = OpenSeadragon({
-    element: viewer.value,
-    prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
-    crossOriginPolicy: 'Anonymous', // important
-    ajaxWithCredentials: false,
-    showNavigator: true,
-    showRotationControl: true,
-    gestureSettingsTouch: { pinchRotate: true }
-  })
   const record = store.getters['selectedRecord']
   if (record) {
     const { associatedMedia, catalogNumber, collectionCode } = record
 
     catNumber.value = catalogNumber
 
-    if (isSpecifyCollections(collectionCode)) {
-      loadIIIFManifest(associatedMedia, catalogNumber)
+    if (isSpecifyCollections) {
+      // loadIIIFManifest(associatedMedia, catalogNumber)
+
+      iiifManifestUrl.value = `https://assets.nrm.se/viewer/${catalogNumber}`
+      console.log('iiifManifestUrl', iiifManifestUrl.value)
     } else {
+      osdViewer = OpenSeadragon({
+        element: viewer.value,
+        prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
+        crossOriginPolicy: 'Anonymous', // important
+        ajaxWithCredentials: false,
+        showNavigator: true,
+        showRotationControl: true,
+        gestureSettingsTouch: { pinchRotate: true }
+      })
       loadRawImages(associatedMedia, catalogNumber, collectionCode)
     }
   }
@@ -152,9 +186,10 @@ function loadRawImages(associatedMedia, catalogNumber, collectionCode) {
         .filter((media) => media.includes(largeImage))
         .map((a) => (a = a.match(/(?<=\[).+?(?=\])/g).toString()))
     } else {
-      const fullSize = 'Full'
+      let fullSize = 'Full'
       if (paleo.includes(collectionCode)) {
         dataset = '&dataset=pal'
+        fullSize = 'medium'
       } else if (zoo.includes(collectionCode)) {
         if (collectionCode === 'HE') {
           dataset = '&dataset=herps'
@@ -165,7 +200,7 @@ function loadRawImages(associatedMedia, catalogNumber, collectionCode) {
           console.log('dataset', dataset)
         }
       }
-      media = associatedMedia.filter((media) => media.startsWith(fullSize))
+      media = associatedMedia.filter((media) => media.includes(fullSize))
     }
     images.value = media.map((url) => ({
       type: 'raw',
@@ -193,7 +228,6 @@ function openImage(index) {
   currentLabel.value = img.label || 'Untitled Image'
   currentDescription.value = img.desc || ''
 
-  console.log('image', img)
   if (img.type === 'iiif') {
     osdViewer.open(img.source)
   } else {
@@ -210,13 +244,10 @@ function openImage(index) {
 
 function openInNewTab() {
   const img = images.value[currentIndex.value]
-  if (!img) return
 
-  if (img.type === 'iiif' && mainItem) {
-    console.log('img', img, mainItem)
+  if (!img) {
+    const url = `https://assets.nrm.se/viewer/${catNumber.value}`
 
-    const url = `https://assets.nrm.se/viewer/?manifest=https://assets.nrm.se/manifest/${img.label}.json`
-    // const url = img.thumb
     window.open(url, '_blank')
   } else {
     window.open(img.source, '_blank')
@@ -239,18 +270,6 @@ function closeViewer() {
 
 function toggleThumbnails() {
   showThumbnails.value = !showThumbnails.value
-}
-
-const isSpecifyCollections = (code) => {
-  return code === 'NHRS'
-  // return (
-  // code === 'NHRS' ||
-  // code === 'SMTP_INV' ||
-  // code === 'SMTP_SPPLST' ||
-  // code === 'NRMLIG' ||
-  // code === 'NRMMIN' ||
-  // code === 'NRMNOD'
-  // )
 }
 </script>
 
@@ -299,14 +318,14 @@ const isSpecifyCollections = (code) => {
   margin-top: 0.5rem;
 }
 
-/* ✅ Thumbnail Toggle */
+/*  Thumbnail Toggle */
 .thumbnail-toggle {
   display: none;
   margin-top: 1rem;
   text-align: center;
 }
 
-/* ✅ Thumbnails */
+/* Thumbnails */
 .thumbnail-panel {
   display: flex;
   flex-wrap: nowrap;

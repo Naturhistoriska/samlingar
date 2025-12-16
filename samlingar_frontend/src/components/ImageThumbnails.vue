@@ -5,7 +5,9 @@
     </div>
   </div>
   <div v-if="showMetadata" class="metadata-row flex items-center gap-2">
-    <img src="/iiif.png" alt="iiif" width="30px" />
+    <Button text target="_blank" class="p-0" @click="openIIIFViewer">
+      <img src="/iiif.png" alt="IIIF Viewer" width="30px" />
+    </Button>
     <Button
       text
       icon="pi pi-link"
@@ -108,19 +110,20 @@ async function loadManifest() {
 }
 
 const isSpecifyCollections = (code) => {
-  return code === 'NHRS'
-  // return (
-  // code === 'NHRS' ||
-  // code === 'SMTP_INV' ||
-  // code === 'SMTP_SPPLST' ||
-  // code === 'NRMLIG' ||
-  // code === 'NRMMIN' ||
-  // code === 'NRMNOD'
-  // )
+  return code === 'NHRS' || code === 'NRMMIN'
 }
 
 function viewMetadata() {
   window.open(metadata.value, '_blank')
+}
+
+function openIIIFViewer() {
+  const record = store.getters['selectedRecord']
+  if (record) {
+    const { catalogNumber } = record
+    const iiifViewerUrl = `https://assets.nrm.se/viewer/${catalogNumber}`
+    window.open(iiifViewerUrl, '_blank')
+  }
 }
 
 function imageClick(index) {
