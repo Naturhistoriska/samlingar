@@ -366,6 +366,7 @@
     "stationNumber": "Stationsnummer",
     "subgenus": "Undersläkte",
     "synonyms": "Synonymer",
+    "synonymsTo": "Synonymiserad med",
     "taxonomy": "Taxonomi",
     "taxonRemarks": "Kommentarer till taxon",
     "typeStatus": "Typstatus",

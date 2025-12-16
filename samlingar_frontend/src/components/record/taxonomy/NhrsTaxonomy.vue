@@ -61,7 +61,8 @@
         {{ commonName }}
       </div>
 
-      <div class="col-4 reducePadding">{{ $t('results.synonyms') }}</div>
+      <div class="col-4 reducePadding" v-if="isNHRSAndType">{{ $t('results.synonymsTo') }}</div>
+      <div class="col-4 reducePadding" v-else>{{ $t('results.synonyms') }}</div>
       <div class="col-8 reducePadding">
         {{ synonymsData }}
       </div>
@@ -95,6 +96,7 @@ const synonymsData = ref()
 const remarks = ref()
 const theVariety = ref()
 const isGeoData = ref(false)
+const isNHRSAndType = ref(false)
 
 onMounted(async () => {
   const record = store.getters['selectedRecord']
@@ -114,6 +116,7 @@ onMounted(async () => {
     synonymAuthor,
     taxonRank,
     taxonRemarks,
+    typeStatus,
     variety,
     vernacularName
   } = record
@@ -144,6 +147,7 @@ onMounted(async () => {
   theVariety.value = variety
 
   isGeoData.value = collectionCode === 'NRMMIN' || 'NRMLIG' || 'NRMNOD'
+  isNHRSAndType.value = collectionCode === 'NHRS' && typeStatus
 })
 </script>
 <style scoped>

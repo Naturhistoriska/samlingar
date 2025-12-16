@@ -366,6 +366,7 @@
     "stationNumber": "Station number",
     "subgenus": "Subgenus",
     "synonyms": "Synonyms",
+    "synonymsTo": "Synonym to",
     "taxonomy": "Taxonomy",
     "taxonRemarks": "Taxon remarks",
     "typeStatus": "Type status",
