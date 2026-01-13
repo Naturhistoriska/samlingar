@@ -268,13 +268,12 @@ public class EntityToJson implements Serializable {
 
     private void addImages(JsonObjectBuilder attBuilder, String catalogNumber,
             Set<Collectionobjectattachment> collectionObjectAttachments, String iiifManifest) {
-
+ 
         if (collectionObjectAttachments != null && !collectionObjectAttachments.isEmpty()) {
-  
+ 
             hasAnyAttachment = collectionObjectAttachments.stream()
                 .anyMatch(AttachmentPredicates.validPublicAttachment());
-
-
+ 
             if (hasAnyAttachment) {
                 attBuilder.add(hasImageKey, true);
 

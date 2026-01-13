@@ -24,8 +24,6 @@ import RecordLeft from '../components/record/RecordLeft.vue'
 import RecordRight from '../components/record/RecordRight.vue'
 import ImageView from '../components/ImageView.vue'
 
-import IiifViewer from '../components/IIIFViewer.vue'
-
 const service = new Service()
 const store = useStore()
 const router = useRouter()

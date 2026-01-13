@@ -96,18 +96,6 @@ const isSpecifyCollections = computed(() => {
   return code === 'NHRS' || code === 'NRMMIN'
 })
 
-// const isSpecifyCollections = (code) => {
-//   return code === 'NHRS' || code === 'NRMMIN'
-//   // return (
-//   // code === 'NHRS' ||
-//   // code === 'SMTP_INV' ||
-//   // code === 'SMTP_SPPLST' ||
-//   // code === 'NRMLIG' ||
-//   // code === 'NRMMIN' ||
-//   // code === 'NRMNOD'
-//   // )
-// }
-
 onMounted(() => {
   const record = store.getters['selectedRecord']
   if (record) {
@@ -115,21 +103,24 @@ onMounted(() => {
 
     catNumber.value = catalogNumber
 
-    if (isSpecifyCollections) {
+    console.log('isSpecifyCollections', isSpecifyCollections.value)
+
+    if (isSpecifyCollections.value) {
       // loadIIIFManifest(associatedMedia, catalogNumber)
 
       iiifManifestUrl.value = `https://assets.nrm.se/viewer/${catalogNumber}`
-      console.log('iiifManifestUrl', iiifManifestUrl.value)
     } else {
       osdViewer = OpenSeadragon({
         element: viewer.value,
         prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
-        crossOriginPolicy: 'Anonymous', // important
+
+        // crossOriginPolicy: 'Anonymous', // important
         ajaxWithCredentials: false,
         showNavigator: true,
         showRotationControl: true,
         gestureSettingsTouch: { pinchRotate: true }
       })
+
       loadRawImages(associatedMedia, catalogNumber, collectionCode)
     }
   }
