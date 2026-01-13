@@ -2,208 +2,105 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+The **Samlingar - Museum Collections Search Platform** is a complete system for ingesting, indexing, searching, and presenting cultural heritage objects. It is built on a modular architecture to support scalability and maintainability.
 
-The Samlingar - Museum Collections Search Platform is a complete system for ingesting, indexing, searching, and presenting cultural heritage objects.
-It is built on a modular architecture with separate services for indexing, data processing, API access, UI display, and search functionality via Apache Solr.
+## Architecture Overview
 
-This repository/project consists of five major components:
+The system consists of independent components for data ingestion, search, API access, and the user interface.
 
-- samlingar-csv-solr (CSV File → Solr Indexer (Java))
-- samlingar-specify-dwc (Specify Database → Solr Indexer (Java))
-- samlingar_backend (Java RESTful API (Search API))
-- samlingar-frontend (Vue 3 Web Application)
-- solr (Apache Solr Search Engine)
-
-Together, these components create a scalable, searchable platform for digital museum collections.
-
-
-
-
+```mermaid
+graph TD
+    CSV[CSV Files] -->|1. Ingest| CSVIndexer[samlingar-csv-solr]
+    DB[Specify Database] -->|1. Ingest| DBIndexer[samlingar-specify-dwc]
+    CSVIndexer -->|2. Index| Solr[Apache Solr]
+    DBIndexer -->|2. Index| Solr
+    Solr -->|3. Search| API[samlingar-service]
+    API -->|4. Serve| UI[samlingar-frontend]
 ```
-CSV Files                       Specify Database
-     └──(1) samlingar-csv-solr         └──(2) samlingar-specify-dwc
-                     │                    │
-                     └────────────┬───────┘
-                                  ▼
-                           (5) Apache Solr
-                                  │
-                                  ▼
-                        (4) samlingar-service
-                                  │
-                                  ▼
-                         (3) samlingar-ui
 
+## System Components
 
-```
-Each component is independent and can be deployed or maintained separately.
+### 1. Data Ingestion (Indexers)
+*   **samlingar-csv-solr**: A Java-based tool to read CSV files and index them into Solr.
+*   **samlingar-specify-dwc**: A Java tool to extract records from a Specify database and index them into Solr.
 
+### 2. Backend & Search
+*   **Apache Solr**: The core search engine providing full-text search, faceting, and filtering.
+*   **samlingar-service**: A Java RESTful API that acts as a secure abstraction layer over Solr, providing endpoints for the frontend.
 
-## Components
+### 3. Frontend
+*   **samlingar-frontend**: A modern web application built with **Vue 3** and **Vite** for searching and browsing the collections.
 
-1. samlingar-csv-solr (Java)
-
-A Java-based ingestion tool that reads CSV files containing collection object metadata and indexes them directly into Solr.
-
-### Features
-
-- Reads CSV files
-
-- Validates coordinates
-
-- Maps columns to Solr schema fields
-
-- Supports bulk indexing in json format
-
-- Configurable batch size
-
-- Error reporting and logging
-
-
-### Running the Indexer
-
-cd  samlingar-csv-solr
-
-java -jar -Dswarm.collection="paleo" -Dswarm.delect.collection=true samlingar-data-process/target/csvToSolr-thorntail.jar -Sinitdata
-
-
-
-2. samlingar-specify-dwc (Java)
-
-A Java ingestion tool that extracts records from a Specify database and indexes them into Solr.
-
-### Features
-
-Connects to specify database using JDBC
-
-Runs SELECT queries to fetch object metadata
-
-Transforms database rows to json
-
-Bulk indexing support
-
-cd samlingar-specify-dwc
-
-java -jar  -Xms4096M -Xmx6144M  -Dswarm.update=true  specify-data-process/target/specifyToSolr-thorntail.jar -Sinitdata_ent
-
-
-3. samlingar-frontend (Vue 3 Application - ui)
-
-## Features
-
-Vue 3 + Vite setup
-
-Search bar with live results
-
-Faceted filters
-
-Item detail page
-
-Responsive design
-
-Axios for API calls
-
-
-### Running the UI
-yarn dev
-
-
-Open:
-
-👉 http://localhost:5173/
-
-
-
-4.  samlingar_service (Java RESTful API (Solr Search API))
-
-
-A Java-based API layer that provides clean, stable REST endpoints for the Vue UI and other consumers.
-Acts as a secure abstraction over Apache Solr.
-
-### Features
-
-Full-text search
-
-Facets, filters, sorting, pagination
-
-Get item by ID
-
-JSON responses
-
-Swagger UI documentation
-
-Error handling
-
-
-### Running the API
-
-
-cd samlingar_service
-
-java -jar samlingar-api/target/samlingarApi-thorntail.jar -Sinitdata
-
-
-
-API base URL:
-
-http://localhost:8080/
-
-
-
-5. Apache Solr
-
-Apache Solr powers full-text indexing and search for all museum objects.
-
-### Features
-
-Custom schema for museum collections
-
-Full-text search
-
-Faceted navigation
-
-Highlighting
-
-REST-based administration
-
-
-
-## Development Setup
-
+---
 
 ## Prerequisites
 
-Java 8+
+*   **Java 8+** (for Indexers and API)
+*   **Node.js 16+** (for Frontend)
+*   **Apache Solr 8.x**
+*   **Maven** (to build Java projects)
 
-Node.js 16+
+---
 
-Apache Solr 8.x
+## Getting Started
 
-Specify (optional)
+### 1. samlingar-csv-solr
+**Location:** `/samlingar-csv-solr`
 
-Maven
+To run the CSV indexer:
+```bash
+cd samlingar-csv-solr
+java -jar -Dswarm.collection="paleo" -Dswarm.delect.collection=true samlingar-data-process/target/csvToSolr-thorntail.jar -Sinitdata
+```
 
+### 2. samlingar-specify-dwc
+**Location:** `/samlingar-specify-dwc`
 
-## Recommended startup order
+To run the Specify database indexer:
+```bash
+cd samlingar-specify-dwc
+java -jar -Xms4096M -Xmx6144M -Dswarm.update=true specify-data-process/target/specifyToSolr-thorntail.jar -Sinitdata_ent
+```
 
-Start Solr
+### 3. samlingar-service (API)
+**Location:** `/samlingar_back/samlingar-service`
 
-Run CSV Indexer or MySQL Indexer (optional)
+To build and run the API:
+```bash
+cd samlingar_back/samlingar-service
+# Build the project (if needed)
+mvn clean package
 
-Start REST API
+# Run the service
+java -jar samlingar-api/target/samlingarApi-thorntail.jar -Sinitdata
+```
+The API will be available at: `http://localhost:8080/`
 
-Start Vue 3 UI
+### 4. samlingar-frontend (UI)
+**Location:** `/samlingar_frontend`
 
+To run the frontend in development mode:
+```bash
+cd samlingar_frontend
+npm install   # or yarn
+npm run dev   # or yarn dev
+```
+Open your browser at: `http://localhost:5173/`
+
+### 5. Apache Solr
+Ensure Apache Solr is running and configured with the appropriate schema for museum collections.
+
+**Features:**
+*   Custom schema
+*   Faceted navigation
+*   Full-text search
+
+---
 
 ## Production Deployment
 
-Each component can be containerized and orchestrated with Docker or Kubernetes.
-
-Typical deployment:
-
-Solr in its own container
-
-REST API in a backend container
-
-Vue UI built as static files served by Nginx
-
-Indexers run periodically using cron or CI/CD jobs
+Each component is designed to be containerized and directed via Docker or Kubernetes.
+*   **Indexers**: Scheduled as cron jobs or CI/CD pipelines.
+*   **Solr**: Dedicated container/cluster.
+*   **API**: Backend application container.
+*   **Frontend**: Static files served via Nginx or similar web server.
