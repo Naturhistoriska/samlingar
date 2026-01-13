@@ -1,6 +1,6 @@
 <template>
   <div class="col-12 md:col-5">
-    <single-map />
+    <single-map style="padding-bottom: 1em" />
     <image-thumbnails v-if="showThumb" />
   </div>
 </template>
