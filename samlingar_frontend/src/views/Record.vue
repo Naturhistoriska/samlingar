@@ -4,8 +4,6 @@
 
     <image-view v-if="showImages && hasData" />
 
-    <!-- <iiif-viewer v-if="showImages && hasData" /> -->
-
     <div v-else-if="hasData" class="grid col-12">
       <record-left :code="code" :isPalCollection="isPalCollection" />
       <record-right :showThumb="showThumb" />

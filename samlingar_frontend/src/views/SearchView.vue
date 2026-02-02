@@ -8,19 +8,8 @@
       <div class="col-12 md:col-5" no-gutters>
         <search-records @search="handleSearch" />
       </div>
-      <div class="col-12 md:col-7" no-gutters v-if="isLargeMap">
-        <Suspense>
-          <template #default>
-            <keep-alive>
-              <async-map />
-            </keep-alive>
-          </template>
-          <template #fallback>
-            <VueSpinnerDots size="20" color="red" />
-          </template>
-        </Suspense>
-      </div>
-      <div class="col-12 md:col-7" no-gutters v-else>
+
+      <div class="col-12 md:col-7" no-gutters>
         <Suspense>
           <template #default>
             <keep-alive>
@@ -33,7 +22,6 @@
         </Suspense>
       </div>
     </div>
-
     <div class="grid">
       <div class="col-12" no-gutters>
         <records-tabs @search="search" />

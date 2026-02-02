@@ -11,6 +11,8 @@ lerna-debug.log*
 
 samlingar_frontend/package-lock.json
 
+walkthrough.md.resolved
+
 node_modules
 .DS_Store
 dist
