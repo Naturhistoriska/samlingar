@@ -6,6 +6,7 @@ module.exports = {
   extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
+    'plugin:vuejs-accessibility/recommended',
     '@vue/eslint-config-prettier/skip-formatting'
   ],
   overrides: [
