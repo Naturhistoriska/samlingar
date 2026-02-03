@@ -2,7 +2,7 @@ import i18n from '@/i18n'
 
 const Trans = {
   get defaultLocale() {
-    returnimport.meta.env.VITE_DEFAULT_LOCALE
+    return import.meta.env.VITE_DEFAULT_LOCALE
   },
   get supportedLocales() {
     return import.meta.env.VITE_SUPPORTED_LOCALES.split(',')
