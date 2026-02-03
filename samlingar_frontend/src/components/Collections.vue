@@ -2,6 +2,7 @@
   <MultiSelect
     v-model="selectedItems"
     ref="multiSelectRef"
+    id="collectionSelect"
     :options="localizedGroups"
     optionLabel="label"
     optionGroupLabel="label"
@@ -51,29 +52,34 @@ const groupedSelections = ref([
       en: 'Botanical and mycological collections',
       sv: 'Botaniska och mykologiska samlingar'
     },
+    id: 'bot',
     code: 'bot',
     items: [
       {
         // label: { en: 'Algae Collection', sv: 'Alger samling' },
         label: t('collectionLabel.algae'),
+        id: 'algae',
         locale: { en: 'Algae Collection', sv: 'Algsamling' },
         value: { en: 'Algae Collection', sv: 'Alger samling' },
         code: 'algae'
       },
       {
         label: t('collectionLabel.fungi'),
+        id: 'fungi',
         locale: { en: 'Fungi Collection', sv: 'Svampsamling' },
         value: 'Fungi Collection',
         code: 'fungi'
       },
       {
         label: t('collectionLabel.mosses'),
+        id: 'mosses',
         locale: { en: 'Moss Collection', sv: 'Mossamling' },
         value: 'Mosses',
         code: 'mosses'
       },
       {
         label: t('collectionLabel.phanerogamic'),
+        id: 'vascularPlants',
         locale: { en: 'Vascular plant Collections', sv: 'Kärlväxtsamling' },
         value: 'Vascular Plants',
         code: 'vp'
@@ -85,6 +91,7 @@ const groupedSelections = ref([
       en: 'Zoological collections',
       sv: 'Zoologiska samlingar'
     },
+    id: 'zoo',
     code: 'zoo',
     items: [
       {
@@ -154,6 +161,7 @@ const groupedSelections = ref([
       en: 'Paleontological collections',
       sv: 'Paleontologiska samlingar'
     },
+    id: 'pal',
     code: 'pal',
     items: [
       {
@@ -175,6 +183,7 @@ const groupedSelections = ref([
       en: 'Geological collections',
       sv: 'Geologiska samlingar'
     },
+    id: 'geo',
     code: 'geo',
     items: [
       {
