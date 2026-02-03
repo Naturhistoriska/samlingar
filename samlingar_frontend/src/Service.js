@@ -4,7 +4,6 @@ import axios from 'axios'
 // const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
 const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
 
-
 export default class Service {
   async apiInitdata() {
     const url = `${samlingApi}/initialData`
@@ -60,7 +59,6 @@ export default class Service {
     return response.data
   }
 
-
   async apiGeoFetch(params, start, rows) {
     let url = `${samlingApi}/geojson?${params.toString()}&start=${start}&numPerPage=${rows}`
     const response = await axios.get(url)
@@ -75,7 +73,6 @@ export default class Service {
     return response.data
   }
 
-
   async apiPreparaExport(params, total) {
     let url = `${samlingApi}/download?${params.toString()}&numPerPage=${total}&sort=catalogedDate desc`
 
@@ -83,5 +80,4 @@ export default class Service {
 
     return response.data
   }
-
 }
