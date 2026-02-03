@@ -5,21 +5,13 @@
     aria-label="Search options"
   >
     <div class="flex items-center gap-1" @keydown.enter="toggleImageCheck">
-      <Checkbox
-        v-model="image"
-        inputId="image"
-        name="image"
-        :binary="true"
-        size="small"
-        @click="imageClicked"
-      />
+      <Checkbox v-model="image" inputId="image" :binary="true" size="small" @click="imageClicked" />
       <label for="image" class="text-sm">{{ $t('search.haveImages') }}</label>
     </div>
     <div class="flex items-center gap-1" @keydown.enter="toggleCoordinatesCheck">
       <Checkbox
         v-model="coordinates"
         inputId="coordinates"
-        name="coordinates"
         binary
         size="small"
         @click="coordinatesClicked"
@@ -30,7 +22,6 @@
       <Checkbox
         v-model="type"
         inputId="types"
-        name="type"
         :binary="true"
         size="small"
         @click="typeClicked"
@@ -39,21 +30,13 @@
       <label for="types" class="text-sm">{{ $t('search.isType') }}</label>
     </div>
     <div class="flex items-center gap-1" @keydown.enter="toggleSwedenCheck">
-      <Checkbox
-        v-model="sweden"
-        inputId="sweden"
-        name="sweden"
-        binary
-        size="small"
-        @click="swedenClicked"
-      />
+      <Checkbox v-model="sweden" inputId="sweden" binary size="small" @click="swedenClicked" />
       <label for="sweden" class="text-sm">{{ $t('search.inSweden') }}</label>
     </div>
     <div class="flex items-center gap-2" @keydown.enter="toggleNordicCountriesCheck">
       <Checkbox
         v-model="nordicCountries"
         inputId="nordic"
-        name="Nordic countries"
         binary
         size="small"
         @click="nordicClicked"

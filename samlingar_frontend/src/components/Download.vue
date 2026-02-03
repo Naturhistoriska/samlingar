@@ -23,7 +23,6 @@
       <RadioButton
         v-model="exportFormat"
         inputId="excel"
-        name="csv"
         value="excel"
         size="small"
         @click="onClick"
@@ -31,14 +30,7 @@
       <label for="excel" class="text-sm customRadio" style="padding-left: 1em">Excel</label>
     </div>
     <div class="col-2">
-      <RadioButton
-        v-model="exportFormat"
-        inputId="csv"
-        name="csv"
-        value="csv"
-        size="small"
-        @click="onClick"
-      />
+      <RadioButton v-model="exportFormat" inputId="csv" value="csv" size="small" @click="onClick" />
       <label for="csv" class="text-sm customRadio" style="padding-left: 1em">CSV</label>
     </div>
 

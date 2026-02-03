@@ -3,6 +3,7 @@
     <MultiSelect
       v-model="selectedItems"
       ref="multiSelectRef"
+      id="fieldSelect"
       :options="localizedGroups"
       optionGroupLabel="label"
       optionGroupChildren="items"
