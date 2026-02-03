@@ -1,4 +1,4 @@
-import "primeicons/primeicons.css"
+import 'primeicons/primeicons.css'
 import './assets/main.css'
 import '/node_modules/primeflex/primeflex.css'
 
@@ -6,13 +6,11 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 
-
 import { createApp } from 'vue'
 
+// import VueMatomo from 'vue-matomo'
+
 import router, { entryType, previousRoute, currentRoute } from './router'
-
-
-
 
 import i18n from './i18n'
 
@@ -38,10 +36,9 @@ import VueLazyLoad from 'vue3-lazyload'
 
 import { VueSpinnersPlugin } from 'vue3-spinners'
 
-
 import AutoComplete from 'primevue/autocomplete'
 import Breadcrumb from 'primevue/breadcrumb'
-import Button from 'primevue/button'
+// import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Chart from 'primevue/chart'
 import Checkbox from 'primevue/checkbox'
@@ -50,20 +47,20 @@ import DataTable from 'primevue/datatable'
 
 import DataView from 'primevue/dataview'
 
-import Dialog from 'primevue/dialog'
+// import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
 import IconField from 'primevue/iconfield'
-import Fieldset from 'primevue/fieldset'
+// import Fieldset from 'primevue/fieldset'
 
 import Galleria from 'primevue/galleria'
-import Image from 'primevue/image'
+// import Image from 'primevue/image'
 
 import InputGroup from 'primevue/inputgroup'
 import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 
-import Menu from 'primevue/menu'
+// import Menu from 'primevue/menu'
 import MultiSelect from 'primevue/multiselect'
 import Paginator from 'primevue/paginator'
 import Panel from 'primevue/panel'
@@ -71,7 +68,7 @@ import Panel from 'primevue/panel'
 import ProgressSpinner from 'primevue/progressspinner'
 
 import RadioButton from 'primevue/radiobutton'
-import Select from 'primevue/select'
+// import Select from 'primevue/select'
 import SelectButton from 'primevue/selectbutton'
 
 import Skeleton from 'primevue/skeleton'
@@ -84,24 +81,20 @@ import TieredMenu from 'primevue/tieredmenu'
 import Toolbar from 'primevue/toolbar'
 import Tooltip from 'primevue/tooltip'
 
-
-
-// const i18n = createI18n({
-//   // something vue-i18n options here ...
+// const app = createApp(App, {}).use(VueMatomo, {
+//   // Configure your matomo server and site by providing
+//   host: '//samlingar.nrm.se/matomo/',
+//   siteId: 1
 // })
 
-const app = createApp(App, {
-})
+// window._paq.push(['trackPageView']) //To track pageview
 
+const app = createApp(App, {})
 
 // Optionally make tracker values globally available
 app.config.globalProperties.$entryType = entryType
 app.config.globalProperties.$previousRoute = previousRoute
 app.config.globalProperties.$currentRoute = currentRoute
-
-
-
-
 
 app.use(router)
 app.use(store)
@@ -142,7 +135,7 @@ app.use(PrimeVue, {
 
 app.component('AutoComplete', AutoComplete)
 app.component('Breadcrumb', Breadcrumb)
-app.component('Button', Button)
+// app.component('Button', Button)
 app.component('Card', Card)
 app.component('Chart', Chart)
 app.component('Checkbox', Checkbox)
@@ -150,28 +143,26 @@ app.component('Column', Column)
 app.component('DataTable', DataTable)
 app.component('DataView', DataView)
 
-
-app.component('Dialog', Dialog)
+// app.component('Dialog', Dialog)
 app.component('Divider', Divider)
-app.component('Fieldset', Fieldset),
+// app.component('Fieldset', Fieldset)
 app.component('IconField', IconField)
 app.component('Galleria', Galleria)
-app.component('Image', Image)
+// app.component('Image', Image)
 app.component('InputGroup', InputGroup)
 app.component('InputIcon', InputIcon)
 app.component('InputText', InputText)
 app.component('FloatLabel', FloatLabel)
-app.component('Menu', Menu)
+// app.component('Menu', Menu)
 
 app.component('MultiSelect', MultiSelect)
 
 app.component('Paginator', Paginator)
 app.component('Panel', Panel)
 
-
 app.component('ProgressSpinner', ProgressSpinner)
 app.component('RadioButton', RadioButton)
-app.component('Select', Select)
+// app.component('Select', Select)
 app.component('SelectButton', SelectButton)
 app.component('Skeleton', Skeleton)
 app.component('Tab', Tab)
@@ -187,7 +178,5 @@ app.component('Toolbar', Toolbar)
 
 app.directive('ripple', Ripple)
 app.directive('tooltip', Tooltip)
-
-
 
 app.mount('#app')
