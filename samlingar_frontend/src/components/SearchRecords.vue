@@ -92,6 +92,9 @@ import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import Collections from './Collections.vue'
 
+import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
+
 import EventDate from './search/EventDate.vue'
 import FilterCheckbox from './FilterCheckbox.vue'
 import FilterFields from './FilterFields.vue'

@@ -1,34 +1,27 @@
 <template>
-  <div
+  <button
+    type="button"
     class="flex align-items-center justify-content-between divLink p-2 cursor-pointer"
     @click="doSearch"
-    @mouseover="onHover"
-    @mouseleave="unHover"
   >
     <!-- Left Button -->
-    <Button text :label="$t(text)" :class="['text-btn', 'left-btn', { hover: isHover }]" />
+    <span class="text-btn left-btn">
+      {{ $t(text) }}
+    </span>
 
     <!-- Right Button -->
-    <Button text :class="['text-btn', 'right-btn', { hover: isHover }]">
+    <span class="text-btn right-btn">
       {{ total }}
-    </Button>
-  </div>
+    </span>
+  </button>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+// import Button from 'primevue/button'
 
-const props = defineProps(['text', 'total'])
+defineProps(['text', 'total'])
 const emits = defineEmits(['doSearch'])
 
-const isHover = ref(false)
-
-function onHover() {
-  isHover.value = true
-}
-function unHover() {
-  isHover.value = false
-}
 function doSearch() {
   emits('doSearch')
 }
@@ -38,6 +31,11 @@ function doSearch() {
 .divLink {
   width: 100%;
   transition: background-color 0.3s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 /* Optional hover effect for the container */
@@ -56,7 +54,8 @@ function doSearch() {
 }
 
 /* When hovered */
-.hover {
+.divLink:hover .text-btn,
+.divLink:focus-visible .text-btn {
   color: #fff !important;
   background: #0e3a12 !important;
   text-decoration: none !important;

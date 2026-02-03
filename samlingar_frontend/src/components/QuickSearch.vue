@@ -39,6 +39,8 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
+import Button from 'primevue/button'
+
 import Service from '../Service'
 const service = new Service()
 

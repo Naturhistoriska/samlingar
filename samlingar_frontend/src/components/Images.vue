@@ -31,12 +31,18 @@
 
     <div v-if="images" class="grid grid-cols-12 gap-4" style="max-width: 600px">
       <div v-for="(image, index) of images" :key="index" class="col-span-4">
-        <img
-          :src="'https://media-service.nrm.se/images?id=' + image + dataset"
-          :alt="image.alt"
-          style="cursor: pointer; width: 100px"
+        <button
+          type="button"
           @click="imageClick(index)"
-        />
+          style="background: none; border: none; padding: 0; cursor: pointer"
+          aria-label="View large image"
+        >
+          <img
+            :src="'https://media-service.nrm.se/images?id=' + image + dataset"
+            alt=""
+            style="width: 100px"
+          />
+        </button>
       </div>
     </div>
   </div>
@@ -45,6 +51,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import Button from 'primevue/button'
+import Image from 'primevue/image'
 
 const store = useStore()
 

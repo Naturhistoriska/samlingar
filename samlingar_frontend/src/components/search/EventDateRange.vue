@@ -58,6 +58,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import DatePicker from 'primevue/datepicker'
+import Button from 'primevue/button'
 import { useStore } from 'vuex'
 
 const store = useStore()

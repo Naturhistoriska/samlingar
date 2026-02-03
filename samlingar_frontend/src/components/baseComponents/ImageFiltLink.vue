@@ -1,7 +1,8 @@
 <template>
-  <div
+  <button
     class="grid collectionDivLink p-2 align-items-center cursor-pointer"
     @click="searchCollection"
+    style="background: none; border: none; width: 100%; text-align: left; padding: 0"
   >
     <!-- Image section -->
     <div class="col-12 md:col-4 text-center mb-3 md:mb-0">
@@ -10,14 +11,16 @@
 
     <!-- Text/Button section -->
     <div class="col-12 md:col-8 collectionTextLink text-center md:text-left">
-      <Button text class="p-button-text w-full md:w-auto">
+      <span class="p-button-text w-full md:w-auto" style="display: inline-block">
         {{ $t(text) }}
-      </Button>
+      </span>
     </div>
-  </div>
+  </button>
 </template>
 <script setup>
-const props = defineProps(['imageSource', 'text'])
+import Image from 'primevue/image'
+
+defineProps(['imageSource', 'text'])
 
 const emits = defineEmits(['searchCollection'])
 

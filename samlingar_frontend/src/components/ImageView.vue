@@ -8,6 +8,7 @@
       height="600"
       frameborder="0"
       allowfullscreen
+      title="IIIF Viewer"
     ></iframe>
 
     <div v-else ref="viewer" class="osd-viewer"></div>
@@ -43,16 +44,18 @@
     <!-- Thumbnail strip -->
     <transition name="fade">
       <div class="thumbnail-panel">
-        <div
+        <button
           v-if="showThumbnails"
           v-for="(thumb, i) in thumbnails"
           :key="i"
           class="thumb"
           :class="{ active: currentIndex === i }"
           @click="openImage(i)"
+          type="button"
+          aria-label="View image"
         >
-          <img :src="thumb" alt="thumbnail" />
-        </div>
+          <img :src="thumb" alt="" />
+        </button>
       </div>
     </transition>
   </div>
@@ -62,6 +65,7 @@
 import { computed, nextTick, ref, onMounted, onBeforeUnmount } from 'vue'
 import OpenSeadragon from 'openseadragon'
 import { useStore } from 'vuex'
+import Button from 'primevue/button'
 
 const store = useStore()
 
@@ -80,15 +84,6 @@ const showThumbnails = ref(true)
 const catNumber = ref('')
 
 const iiifManifestUrl = ref('')
-
-// const iiifManifestUrl = 'https://assets.nrm.se/viewer/NHRS-TOBI000002720'
-// const iiifManifestUrl = 'https://assets.nrm.se/viewer/uv.html/NHRS-TOBI000002720'
-
-// const scrollAmount = 300 // px per navigation click
-
-// Example IIIF v3 manifest
-// const iiifManifestUrl = 'https://assets.nrm.se/manifest/NHRS-HEMI000000010.json'
-// const iiifManifestUrl = 'https://assets.nrm.se/manifest/NHRS-COLE000007412.json'
 
 const isSpecifyCollections = computed(() => {
   const record = store.getters['selectedRecord']
@@ -338,6 +333,8 @@ function toggleThumbnails() {
   overflow: hidden;
   cursor: pointer;
   scroll-snap-align: start;
+  padding: 0;
+  background: none;
 }
 
 .thumb img {

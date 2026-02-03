@@ -15,6 +15,7 @@
 // import { ref } from 'vue'
 // import { useRouter } from 'vue-router'
 // import { useStore } from 'vuex'
+import Button from 'primevue/button'
 
 import InputWithIcon from './baseComponents/InputWithIcon.vue'
 

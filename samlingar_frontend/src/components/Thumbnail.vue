@@ -9,6 +9,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import Image from 'primevue/image'
 
 const props = defineProps(['record', 'src'])
 

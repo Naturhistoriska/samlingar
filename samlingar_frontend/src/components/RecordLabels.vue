@@ -68,6 +68,8 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Service from '../Service'
 
+import Button from 'primevue/button'
+
 const service = new Service()
 
 const store = useStore()

@@ -52,6 +52,8 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import Service from '../Service'
 
+import Button from 'primevue/button'
+
 const store = useStore()
 const router = useRouter()
 

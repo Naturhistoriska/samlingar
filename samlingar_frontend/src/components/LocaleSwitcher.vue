@@ -21,6 +21,8 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Tr from '@/i18n/translation'
+import Button from 'primevue/button'
+import Menu from 'primevue/menu'
 
 // i18n and locale state
 const { t, locale } = useI18n()

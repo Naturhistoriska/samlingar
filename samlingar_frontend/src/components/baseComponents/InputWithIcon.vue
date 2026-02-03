@@ -16,6 +16,8 @@
 </template>
 <script setup>
 import { ref } from 'vue'
+import Button from 'primevue/button'
+
 const emits = defineEmits(['doAction'])
 const props = defineProps(['icon', 'placehold', 'tip', 'size'])
 const value = ref()

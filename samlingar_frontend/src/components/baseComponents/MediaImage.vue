@@ -9,6 +9,8 @@
   </div>
 </template>
 <script setup>
+import Image from 'primevue/image'
+
 const props = defineProps(['mediaUrl', 'dataset'])
 </script>
 <style scoped>

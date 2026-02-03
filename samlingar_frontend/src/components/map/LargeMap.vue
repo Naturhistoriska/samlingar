@@ -34,6 +34,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { LMap, LTileLayer, LGeoJson, LMarker, LIcon } from '@vue-leaflet/vue-leaflet'
+import Button from 'primevue/button'
 
 const center = ref([59.0, 15.0]) // set to your area
 const zoom = ref(2)

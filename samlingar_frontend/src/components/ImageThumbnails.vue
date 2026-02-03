@@ -1,8 +1,15 @@
 <template>
   <div class="iiif-thumbnails">
-    <div v-for="(thumb, index) in thumbnails" :key="index" class="thumbnail">
-      <img :src="thumb" alt="thumbnail" @click="imageClick(index)" />
-    </div>
+    <button
+      v-for="(thumb, index) in thumbnails"
+      :key="index"
+      class="thumbnail"
+      type="button"
+      @click="imageClick(index)"
+      aria-label="View full image"
+    >
+      <img :src="thumb" alt="" />
+    </button>
   </div>
   <div v-if="showMetadata" class="metadata-row flex items-center gap-2">
     <Button text target="_blank" class="p-0" @click="openIIIFViewer">
@@ -22,6 +29,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import Button from 'primevue/button'
+import Image from 'primevue/image'
 
 const store = useStore()
 
@@ -136,6 +145,12 @@ function imageClick(index) {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+.thumbnail {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
 }
 .thumbnail img {
   width: 90px;

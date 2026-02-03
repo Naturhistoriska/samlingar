@@ -3,9 +3,20 @@
     <!-- ===== Top Bar ===== -->
     <div class="tabs-header">
       <!-- Mobile Hamburger Menu -->
-      <button class="menu-btn" @click="menuOpen = !menuOpen">
+      <!-- <button class="menu-btn" ref="menuButtonRef" @click="toggleMenu">
         <i class="pi" :class="menuOpen ? 'pi-times' : 'pi-bars'"></i>
+      </button> -->
+
+      <button
+        class="menu-btn"
+        @click="toggleMenu"
+        :aria-expanded="menuOpen.toString()"
+        aria-controls="mobile-navigation"
+        aria-label="Main menu"
+      >
+        <i class="pi" :class="menuOpen ? 'pi-times' : 'pi-bars'" aria-hidden="true"></i>
       </button>
+
       <div class="tabs-section">
         <Tabs v-model:value="value">
           <TabList>
@@ -60,7 +71,7 @@
 
     <!-- ===== Collapsible Mobile Nav ===== -->
     <transition name="slide-fade">
-      <div v-if="menuOpen" class="mobile-nav">
+      <div v-if="menuOpen" id="mobile-navigation" class="mobile-nav">
         <RouterLink to="/" class="mobile-nav-item" @click="menuOpen = false">
           {{ $t('nav.home') }}
         </RouterLink>
@@ -84,6 +95,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 import LocaleSwitcher from '@/components/LocaleSwitcher.vue'
+import Button from 'primevue/button'
 
 const store = useStore()
 const router = useRouter()
@@ -91,6 +103,8 @@ const route = useRoute()
 
 const value = ref('0')
 const menuOpen = ref(false)
+
+const menuButtonRef = ref(null)
 
 watch(
   () => route.path,
@@ -164,8 +178,21 @@ function onClick() {
   store.commit('setRowsPerPage', 20)
 }
 
+// const onTabEnter = (index) => {
+//   menuOpen.value = false
+// }
+
+function toggleMenu() {
+  menuOpen.value = !menuOpen.value
+}
+
 const onTabEnter = (index) => {
   menuOpen.value = false
+
+  // wait until menu closes (next tick)
+  nextTick(() => {
+    menuButtonRef.value?.focus()
+  })
 }
 </script>
 

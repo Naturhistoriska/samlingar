@@ -80,6 +80,9 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+
+import Button from 'primevue/button'
+
 const store = useStore()
 
 const emits = defineEmits(['scientificNameSearch'])
