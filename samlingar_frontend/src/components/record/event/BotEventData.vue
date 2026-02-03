@@ -9,7 +9,7 @@
 
       <div class="col-4 reducePadding">{{ $t('results.collectors') }}</div>
       <div class="col-8 reducePadding">
-        {{ collectors }}
+        {{ collectorList }}
       </div>
 
       <div class="col-4 reducePadding">{{ $t('results.recordNumber') }}</div>
@@ -31,7 +31,7 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 
-const collectors = ref()
+const collectorList = ref()
 const fieldNumber = ref()
 const habitatData = ref()
 const verbatimEventDateData = ref()
@@ -39,7 +39,16 @@ const verbatimEventDateData = ref()
 onMounted(async () => {
   const record = store.getters['selectedRecord']
 
-  const { endday, endmonth, endyear, habitat, recordedBy, recordNumber, verbatimEventDate } = record
+  const {
+    collectors,
+    endday,
+    endmonth,
+    endyear,
+    habitat,
+    recordedBy,
+    recordNumber,
+    verbatimEventDate
+  } = record
 
   const endDate = new Array(endyear, endmonth, endday)
   const eventEndDate = endDate.filter((str) => str !== undefined).join('-')
@@ -47,6 +56,11 @@ onMounted(async () => {
   fieldNumber.value = recordNumber
   habitatData.value = habitat
   collectors.value = recordedBy ? recordedBy.toString() : ''
+
+  if (collectors) {
+    collectorList.value = collectors.join(' | ')
+  }
+
   verbatimEventDateData.value = eventEndDate
     ? verbatimEventDate + ' - ' + eventEndDate
     : verbatimEventDate
