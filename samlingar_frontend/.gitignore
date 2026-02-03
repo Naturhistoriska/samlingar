@@ -12,6 +12,7 @@ lerna-debug.log*
 samlingar_frontend/package-lock.json
 
 walkthrough.md.resolved
+lint_report.json
 
 node_modules
 .DS_Store
@@ -20,6 +21,8 @@ dist-ssr
 coverage
 *.local
 vite.config.js.timestamp*
+
+
 
 yarn.lock
 
