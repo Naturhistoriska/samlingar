@@ -110,7 +110,7 @@ function handleFreeTextSearch(value) {
 </script>
 <style scoped>
 .searchInput {
-  min-width: 90%;
+  min-width: 60%;
   text-align: left;
   float: left;
 }

@@ -30,23 +30,31 @@
       </div>
 
       <!-- Toggle -->
-      <div class="col-12 md:col-3 reducePadding synonyms-toggle" @click="displaySynonyms">
+      <button
+        type="button"
+        class="col-12 md:col-3 reducePadding synonyms-toggle"
+        @click="displaySynonyms"
+        style="
+          background: none;
+          border: none;
+          text-align: left;
+          font-family: inherit;
+          font-size: inherit;
+        "
+      >
         <span v-if="hideSynonyms">
           [<small>
             <i>{{ $t('results.displayAll') }}</i>
           </small>
-
           <i class="pi pi-caret-right icon"></i>]
         </span>
-
         <span v-else>
           [<small
             ><i>{{ $t('results.hideSynonyms') }}</i>
           </small>
-
           <i class="pi pi-caret-down icon"></i>]
         </span>
-      </div>
+      </button>
 
       <!-- Synonym content -->
       <div class="col-12 md:col-8 reducePadding synonyms-content">
@@ -101,6 +109,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
+import Button from 'primevue/button'
 
 const store = useStore()
 

@@ -1,5 +1,12 @@
 <template>
-  <iframe :src="iiifManifestUrl" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
+  <iframe
+    :src="iiifManifestUrl"
+    width="100%"
+    height="600"
+    frameborder="0"
+    allowfullscreen
+    title="IIIF Viewer"
+  ></iframe>
 </template>
 
 <script setup>

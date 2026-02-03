@@ -78,9 +78,18 @@
     </div>
     <div class="grid" style="margin-top: 1px" v-if="hasKindomAndSynonyms">
       <div class="col-1 reducePadding">{{ $t('results.synonyms') }}</div>
-      <div
+      <button
+        type="button"
         class="col-3 reducePadding"
-        style="padding-left: 1rem; cursor: pointer"
+        style="
+          padding-left: 1rem;
+          cursor: pointer;
+          background: none;
+          border: none;
+          text-align: left;
+          font-family: inherit;
+          font-size: inherit;
+        "
         @click="displaySynonyms"
         v-if="hideSynonyms"
       >
@@ -90,12 +99,21 @@
         <small style="padding-left: 0.5em"
           ><i class="pi pi-caret-right" style="vertical-align: sub"></i></small
         >]
-      </div>
+      </button>
 
-      <div
+      <button
+        type="button"
         v-else
         class="col-3 reducePadding"
-        style="padding-left: 1rem; cursor: pointer"
+        style="
+          padding-left: 1rem;
+          cursor: pointer;
+          background: none;
+          border: none;
+          text-align: left;
+          font-family: inherit;
+          font-size: inherit;
+        "
         @click="displaySynonyms"
       >
         [<small>
@@ -104,7 +122,7 @@
         <small style="padding-left: 0.5em"
           ><i class="pi pi-caret-down" style="vertical-align: sub"></i></small
         >]
-      </div>
+      </button>
       <div class="col-8 reducePadding" v-if="hideSynonyms">
         {{ synonymAuthorData }}
       </div>
@@ -117,6 +135,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
+import Button from 'primevue/button'
 
 const store = useStore()
 

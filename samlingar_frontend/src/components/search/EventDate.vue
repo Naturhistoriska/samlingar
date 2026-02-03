@@ -2,7 +2,8 @@
   <div class="grid" id="eventDateDiv">
     <div class="col-12">
       <div class="card flex gap-3" style="padding-bottom: 0.5em">
-        <div class="flex items-center">
+        <!-- eslint-disable-next-line vuejs-accessibility/label-has-for -->
+        <label class="flex items-center cursor-pointer" for="option1">
           <RadioButton
             v-model="searchOptions"
             inputId="option1"
@@ -12,11 +13,12 @@
             class="mt-1"
             @value-change="change"
           />
-          <label for="option1" class="ml-2">
+          <span class="ml-2">
             <small>{{ $t('search.filterByCollectingDate') }}</small>
-          </label>
-        </div>
-        <div class="flex items-center">
+          </span>
+        </label>
+        <!-- eslint-disable-next-line vuejs-accessibility/label-has-for -->
+        <label class="flex items-center cursor-pointer" for="option2">
           <RadioButton
             v-model="searchOptions"
             inputId="option2"
@@ -26,10 +28,10 @@
             size="small"
             @value-change="change"
           />
-          <label for="option2" class="ml-2">
+          <span class="ml-2">
             <small>{{ $t('search.filterByCollectingYear') }}</small>
-          </label>
-        </div>
+          </span>
+        </label>
       </div>
 
       <div class="w-full" v-if="isFilterByDate">
@@ -56,6 +58,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import DateRange from './EventDateRange.vue'
 import DatePicker from './EventDatePicker.vue'
+import Button from 'primevue/button'
 
 const emits = defineEmits(['dateSearch'])
 

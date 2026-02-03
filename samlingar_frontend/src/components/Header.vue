@@ -1,12 +1,23 @@
 <template>
   <header class="app-header">
-    <!-- Logo Section -->
-    <div class="logo clickable" @click="openLink">
-      <img src="/nrm-logo-liggande-svensk-negativ_copy.png" alt="Logo" class="logo-img" />
-    </div>
+    <!-- Logo / Home link -->
+    <a
+      href="https://www.nrm.se"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="logo"
+      aria-label="Open NRM website in a new tab"
+    >
+      <img
+        src="/nrm-logo-liggande-svensk-negativ_copy.png"
+        alt="Naturhistoriska riksmuseet"
+        class="logo-img"
+      />
+    </a>
 
-    <!-- Search Box -->
+    <!-- Search -->
     <div class="search-box">
+      <!-- Ensure Search component has an accessible label internally -->
       <Search />
     </div>
   </header>
@@ -14,10 +25,6 @@
 
 <script setup>
 import Search from './QuickSearch.vue'
-
-function openLink() {
-  window.open('https://www.nrm.se', '_blank', 'noopener,noreferrer')
-}
 </script>
 
 <style scoped>
@@ -33,10 +40,18 @@ function openLink() {
   z-index: 100;
 }
 
+/* Logo link */
 .logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
+}
+
+/* Visible focus state */
+.logo:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 4px;
 }
 
 .logo-img {
@@ -51,17 +66,6 @@ function openLink() {
   display: flex;
   justify-content: flex-end;
   max-width: 400px;
-}
-
-.search-input {
-  width: 100%;
-  font-size: 1rem; /* ≥16px for mobile */
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-}
-
-.clickable {
-  cursor: pointer;
 }
 
 /* Responsive adjustments */

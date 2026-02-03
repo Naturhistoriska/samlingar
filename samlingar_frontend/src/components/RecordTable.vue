@@ -40,11 +40,14 @@
         style="min-width: 8rem"
       >
         <template #body="{ data }">
-          <small>{{ data.collectionName }}</small>
+          <div class="text-xs md:text-sm">
+            {{ data.collectionName }}
+          </div>
         </template>
         <template #filter="{ filterModel, filterCallback }">
           <MultiSelect
             v-model="filterModel.value"
+            id="collectionSelect"
             @change="filterCallback()"
             :options="collectionOptions"
             :placeholder="$t('search.filterCollections')"
@@ -100,7 +103,9 @@
         style="min-width: 5rem"
       >
         <template #body="{ data }">
-          <small>{{ data.catalogNumber }}</small>
+          <div class="text-xs md:text-sm">
+            {{ data.catalogNumber }}
+          </div>
         </template>
         <template #filter="{ filterModel }">
           <InputText
@@ -156,8 +161,9 @@
 
 <script setup>
 import { onBeforeUnmount, computed, onMounted, ref, watch } from 'vue'
-// import { useToast } from 'primevue/usetoast'
 import { FilterMatchMode } from '@primevue/core/api'
+import Button from 'primevue/button'
+
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import Service from '../Service'
@@ -166,9 +172,6 @@ const store = useStore()
 const router = useRouter()
 
 const service = new Service()
-// const toast = useToast()
-
-// const emits = defineEmits(['search'])
 
 let columns = ref([])
 const dt = ref()

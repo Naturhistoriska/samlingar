@@ -1,30 +1,29 @@
 <template>
-  <div class="footer">
+  <footer class="footer">
     <div class="footer-content">
-      <span class="footer-text"> {{ $t('footer.nrm') }} - {{ new Date().getFullYear() }} </span>
-      <Button
-        icon="pi pi-envelope"
-        :label="$t('common.contactus')"
-        @click="onContackLinkclick()"
-        class="contactlink"
-        link
-      />
+      <p class="footer-text">{{ t('footer.nrm') }} – {{ currentYear }}</p>
+
+      <RouterLink to="/contact" class="contactlink" aria-label="Contact us">
+        <i class="pi pi-envelope" aria-hidden="true"></i>
+        <span class="contactlink-text">
+          {{ t('common.contactus') }}
+        </span>
+      </RouterLink>
     </div>
-  </div>
+  </footer>
 </template>
-<script>
-export default {
-  methods: {
-    onContackLinkclick() {
-      const pushUrl = '/contact'
-      this.$router.push(pushUrl)
-    }
-  }
-}
+
+<script setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
+const currentYear = computed(() => new Date().getFullYear())
 </script>
+
 <style scoped>
 .footer {
-  /* background-color: #f5f5f5;    */
   padding: 1rem;
   width: 100%;
   box-sizing: border-box;
@@ -34,43 +33,42 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* allow wrapping on mobile */
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
 .footer-text {
   font-size: 0.9rem;
-  color: #4a4949b6;
+  color: #4a4949;
 }
 
 .contactlink {
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.9rem;
   text-decoration: none;
-  color: #4a4949b6;
+  color: #333;
 }
 
-/* .footer .footer-content {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  padding: 0 3em;
-} */
+.contactlink:focus-visible {
+  outline: 2px solid #005fcc;
+  outline-offset: 2px;
+}
 
 @media (max-width: 768px) {
   .footer-content {
-    flex-direction: column; /* stack items */
+    flex-direction: column;
     align-items: flex-start;
   }
 
   .footer-text {
-    margin-bottom: 0.5rem; /* spacing between text and button */
-    font-size: 0.8em;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
   }
 
   .contactlink {
     font-size: 0.8rem;
-    color: #4a4949b6;
   }
 }
 </style>

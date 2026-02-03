@@ -392,13 +392,14 @@ function setMonthData(tab, month) {
 .chart-wrapper {
   flex: 1 1 48%; /* roughly 50% width on desktop */
   min-width: 300px; /* avoid too narrow charts */
-  height: 300px; /* default height for desktop */
+  height: auto;
+  /* height: 300px; default height for desktop */
 }
 
 @media (max-width: 768px) {
   .chart-wrapper {
     flex: 1 1 100%; /* full width on mobile */
-    height: 200px; /* smaller height for mobile */
+    height: 150px; /* smaller height for mobile */
   }
 }
 </style>
