@@ -76,7 +76,7 @@ public class SolrSearchHelper {
 
     private final String kingdomKey = "kingdom";
     private final String phylumKey = "phylum";
-    private final String classKey = "cazz";
+    private final String classKey = "clazz";
     private final String orderKey = "order";
     private final String familyKey = "family";
     private final String genusKey = "genus";
