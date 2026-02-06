@@ -3,7 +3,11 @@
     <div class="footer-content">
       <p class="footer-text">{{ t('footer.nrm') }} – {{ currentYear }}</p>
 
-      <RouterLink to="/contact" class="contactlink" aria-label="Contact us">
+      <RouterLink
+        :to="{ path: '/about', query: { tab: 'contact' } }"
+        class="contactlink"
+        aria-label="About us"
+      >
         <i class="pi pi-envelope" aria-hidden="true"></i>
         <span class="contactlink-text">
           {{ t('common.contactus') }}
@@ -27,9 +31,12 @@ const currentYear = computed(() => new Date().getFullYear())
   padding: 1rem;
   width: 100%;
   box-sizing: border-box;
+  background: #f6f4f4;
 }
 
 .footer-content {
+  margin-left: 2em;
+  margin-right: 2em;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,7 +45,7 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .footer-text {
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #4a4949;
 }
 
