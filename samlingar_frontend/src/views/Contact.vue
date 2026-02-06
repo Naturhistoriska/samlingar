@@ -1,41 +1,49 @@
 <template>
-  <Card>
-    <template #title>
-      <h2 class="card-title">{{ $t('common.contactus') }}</h2>
-    </template>
-    <template #content>
-      <div class="card-text">{{ $t('contact.text') }}</div>
-      <div class="section-header">
-        <h2>{{ $t('contact.contactInfo') }}</h2>
+  <div>
+    <!-- Title -->
+    <h2 class="card-title">
+      {{ $t('common.contactus') }}
+    </h2>
+
+    <!-- Content -->
+    <div class="card-text">
+      {{ $t('contact.text') }}
+    </div>
+
+    <div class="section-header">
+      <h2>{{ $t('contact.contactInfo') }}</h2>
+    </div>
+
+    <div class="card-text">
+      {{ $t('contact.departmentBio') }}<br />
+      {{ $t('contact.pobox') }}<br />
+      {{ $t('contact.poAddress') }}
+    </div>
+
+    <br />
+    <br />
+
+    <!-- Footer -->
+    <div class="footer-grid">
+      <div class="footer-label">
+        {{ $t('contact.phonelabel') }}
       </div>
-      <div class="card-text">
-        {{ $t('contact.departmentBio') }}<br />
-        {{ $t('contact.pobox') }}<br />
-        {{ $t('contact.poAddress') }}
+      <div class="footer-label">
+        {{ phone }}
       </div>
-      <br />
-      <br />
-    </template>
-    <template #footer>
-      <div class="footer-grid">
-        <div class="footer-label">
-          {{ $t('contact.phonelabel') }}
-        </div>
-        <div class="footer-label">
-          {{ phone }}
-        </div>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-label">
+        {{ $t('contact.emailLabel') }}
       </div>
-      <div class="footer-grid">
-        <div class="footer-label">
-          {{ $t('contact.emailLabel') }}
-        </div>
-        <div class="footer-value">
-          {{ email }}
-        </div>
+      <div class="footer-value">
+        {{ email }}
       </div>
-    </template>
-  </Card>
+    </div>
+  </div>
 </template>
+
 <script setup>
 import { computed } from 'vue'
 
