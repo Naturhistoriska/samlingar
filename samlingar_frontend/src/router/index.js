@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 import { ref } from 'vue'
-// import About from '../views/About.vue'
+import About from '../views/About.vue'
+
 import Collections from '../views/Collections.vue'
 import Contact from '../views/Contact.vue'
 import Home from '../views/Home.vue'
@@ -32,16 +33,24 @@ const routes = [
     component: RecordView
   },
 
-  // {
-  // path: '/about',
-  // name: 'About',
-  // component: About
-  // },
+  {
+    path: '/about',
+    name: 'About',
+    component: About,
+    meta: {
+      title: 'About | Samlingar'
+    }
+  },
+
   {
     path: '/collections',
     name: 'Collections',
-    component: Collections
+    component: Collections,
+    meta: {
+      title: 'Collection | Samlingar'
+    }
   },
+
   {
     path: '/contact',
     name: 'Contact',
