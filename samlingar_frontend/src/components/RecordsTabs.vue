@@ -52,6 +52,7 @@
 </template>
 <script setup>
 import { computed, ref } from 'vue'
+
 import { useStore } from 'vuex'
 import Download from './Download.vue'
 import RecordLabels from './RecordLabels.vue'
@@ -133,7 +134,7 @@ function preparaDataExport() {
 } */
 
 .download-container {
-  min-width: 30rem;
+  min-width: 50rem;
 }
 
 .my-tablist {
