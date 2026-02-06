@@ -47,17 +47,6 @@ export default createStore({
     totalRecords: 0,
     totalGeoData: 0,
 
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-
     clusterGroup: null,
 
     fields: [],
@@ -69,13 +58,6 @@ export default createStore({
     selectedRecord: null,
 
     totalCount: 0,
-
-    //
-    //
-    //
-    //
-    //
-    //
 
     dateRange: null,
     showDetail: false,
