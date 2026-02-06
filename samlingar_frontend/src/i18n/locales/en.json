@@ -1,7 +1,17 @@
 {
   "about": {
+    "aboutSamlingar": "About Samlingar",
+    "accessibility": "Accessibility",
+    "apiDocumention": "API documentation",
+    "apiText": "We provide an API that allows you to submit search queries for online collections and returns matching results in JSON format.",
     "header": "Here you can search for the Museum of Natural history’s collections",
-    "header2": "The collections you can search for are: "
+    "header2": "The collections you can search for are: ",
+    "github": "The project is available on",
+    "text1": "Samlingar is the digital gateway to the vast collections of the Swedish Museum of Natural History (Naturhistoriska riksmuseet). This platform allows researchers, students, and thepublic to explore millions of biological and geological specimens. The data comes from ourinternal management systems and is updated regularly. This project is open source and builtwith modern web technologies to ensure fast and accessible search capabilities."
+  },
+  "accessibility": {
+    "accessibilityTitle": "Accessibility of the website",
+    "accessibilityText": "We are committed to ensuring that our website is accessible to everyone, including people with disabilities. We strive to meet the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA standards. If you encounter any accessibility issues or have suggestions for improvement, please contact us."
   },
   "btnLabel": {
     "columns": "Columns",
@@ -239,7 +249,7 @@
     "sv": "Swedish"
   },
   "nav": {
-    "about": "About",
+    "about": "About us",
     "collections": "Collections",
     "contactUs": "Contact us",
     "home": "Home",

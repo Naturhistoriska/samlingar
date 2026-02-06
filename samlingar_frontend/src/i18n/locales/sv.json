@@ -1,7 +1,17 @@
 {
   "about": {
+    "aboutSamlingar": "Om Samlingar",
+    "accessibility": "Tillgänglighetsredogörelse",
+    "apiDocumention": "API-dokumentation",
+    "apiText": "Vi tillhandahåller ett API som gör det möjligt att skicka sökfrågor mot online-samlingar och returnerar matchande resultat i JSON-format.",
     "header": "Här kan du söka i Naturhistoriska riksmuseets samlingar",
-    "header2": "De samlingar du kan söka i är:"
+    "header2": "De samlingar du kan söka i är:",
+    "github": "Projektet finns på",
+    "text1": "Samlingar är den digitala ingången till Naturhistoriska riksmuseets omfattande samlingar. Denna plattform gör det möjligt för forskare, studenter och allmänheten att utforska miljontals biologiska och geologiska föremål. Datan hämtas från våra interna förvaltningssystem och uppdateras regelbundet. Detta projekt är öppen källkod och byggt med modern webbteknik för att säkerställa snabba och tillgängliga sökmöjligheter."
+  },
+  "accessibility": {
+    "accessibilityTitle": "Accessibility of the website",
+    "accessibilityText": "We are committed to ensuring that our website is accessible to everyone, including people with disabilities. We strive to meet the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA standards. If you encounter any accessibility issues or have suggestions for improvement, please contact us."
   },
   "btnLabel": {
     "columns": "Kolumner",
@@ -239,7 +249,7 @@
     "sv": "Svenska"
   },
   "nav": {
-    "about": "Om",
+    "about": "Om oss",
     "collections": "Samlingar",
     "contactUs": "Kontakta oss",
     "home": "Hem",
