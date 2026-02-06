@@ -41,23 +41,14 @@
             >
               {{ $t('nav.collections') }}
             </Tab>
-            <!-- <Tab
+            <Tab
               value="3"
-              to="/about"
+              :to="{ path: '/about', query: { tab: 'about' } }"
               as="router-link"
               @keydown.enter="onTabEnter(3)"
               class="navbg"
             >
               {{ $t('nav.about') }}
-            </Tab> -->
-            <Tab
-              value="3"
-              to="/contact"
-              as="router-link"
-              @keydown.enter="onTabEnter(4)"
-              class="navbg"
-            >
-              {{ $t('common.contactus') }}
             </Tab>
           </TabList>
         </Tabs>
@@ -81,8 +72,8 @@
         <RouterLink to="/collections" class="mobile-nav-item" @click="menuOpen = false">
           {{ $t('nav.collections') }}
         </RouterLink>
-        <RouterLink to="/contact" class="mobile-nav-item" @click="menuOpen = false">
-          {{ $t('common.contactus') }}
+        <RouterLink to="/about" class="mobile-nav-item" @click="menuOpen = false">
+          {{ $t('nav.about') }}
         </RouterLink>
       </div>
     </transition>
@@ -133,12 +124,12 @@ watch(
       case 'Collections':
         value.value = '2'
         break
-      // case 'About':
-      // value.value = '3'
-      // break
-      case 'Contact':
+      case 'About':
         value.value = '3'
         break
+      // case 'Contact':
+      //   value.value = '3'
+      //   break
       default:
         value.value = '0'
     }
