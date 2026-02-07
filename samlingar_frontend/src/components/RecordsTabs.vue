@@ -134,7 +134,7 @@ function preparaDataExport() {
 } */
 
 .download-container {
-  min-width: 50rem;
+  min-width: 35rem;
 }
 
 .my-tablist {
