@@ -269,7 +269,7 @@
       <p>Funka has tested samlingar.nrm.se and the report is dated 2025-11-28 – 2025-12-09</p>
     </div>
 
-    <h2 class="card-title">
+    <h2 class="card-text">
       <a
         href="/docs/samlingarnrmse_-_Analys_mot_lagkrav_och_WCAG_22_AA_2025_2025-12-15.pdf"
         target="_blank"
