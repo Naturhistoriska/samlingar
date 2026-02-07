@@ -7,7 +7,32 @@
 
     <!-- Content -->
     <div class="card-text">
-      {{ $t('about.text1') }}
+      <p>{{ $t('about.text1') }}</p>
+    </div>
+
+    <div class="section-header">
+      <h2>{{ $t('about.howToUsePortal') }}</h2>
+    </div>
+
+    <div class="card-text">
+      <p>{{ $t('about.searchText') }}</p>
+    </div>
+
+    <div class="card-text">
+      <ul>
+        <li>
+          <p>{{ $t('about.searchText1') }}</p>
+        </li>
+        <li>
+          <p>{{ $t('about.searchText2') }}</p>
+        </li>
+        <li>
+          <p>{{ $t('about.searchText3') }}</p>
+        </li>
+        <li>
+          <p>{{ $t('about.searchText4') }}</p>
+        </li>
+      </ul>
     </div>
 
     <div class="section-header">
@@ -15,10 +40,12 @@
     </div>
 
     <div class="card-text">
-      {{ $t('about.apiText') }}
+      <p>{{ $t('about.apiText') }}</p>
     </div>
     <div class="card-text">
-      {{ $t('about.apiDocumention') }}: <a :href="swaggar" target="_blank">{{ swaggar }} </a>.
+      <p>
+        {{ $t('about.apiDocumention') }}: <a :href="swaggar" target="_blank">{{ swaggar }} </a>.
+      </p>
     </div>
 
     <div class="section-header">
