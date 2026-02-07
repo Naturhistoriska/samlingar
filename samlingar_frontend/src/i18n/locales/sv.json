@@ -6,7 +6,13 @@
     "apiText": "Vi tillhandahåller ett API som gör det möjligt att skicka sökfrågor mot online-samlingar och returnerar matchande resultat i JSON-format.",
     "header": "Här kan du söka i Naturhistoriska riksmuseets samlingar",
     "header2": "De samlingar du kan söka i är:",
+    "howToUsePortal": "Användning av portalen",
     "github": "Projektet finns på",
+    "searchText": "Använd sökfältet för att utforska samlingarna. Du kan söka efter vetenskapliga namn, trivialnamn, lokaler eller samlingsmetadata. Förfina din sökning med hjälp av tillgängliga filter för datum, koordinater och bilder.",
+    "searchText1": "Sök & Filtrera: Använd sökfältet för snabba textsökningar. Använd de avancerade filtren för att begränsa resultat efter vetenskapligt namn, samling, datum eller geografi.",
+    "searchText2": "Bläddra i Samlingar: Utforska fliken 'Samlingar' för att se en översikt och statistik över våra zoologiska, botaniska, paleontologiska och geologiska innehav.",
+    "searchText3": "Visa Föremål: Klicka på en post för att se detaljerad taxonomisk information, insamlingsdata och högupplösta bilder där det finns tillgängligt.",
+    "searchText4": "Exportera Data: Ladda ner dina sökresultat i Excel- eller CSV-format för vidare analys.",
     "text1": "Samlingar är den digitala ingången till Naturhistoriska riksmuseets omfattande samlingar. Denna plattform gör det möjligt för forskare, studenter och allmänheten att utforska miljontals biologiska och geologiska föremål. Datan hämtas från våra interna förvaltningssystem och uppdateras regelbundet. Detta projekt är öppen källkod och byggt med modern webbteknik för att säkerställa snabba och tillgängliga sökmöjligheter."
   },
   "accessibility": {
