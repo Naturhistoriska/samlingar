@@ -1,29 +1,56 @@
 <template>
   <div class="layout">
     <!-- Sidebar / drawer -->
-    <aside :class="['sidebar', { open: isOpen }]">
+    <!-- <aside :class="['sidebar', { open: isOpen }]">
       <a
         href="#"
         class="main-link"
         :class="{ active: current === 'about' }"
-        @click.prevent="goToTab('about')"
+        @click.prevent="(goToTab('about'), closeMenu())"
       >
         {{ $t('about.aboutSamlingar') }}
       </a>
 
       <div class="separator"></div>
 
-      <a href="#" :class="{ active: current === 'contact' }" @click.prevent="goToTab('contact')">
+      <a
+        href="#"
+        :class="{ active: current === 'contact' }"
+        @click.prevent="(goToTab('contact'), closeMenu())"
+      >
         {{ $t('common.contactus') }}
       </a>
       <a
         href="#"
         :class="{ active: current === 'accessibility' }"
-        @click.prevent="goToTab('accessibility')"
+        @click.prevent="(goToTab('accessibility'), closeMenu())"
       >
         {{ $t('about.accessibility') }}
       </a>
+    </aside> -->
+
+    <aside :class="['sidebar', { open: isOpen }]">
+      <a
+        href="#"
+        class="main-link"
+        :class="{ active: current === 'about' }"
+        @click.prevent="(goToTab('about'), closeMenu())"
+      >
+        {{ $t('about.aboutSamlingar') }}
+      </a>
+
+      <div class="separator"></div>
+
+      <a href="#" @click.prevent="(goToTab('contact'), closeMenu())">
+        {{ $t('common.contactus') }}
+      </a>
+
+      <a href="#" @click.prevent="(goToTab('accessibility'), closeMenu())">
+        {{ $t('about.accessibility') }}
+      </a>
     </aside>
+
+    <div v-if="isOpen" class="backdrop" @click="closeMenu()"></div>
 
     <!-- Main panel -->
     <main class="content">
@@ -58,12 +85,24 @@ const router = useRouter()
 
 const isOpen = ref(true)
 const current = ref('about')
+const isMobile = ref(false)
 
 onMounted(() => {
   // If query parameter exists, set the current tab accordingly
   if (route.query.tab) {
     current.value = route.query.tab
   }
+
+  isMobile.value = window.innerWidth <= 768
+
+  if (isMobile.value) {
+    isOpen.value = false
+  }
+
+  // Optional: update isMobile on resize
+  window.addEventListener('resize', () => {
+    isMobile.value = window.innerWidth <= 768
+  })
 })
 
 watch(
@@ -72,6 +111,26 @@ watch(
     if (newTab) current.value = newTab
   }
 )
+
+watch(isOpen, (open) => {
+  document.body.style.overflow = open ? 'hidden' : ''
+})
+
+watch(
+  () => route.fullPath,
+  () => {
+    if (window.innerWidth <= 768) {
+      isOpen.value = false
+    }
+  }
+)
+
+const closeMenu = () => {
+  if (window.innerWidth <= 768) {
+    isOpen.value = false
+  }
+  // isOpen.value = false
+}
 
 const goToTab = (tabName) => {
   current.value = tabName
@@ -167,5 +226,46 @@ const goToTab = (tabName) => {
 /* Main content */
 .content {
   padding: 24px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: min(80vw, 260px);
+    background: #fff;
+    z-index: 1001;
+
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding: 20px;
+    padding-top: 56px;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Backdrop */
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1000;
+  }
+
+  .content {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .topbar {
+    /* position: sticky; */
+    top: 0;
+    background: #fff;
+    z-index: 1102;
+  }
 }
 </style>
