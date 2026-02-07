@@ -270,7 +270,13 @@
     </div>
 
     <h2 class="card-title">
-      <a href="https://example.com/report" target="_blank">Evaluation report</a>.
+      <a
+        href="/docs/samlingarnrmse_-_Analys_mot_lagkrav_och_WCAG_22_AA_2025_2025-12-15.pdf"
+        target="_blank"
+        rel="noopener"
+      >
+        Evaluation report
+      </a>
     </h2>
 
     <p>The website was published on 2025-10-17</p>
