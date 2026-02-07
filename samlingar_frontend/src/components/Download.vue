@@ -4,7 +4,7 @@
   </div>
   <div class="grid">
     <div
-      class="col-7"
+      class="col-8"
       no-gutters
       :class="exportCss"
       @click="exportData"
