@@ -8,15 +8,38 @@ The **Samlingar - Museum Collections Search Platform** is a complete system for 
 
 The system consists of independent components for data ingestion, search, API access, and the user interface.
 
+
 ```mermaid
-graph TD
-    CSV[CSV Files] -->|1. Ingest| CSVIndexer[samlingar-csv-solr]
-    DB[Specify Database] -->|1. Ingest| DBIndexer[samlingar-specify-dwc]
-    CSVIndexer -->|2. Index| Solr[Apache Solr]
-    DBIndexer -->|2. Index| Solr
-    Solr -->|3. Search| API[samlingar-service]
-    API -->|4. Serve| UI[samlingar-frontend]
+graph LR
+subgraph Ingestion [Data Ingestion]
+direction TB
+CSV[CSV Files] -->|1. Read| CSVIndexer[samlingar-csv-solr]
+DB[Specify Database] -->|1. Read| DBIndexer[samlingar-specify-dwc]
+end
+
+subgraph Backend [Backend & Search]
+direction TB
+Solr[Apache Solr]
+API[samlingar-service]
+end
+
+subgraph External [External Services]
+Media[Media Service<br/>media-service.nrm.se]
+Assets[Assets Service<br/>assets.nrm.se]
+end
+
+subgraph Frontend [User Interface]
+UI[samlingar-frontend]
+end
+
+CSVIndexer -->|2. Index| Solr
+DBIndexer -->|2. Index| Solr
+Solr -->|3. Search| API
+API -->|4. Serve| UI
+API -.->|Fetch Media| Media
+API -.->|Fetch Media | Assets
 ```
+
 
 ## System Components
 
