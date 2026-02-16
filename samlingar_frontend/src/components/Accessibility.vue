@@ -262,7 +262,7 @@
       <p>Lang-attribute and correct langue code is missing in the langue selector.</p>
     </div>
 
-    <p>It is our ambition to fix all known accessibility problems by 2025-12-31</p>
+    <p>It is our ambition to fix all known accessibility problems by 2026-12-31</p>
 
     <h2 class="card-title">How we tested this website</h2>
     <div class="card-text">
