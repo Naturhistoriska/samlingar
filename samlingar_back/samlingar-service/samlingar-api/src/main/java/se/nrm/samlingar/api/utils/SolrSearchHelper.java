@@ -655,6 +655,8 @@ public class SolrSearchHelper {
 //    
 //    
 //    
+     
+    
     public List<String> buildDataExportFields() {
         fields = new ArrayList(); 
         fields.add(catalogNumberKey);
