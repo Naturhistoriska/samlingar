@@ -3,14 +3,11 @@ all: build
 # v0.8.5 matomo implemented
 
 build:
-	docker build -t dina/smalingar-ui:v0.8.7 .
+	docker build -t dina/smalingar-ui:v1.0.0 .
 
 # docker login
 
 release:
-	docker push dina/smalingar-ui:v0.8.7
+	docker push dina/smalingar-ui:v1.0.0
 
 
-
-
-# gbif data  0.5.3
