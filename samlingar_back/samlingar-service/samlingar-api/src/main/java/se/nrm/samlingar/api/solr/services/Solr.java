@@ -27,9 +27,9 @@ import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.apache.solr.client.solrj.response.QueryResponse;  
 import se.nrm.samlingar.api.logic.InitialProperties;
+import se.nrm.samlingar.api.utils.ExportFields;
 import se.nrm.samlingar.api.utils.SolrSearchBuildChart;
-import se.nrm.samlingar.api.utils.SolrSearchBuildGeoJson;
-import se.nrm.samlingar.api.utils.SolrSearchHelper;
+import se.nrm.samlingar.api.utils.SolrSearchBuildGeoJson; 
 
 /**
  *
@@ -54,7 +54,7 @@ public class Solr implements Serializable {
  
 
     private final String idKey = "id";
-     private final String idFieldKey = "id:";
+    private final String idFieldKey = "id:";
     private final String locationKey = "location";
     private final String scientificNameKey = "scientificName";
     private final String localityKey = "locality";
@@ -97,29 +97,14 @@ public class Solr implements Serializable {
     private final String copyScientificNameKey = "copy_scientificName";
        
     private final int maxExport = 20000;
-    private final int batchSize = 1000;
+    private int batchSize = 1000;
     
 
     private StringBuilder sb;
     private String gap;
 
     private List<String> fields;
-    
-    
-
-//
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
+   
     private final String searchAll = "*:*";
 
     private final String associatedMediaKey = "associatedMedia";
@@ -543,36 +528,7 @@ public class Solr implements Serializable {
             }
         }
     }
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
-    
-    
-    
-    
-    
+ 
     public String scientificNameSearch(String text) {
         log.info("scientificNameSearch: {} -- {}", text );
  
@@ -618,84 +574,7 @@ public class Solr implements Serializable {
 
         return response.jsonStr(); 
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-   
-
-    
-
-    
-    
-//    public String autocompolete(String text) {
-//      
-//        JsonQueryRequest jsonRequest = new JsonQueryRequest()
-//                .setQuery("copy_scientificName:aves*")
-//                .returnFields("scientificName")
-//                .withParam("suggest", "true")
-//                .withParam("suggest.build", "true")
-//                .withParam("suggest.q", "copy_scientificName:aves*");   
-//                  
-//                    
-//         jsonRequest.setBasicAuthCredentials(username, password);
-//            
-//        try {
-//           response = jsonRequest.process(client);  
-//           log.info(response.jsonStr());
-//             
-//        } catch (SolrServerException | IOException ex) {  
-//            log.error(ex.getMessage());
-//        }finally {
-//            try {
-//                client.close();
-//            } catch (IOException ex) {
-//                log.error(ex.getMessage());
-//            }
-//        }
-//        return response.jsonStr();
-//    }
-
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-   
-
+     
     private void buildDownloadJson(String jsonString, JsonArrayBuilder builder) {
 
         JsonReader jsonReader;
@@ -727,8 +606,11 @@ public class Solr implements Serializable {
         String cursorMark = star;
         boolean done = false;
 
-        fields = SolrSearchHelper.getInstance().buildDataExportFields();
+//        fields = SolrSearchHelper.getInstance().buildDataExportFields();
+        fields = ExportFields.BUILD_DATA_EXPORT_FIELDS;
+//        log.info("fields size: {}", fields.size());
 
+        batchSize = batchSize > rows ? rows : batchSize;
         try {
             final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                     .setQuery(text)
@@ -760,7 +642,7 @@ public class Solr implements Serializable {
             fields.stream()
                     .forEach(field -> {
                         jsonRequest.returnFields(field);
-                    });
+                    }); 
 
             while (!done && totalExported < totalRowsToExport) {
 
@@ -797,89 +679,5 @@ public class Solr implements Serializable {
 
         return array.toString();
     }
-
-//    public String geojson1(Map<String, String> paramMap, String text, String scientificName,
-//            String locality, String dateRange, String pt, int start, int rows) {
-//        log.info("geojson... {} -- {}", start, rows);
-//
-//        int totalExported = 0;
-//
-//        String cursorMark = star;
-//        boolean done = false;
-//
-//        JsonArrayBuilder builder = Json.createArrayBuilder();
-//
-//        final JsonQueryRequest jsonRequest = new JsonQueryRequest();
-//        jsonRequest.setQuery(text);
-//        jsonRequest.setLimit(batchSize);
-//        jsonRequest.returnFields(idKey);
-//        jsonRequest.returnFields(locationKey);
-//        jsonRequest.returnFields(localityKey);
-//        jsonRequest.returnFields(scientificNameKey);
-//        jsonRequest.withParam(ptKey, pt);
-//        jsonRequest.withParam(sfield, locationKey);
-//        jsonRequest.withParam(dKey, radiusKm);
-//        jsonRequest.withFilter(bbox);
-//        jsonRequest.withParam("sort", "geodist() asc, id asc");
-//
-//        jsonRequest.setOffset(start);
-//        jsonRequest.setLimit(rows);
-////        jsonRequest.setSort(idKey);
-//
-//        if (!StringUtils.isBlank(scientificName)) {
-//            jsonRequest.withFilter(scientificName);
-//        }
-//
-//        if (!StringUtils.isBlank(locality)) {
-//            jsonRequest.withFilter(locality);
-//        }
-//
-//        if (!StringUtils.isBlank(dateRange)) {
-//            jsonRequest.withFilter(dateRange);
-//        }
-//
-//        paramMap.forEach((key, value) -> {
-//            sb = new StringBuilder();
-//            sb.append(key)
-//                    .append(colon)
-//                    .append(value);
-//            jsonRequest.withFilter(sb.toString());
-//        });
-//
-//        try {
-//
-//            while (!done) {
-//
-//                jsonRequest.withParam(cursorMarkKey, cursorMark);
-//
-//                response = jsonRequest.process(client);
-//                buildDownloadJson(response.jsonStr(), builder);
-//
-//                String nextCursorMark = response.getNextCursorMark();
-//
-//                totalExported += batchSize;
-//                log.info("totalExported : {}", totalExported);
-//
-//                if (cursorMark.equals(nextCursorMark)) {
-//                    done = true;
-//                }
-//                cursorMark = nextCursorMark;
-//            }
-//        } catch (SolrServerException | IOException ex) {
-//            log.error(ex.getMessage());
-//            return null;
-//        } finally {
-//            try {
-//                client.close();
-//            } catch (IOException ex) {
-//                log.error(ex.getMessage());
-//            }
-//        }
-//        JsonArray array = builder.build();
-//        log.info("size : {}", array.size());
-//
-//        return array.toString();
-//    }
-
-  
+ 
 }
