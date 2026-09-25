@@ -3,9 +3,11 @@
 swarm:
   port:
     offset: 100
+  context:
+    path: api
   solr:
-    path: url_to_solr
+    path: http://localhost:18983/solr
     core: samlingar
-    username: username
-    password: password
+    username: not-used
+    password: not-used
 

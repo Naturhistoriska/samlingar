@@ -1,7 +1,7 @@
 FROM solr:8.1
 
 
-ADD mycores /opt/solr-8.1.1/server/solr/mycores
+#ADD mycores /opt/solr-8.1.1/server/solr/mycores
 COPY lib/*.jar /opt/solr-8.1.1/server/solr-webapp/webapp/WEB-INF/lib/
 
 

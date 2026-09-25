@@ -10,14 +10,13 @@ init:
 
 
 build:
-	docker build -t dina/solr:v0.2 .
+	docker build -t dina/solr:v0.3 .
 
-up:
-	docker-compose -f docker-compose.yml up
-# 	docker-compose -f docker-compose.yml up -d
+run:
+	docker-compose -f ../docker-compose.yml up -d
 
-down:
-	docker-compose -f docker-compose.yml down
+stop:
+	docker-compose -f ../docker-compose.yml down
 
 
 # docker login
