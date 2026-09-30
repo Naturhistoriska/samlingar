@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: '18.x'
+          node-version: '24.x'
 
       - name: Install dependencies
         run: npm ci --prefix samlingar_frontend
@@ -38,7 +38,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ghcr.io/${{ github.repository }}/samlingar-ui
+          images: ghcr.io/${{ github.repository_owner }}/samlingar-ui
           tags: |
             type=match,pattern=^ui-(.*)$,group=1
 
