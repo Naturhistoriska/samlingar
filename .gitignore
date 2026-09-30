@@ -49,6 +49,4 @@ documents
 /samlingar-csv-solr/samlingar-data-process/target/
 /samlingar-csv-solr/project-initdata.yml
 
-/samlingar_frontend/package-lock.json
-
 gbif*
