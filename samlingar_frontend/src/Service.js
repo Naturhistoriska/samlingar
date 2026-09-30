@@ -1,8 +1,6 @@
 import axios from 'axios'
 
-// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_PRODUCTION
-// const samlingApi = import.meta.env.VITE_SAMLINGAR_API_STAGE
-const samlingApi = import.meta.env.VITE_SAMLINGAR_API_LOCAL
+const samlingApi = import.meta.env.VITE_SAMLINGAR_API
 
 export default class Service {
   async apiInitdata() {

@@ -3,7 +3,7 @@ all: build
 # v0.8.5 matomo implemented
 
 run:
-	yarn dev
+	VITE_SAMLINGAR_API=https://samlingar.nrm.se/api yarn dev
 
 build:
 	docker build -t dina/smalingar-ui:v1.0.0 .
