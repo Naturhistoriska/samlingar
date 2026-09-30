@@ -2,10 +2,8 @@ name: Build frontend
 
 on:
   push:
-    branches:
-      - build
-    #tags:
-    #  - '*'
+    tags:
+      - 'ui-*'
 
 jobs:
 
@@ -41,6 +39,8 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository }}/samlingar-ui
+          tags: |
+            type=match,pattern=^ui-(.*)$,group=1
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
