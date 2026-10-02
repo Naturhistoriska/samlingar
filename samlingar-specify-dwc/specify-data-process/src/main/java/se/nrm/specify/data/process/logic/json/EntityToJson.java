@@ -11,7 +11,7 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import se.nrm.specify.data.model.impl.Accession;
 import se.nrm.specify.data.model.impl.Agent;
 import se.nrm.specify.data.model.impl.Attachment;

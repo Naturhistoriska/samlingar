@@ -10,7 +10,7 @@ import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder; 
 import javax.json.JsonObjectBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils; 
+import org.apache.commons.lang3.StringUtils; 
 import se.nrm.specify.data.model.impl.Collection;
 import se.nrm.specify.data.model.impl.Collectionobject;
 import se.nrm.specify.data.model.impl.Institution; 
