@@ -1,0 +1,30 @@
+name: Build specify
+
+on:
+  push:
+    tags:
+      - 'specify-*'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v7
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Run build with maven
+        run: mvn clean package -f samlingar-specify-dwc
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: specifyToSolr-thorntail.jar
+          path: samlingar-specify-dwc/specify-data-process/target/specifyToSolr-thorntail.jar

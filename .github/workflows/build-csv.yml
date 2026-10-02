@@ -1,0 +1,30 @@
+name: Build csv
+
+on:
+  push:
+    tags:
+      - 'csv-*'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v7
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Run build with maven
+        run: mvn clean package -f samlingar-csv-solr
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: csvToSolr-thorntail.jar
+          path: samlingar-csv-solr/samlingar-data-process/target/csvToSolr-thorntail.jar
