@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'api-*'
-    branches:
-      - build
 
 jobs:
 
