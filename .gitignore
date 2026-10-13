@@ -5,7 +5,6 @@ solr/solr8/mycores/security_without_auth.json
 solr/solr8/mycores/security.json_disabled
 solr/solr8/mycores/security_without_auth.json_disabled
 
-solr/log4j*
 
 
 solr/solr8/logs/
