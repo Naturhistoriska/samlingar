@@ -71,17 +71,17 @@ mvn clean package
 ### Start API
 
 ```
-java -jar samlingar-api/target/samlingarApi-thorntail.jar -Sinitdata
+java -jar samlingar-api/target/samlingarApi-thorntail.jar -s project-initdata_sample_for_api.yml
 ```
 
 ## API Endpoints
 
 ### Base URL
-http://localhost:8080/
+http://localhost:8180/api
 
 
 ### Swagger URL
-http://localhost:8180/swagger.json
+http://localhost:8180/api/swagger.json
 
 
 ## Configuration

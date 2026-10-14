@@ -95,9 +95,9 @@ cd samlingar_back/samlingar-service
 mvn clean package
 
 # Run the service
-java -jar samlingar-api/target/samlingarApi-thorntail.jar -Sinitdata
+java -jar samlingar-api/target/samlingarApi-thorntail.jar -s project-initdata_sample_for_api.yml
 ```
-The API will be available at: `http://localhost:8080/`
+The API will be available at: `http://localhost:8180/api`
 
 ### 4. samlingar-frontend (UI)
 **Location:** `/samlingar_frontend`
@@ -105,13 +105,20 @@ The API will be available at: `http://localhost:8080/`
 To run the frontend in development mode:
 ```bash
 cd samlingar_frontend
-npm install   # or yarn
-npm run dev   # or yarn dev
+npm install
+VITE_SAMLINGAR_API=http://localhost:8180/api yarn dev
 ```
+
 Open your browser at: `http://localhost:5173/`
 
 ### 5. Apache Solr
-Ensure Apache Solr is running and configured with the appropriate schema for museum collections.
+**Location:** `/solr`
+
+Start local Solr instance in Docker:
+```bash
+cd solr
+make run
+```
 
 **Features:**
 *   Custom schema

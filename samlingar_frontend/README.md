@@ -24,16 +24,6 @@ It is built using Vue 3, Vite, and Axios, and communicates with a RESTful backen
 - openseadragon
 - RESTful API backend (Java 8 + SolrJ + Thorntail)
 
-## Configuration
-
-Environment variables for API endpoints are stored in:
-
-.env
-
-```
-VITE_SAMLINGAR_API_LOCAL=http://localhost:8180
-```
-
 ## Getting Started
 
 1. Install Node.js
@@ -54,12 +44,22 @@ yarn install
 
 3. Run the development server
 
+Run against local api:
 ```
-yarn dev
+VITE_SAMLINGAR_API=http://localhost:8180/api yarn dev
+```
+
+Run against stage api:
+```
+VITE_SAMLINGAR_API=https://naturarv-stage.nrm.se/api yarn dev
+```
+
+Run against production api:
+```
+VITE_SAMLINGAR_API=https://samlingar.nrm.se/api yarn dev
 ```
 
 4. Open the UI:
-
 ```
 http://localhost:5173/
 ```
