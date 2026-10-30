@@ -4,13 +4,11 @@ solr/solr8/mycores/security.json
 solr/solr8/mycores/security_without_auth.json
 solr/solr8/mycores/security.json_disabled
 solr/solr8/mycores/security_without_auth.json_disabled
-
-
-
 solr/solr8/logs/
 solr/solr8/original_file
 
-
+solr/solr9/samlingar/data
+solr/solr9/security.json
 
 .DS_Store
 */target/
