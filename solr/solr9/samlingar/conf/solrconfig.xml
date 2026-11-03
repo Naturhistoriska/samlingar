@@ -348,9 +348,10 @@
                       to occupy. Note that when this option is specified, the size
                       and initialSize parameters are ignored.
       -->
+    <!-- CUSTOM (from 8.x config): autowarmCount raised from 0 to 128 -->
     <filterCache size="512"
                  initialSize="512"
-                 autowarmCount="0"/>
+                 autowarmCount="128"/>
 
     <!-- Query Result Cache
 
@@ -360,9 +361,10 @@
             maxRamMB - the maximum amount of RAM (in MB) that this cache is allowed
                        to occupy
       -->
+    <!-- CUSTOM (from 8.x config): autowarmCount raised from 0 to 128 -->
     <queryResultCache size="512"
                       initialSize="512"
-                      autowarmCount="0"/>
+                      autowarmCount="128"/>
 
     <!-- Document Cache
 
@@ -875,40 +877,31 @@
       <str>EEE MMM ppd HH:mm:ss [z ]yyyy</str>
     </arr>
   </updateProcessor>
-  <updateProcessor class="solr.AddSchemaFieldsUpdateProcessorFactory" name="add-schema-fields">
-    <lst name="typeMapping">
-      <str name="valueClass">java.lang.String</str>
-      <str name="fieldType">text_general</str>
-      <lst name="copyField">
-        <str name="dest">*_str</str>
-        <int name="maxChars">256</int>
-      </lst>
-      <!-- Use as default mapping instead of defaultFieldType -->
-      <bool name="default">true</bool>
+  <!-- REMOVED: the default schemaless setup (add-schema-fields processor and the
+       add-unknown-fields-to-the-schema chain). It maps unknown fields to the types
+       booleans/pdates/plongs/pdoubles, which the 8.x schema does not define, and caused
+       "fieldType 'booleans' not found in the schema" at core load. Unknown fields are
+       not auto-created; files-update-processor below is used for all /update/** requests. -->
+
+  <!-- CUSTOM (from 8.x config): route all /update/** requests through files-update-processor
+       (overrides the default schemaless chain, so unknown fields are NOT auto-added).
+       Requires the langid module: SOLR_MODULES=extraction,langid -->
+  <initParams path="/update/**">
+    <lst name="defaults">
+      <str name="update.chain">files-update-processor</str>
     </lst>
-    <lst name="typeMapping">
-      <str name="valueClass">java.lang.Boolean</str>
-      <str name="fieldType">booleans</str>
-    </lst>
-    <lst name="typeMapping">
-      <str name="valueClass">java.util.Date</str>
-      <str name="fieldType">pdates</str>
-    </lst>
-    <lst name="typeMapping">
-      <str name="valueClass">java.lang.Long</str>
-      <str name="valueClass">java.lang.Integer</str>
-      <str name="fieldType">plongs</str>
-    </lst>
-    <lst name="typeMapping">
-      <str name="valueClass">java.lang.Number</str>
-      <str name="fieldType">pdoubles</str>
+  </initParams>
+
+  <updateProcessor class="org.apache.solr.update.processor.LangDetectLanguageIdentifierUpdateProcessorFactory" name="langdetect">
+    <lst name="defaults">
+      <str name="langid.fl">content</str>
+      <str name="langid.langField">language</str>
+      <str name="langid.fallback">en</str>
     </lst>
   </updateProcessor>
-  
 
-  <!-- The update.autoCreateFields property can be turned to false to disable schemaless mode -->
-  <updateRequestProcessorChain name="add-unknown-fields-to-the-schema" default="${update.autoCreateFields:true}"
-           processor="uuid,remove-blank,field-name-mutating,max-fields,parse-boolean,parse-long,parse-double,parse-date,add-schema-fields">
+  <updateRequestProcessorChain name="files-update-processor"
+           processor="uuid,remove-blank,field-name-mutating,parse-boolean,parse-long,parse-double,parse-date,langdetect">
     <processor class="solr.LogUpdateProcessorFactory"/>
     <processor class="solr.DistributedUpdateProcessorFactory"/>
     <processor class="solr.RunUpdateProcessorFactory"/>
