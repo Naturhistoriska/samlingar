@@ -126,7 +126,7 @@ const groupedSelections = ref([
       },
       {
         label: t('collectionLabel.et'),
-        locale: { en: 'Invertebrate Type Specimen Collection"', sv: 'Evertebrater typsamling' },
+        locale: { en: 'Invertebrate Type Specimen Collection', sv: 'Evertebrater typsamling' },
         value: 'Invertebrate type collection',
         code: 'et'
       },
