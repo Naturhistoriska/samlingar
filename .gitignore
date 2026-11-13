@@ -9,6 +9,9 @@ solr/solr8/original_file
 solr/solr9/samlingar/data
 solr/solr9/security.json
 
+solr/solr10/samlingar/data
+solr/solr10/security.json
+
 .DS_Store
 */target/
 */nb-configuration.xml

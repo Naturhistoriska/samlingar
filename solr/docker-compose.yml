@@ -1,6 +1,6 @@
 services:
   solr:
-    image: solr:9.11
+    image: solr:10.1
     container_name: solr
     restart: always
     environment:
@@ -11,7 +11,7 @@ services:
       - 18983:8983
     volumes:
       - ./log4j2.xml:/var/solr/log4j2.xml
-      - ./solr9:/var/solr/data
+      - ./solr10:/var/solr/data
       - ./lib/jts-core-1.20.0.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/jts-core-1.20.0.jar
       - ./lib/jts-io-common-1.20.0.jar:/opt/solr/server/solr-webapp/webapp/WEB-INF/lib/jts-io-common-1.20.0.jar
     entrypoint:

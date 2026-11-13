@@ -9,7 +9,7 @@ services:
     ports:
       - 18983:8983
     volumes:
-      - ./log4j2.xml:/var/solr/log4j2.xml
+      - ./log4j2-9.xml:/var/solr/log4j2.xml
       - ./solr8/mycores:/var/solr/data
     entrypoint:
       - docker-entrypoint.sh
