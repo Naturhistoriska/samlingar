@@ -1,4 +1,4 @@
-FROM eclipse-temurin:8-jdk
+FROM eclipse-temurin:11-jre
 
 COPY target/samlingarApi-thorntail.jar /usr/src/myapp/
 WORKDIR /usr/src/myapp

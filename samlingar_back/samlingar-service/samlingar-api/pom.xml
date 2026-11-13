@@ -24,8 +24,6 @@
             <groupId>io.thorntail</groupId>
             <artifactId>undertow</artifactId>
         </dependency>
- 
-        
         <dependency>
             <groupId>io.thorntail</groupId>
             <artifactId>swagger</artifactId>
@@ -36,58 +34,36 @@
             <artifactId>swagger-webapp</artifactId>
             <version>2.6.0.Final</version>
         </dependency> 
-
         <dependency>
             <groupId>io.thorntail</groupId>
             <artifactId>jsf</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.thorntail</groupId>
             <artifactId>cdi</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.thorntail</groupId>
             <artifactId>ejb</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.thorntail</groupId>
             <artifactId>management-console</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.thorntail</groupId>
             <artifactId>management</artifactId>
         </dependency>
-        
         <dependency>
             <artifactId>solr-solrj</artifactId>
             <groupId>org.apache.solr</groupId>
             <version>8.11.4</version>
         </dependency>
-         
-        <dependency>
-            <groupId>ch.hsr</groupId>
-            <artifactId>geohash</artifactId>
-            <version>1.4.0</version>
-        </dependency>
-    
-     
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.18.0</version>
+            <version>3.21.0</version>
         </dependency>
-        
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-csv</artifactId>
-            <version>1.11.0</version> 
-        </dependency>
-    
- 
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -102,7 +78,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>3.2.3</version>
+                <version>3.5.1</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
