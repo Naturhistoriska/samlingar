@@ -65,7 +65,14 @@
   <fieldType name="date" class="solr.DatePointField" omitNorms="true" positionIncrementGap="0"/>
   <fieldType name="double" class="solr.DoublePointField" omitNorms="true"/>
   <fieldType name="float" class="solr.FloatPointField" omitNorms="true" positionIncrementGap="0"/>
-  <fieldType name="ignored" class="solr.StrField" indexed="false" stored="false" multiValued="true"/>
+  <!-- Workaround for SOLR-18627 (Solr 10.1): a StrField that is neither indexed, stored nor docValues
+       throws a NullPointerException on every update. TextField does not hit that code path.
+       Revert to solr.StrField once a Solr release containing the fix is in use. -->
+  <fieldType name="ignored" class="solr.TextField" indexed="false" stored="false" multiValued="true">
+    <analyzer>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+    </analyzer>
+  </fieldType>
   <fieldType name="int" class="solr.IntPointField" omitNorms="true" positionIncrementGap="0"/>
   <fieldType name="location" class="solr.LatLonPointSpatialField" docValues="true"/>
   <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType" datelineRule="none" spatialContextFactory="org.locationtech.spatial4j.context.jts.JtsSpatialContextFactory" validationRule="none" distanceUnits="degrees" autoIndex="true"/>
