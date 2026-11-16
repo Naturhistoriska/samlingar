@@ -149,8 +149,8 @@ async function loadRecordsLazy(params, first, rows) {
   await service
     .apiSearch(params, first, rows)
     .then((response) => {
-      const total = response.facets.count
-      const results = response.response
+      const total = response.response.numFound
+      const results = response.response.docs
 
       store.commit('setResults', results)
 

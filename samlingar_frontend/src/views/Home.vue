@@ -92,8 +92,8 @@ async function filterSearch(params) {
   await service
     .apiFilterSearch(params)
     .then((response) => {
-      const total = response.facets.count
-      const results = response.response
+      const total = response.response.numFound
+      const results = response.response.docs
 
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
@@ -134,8 +134,8 @@ async function freeTextSearch(value, mode) {
   await service
     .apiFreeTextSearch(params)
     .then((response) => {
-      const total = response.facets.count
-      const results = response.response
+      const total = response.response.numFound
+      const results = response.response.docs
 
       store.commit('setSearchText', value)
       store.commit('setResults', results)

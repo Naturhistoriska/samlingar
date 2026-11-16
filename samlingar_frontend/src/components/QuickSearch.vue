@@ -108,8 +108,8 @@ function apiSearch() {
   service
     .apiScientificnameSearch(searchText, searchMode)
     .then((response) => {
-      const total = response.facets.count
-      const results = response.response
+      const total = response.response.numFound
+      const results = response.response.docs
 
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)

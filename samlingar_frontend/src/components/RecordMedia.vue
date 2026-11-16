@@ -95,8 +95,8 @@ function fetchData() {
   service
     .apiSearch(params, start, end)
     .then((response) => {
-      const total = response.facets.count
-      const data = response.response.filter(
+      const total = response.response.numFound
+      const data = response.response.docs.filter(
         (item) => item.collectionCode !== 'pz' && !item.catalogNumber.startsWith('P')
       )
 

@@ -143,7 +143,7 @@ const fetchAndRender = async (params, { lat, lng }) => {
     .apiGeoFetch(params, 0, total)
     .then((response) => {
       console.log('response:', response)
-      const docs = response.response
+      const docs = response.response.docs
       if (docs && docs.length > 0) {
         buildMarkers(docs)
       } else {
@@ -168,7 +168,7 @@ async function fetchRecord(id, marker) {
     .apiIdSearch(id)
     .then((response) => {
       if (response) {
-        const data = response.response[0]
+        const data = response.response.docs[0]
         const div = document.createElement('div')
         if (data) {
           const {

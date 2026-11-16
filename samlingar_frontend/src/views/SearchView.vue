@@ -112,8 +112,8 @@ async function search(params, start, numPerPage, saveData) {
   await service
     .apiSearch(params, start, numPerPage)
     .then((response) => {
-      const total = response.facets.count
-      const results = response.response
+      const total = response.response.numFound
+      const results = response.response.docs
       store.commit('setResults', results)
       store.commit('setTotalRecords', total)
 
