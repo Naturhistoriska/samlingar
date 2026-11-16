@@ -15,6 +15,7 @@ solr/solr10/security.json
 .DS_Store
 */target/
 */nb-configuration.xml
+.vscode/
 
 project-initdata_local.yml
 project-initdata_ent.yml

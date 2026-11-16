@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
@@ -166,7 +166,7 @@ public class Solr implements Serializable {
     public void init() {
         log.info("init from search...");
 
-        client = new HttpSolrClient.Builder(properties.getSolrURL()).build();
+        client = new Http2SolrClient.Builder(properties.getSolrURL()).build();
         username = properties.getUsername();
         password = properties.getPassword();
     }
