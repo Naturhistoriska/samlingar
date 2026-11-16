@@ -88,18 +88,6 @@ public class ExportFields {
     private static final String SPECIFIC_EPITHET_KEY = "specificEpithet";
     private static final String VERNACULAR_NAME_KEY = "vernacularName";
      
-//    private static ExportFields instance = null;
-//
-//    public static ExportFields getInstance() {
-//        synchronized (ExportFields.class) {
-//            if (instance == null) {
-//                instance = new ExportFields();
-//            }
-//        }
-//        return instance;
-//    }
-//    
-
     public static final List<String> BUILD_DATA_EXPORT_FIELDS
             = Collections.unmodifiableList(Arrays.asList(
                     BASIS_OF_RECORD_KEY,
@@ -178,5 +166,4 @@ public class ExportFields {
                     SERIE_KEY,
                     OCCURRENCE_REMARKS_KEY
             ));
-
 }

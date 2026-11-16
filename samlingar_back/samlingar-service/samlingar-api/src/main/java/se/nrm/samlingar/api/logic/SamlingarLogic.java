@@ -2,11 +2,13 @@ package se.nrm.samlingar.api.logic;
   
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map; 
-import javax.inject.Inject;  
+import java.util.Map;
+
+import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
-import lombok.extern.slf4j.Slf4j;   
-import se.nrm.samlingar.api.solr.services.Solr; 
+
+import lombok.extern.slf4j.Slf4j;
+import se.nrm.samlingar.api.solr.services.Solr;
 import se.nrm.samlingar.api.utils.SolrSearchHelper;
 
 /**
@@ -18,22 +20,17 @@ public class SamlingarLogic {
  
     @Inject
     private Solr solr;
-   
     
     private final String endDateKey = "endDate"; 
     private final String numPerPageKey = "numPerPage"; 
     private final String scientificNameKey = "scientificName";
-
     
     private final String startKey = "start";
     private final String startDateKey = "startDate"; 
     
     private final String synonymsKey = "synonyms";
      
-     
     private final String sortKey = "sort";
-       
-    private final String contains = "contains";
     
     private final String wildCard = "*";  
     private final String quote = "\"";
@@ -50,8 +47,7 @@ public class SamlingarLogic {
     private boolean yearChart;
     private String synonyms;
     private String catchall;
-     
-    
+
     private final String catchallKey = "catchall";
     private final String copyScientificNameKey = "copy_scientificName";
     private final String copyCatalogNumberKey = "copy_catalogNumber";
@@ -64,20 +60,16 @@ public class SamlingarLogic {
      
     private final String regex = "([+\\-!(){}\\[\\]^\"~*?:\\\\|&])"; 
     private final String regexReplecement = "\\\\$1";
-     
-    
+
     private Map<String, String> paramMap;
  
     private final String startsWith = "startsWith";
     
     private final String searchModeKey = "searchMode";
     private final String modeKey = "mode";
-    
-    
+
     private String mode;
-     
-    
-     
+
     public String getInitalData() {
         log.info("getInitalData");
         return solr.getInitalData();
@@ -162,8 +154,7 @@ public class SamlingarLogic {
     public String searchWithId(String id) { 
         return solr.searchWithId(id);
     }
- 
-      
+
     public String geoJson(MultivaluedMap<String, String> queryParams) { 
         buildQueryParam(queryParams); 
          
@@ -175,8 +166,7 @@ public class SamlingarLogic {
         buildQueryParam(queryParams); 
         return  solr.getHeatmap(paramMap, catchall, scientificName, locality, synonyms, dateRange );
     }
-    
-           
+
     public String export(MultivaluedMap<String, String> queryParams) {
         
         buildQueryParam(queryParams);
@@ -255,12 +245,9 @@ public class SamlingarLogic {
         catchall = catchall == null ? wildCard : catchall;
         if(catchall != null && !catchall.equals(wildCard)) {
             catchall  = SolrSearchHelper.getInstance().buildFreeTextSearch(catchall, mode);
-//            catchall = SolrSearchHelper.getInstance().buildContainsQuery(catchall);
         }  
         log.info("catchall: ---- {}", catchall);
          
         dateRange = SolrSearchHelper.getInstance().buildDateRange(startDate, endDate); 
     }
-    
-     
 }

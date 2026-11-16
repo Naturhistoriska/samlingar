@@ -1,10 +1,13 @@
 package se.nrm.samlingar.api.logic;
 
 import java.io.Serializable;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
+
 import org.wildfly.swarm.spi.runtime.annotations.ConfigurationValue;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *

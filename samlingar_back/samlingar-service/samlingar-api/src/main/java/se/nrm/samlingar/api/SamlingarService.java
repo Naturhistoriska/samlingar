@@ -1,19 +1,20 @@
 package se.nrm.samlingar.api;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Info;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;  
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType; 
-import javax.ws.rs.core.Response; 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Info;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import lombok.extern.slf4j.Slf4j;
 import se.nrm.samlingar.api.logic.SamlingarLogic;
 
@@ -34,12 +35,11 @@ import se.nrm.samlingar.api.logic.SamlingarLogic;
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class SamlingarService {
-     
     private final String text = "{ \"status\": \"ok\", \"message\": \"Museum Search API online\" }";
-    
+
     @Inject
     private SamlingarLogic logic;
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
@@ -49,7 +49,7 @@ public class SamlingarService {
     public String hello() {
         return text;
     }
-      
+
     @GET
     @Path("/initialData")
     @ApiOperation(value = "Statistic",
@@ -61,7 +61,7 @@ public class SamlingarService {
         log.info("getInitalData");
         return Response.ok(logic.getInitalData()).build();
     }
-     
+
     @GET
     @Path("/chart")
     @ApiOperation(value = "Search",
@@ -74,7 +74,7 @@ public class SamlingarService {
         log.info("getChart : {} -- {}", collectionCode, isYearChart);
         return Response.ok(logic.getChart(collectionCode, isYearChart)).build(); 
     }
-    
+
     @GET
     @Path("/geojson")
     @ApiOperation(value = "geojson",
@@ -88,7 +88,7 @@ public class SamlingarService {
         return Response.ok(logic
                 .geoJson(uriInfo.getQueryParameters())).build(); 
     }
-     
+
     @GET
     @Path("/heatmap")  
     @ApiOperation(value = "heatmap",
@@ -106,8 +106,7 @@ public class SamlingarService {
         log.info("end.....");
         return res;
     }
-    
-    
+
     @GET
     @Path("/autocomplete")
     @ApiOperation(value = "autocomplete",
@@ -121,8 +120,7 @@ public class SamlingarService {
          
         return Response.ok(logic.autoCompleteSearch(text, field)).build();
     }
-     
-     
+
     @GET
     @Path("/freeTextSearch")
     @ApiOperation(value = "freeTextSearch",
@@ -136,7 +134,7 @@ public class SamlingarService {
           
         return Response.ok(logic.freeTextSearch(text, mode)).build();
     }
-    
+
     @GET
     @Path("/simpleSearch")
     @ApiOperation(value = "SimpleSearch",
@@ -148,8 +146,7 @@ public class SamlingarService {
         log.info("simpleSearch");
         return Response.ok(logic.simpleSearch(uriInfo.getQueryParameters())).build(); 
     }
-     
-    
+
     @GET
     @Path("/search")
     @ApiOperation(value = "Search",
@@ -161,7 +158,7 @@ public class SamlingarService {
         log.info("getSearchResults");
         return Response.ok(logic.search(uriInfo.getQueryParameters())).build(); 
     }
-    
+
     @GET
     @Path("/scientificname")
     @ApiOperation(value = "scientificname",
@@ -179,7 +176,7 @@ public class SamlingarService {
         return Response.ok(logic.scientificNameSearch(text, 
                 searchMode, start, numPerPage, sort)).build();
     }
-    
+
     @GET
     @Path("/id")
     @ApiOperation(value = "Search by id",
@@ -191,7 +188,7 @@ public class SamlingarService {
         log.info("idSearch... {}", id); 
         return Response.ok(logic.searchWithId(id)).build();
     }
-     
+
     @GET
     @Path("/download")
     @ApiOperation(value = "download",
@@ -204,7 +201,4 @@ public class SamlingarService {
         return Response.ok(logic
                 .export(uriInfo.getQueryParameters())).build();
     }
-    
-     
- 
 }

@@ -1,15 +1,17 @@
 package se.nrm.samlingar.api.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.util.SimpleOrderedMap;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -146,6 +148,5 @@ public class SolrSearchBuildGeoJson {
         }
 
         return responseBytes == null ? emptyString : new String(responseBytes, StandardCharsets.UTF_8); 
-
     }
 }

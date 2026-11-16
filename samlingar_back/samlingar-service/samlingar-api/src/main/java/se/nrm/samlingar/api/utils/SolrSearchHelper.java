@@ -5,10 +5,12 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList; 
-import java.util.List; 
-import lombok.extern.slf4j.Slf4j; 
-import org.apache.commons.lang3.StringUtils;  
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;  
 
 /**
  *
@@ -16,25 +18,14 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Slf4j
 public class SolrSearchHelper {
-
-    
     private final String regex = "([+\\-!(){}\\[\\]^\"~*?:\\\\|&])"; 
     private final String regexReplecement = "\\\\$1";
     private final String colon = ":";
     private final String spaceSeparate = "\\s+";
-    
-     
-    
-    
-
     private final String plusSign = "+";
-    private final String colonEscap = "\\:";
-
     private final String leftBracket = "(";
     private final String rightBracket = ")";
-
     private final String emptySpace = " ";
-
     private final String quotationMark = "\"";
 
     private StringBuilder collectionCodeSearchSb;
@@ -42,7 +33,6 @@ public class SolrSearchHelper {
     private LocalDate firstDayOfYear;
     private LocalDate tomorrow;
 
-//    private final String basisOfRecordKey = "basisOfRecord";
     private final String catalogNumberKey = "catalogNumber";
     private final String collectionNameKey = "collectionName";
     private final String expeditionNameKey = "expeditionName";
@@ -50,8 +40,6 @@ public class SolrSearchHelper {
     private final String preparationsKey = "preparations";
     private final String recordedByKey = "recordedBy";
     private final String lifeStageKey = "lifeStage";
-//    private final String licenseKey = "license";
-//    private final String individualCountKey = "individualCount";
     private final String occurrenceRemarksKey = "occurrenceRemarks";
     private final String sexKey = "sex";
 
@@ -88,16 +76,10 @@ public class SolrSearchHelper {
     private final String synonymsKey = "copy_synonyms";
     private final String vernacularNameKey = "vernacularName";
 
-    private final String synonymsFieldKey = "synonyms:";
-
-//    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm zzzz");
     private final String startsWith = "startsWith";
     private final String contains = "contains";
     private final String equals = "equals";
-    
-    
 
-//    private LocalDateTime startDate;
     private String[] searchText;
     private List<String> fields;
 
@@ -105,51 +87,21 @@ public class SolrSearchHelper {
     
     private StringBuilder seachTextSb;
 
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
-         
     private final String leftBlacket = "[";
     private final String rightBlacket = "]";
-    
     private final String to = " TO ";
     private final String toWithStar = " TO *]";
-    
     private final String catchallWithStar = "catchall:*";
     private final String catchallFieldKey = "catchall:";
     private final String catchallKey = "catchall";
-    
-    
-    
-    
+
     private final String scientificNameKey = "scientificName";
 
     private StringBuilder fuzzySeachTextSb;
     private StringBuilder freeTextSearchSb;
     private StringBuilder dateRangeSb;
-    
-    
-    private StringBuilder synonymsSb;
 
     private final String star = "*";
-
     private final String scientificNameWithStar = "copy_scientificName:*";
     private final String and = " AND ";
 
@@ -183,8 +135,7 @@ public class SolrSearchHelper {
                 return buildCaseInsensitiveContainsSearchText(text, catchallKey); 
         } 
     }
-    
-    
+
     public String buildContainsQuery(String text) {
         seachTextSb = new StringBuilder();
         if (text == null || text.isEmpty() || text.equals(star)) {
@@ -225,8 +176,7 @@ public class SolrSearchHelper {
             return null;
         } 
     }
-    
-    
+
     public String buildScientificName(String text, String key, String searchMode ) {
 
         searchMode = searchMode == null ? contains : searchMode; 
@@ -239,7 +189,6 @@ public class SolrSearchHelper {
                 return buildCaseInsensitiveStartsWithSearchText(text, key);
             default:
                 return buildScientificNameContainsQuery(text); 
-//                return buildCaseInsensitiveContainsSearchText(text, key); 
         }
     }
      
@@ -257,13 +206,11 @@ public class SolrSearchHelper {
     }
         
     public String buildSynonyms(String synonyms) {
-        synonymsSb = new StringBuilder(); 
         synonyms = synonyms.replaceAll(regex, regexReplecement);
          
         return buildCaseInsensitiveStartsWithSearchText(synonyms, synonymsKey);
     }
-    
-        
+
     public String buildAutoCompleteSearchText(String text, String key, 
             boolean isCaseSensitive) {
         
@@ -277,8 +224,7 @@ public class SolrSearchHelper {
             return buildCaseInsensitiveContainsSearchText(text, key);
         } 
     }
-    
-    
+
     private String buildStartsWithSearchText(String text, String key) {
         fuzzySeachTextSb = new StringBuilder();
         if (text.contains(emptySpace)) {
@@ -308,62 +254,7 @@ public class SolrSearchHelper {
 
         return fuzzySeachTextSb.toString().trim();
     }
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
-
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-
-     
-    
     private String buildCaseInsensitivEqualsSearchText(String text, String key) {
         seachTextSb = new StringBuilder();
         seachTextSb.append(key);
@@ -403,8 +294,7 @@ public class SolrSearchHelper {
 
         return seachTextSb.toString().trim();
     }
- 
-    
+
     private String buildCaseInsensitiveContainsSearchText(String text, String key) {
         seachTextSb = new StringBuilder();
         if (text.contains(emptySpace)) {
@@ -428,11 +318,7 @@ public class SolrSearchHelper {
         }
         return seachTextSb.toString().trim();
     }
-    
-//    public String buildFreesearchText(String text) { 
-//        return buildCaseInsensitiveContainsSearchText(text, catchallKey); 
-//    }
-    
+
     public String getStartDate(boolean isYearChart) {
         return isYearChart ? getFirstDayOfLastTenYears() : getFirstDayOfLastTwelveMohth();
     }
@@ -465,10 +351,8 @@ public class SolrSearchHelper {
         return utcDateTime.format(DateTimeFormatter.ISO_INSTANT);
     }
 
-    
-    
-     private String buildContainsSearchText(String text, String key) {
-         log.info("buildContainsSearchText : {} -- {}", text, key);
+    private String buildContainsSearchText(String text, String key) {
+        log.info("buildContainsSearchText : {} -- {}", text, key);
         seachTextSb = new StringBuilder();
         boolean isUpperCase = Character.isUpperCase(text.charAt(0));
 
@@ -534,39 +418,6 @@ public class SolrSearchHelper {
         }
         return seachTextSb.toString().trim();
     }
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
 
     public String buildFreeTextSearch(String text) {
 
@@ -638,27 +489,8 @@ public class SolrSearchHelper {
         return fuzzySeachTextSb.toString().trim();
     }
 
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-     
-    
     public List<String> buildDataExportFields() {
-        fields = new ArrayList(); 
+        fields = new ArrayList<String>(); 
         fields.add(catalogNumberKey);
         fields.add(collectionNameKey);
         fields.add(expeditionNameKey);
@@ -700,18 +532,12 @@ public class SolrSearchHelper {
         fields.add(scientificNameAuthorshipKey);
 
         fields.add(specificEpithetKey);
-//        fields.add(synonymsKey);
         fields.add(vernacularNameKey);
 
         return fields;
     }
 
-
-
-
-  
     public String buildSearchCollectionCode(String collectionCodeKey, String collectionCodeValue) {
-
         collectionCodeValue = collectionCodeValue == null ? star : collectionCodeValue;
         collectionCodeSearchSb = new StringBuilder();
         collectionCodeSearchSb.append(collectionCodeKey);
@@ -719,10 +545,6 @@ public class SolrSearchHelper {
         collectionCodeSearchSb.append(collectionCodeValue);
         return collectionCodeSearchSb.toString().trim();
     }
-
-    
-
-   
 
     private String buildEqualsSearchText(String text, String key) {
         fuzzySeachTextSb.append(key);
@@ -733,9 +555,6 @@ public class SolrSearchHelper {
         return fuzzySeachTextSb.toString().trim();
     }
 
-
-
-    
     public String buildSearchText(String text, String key, String searchMode ) {
 
         searchMode = searchMode == null ? equals : searchMode;
@@ -762,57 +581,5 @@ public class SolrSearchHelper {
             return buildEqualsSearchText(text, key);
         }
         return fuzzySeachTextSb.toString().trim();
-
     }
-
-//    private String buildSearchText(String text, String key, boolean fuzzySearch) {
-//
-//        fuzzySeachTextSb = new StringBuilder();
-//
-//        if (text == null || text.isEmpty() || text.equals(star)) {
-//            fuzzySeachTextSb.append(key);
-//            fuzzySeachTextSb.append(colon);
-//            fuzzySeachTextSb.append(star);
-//            return fuzzySeachTextSb.toString().trim();
-//        }
-//
-//        if (fuzzySearch) {
-//            if (text.contains(emptySpace)) {
-//                searchText = text.split(emptySpace);
-//                for (String value : searchText) {
-//                    fuzzySeachTextSb.append(key);
-//                    fuzzySeachTextSb.append(colon);
-//                    fuzzySeachTextSb.append(star);
-//                    fuzzySeachTextSb.append(value);
-//                    fuzzySeachTextSb.append(star);
-//                    fuzzySeachTextSb.append(emptySpace);
-//                }
-//            } else {
-//                fuzzySeachTextSb.append(key);
-//                fuzzySeachTextSb.append(colon);
-//                fuzzySeachTextSb.append(text);
-//                fuzzySeachTextSb.append(emptySpace);
-//
-//                fuzzySeachTextSb.append(key);
-//                fuzzySeachTextSb.append(colon);
-//                fuzzySeachTextSb.append(star);
-//                fuzzySeachTextSb.append(text);
-//                fuzzySeachTextSb.append(star);
-//                fuzzySeachTextSb.append(emptySpace);
-//
-//                fuzzySeachTextSb.append(key);
-//                fuzzySeachTextSb.append(colon);
-//                fuzzySeachTextSb.append(StringUtils.capitalize(text));
-//                fuzzySeachTextSb.append(star);
-//            }
-//        } else {
-//            fuzzySeachTextSb.append(key);
-//            fuzzySeachTextSb.append(colon);
-//            fuzzySeachTextSb.append(quotationMark);
-//            fuzzySeachTextSb.append(text);
-//            fuzzySeachTextSb.append(quotationMark);
-//        }
-//
-//        return fuzzySeachTextSb.toString().trim();
-//    } 
 }

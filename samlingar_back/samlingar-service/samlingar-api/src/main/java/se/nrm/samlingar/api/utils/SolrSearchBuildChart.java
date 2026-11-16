@@ -1,10 +1,12 @@
 package se.nrm.samlingar.api.utils;
 
 import java.io.StringReader;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
+
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 
@@ -26,8 +28,7 @@ public class SolrSearchBuildChart {
         }
         return instance;
     }
-    
-        
+
     public String buildChatResult(QueryResponse response) {
         SolrDocumentList docs = response.getResults();
 
@@ -42,5 +43,4 @@ public class SolrSearchBuildChart {
         builder.add(totalKey, docs.getNumFound());
         return builder.build().toString();
     }
-
 }
