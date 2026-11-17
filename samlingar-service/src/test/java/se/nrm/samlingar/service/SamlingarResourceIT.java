@@ -1,8 +1,8 @@
-package se.nrm.samlingar;
+package se.nrm.samlingar.service;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-class GreetingResourceIT extends GreetingResourceTest {
+class SamlingarResourceIT extends SamlingarResourceTest {
     // Execute the same tests but in packaged mode.
 }
