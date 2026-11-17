@@ -1,20 +1,20 @@
 package se.nrm.samlingar.service;
 
-import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.Test;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 class SamlingarResourceTest {
     @Test
-    void testHelloEndpoint() {
+    void testHealthEndpoint() {
         given()
           .when().get("/")
           .then()
              .statusCode(200)
-             .body(is("Hello from Quarkus REST"));
+             .body(is("{ \"status\": \"ok\", \"message\": \"Museum Search API online\" }"));
     }
-
 }

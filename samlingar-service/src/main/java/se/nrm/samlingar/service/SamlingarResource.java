@@ -1,5 +1,7 @@
 package se.nrm.samlingar.service;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
+
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -9,8 +11,9 @@ import jakarta.ws.rs.core.MediaType;
 public class SamlingarResource {
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "Hello from Quarkus REST";
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation (summary = "Health check")
+    public String health() {
+        return "{ \"status\": \"ok\", \"message\": \"Museum Search API online\" }";
     }
 }
