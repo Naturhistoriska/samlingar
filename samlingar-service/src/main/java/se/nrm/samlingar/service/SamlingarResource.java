@@ -50,4 +50,16 @@ public class SamlingarResource {
         LOG.info("simpleSearch");
         return Response.ok(service.simpleSearch(uriInfo.getQueryParameters())).build(); 
     }
+
+    @GET
+    @Path("/search")
+    @Operation(
+            summary = "Search",
+            description = "Return search results in json"
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response search(@Context UriInfo uriInfo) { 
+        LOG.info("search");
+        return Response.ok(service.search(uriInfo.getQueryParameters())).build(); 
+    }
 }
