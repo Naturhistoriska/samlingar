@@ -9,12 +9,16 @@ import org.jboss.logging.Logger;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.MultivaluedMap;
 import se.nrm.samlingar.service.solr.QueryParams;
+import se.nrm.samlingar.service.solr.SolrSearchHelper;
 import se.nrm.samlingar.service.solr.SolrService;
 
 @ApplicationScoped
 public class SamlingarService {
-
     private static final Logger LOG = Logger.getLogger(SamlingarService.class);
+
+    private static final String COPY_SCIENTIFIC_NAME_KEY = "copy_scientificName";
+    private static final String REGEX = "([+\\-!(){}\\[\\]^\"~*?:\\\\|&])"; 
+    private static final String REGEX_REPLACEMENT = "\\\\$1";
 
     private final SolrService solr;
 
@@ -40,5 +44,33 @@ public class SamlingarService {
     public String search(MultivaluedMap<String, String> queryParams) {
         QueryParams solrQueryParams = QueryParams.build(queryParams);
         return solr.search(solrQueryParams);
+    }
+
+    public String scientificNameSearch(String text, String searchMode, 
+            int start, int numPerPage, String sort ) {
+        LOG.info(String.format("scientificNameSearch: %s", text));
+         
+        text = text.replaceAll(REGEX, REGEX_REPLACEMENT); 
+        if (text != null) {
+            text = SolrSearchHelper.getInstance()
+                    .buildScientificName(text, COPY_SCIENTIFIC_NAME_KEY, searchMode); 
+            LOG.info(String.format("scientificName: %s", text));
+        }
+
+        return solr.scientificNameSearch(text);
+    }
+
+    public String geojson(MultivaluedMap<String, String> queryParams) { 
+        QueryParams solrQueryParams = QueryParams.build(queryParams);
+        return solr.geojson(solrQueryParams); 
+    }
+
+    public String heatmap(MultivaluedMap<String, String> queryParams) {
+        QueryParams solrQueryParams = QueryParams.build(queryParams);
+        return solr.heatmap(solrQueryParams);
+    }
+
+    public String id(String id) { 
+        return solr.id(id);
     }
 }
