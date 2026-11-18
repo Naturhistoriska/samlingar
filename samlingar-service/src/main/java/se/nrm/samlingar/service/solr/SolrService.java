@@ -198,6 +198,41 @@ public class SolrService {
         }
     }
 
+    public String freeTextSearch(String text) {
+        JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .withParam(DEF_TYPE, EDISMAX)
+                .withParam(QF, CATCHALL)
+                .withParam(MM_KEY, MM_VALUE)  
+                .withFacet(COORDINATES_KEY, FACET_COORDINATES)
+                .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30))
+                .withFacet(COLLECTION_CODE_KEY, collectionCodeFacet().setLimit(30))
+                .setOffset(DEFAULT_START)
+                .setLimit(DEFAULT_ROWS)
+                .setSort(DEFAULT_SORT); 
+        try {
+            return jsonRequest.process(client).jsonStr(); 
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+    
+    public String autoCompleteSearch(String text, String field) {
+        LOG.info(String.format("autoCompleteSearch: %s -- %s", text, field));
+        
+        TermsFacetMap facet = new TermsFacetMap(field).setLimit(50); 
+  
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .withFacet(FACET_KEY, facet);
+
+        try {
+            return jsonRequest.process(client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
     public String scientificNameSearch(String text) {
         LOG.info(String.format("scientificNameSearch: %s", text));
  

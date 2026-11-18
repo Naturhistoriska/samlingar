@@ -65,6 +65,31 @@ public class SamlingarResource {
     }
 
     @GET
+    @Path("/freeTextSearch")
+    @Operation(
+        summary = "freeTextSearch",
+        description = "Return search results in json"
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response freeTextSearch(@QueryParam("catchall") String text, @QueryParam("mode") String mode) {
+        LOG.info(String.format("freeTextSearch: %s", text));
+        return Response.ok(service.freeTextSearch(text, mode)).build();
+    }
+
+    @GET
+    @Path("/autocomplete")
+    @Operation(
+        summary = "autocomplete",
+        description = "Return search results in json"
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response autoCompleteSearch(@QueryParam("text") String text,
+            @QueryParam("field") String field) {
+        LOG.info(String.format("autoCompleteSearch: %s -- %s ", text, field));
+        return Response.ok(service.autoCompleteSearch(text, field)).build();
+    }
+
+    @GET
     @Path("/scientificname")
     @Operation(
         summary = "scientificname",
