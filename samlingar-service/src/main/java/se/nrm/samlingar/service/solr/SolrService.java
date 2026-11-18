@@ -5,8 +5,11 @@ import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.request.QueryRequest;
+import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
+import org.apache.solr.client.solrj.response.QueryResponse;
 import org.jboss.logging.Logger;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -188,6 +191,129 @@ public class SolrService {
             jsonRequest.withFilter(sb.toString());
         });
 
+        try {
+            return jsonRequest.process(client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
+    public String scientificNameSearch(String text) {
+        LOG.info(String.format("scientificNameSearch: %s", text));
+ 
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .withParam(DEF_TYPE, EDISMAX)
+                .withParam(QF, COPY_SCIENTIFIC_NAME_KEY)
+                .withParam(MM_KEY, MM_VALUE)
+                .withFacet(COORDINATES_KEY, FACET_COORDINATES)
+                .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30))
+                .withFacet(COLLECTION_CODE_KEY, collectionCodeFacet().setLimit(30))
+                .setOffset(DEFAULT_START)
+                .setLimit(DEFAULT_ROWS)
+                .setSort(DEFAULT_SORT);   
+        try {
+            return jsonRequest.process(client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
+    public String geojson(QueryParams params) {
+        LOG.info(String.format("geojson... %d -- %d", params.start, params.numPerPage));
+ 
+        SolrQuery query = new SolrQuery(params.catchall);
+        query.addField(ID_KEY);
+        query.addField(GEO_KEY);
+        query.addField(LOCALITY_KEY);
+        query.addField(SCIENTIFIC_NAME_KEY);
+        query.addFilterQuery(BBOX);
+        query.setParam(SFIELD, GEO_KEY);
+        query.setParam(PT_KEY, PT);
+        query.setParam(D_KEY, RADIUS_KM);
+        query.setStart(params.start);
+        query.setRows(params.numPerPage);
+
+        if (!StringUtils.isBlank(params.scientificName)) {
+            query.addFilterQuery(params.scientificName);
+        }
+        
+        if (!StringUtils.isBlank(params.synonyms)) {
+            query.addFilterQuery(params.synonyms);
+        }
+ 
+        if (!StringUtils.isBlank(params.locality)) {
+            query.addFilterQuery(params.locality);
+        }
+
+        if (!StringUtils.isBlank(params.dateRange)) {
+            query.addFilterQuery(params.dateRange);
+        }
+
+        params.paramMap.forEach((key, value) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(key)
+                    .append(":")
+                    .append(value);
+            query.addFilterQuery(sb.toString());
+        });
+
+        try {
+            QueryRequest request = new QueryRequest(query);
+            return request.process(client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
+    public String heatmap(QueryParams params) {
+        LOG.info("heatmap");
+
+        // Set query 
+        SolrQuery query = new SolrQuery(params.catchall);
+        query.setRows(0);
+        query.set(FACET_KEY, "true");
+        query.set(FACET_HEAT_MAP_KEY, GEO_KEY);
+        query.set(FACET_HEATMAP_GEOM_KEY, ENVELOPE);
+        query.set(FACET_HEATMAP_GRID_LEVEL_KEY, GRID_LEVEL);
+
+        if (!StringUtils.isBlank(params.scientificName)) {
+            query.addFilterQuery(params.scientificName);
+        }
+
+        if (!StringUtils.isBlank(params.locality)) {
+            query.addFilterQuery(params.locality);
+        }
+        
+        if (!StringUtils.isBlank(params.synonyms)) {
+            query.addFilterQuery(params.synonyms);
+        }
+
+        if (!StringUtils.isBlank(params.dateRange)) {
+            query.addFilterQuery(params.dateRange);
+        }
+
+        params.paramMap.forEach((key, value) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(key)
+                    .append(":")
+                    .append(value);
+            query.addFilterQuery(sb.toString());
+        });
+
+        QueryRequest request = new QueryRequest(query);
+        try {
+            QueryResponse response = request.process(client);
+            return SolrSearchBuildGeoJson.getInstance().buildGeoJson(response);
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
+    public String id(String id) {
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(ID_FIELD_KEY + id)    
+                .setLimit(1);
         try {
             return jsonRequest.process(client).jsonStr();
         } catch (SolrServerException | IOException e) {

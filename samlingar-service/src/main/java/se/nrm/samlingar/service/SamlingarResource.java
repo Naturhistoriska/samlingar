@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -61,5 +62,58 @@ public class SamlingarResource {
     public Response search(@Context UriInfo uriInfo) { 
         LOG.info("search");
         return Response.ok(service.search(uriInfo.getQueryParameters())).build(); 
+    }
+
+    @GET
+    @Path("/scientificname")
+    @Operation(
+        summary = "scientificname",
+        description = "Return search results in json"
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response scientificNameSearch(
+            @QueryParam("scientificname") String text,
+            @QueryParam("searchMode") String searchMode, 
+            @QueryParam("start") int start, 
+            @QueryParam("numPerPage") int numPerPage,
+            @QueryParam("sort") String sort) {
+        LOG.info(String.format("scientificname:  %s -- %s -- %s", text, searchMode, sort));
+        return Response.ok(service.scientificNameSearch(text, searchMode, start, numPerPage, sort)).build();
+    }
+
+    @GET
+    @Path("/geojson")
+    @Operation(
+            summary = "GeoJSON",
+            description = "Return geojson data"
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response geojson(@Context UriInfo uriInfo ) { 
+        LOG.info("geojson");
+        return Response.ok(service.geojson(uriInfo.getQueryParameters())).build(); 
+    }
+
+    @GET
+    @Path("/heatmap")  
+    @Operation(
+        summary = "heatmap",
+        description = "Return data in json"
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response heatmap(@Context UriInfo uriInfo ) { 
+        LOG.info("heatmap");
+        return Response.ok(service.heatmap(uriInfo.getQueryParameters())).build();
+    }
+
+    @GET
+    @Path("/id")
+    @Operation(
+        summary = "Search by id",
+        description = "Return search results in json"
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response id(@QueryParam("id") String id) { 
+        LOG.info(String.format("id: %s", id)); 
+        return Response.ok(service.id(id)).build();
     }
 }
