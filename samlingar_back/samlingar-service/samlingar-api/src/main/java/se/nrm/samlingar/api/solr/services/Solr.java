@@ -82,6 +82,7 @@ public class Solr implements Serializable {
     private final String idSort = "id asc";
 
     private final String responseKey = "response";
+    private final String docsKey = "docs";
 
     private final String cursorMarkKey = "cursorMark";
     
@@ -541,7 +542,7 @@ public class Solr implements Serializable {
         jsonReader = Json.createReader(new StringReader(jsonString));
 
         jsonObj = jsonReader.readObject();
-        JsonArray docs = jsonObj.getJsonArray(responseKey);
+        JsonArray docs = jsonObj.getJsonObject(responseKey).getJsonArray(docsKey);
 
         docs.stream()
                 .forEach(value -> {
