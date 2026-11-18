@@ -16,7 +16,17 @@ import se.nrm.samlingar.service.solr.SolrService;
 public class SamlingarService {
     private static final Logger LOG = Logger.getLogger(SamlingarService.class);
 
+    private static final String CATCHALL_KEY = "catchall";
+    private static final String SCIENTIFIC_NAME_KEY = "scientificName";
+    private static final String CATALOG_NUMBER_KEY = "catalogNumber";
+    private static final String TYPE_STATUS_KEY = "typeStatus";
+    private static final String LOCATION_KEY = "location"; 
+    private static final String LOCALITY_KEY = "locality";
     private static final String COPY_SCIENTIFIC_NAME_KEY = "copy_scientificName";
+    private static final String COPY_CATALOG_NUMBER_KEY = "copy_catalogNumber";
+    private static final String COPY_TYPE_STATUS_KEY = "copy_typeStatus";
+    private static final String COPY_LOCALITY_KEY = "copy_locality";
+
     private static final String REGEX = "([+\\-!(){}\\[\\]^\"~*?:\\\\|&])"; 
     private static final String REGEX_REPLACEMENT = "\\\\$1";
 
@@ -44,6 +54,40 @@ public class SamlingarService {
     public String search(MultivaluedMap<String, String> queryParams) {
         QueryParams solrQueryParams = QueryParams.build(queryParams);
         return solr.search(solrQueryParams);
+    }
+
+    public String freeTextSearch(String text, String mode) {        
+        LOG.info(String.format("freeTextSearch: %s", text));
+        text = SolrSearchHelper.getInstance().buildFreeTextSearch(text, mode); 
+        LOG.info(String.format("text... : %s", text)); 
+        return solr.freeTextSearch(text);
+    }
+
+    public String autoCompleteSearch(String text, String field) {
+        LOG.info(String.format("autoCompleteSearch : %s", field));
+
+        switch (field) {
+            case CATALOG_NUMBER_KEY:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, COPY_CATALOG_NUMBER_KEY, false);
+                return solr.autoCompleteSearch(text, field); 
+            case SCIENTIFIC_NAME_KEY:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, COPY_SCIENTIFIC_NAME_KEY, false);
+                return solr.autoCompleteSearch(text, COPY_SCIENTIFIC_NAME_KEY);
+            case TYPE_STATUS_KEY:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, COPY_TYPE_STATUS_KEY, false);
+                return solr.autoCompleteSearch(text, field);
+            case LOCALITY_KEY:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, COPY_LOCALITY_KEY, false);
+                return solr.autoCompleteSearch(text, field);
+            default:
+                text = SolrSearchHelper.getInstance()
+                        .buildAutoCompleteSearchText(text, field, true);
+                return solr.autoCompleteSearch(text, field);
+        }
     }
 
     public String scientificNameSearch(String text, String searchMode, 
