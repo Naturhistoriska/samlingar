@@ -1,8 +1,6 @@
 package se.nrm.samlingar.service.solr;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrClient;
@@ -11,124 +9,99 @@ import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.jboss.logging.Logger;
 
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
-@RequestScoped
+@ApplicationScoped
 public class SolrService {
-
     private static final Logger LOG = Logger.getLogger(SolrService.class);
+
+    private static final String ID_KEY = "id";
+    private static final String ID_FIELD_KEY = "id:";
+    private static final String SCIENTIFIC_NAME_KEY = "scientificName";
+    private static final String LOCALITY_KEY = "locality";
+
+    private static final String FACET_KEY = "facet";
+    private static final String FACET_HEAT_MAP_KEY = "facet.heatmap";
+    private static final String FACET_HEATMAP_GEOM_KEY = "facet.heatmap.geom";
+    private static final String FACET_HEATMAP_GRID_LEVEL_KEY = "facet.heatmap.gridLevel";
+
+    private static final String ENVELOPE = "ENVELOPE(-180,180,90,-90)";
+    private static final String GRID_LEVEL = "3";
+
+    private static final String YEAR_GAP = "+1YEAR";
+    private static final String MONTH_GAP = "+1MONTH";
+
+    private static final String BBOX = "{!bbox}";
+    private static final String SFIELD = "sfield";
+
+    private static final String RADIUS_KM = "10000";
+    private static final String PT_KEY = "pt";
+    private static final String D_KEY = "d";
+
+    private static final String ID_SORT = "id asc";
+
+    private static final String RESPONSE_KEY = "response";
+
+    private static final String CURSOR_MARK_KEY = "cursorMark";
+    
+    private static final String DEF_TYPE = "defType";
+    private static final String EDISMAX = "edismax"; 
+    private static final String QF = "qf";
+    private static final String MM_KEY = "mm";
+    private static final String MM_VALUE = "2<75%";
+    private static final String CATCHALL = "catchall";
+    private static final String COPY_SCIENTIFIC_NAME_KEY = "copy_scientificName";
+       
+    private static final int MAX_EXPORT = 20000;
+    private static final int BATCH_SIZE = 1000;
+
+    private static final String SEARCH_ALL = "*:*";
+
+    private static final String ASSOCIATED_MEDIA_KEY = "associatedMedia";
+    private static final String COLLECTION_CODE_KEY = "collectionCode";
+    private static final String COLLECTION_NAME_KEY = "collectionName";
+
+    private static final String DEFAULT_SORT = "catalogedDate desc";
+    private static final int DEFAULT_START = 0;
+    private static final int DEFAULT_ROWS = 20;
+    
+    private static final String CATALOGED_DATE_KEY = "catalogedDate";
+
+    private static final String GEO_KEY = "geo";
+    private static final String IN_SWEDEN_KEY = "inSweden";
+    private static final String COORDINATES_KEY = "coordinates";
+    private static final String TYPE_STATUS_KEY = "typeStatus";
+    
+    private static final String PT = "59,15";
+
+    private static final String QUERY_KEY = "query";
+    private static final String GEO_QUERY = "geo:*";
+    private static final String IMAGES_QUERY = "hasImage:*";
+    private static final String TYPE_STATUS_QUERY = "typeStatus:*";
+    private static final String IN_SWEDEN_QUERY = "country:Sweden*";
+    private static final String COLLECTION_NAME_QUERY = "collectionName:*";
+    private static final String COLLECTION_CODE_QUERY = "collectionCode:*";
+
+    private static final Map<String, Object> FACET_COORDINATES = Map.of(QUERY_KEY, GEO_QUERY); 
+    private static final Map<String, Object> FACET_IMAGES = Map.of(QUERY_KEY, IMAGES_QUERY); 
+    private static final Map<String, Object> FACET_TYPE_STATUS = Map.of(QUERY_KEY, TYPE_STATUS_QUERY); 
+    private static final Map<String, Object> FACET_IN_SWEDEN = Map.of(QUERY_KEY, IN_SWEDEN_QUERY); 
+    private static final Map<String, Object> FACET_COLLECTION_NAME = Map.of(QUERY_KEY, COLLECTION_NAME_QUERY); 
+    private static final Map<String, Object> FACET_COLLECTION_CODE = Map.of(QUERY_KEY, COLLECTION_CODE_QUERY); 
 
     private final SolrClient client;
 
-    private final String colon = ":";
-
-    private final String star = "*";
-
-    private final String idKey = "id";
-    private final String idFieldKey = "id:";
-    private final String scientificNameKey = "scientificName";
-    private final String localityKey = "locality";
-
-    private final String facetKey = "facet";
-    private final String facetHeatMapKey = "facet.heatmap";
-    private final String facetHeatmapGeomKey = "facet.heatmap.geom";
-    private final String facetHeatmepGridLevelKey = "facet.heatmap.gridLevel";
-
-    private final String strTrue = "true";
-
-    private final String envelope = "ENVELOPE(-180,180,90,-90)";
-    private final String gridLevel = "3";
-
-    private final String yearGap = "+1YEAR";
-    private final String monthGap = "+1MONTH";
-
-    private final String bbox = "{!bbox}";
-    private final String sfield = "sfield";
-
-    private final String radiusKm = "10000";
-    private final String ptKey = "pt";
-    private final String dKey = "d";
-
-    private final String idSort = "id asc";
-
-    private final String responseKey = "response";
-
-    private final String cursorMarkKey = "cursorMark";
-    
-    private final String defType = "defType";
-    private final String edismax = "edismax"; 
-    private final String qf = "qf";
-    private final String mmKey = "mm";
-    private final String mmValue = "2<75%";
-    private final String catchall = "catchall";
-    private final String copyScientificNameKey = "copy_scientificName";
-       
-    private final int maxExport = 20000;
-    private int batchSize = 1000;
-
-    private StringBuilder sb;
-    private String gap;
-
-    private List<String> fields;
-   
-    private final String searchAll = "*:*";
-
-    private final String associatedMediaKey = "associatedMedia";
-    private final String collectionCodeKey = "collectionCode";
-    private final String collectionNameKey = "collectionName";
-
-    private final String defaultSort = "catalogedDate desc";
-    private final int defaultStart = 0;
-    private final int defaultRows = 20;
-    
-    private final String catalogedDateKey = "catalogedDate";
-
-    private final String geoKey = "geo";
-    private final String inSwedenKey = "inSweden";
-    private final String coordinatesKey = "coordinates";
-    private final String typeStatusKey = "typeStatus";
-    
-    private final String pt ="59,15";
-
-    final TermsFacetMap collectionFacet;
-    final TermsFacetMap collectionCodeFacet;
-    
-    final Map<String, Object> facetCoordinates; 
-    final Map<String, Object> facetImages; 
-    final Map<String, Object> facetTypeStatus; 
-    final Map<String, Object> facetInSweden; 
-    final Map<String, Object> facetCollectionName; 
-    final Map<String, Object> facetCollectionCode; 
-    
-    private final String queryKey = "query";
-    private final String geoQuery = "geo:*";
-    private final String imagesQuery = "hasImage:*";
-    private final String typeStatusQuery = "typeStatus:*";
-    private final String inSwedenQuery = "country:Sweden*";
-    private final String collectionNameQuery = "collectionName:*";
-    private final String collectionCodeQuery = "collectionCode:*";
-
     public SolrService(SolrClient client) {        
+        LOG.info("construct");
         this.client = client;
+    }
 
-        collectionFacet = new TermsFacetMap(collectionNameKey);
-        
-        collectionCodeFacet = new TermsFacetMap(collectionCodeKey); 
-         
-        facetCoordinates = new HashMap<>();
-        facetImages = new HashMap<>();
-        facetTypeStatus = new HashMap<>();
-        facetInSweden = new HashMap<>();
-        facetCollectionName = new HashMap<>();
-        facetCollectionCode = new HashMap<>();
+    private TermsFacetMap collectionFacet() {
+        return new TermsFacetMap(COLLECTION_NAME_KEY);
+    }
 
-        facetCoordinates.put(queryKey, geoQuery);
-        facetImages.put(queryKey, imagesQuery);
-        facetTypeStatus.put(queryKey, typeStatusQuery);
-        facetInSweden.put(queryKey, inSwedenQuery);
-         
-        facetCollectionName.put(queryKey, collectionNameQuery);
-        facetCollectionCode.put(queryKey, collectionCodeQuery); 
+    private TermsFacetMap collectionCodeFacet() {
+        return new TermsFacetMap(COLLECTION_CODE_KEY);
     }
 
     public String initalData() {
@@ -136,16 +109,41 @@ public class SolrService {
         LOG.info(this.client.toString());
          
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(searchAll)   
-                .withFacet(coordinatesKey, facetCoordinates)
-                .withFacet(associatedMediaKey, facetImages)
-                .withFacet(typeStatusKey, facetTypeStatus)
-                .withFacet(inSwedenKey, facetInSweden)
-                .withFacet(collectionNameKey, collectionFacet.setLimit(30))
+                .setQuery(SEARCH_ALL)   
+                .withFacet(COORDINATES_KEY, FACET_COORDINATES)
+                .withFacet(ASSOCIATED_MEDIA_KEY, FACET_IMAGES)
+                .withFacet(TYPE_STATUS_KEY, FACET_TYPE_STATUS)
+                .withFacet(IN_SWEDEN_KEY, FACET_IN_SWEDEN)
+                .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30))
                 .setLimit(1);
          
         try {  
             return jsonRequest.process(this.client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
+    public String simpleSearch(Map<String, String> paramMap) { 
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(SEARCH_ALL)
+                .setOffset(DEFAULT_START)
+                .setLimit(DEFAULT_ROWS)
+                .setSort(DEFAULT_SORT)
+                .withFacet(COORDINATES_KEY, FACET_COORDINATES) 
+                .withFacet(COLLECTION_CODE_KEY, collectionCodeFacet().setLimit(30))
+                .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30));
+ 
+        paramMap.forEach((key, value) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(key)
+                    .append(":")
+                    .append(value);
+            jsonRequest.withFilter(sb.toString());
+        });
+
+        try {
+            return jsonRequest.process(client).jsonStr();
         } catch (SolrServerException | IOException e) {
             throw new SolrAccessException(e);
         }
