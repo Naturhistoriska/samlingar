@@ -8,6 +8,7 @@ import org.jboss.logging.Logger;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.MultivaluedMap;
+import se.nrm.samlingar.service.solr.QueryParams;
 import se.nrm.samlingar.service.solr.SolrService;
 
 @ApplicationScoped
@@ -34,5 +35,10 @@ public class SamlingarService {
             paramMap.put(key, entry.getValue().get(0)); 
         } 
         return solr.simpleSearch(paramMap);
+    }
+
+    public String search(MultivaluedMap<String, String> queryParams) {
+        QueryParams solrQueryParams = QueryParams.build(queryParams);
+        return solr.search(solrQueryParams);
     }
 }

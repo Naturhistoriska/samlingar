@@ -10,6 +10,7 @@ import org.apache.solr.client.solrj.request.json.TermsFacetMap;
 import org.jboss.logging.Logger;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import se.nrm.samlingar.service.utils.StringUtils;
 
 @ApplicationScoped
 public class SolrService {
@@ -135,6 +136,51 @@ public class SolrService {
                 .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30));
  
         paramMap.forEach((key, value) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(key)
+                    .append(":")
+                    .append(value);
+            jsonRequest.withFilter(sb.toString());
+        });
+
+        try {
+            return jsonRequest.process(client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
+    public String search(QueryParams params) {
+
+        params.sort = params.sort == null ? DEFAULT_SORT : params.sort;
+
+        LOG.info(String.format("search : %s", params.paramMap.toString()));
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(params.catchall)
+                .setOffset(params.start)
+                .setLimit(params.numPerPage)
+                .setSort(params.sort)
+                .withFacet(COORDINATES_KEY, FACET_COORDINATES)
+                .withFacet(COLLECTION_CODE_KEY, collectionCodeFacet().setLimit(30))
+                .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30));
+ 
+        if (!StringUtils.isBlank(params.scientificName)) {
+            jsonRequest.withFilter(params.scientificName);
+        }
+         
+        if (!StringUtils.isBlank(params.synonyms)) {
+            jsonRequest.withFilter(params.synonyms);
+        }
+ 
+        if (!StringUtils.isBlank(params.locality)) {
+            jsonRequest.withFilter(params.locality);
+        }
+
+        if (!StringUtils.isBlank(params.dateRange)) {
+            jsonRequest.withFilter(params.dateRange);
+        }
+
+        params.paramMap.forEach((key, value) -> {
             StringBuilder sb = new StringBuilder();
             sb.append(key)
                     .append(":")
