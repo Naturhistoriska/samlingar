@@ -7,8 +7,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 @Path("/")
 public class SamlingarResource {
@@ -35,5 +37,17 @@ public class SamlingarResource {
     public Response initalData() {
         LOG.info("initalData");
         return Response.ok(service.initalData()).build();
+    }
+
+    @GET
+    @Path("/simpleSearch")
+    @Operation(
+        summary = "SimpleSearch",
+        description = "Return search results in json"
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response simpleSearch(@Context UriInfo uriInfo) { 
+        LOG.info("simpleSearch");
+        return Response.ok(service.simpleSearch(uriInfo.getQueryParameters())).build(); 
     }
 }
