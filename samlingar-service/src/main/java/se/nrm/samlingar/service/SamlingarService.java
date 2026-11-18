@@ -2,20 +2,23 @@ package se.nrm.samlingar.service;
 
 import org.jboss.logging.Logger;
 
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
 import se.nrm.samlingar.service.solr.SolrService;
 
-@RequestScoped
+@ApplicationScoped
 public class SamlingarService {
 
     private static final Logger LOG = Logger.getLogger(SamlingarService.class);
 
-    @Inject
-    SolrService solr;
+    private final SolrService solr;
 
-    public String getInitalData() {
-        LOG.info("getInitalData");
-        return solr.getInitalData();
+    public SamlingarService(SolrService solr) {
+        LOG.info("construct");
+        this.solr = solr;
+    }
+
+    public String initalData() {
+        LOG.info("initalData");
+        return solr.initalData();
     }
 }

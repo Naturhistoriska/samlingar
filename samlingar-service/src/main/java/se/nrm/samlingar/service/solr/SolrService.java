@@ -6,17 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.jetty.HttpJettySolrClient;
-import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.request.json.JsonQueryRequest;
 import org.apache.solr.client.solrj.request.json.TermsFacetMap;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
@@ -24,20 +18,7 @@ public class SolrService {
 
     private static final Logger LOG = Logger.getLogger(SolrService.class);
 
-    @ConfigProperty(name = "samlingar.solr.url")
-    private String solrURL;
-    @ConfigProperty(name = "samlingar.solr.core")
-    private String solrCore;
-    @ConfigProperty(name = "samlingar.solr.username")
-    private String username;
-    @ConfigProperty(name = "samlingar.solr.password")
-    private String password;
-
-    private SolrClient client;
-
-    private SolrQuery query;
-    private QueryRequest request;
-    private QueryResponse response;
+    private final SolrClient client;
 
     private final String colon = ":";
 
@@ -127,7 +108,9 @@ public class SolrService {
     private final String collectionNameQuery = "collectionName:*";
     private final String collectionCodeQuery = "collectionCode:*";
 
-    public SolrService() {
+    public SolrService(SolrClient client) {        
+        this.client = client;
+
         collectionFacet = new TermsFacetMap(collectionNameKey);
         
         collectionCodeFacet = new TermsFacetMap(collectionCodeKey); 
@@ -148,14 +131,9 @@ public class SolrService {
         facetCollectionCode.put(queryKey, collectionCodeQuery); 
     }
 
-    @PostConstruct
-    public void init() {
-        LOG.info("init from search...");
-        client = new HttpJettySolrClient.Builder(solrURL + "/" + solrCore).build();
-    }
-
-    public String getInitalData() {
-        LOG.info("getInitalData");
+    public String initalData() {
+        LOG.info("initalData");
+        LOG.info(this.client.toString());
          
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(searchAll)   
@@ -166,19 +144,10 @@ public class SolrService {
                 .withFacet(collectionNameKey, collectionFacet.setLimit(30))
                 .setLimit(1);
          
-        jsonRequest.setBasicAuthCredentials(username, password); 
         try {  
-            response = jsonRequest.process(client);
-        } catch (SolrServerException | IOException ex) {
-            LOG.error(ex.getMessage());
-            return null;
-        } finally {
-            try {
-                client.close();
-            } catch (IOException ex) {
-                LOG.error(ex.getMessage());
-            }
-        } 
-        return response.jsonStr();
+            return jsonRequest.process(this.client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
     }
 }

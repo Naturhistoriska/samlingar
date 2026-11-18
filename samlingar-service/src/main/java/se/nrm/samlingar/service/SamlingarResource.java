@@ -32,8 +32,8 @@ public class SamlingarResource {
         description = "Return search results in json"
     )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInitalData() {
-        LOG.info("getInitalData");
-        return Response.ok(service.getInitalData()).build();
+    public Response initalData() {
+        LOG.info("initalData");
+        return Response.ok(service.initalData()).build();
     }
 }
