@@ -40,6 +40,11 @@ public class SamlingarService {
         return solr.initalData();
     }
 
+    public String search(MultivaluedMap<String, String> queryParams) {
+        QueryParams solrQueryParams = QueryParams.build(queryParams);
+        return solr.search(solrQueryParams);
+    }
+
     public String simpleSearch(MultivaluedMap<String, String> queryParams) {
         Map<String, String> paramMap = new HashMap<>(); 
         for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
@@ -49,16 +54,25 @@ public class SamlingarService {
         return solr.simpleSearch(paramMap);
     }
 
-    public String search(MultivaluedMap<String, String> queryParams) {
-        QueryParams solrQueryParams = QueryParams.build(queryParams);
-        return solr.search(solrQueryParams);
-    }
-
     public String freeTextSearch(String text, String mode) {        
         LOG.info(String.format("freeTextSearch: %s", text));
         text = SolrSearchHelper.getInstance().buildFreeTextSearch(text, mode); 
         LOG.info(String.format("text... : %s", text)); 
         return solr.freeTextSearch(text);
+    }
+
+    public String scientificNameSearch(String text, String searchMode, 
+            int start, int numPerPage, String sort ) {
+        LOG.info(String.format("scientificNameSearch: %s", text));
+         
+        text = text.replaceAll(REGEX, REGEX_REPLACEMENT); 
+        if (text != null) {
+            text = SolrSearchHelper.getInstance()
+                    .buildScientificName(text, COPY_SCIENTIFIC_NAME_KEY, searchMode); 
+            LOG.info(String.format("scientificName: %s", text));
+        }
+
+        return solr.scientificNameSearch(text);
     }
 
     public String autoCompleteSearch(String text, String field) {
@@ -88,18 +102,8 @@ public class SamlingarService {
         }
     }
 
-    public String scientificNameSearch(String text, String searchMode, 
-            int start, int numPerPage, String sort ) {
-        LOG.info(String.format("scientificNameSearch: %s", text));
-         
-        text = text.replaceAll(REGEX, REGEX_REPLACEMENT); 
-        if (text != null) {
-            text = SolrSearchHelper.getInstance()
-                    .buildScientificName(text, COPY_SCIENTIFIC_NAME_KEY, searchMode); 
-            LOG.info(String.format("scientificName: %s", text));
-        }
-
-        return solr.scientificNameSearch(text);
+    public String id(String id) { 
+        return solr.id(id);
     }
 
     public String geojson(MultivaluedMap<String, String> queryParams) { 
@@ -111,11 +115,6 @@ public class SamlingarService {
         QueryParams solrQueryParams = QueryParams.build(queryParams);
         return solr.heatmap(solrQueryParams);
     }
-
-    public String id(String id) { 
-        return solr.id(id);
-    }
-
     public String download(MultivaluedMap<String, String> queryParams) {
         QueryParams solrQueryParams = QueryParams.build(queryParams);
         return solr.download(solrQueryParams);

@@ -133,31 +133,6 @@ public class SolrService {
         }
     }
 
-    public String simpleSearch(Map<String, String> paramMap) { 
-        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(SEARCH_ALL)
-                .setOffset(DEFAULT_START)
-                .setLimit(DEFAULT_ROWS)
-                .setSort(DEFAULT_SORT)
-                .withFacet(COORDINATES_KEY, FACET_COORDINATES) 
-                .withFacet(COLLECTION_CODE_KEY, collectionCodeFacet().setLimit(30))
-                .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30));
- 
-        paramMap.forEach((key, value) -> {
-            StringBuilder sb = new StringBuilder();
-            sb.append(key)
-                    .append(":")
-                    .append(value);
-            jsonRequest.withFilter(sb.toString());
-        });
-
-        try {
-            return jsonRequest.process(client).jsonStr();
-        } catch (SolrServerException | IOException e) {
-            throw new SolrAccessException(e);
-        }
-    }
-
     public String search(QueryParams params) {
 
         params.sort = params.sort == null ? DEFAULT_SORT : params.sort;
@@ -203,6 +178,31 @@ public class SolrService {
         }
     }
 
+    public String simpleSearch(Map<String, String> paramMap) { 
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(SEARCH_ALL)
+                .setOffset(DEFAULT_START)
+                .setLimit(DEFAULT_ROWS)
+                .setSort(DEFAULT_SORT)
+                .withFacet(COORDINATES_KEY, FACET_COORDINATES) 
+                .withFacet(COLLECTION_CODE_KEY, collectionCodeFacet().setLimit(30))
+                .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30));
+ 
+        paramMap.forEach((key, value) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(key)
+                    .append(":")
+                    .append(value);
+            jsonRequest.withFilter(sb.toString());
+        });
+
+        try {
+            return jsonRequest.process(client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
     public String freeTextSearch(String text) {
         JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(text)
@@ -222,6 +222,27 @@ public class SolrService {
         }
     }
     
+    public String scientificNameSearch(String text) {
+        LOG.info(String.format("scientificNameSearch: %s", text));
+ 
+        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                .setQuery(text)
+                .withParam(DEF_TYPE, EDISMAX)
+                .withParam(QF, COPY_SCIENTIFIC_NAME_KEY)
+                .withParam(MM_KEY, MM_VALUE)
+                .withFacet(COORDINATES_KEY, FACET_COORDINATES)
+                .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30))
+                .withFacet(COLLECTION_CODE_KEY, collectionCodeFacet().setLimit(30))
+                .setOffset(DEFAULT_START)
+                .setLimit(DEFAULT_ROWS)
+                .setSort(DEFAULT_SORT);   
+        try {
+            return jsonRequest.process(client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
     public String autoCompleteSearch(String text, String field) {
         LOG.info(String.format("autoCompleteSearch: %s -- %s", text, field));
         
@@ -238,20 +259,10 @@ public class SolrService {
         }
     }
 
-    public String scientificNameSearch(String text) {
-        LOG.info(String.format("scientificNameSearch: %s", text));
- 
+    public String id(String id) {
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(text)
-                .withParam(DEF_TYPE, EDISMAX)
-                .withParam(QF, COPY_SCIENTIFIC_NAME_KEY)
-                .withParam(MM_KEY, MM_VALUE)
-                .withFacet(COORDINATES_KEY, FACET_COORDINATES)
-                .withFacet(COLLECTION_NAME_KEY, collectionFacet().setLimit(30))
-                .withFacet(COLLECTION_CODE_KEY, collectionCodeFacet().setLimit(30))
-                .setOffset(DEFAULT_START)
-                .setLimit(DEFAULT_ROWS)
-                .setSort(DEFAULT_SORT);   
+                .setQuery(ID_FIELD_KEY + id)    
+                .setLimit(1);
         try {
             return jsonRequest.process(client).jsonStr();
         } catch (SolrServerException | IOException e) {
@@ -345,17 +356,6 @@ public class SolrService {
         try {
             QueryResponse response = request.process(client);
             return SolrSearchBuildGeoJson.getInstance().buildGeoJson(response);
-        } catch (SolrServerException | IOException e) {
-            throw new SolrAccessException(e);
-        }
-    }
-
-    public String id(String id) {
-        final JsonQueryRequest jsonRequest = new JsonQueryRequest()
-                .setQuery(ID_FIELD_KEY + id)    
-                .setLimit(1);
-        try {
-            return jsonRequest.process(client).jsonStr();
         } catch (SolrServerException | IOException e) {
             throw new SolrAccessException(e);
         }

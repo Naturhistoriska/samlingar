@@ -16,35 +16,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SolrSearchBuildGeoJson {
     private static SolrSearchBuildGeoJson instance = null;
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private final String coordinatesKey = "coordinates";
-    private final String facetCount = "facet_counts";
-    private final String facetHeatMap = "facet_heatmaps";
+    private static final String COORDINATES_KEY = "coordinates";
+    private static final String FACET_COUNT = "facet_counts";
+    private static final String FACET_HEAT_MAP = "facet_heatmaps";
 
-    private final String featureCollectionKey = "FeatureCollection";
+    private static final String FEATURE_COLLECTION_KEY = "FeatureCollection";
 
-    private final String countsInts2D = "counts_ints2D";
-    private final String countKey = "count";
-    private final String geometryKey = "geometry";
-    private final String geoKey = "geo";
+    private static final String COUNTS_INTS_2D = "counts_ints2D";
+    private static final String COUNT_KEY = "count";
+    private static final String GEOMETRY_KEY = "geometry";
+    private static final String GEO_KEY = "geo";
 
-    private final String typeKey = "type";
-    private final String featureKey = "Feature";
-    private final String polygonKey = "Polygon";
-    private final String rowsKey = "rows";
-    private final String columnsKey = "columns";
+    private static final String TYPE_KEY = "type";
+    private static final String FEATURE_KEY = "Feature";
+    private static final String POLYGON_KEY = "Polygon";
+    private static final String ROWS_KEY = "rows";
+    private static final String COLUMNS_KEY = "columns";
 
-    private final String minXKey = "minX";
-    private final String maxXKey = "maxX";
+    private static final String MIN_X_KEY = "minX";
+    private static final String MAX_X_KEY = "maxX";
 
-    private final String minYKey = "minY";
-    private final String maxYKey = "maxY";
+    private static final String MIN_Y_KEY = "minY";
+    private static final String MAX_Y_KEY = "maxY";
 
-    private final String propertiesKey = "properties";
-    private final String featuresKey = "features";
-    
-    private final String emptyString = "";
+    private static final String PROPERTIES_KEY = "properties";
+    private static final String FEATURES_KEY = "features";
 
     public static SolrSearchBuildGeoJson getInstance() {
         synchronized (SolrSearchBuildGeoJson.class) {
@@ -56,28 +54,27 @@ public class SolrSearchBuildGeoJson {
     }
 
     public String buildGeoJson(QueryResponse resp) throws JsonProcessingException {
+        SimpleOrderedMap<Object> facetCounts = (SimpleOrderedMap<Object>) resp.getResponse().get(FACET_COUNT);
+        SimpleOrderedMap<Object> facetHeatmaps = (SimpleOrderedMap<Object>) facetCounts.get(FACET_HEAT_MAP);
+        SimpleOrderedMap<Object> heatmap = (SimpleOrderedMap<Object>) facetHeatmaps.get(GEO_KEY);
 
-        SimpleOrderedMap<Object> facetCounts = (SimpleOrderedMap<Object>) resp.getResponse().get(facetCount);
-        SimpleOrderedMap<Object> facetHeatmaps = (SimpleOrderedMap<Object>) facetCounts.get(facetHeatMap);
-        SimpleOrderedMap<Object> heatmap = (SimpleOrderedMap<Object>) facetHeatmaps.get(geoKey);
-
-        List<List<Integer>> counts = (List<List<Integer>>) heatmap.get(countsInts2D);
+        List<List<Integer>> counts = (List<List<Integer>>) heatmap.get(COUNTS_INTS_2D);
 
         List<Map<String, Object>>features = new ArrayList<>();
         byte[] responseBytes = null;
         if (counts != null) {
-            int rows = (Integer) heatmap.get(rowsKey);
-            int cols = (Integer) heatmap.get(columnsKey);
-            double minX = ((Number) heatmap.get(minXKey)).doubleValue();
-            double maxX = ((Number) heatmap.get(maxXKey)).doubleValue();
-            double minY = ((Number) heatmap.get(minYKey)).doubleValue();
-            double maxY = ((Number) heatmap.get(maxYKey)).doubleValue();
+            int rows = (Integer) heatmap.get(ROWS_KEY);
+            int cols = (Integer) heatmap.get(COLUMNS_KEY);
+            double minX = ((Number) heatmap.get(MIN_X_KEY)).doubleValue();
+            double maxX = ((Number) heatmap.get(MAX_X_KEY)).doubleValue();
+            double minY = ((Number) heatmap.get(MIN_Y_KEY)).doubleValue();
+            double maxY = ((Number) heatmap.get(MAX_Y_KEY)).doubleValue();
 
             double cellWidth = (maxX - minX) / cols;
             double cellHeight = (maxY - minY) / rows;
 
             Map<String, Object> geojson = new HashMap<>();
-            geojson.put(typeKey, featureCollectionKey);
+            geojson.put(TYPE_KEY, FEATURE_COLLECTION_KEY);
 
             for (int y = 0; y < counts.size(); y++) {
                 List<Integer> rowList = counts.get(y);
@@ -97,10 +94,10 @@ public class SolrSearchBuildGeoJson {
                     double south = north - cellHeight;
 
                     Map<String, Object> feature = new HashMap<>();
-                    feature.put(typeKey, featureKey);
+                    feature.put(TYPE_KEY, FEATURE_KEY);
 
                     Map<String, Object> geometry = new HashMap<>();
-                    geometry.put(typeKey, polygonKey);
+                    geometry.put(TYPE_KEY, POLYGON_KEY);
 
                     List<List<Double>> ring = new ArrayList<>();
                     ring.add(Arrays.asList(west, north));
@@ -112,22 +109,22 @@ public class SolrSearchBuildGeoJson {
                     List<List<List<Double>>> coordinates = new ArrayList<>();
                     coordinates.add(ring);
 
-                    geometry.put(coordinatesKey, coordinates);
+                    geometry.put(COORDINATES_KEY, coordinates);
 
-                    feature.put(geometryKey, geometry);
+                    feature.put(GEOMETRY_KEY, geometry);
 
                     Map<String, Object> property = new HashMap<>();
-                    property.put(countKey, count);
-                    feature.put(propertiesKey, property);
+                    property.put(COUNT_KEY, count);
+                    feature.put(PROPERTIES_KEY, property);
 
                     features.add(feature);
                 }
             }
-            geojson.put(featuresKey, features);
+            geojson.put(FEATURES_KEY, features);
 
-            responseBytes = mapper.writeValueAsBytes(geojson);
+            responseBytes = MAPPER.writeValueAsBytes(geojson);
         }
 
-        return responseBytes == null ? emptyString : new String(responseBytes, StandardCharsets.UTF_8); 
+        return responseBytes == null ? "" : new String(responseBytes, StandardCharsets.UTF_8); 
     }
 }
