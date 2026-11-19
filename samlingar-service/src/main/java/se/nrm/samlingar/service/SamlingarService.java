@@ -16,11 +16,9 @@ import se.nrm.samlingar.service.solr.SolrService;
 public class SamlingarService {
     private static final Logger LOG = Logger.getLogger(SamlingarService.class);
 
-    private static final String CATCHALL_KEY = "catchall";
     private static final String SCIENTIFIC_NAME_KEY = "scientificName";
     private static final String CATALOG_NUMBER_KEY = "catalogNumber";
     private static final String TYPE_STATUS_KEY = "typeStatus";
-    private static final String LOCATION_KEY = "location"; 
     private static final String LOCALITY_KEY = "locality";
     private static final String COPY_SCIENTIFIC_NAME_KEY = "copy_scientificName";
     private static final String COPY_CATALOG_NUMBER_KEY = "copy_catalogNumber";
@@ -116,5 +114,17 @@ public class SamlingarService {
 
     public String id(String id) { 
         return solr.id(id);
+    }
+
+    public String download(MultivaluedMap<String, String> queryParams) {
+        QueryParams solrQueryParams = QueryParams.build(queryParams);
+        return solr.download(solrQueryParams);
+    }
+
+    public String chart(String collectionCode, String isYearChart) {
+        boolean yearChart = Boolean.parseBoolean(isYearChart);
+        String startDate = SolrSearchHelper.getInstance().getStartDate(yearChart);  
+        String endDate = SolrSearchHelper.getInstance().getEndDate();  
+        return solr.chart(collectionCode, startDate, endDate, yearChart); 
     }
 }

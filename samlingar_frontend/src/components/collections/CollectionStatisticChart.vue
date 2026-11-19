@@ -218,7 +218,7 @@ async function getChartData(collection, tab, isYear) {
 
       const counts = facet.counts
       if (isYear) {
-        const totalCount = response.total
+        const totalCount = response.response.numFound
         setYearChartData(tab, totalCount, counts)
       } else {
         setMonthChartData(tab, counts)
