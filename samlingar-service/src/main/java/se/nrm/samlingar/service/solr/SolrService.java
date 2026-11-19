@@ -1,6 +1,9 @@
 package se.nrm.samlingar.service.solr;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrClient;
@@ -13,6 +16,11 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.jboss.logging.Logger;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import se.nrm.samlingar.service.utils.StringUtils;
 
 @ApplicationScoped
@@ -45,6 +53,7 @@ public class SolrService {
     private static final String ID_SORT = "id asc";
 
     private static final String RESPONSE_KEY = "response";
+    private static final String DOCS_KEY = "docs";
 
     private static final String CURSOR_MARK_KEY = "cursorMark";
     
@@ -83,15 +92,11 @@ public class SolrService {
     private static final String IMAGES_QUERY = "hasImage:*";
     private static final String TYPE_STATUS_QUERY = "typeStatus:*";
     private static final String IN_SWEDEN_QUERY = "country:Sweden*";
-    private static final String COLLECTION_NAME_QUERY = "collectionName:*";
-    private static final String COLLECTION_CODE_QUERY = "collectionCode:*";
 
     private static final Map<String, Object> FACET_COORDINATES = Map.of(QUERY_KEY, GEO_QUERY); 
     private static final Map<String, Object> FACET_IMAGES = Map.of(QUERY_KEY, IMAGES_QUERY); 
     private static final Map<String, Object> FACET_TYPE_STATUS = Map.of(QUERY_KEY, TYPE_STATUS_QUERY); 
     private static final Map<String, Object> FACET_IN_SWEDEN = Map.of(QUERY_KEY, IN_SWEDEN_QUERY); 
-    private static final Map<String, Object> FACET_COLLECTION_NAME = Map.of(QUERY_KEY, COLLECTION_NAME_QUERY); 
-    private static final Map<String, Object> FACET_COLLECTION_CODE = Map.of(QUERY_KEY, COLLECTION_CODE_QUERY); 
 
     private final SolrClient client;
 
@@ -351,6 +356,118 @@ public class SolrService {
                 .setLimit(1);
         try {
             return jsonRequest.process(client).jsonStr();
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+    }
+
+    public String download(QueryParams params) {
+        LOG.info(String.format("download: %s", params.catchall));
+
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        int totalRowsToExport = params.numPerPage >= MAX_EXPORT ? MAX_EXPORT : params.numPerPage;
+
+        int totalExported = 0;
+
+        String cursorMark = "*";
+        boolean done = false;
+
+        int batchSize = Math.min(BATCH_SIZE, params.numPerPage);
+        try {
+            final JsonQueryRequest jsonRequest = new JsonQueryRequest()
+                    .setQuery(params.catchall)
+                    .setOffset(params.start)
+                    .setLimit(batchSize)
+                    .setSort(ID_SORT);
+
+            if (!StringUtils.isBlank(params.scientificName)) {
+                jsonRequest.withFilter(params.scientificName);
+            }
+
+            if (!StringUtils.isBlank(params.locality)) {
+                jsonRequest.withFilter(params.locality);
+            }
+
+            if (!StringUtils.isBlank(params.dateRange)) {
+                jsonRequest.withFilter(params.dateRange);
+            }
+
+            params.paramMap.forEach((key, value) -> {
+                StringBuilder sb = new StringBuilder();
+                sb.append(key)
+                        .append(":")
+                        .append(value);
+                jsonRequest.withFilter(sb.toString());
+            });
+
+            ExportFields.BUILD_DATA_EXPORT_FIELDS.stream()
+                    .forEach(field -> {
+                        jsonRequest.returnFields(field);
+                    }); 
+
+            while (!done && totalExported < totalRowsToExport) {
+
+                jsonRequest.withParam(CURSOR_MARK_KEY, cursorMark);
+
+                QueryResponse response = jsonRequest.process(client);
+                buildDownloadJson(response.jsonStr(), builder);
+
+                String nextCursorMark = response.getNextCursorMark();
+
+                totalExported += batchSize;
+                LOG.info(String.format("totalExported : %s", totalExported));
+
+                if (cursorMark.equals(nextCursorMark)) {
+                    done = true;
+                }
+                cursorMark = nextCursorMark;
+
+            }
+        } catch (SolrServerException | IOException e) {
+            throw new SolrAccessException(e);
+        }
+
+        JsonArray array = builder.build();
+        LOG.info(String.format("size: %d", array.size()));
+
+        return array.toString();
+    }
+
+    private void buildDownloadJson(String jsonString, JsonArrayBuilder builder) {
+        JsonReader jsonReader;
+        JsonObject jsonObj;
+
+        jsonReader = Json.createReader(new StringReader(jsonString));
+
+        jsonObj = jsonReader.readObject();
+        JsonArray docs = jsonObj.getJsonObject(RESPONSE_KEY).getJsonArray(DOCS_KEY);
+
+        docs.stream()
+                .forEach(value -> {
+                    builder.add(value);
+                });
+
+        jsonReader.close();
+    }
+  
+    public String chart(String collection, String startDate, String endDate, boolean isYearChart) {
+        LOG.info(String.format("chart : %s -- %s", startDate, endDate));
+        LOG.info(String.format("chart collection : %s ", collection));
+
+        String gap = isYearChart ? YEAR_GAP : MONTH_GAP;
+        try {
+            SolrQuery query = new SolrQuery(collection); 
+            query.setFacet(true);
+            query.setFields(COLLECTION_CODE_KEY);
+            query.setRows(1);
+ 
+            query.addDateRangeFacet(CATALOGED_DATE_KEY,
+                    Date.from(Instant.parse(startDate)),
+                    Date.from(Instant.parse(endDate)),
+                    gap);
+
+            QueryRequest request = new QueryRequest(query); 
+            return request.process(client).jsonStr();
         } catch (SolrServerException | IOException e) {
             throw new SolrAccessException(e);
         }

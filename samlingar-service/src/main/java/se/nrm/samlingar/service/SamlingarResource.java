@@ -67,7 +67,7 @@ public class SamlingarResource {
     @GET
     @Path("/freeTextSearch")
     @Operation(
-        summary = "freeTextSearch",
+        summary = "Free text search",
         description = "Return search results in json"
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -79,7 +79,7 @@ public class SamlingarResource {
     @GET
     @Path("/autocomplete")
     @Operation(
-        summary = "autocomplete",
+        summary = "Autocomplete",
         description = "Return search results in json"
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -92,7 +92,7 @@ public class SamlingarResource {
     @GET
     @Path("/scientificname")
     @Operation(
-        summary = "scientificname",
+        summary = "Scientific name search",
         description = "Return search results in json"
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -121,7 +121,7 @@ public class SamlingarResource {
     @GET
     @Path("/heatmap")  
     @Operation(
-        summary = "heatmap",
+        summary = "Heatmap",
         description = "Return data in json"
     )
     @Produces(MediaType.APPLICATION_JSON)
@@ -140,5 +140,31 @@ public class SamlingarResource {
     public Response id(@QueryParam("id") String id) { 
         LOG.info(String.format("id: %s", id)); 
         return Response.ok(service.id(id)).build();
+    }
+
+    @GET
+    @Path("/download")
+    @Operation(
+        summary = "Download",
+        description = "Return data in json"
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response download(@Context UriInfo uriInfo ) {  
+        LOG.info("download");
+        return Response.ok(service.download(uriInfo.getQueryParameters())).build();
+    }
+
+    @GET
+    @Path("/chart")
+    @Operation(
+        summary = "Chart",
+        description = "Return search results in json"
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response chart(
+            @QueryParam("collectionCode") String collectionCode, 
+            @QueryParam("isYearChart") String isYearChart) { 
+        LOG.info(String.format("getChart: %s -- %s", collectionCode, isYearChart));
+        return Response.ok(service.chart(collectionCode, isYearChart)).build(); 
     }
 }
