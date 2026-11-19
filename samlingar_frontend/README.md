@@ -46,7 +46,7 @@ yarn install
 
 Run against local api:
 ```
-VITE_SAMLINGAR_API=http://localhost:8180/api yarn dev
+VITE_SAMLINGAR_API=http://localhost:8080/api yarn dev
 ```
 
 Run against stage api:
