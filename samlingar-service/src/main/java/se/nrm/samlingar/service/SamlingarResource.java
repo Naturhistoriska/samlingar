@@ -41,18 +41,6 @@ public class SamlingarResource {
     }
 
     @GET
-    @Path("/simpleSearch")
-    @Operation(
-        summary = "SimpleSearch",
-        description = "Return search results in json"
-    ) 
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response simpleSearch(@Context UriInfo uriInfo) { 
-        LOG.info("simpleSearch");
-        return Response.ok(service.simpleSearch(uriInfo.getQueryParameters())).build(); 
-    }
-
-    @GET
     @Path("/search")
     @Operation(
             summary = "Search",
@@ -65,6 +53,18 @@ public class SamlingarResource {
     }
 
     @GET
+    @Path("/simpleSearch")
+    @Operation(
+        summary = "SimpleSearch",
+        description = "Return search results in json"
+    ) 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response simpleSearch(@Context UriInfo uriInfo) { 
+        LOG.info("simpleSearch");
+        return Response.ok(service.simpleSearch(uriInfo.getQueryParameters())).build(); 
+    }
+
+    @GET
     @Path("/freeTextSearch")
     @Operation(
         summary = "Free text search",
@@ -74,19 +74,6 @@ public class SamlingarResource {
     public Response freeTextSearch(@QueryParam("catchall") String text, @QueryParam("mode") String mode) {
         LOG.info(String.format("freeTextSearch: %s", text));
         return Response.ok(service.freeTextSearch(text, mode)).build();
-    }
-
-    @GET
-    @Path("/autocomplete")
-    @Operation(
-        summary = "Autocomplete",
-        description = "Return search results in json"
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response autoCompleteSearch(@QueryParam("text") String text,
-            @QueryParam("field") String field) {
-        LOG.info(String.format("autoCompleteSearch: %s -- %s ", text, field));
-        return Response.ok(service.autoCompleteSearch(text, field)).build();
     }
 
     @GET
@@ -104,6 +91,31 @@ public class SamlingarResource {
             @QueryParam("sort") String sort) {
         LOG.info(String.format("scientificname:  %s -- %s -- %s", text, searchMode, sort));
         return Response.ok(service.scientificNameSearch(text, searchMode, start, numPerPage, sort)).build();
+    }
+
+    @GET
+    @Path("/autocomplete")
+    @Operation(
+        summary = "Autocomplete",
+        description = "Return search results in json"
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response autoCompleteSearch(@QueryParam("text") String text,
+            @QueryParam("field") String field) {
+        LOG.info(String.format("autoCompleteSearch: %s -- %s ", text, field));
+        return Response.ok(service.autoCompleteSearch(text, field)).build();
+    }
+
+    @GET
+    @Path("/id")
+    @Operation(
+        summary = "Search by id",
+        description = "Return search results in json"
+    )
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response id(@QueryParam("id") String id) { 
+        LOG.info(String.format("id: %s", id)); 
+        return Response.ok(service.id(id)).build();
     }
 
     @GET
@@ -128,18 +140,6 @@ public class SamlingarResource {
     public Response heatmap(@Context UriInfo uriInfo ) { 
         LOG.info("heatmap");
         return Response.ok(service.heatmap(uriInfo.getQueryParameters())).build();
-    }
-
-    @GET
-    @Path("/id")
-    @Operation(
-        summary = "Search by id",
-        description = "Return search results in json"
-    )
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response id(@QueryParam("id") String id) { 
-        LOG.info(String.format("id: %s", id)); 
-        return Response.ok(service.id(id)).build();
     }
 
     @GET
