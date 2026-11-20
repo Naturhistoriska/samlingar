@@ -61,7 +61,7 @@ onMounted(async () => {
 async function fetchRecord(id) {
   try {
     const response = await service.apiIdSearch(id)
-    const record = response?.response?.[0]
+    const record = response?.response?.docs[0]
 
     if (record) {
       buildRecordData(record)
