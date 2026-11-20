@@ -10,5 +10,6 @@ run:
 run-docker:
 	docker run -i --rm -p 8080:8080 \
 		--env samlingar.solr.base-url=http://172.17.0.1:18983/solr \
+		--env JAVA_MAX_MEM_RATIO=25 \
 		--name samlingar-service-dev \
 		naturhistoriska/samlingar-service-dev 

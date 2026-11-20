@@ -101,7 +101,7 @@ public class SolrService {
     private final SolrClient client;
 
     public SolrService(SolrClient client) {        
-        LOG.info("construct");
+        LOG.info("SolrService created");
         this.client = client;
     }
 
@@ -115,7 +115,6 @@ public class SolrService {
 
     public String initalData() {
         LOG.info("initalData");
-        LOG.info(this.client.toString());
          
         final JsonQueryRequest jsonRequest = new JsonQueryRequest()
                 .setQuery(SEARCH_ALL)   

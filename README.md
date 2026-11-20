@@ -58,9 +58,10 @@ API -.->|Fetch Media | Assets
 
 ## Prerequisites
 
-*   **Java 8+** (for Indexers and API)
-*   **Node.js 16+** (for Frontend)
-*   **Apache Solr 8.x**
+*   **Java 25** (for Service)
+*   **Java 8** (for Indexers)
+*   **Node.js 24** (for Frontend)
+*   **Apache Solr 10**
 *   **Maven** (to build Java projects)
 
 ---
@@ -86,18 +87,18 @@ java -jar -Xms4096M -Xmx6144M -Dswarm.update=true specify-data-process/target/sp
 ```
 
 ### 3. samlingar-service (API)
-**Location:** `/samlingar_back/samlingar-service`
+**Location:** `/samlingar-service`
 
 To build and run the API:
 ```bash
-cd samlingar_back/samlingar-service
+cd samlingar-service
 # Build the project (if needed)
-mvn clean package
+make build
 
-# Run the service
-java -jar samlingar-api/target/samlingarApi-thorntail.jar -s project-initdata_sample_for_api.yml
+# Run the service in dev mode
+make run
 ```
-The API will be available at: `http://localhost:8180/api`
+The API will be available at: `http://localhost:8080/api`
 
 ### 4. samlingar-frontend (UI)
 **Location:** `/samlingar_frontend`
@@ -106,7 +107,7 @@ To run the frontend in development mode:
 ```bash
 cd samlingar_frontend
 npm install
-VITE_SAMLINGAR_API=http://localhost:8180/api yarn dev
+make run
 ```
 
 Open your browser at: `http://localhost:5173/`
