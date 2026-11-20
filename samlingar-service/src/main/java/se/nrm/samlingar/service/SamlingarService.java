@@ -31,7 +31,7 @@ public class SamlingarService {
     private final SolrService solr;
 
     public SamlingarService(SolrService solr) {
-        LOG.info("construct");
+        LOG.info("SamlingarService created");
         this.solr = solr;
     }
 

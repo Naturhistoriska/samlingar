@@ -1,23 +1,34 @@
-# samlingar-service
+# Samlingar-service
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+A Java-based RESTful service that provides search and retrieval functionality for a museum's online collection data, backed by an Apache Solr search index. 
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+This project requires Java 25 and uses the [Quarkus](https://quarkus.io/) Java Framework.
 
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
 
 ```shell script
+make run
+```
+or
+```shell script
 ./mvnw quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+API url: http://localhost:8080/api  
+API docs:
+http://localhost:8080/api/docs  
+Dev UI (dev mode only): http://localhost:8080/q/dev/
 
 ## Packaging and running the application
 
 The application can be packaged using:
 
+```shell script
+make build
+```
+or
 ```shell script
 ./mvnw package
 ```
@@ -35,33 +46,13 @@ If you want to build an _über-jar_, execute the following command:
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
 
-## Creating a native executable
+## Packaging and running the application in Docker
 
-You can create a native executable using:
-
+Build container:
 ```shell script
-./mvnw package -Dnative
+make build-docker
 ```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
+Run:
 ```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+make run-docker
 ```
-
-You can then execute your native executable with: `./target/samlingar-service-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): Build RESTful web services and APIs using Jakarta REST (formerly JAX-RS)
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Generate OpenAPI schemas and serve Swagger UI for REST API documentation
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
